@@ -2,7 +2,11 @@
 
 Графическая оболочка для архивов **zpaqfranz** / GUI explorer for **zpaqfranz** archives.
 
-**GitHub:** https://github.com/AmbaRu/rizpaq
+## Скриншоты
+
+Главное окно программы:
+
+![Главное окно](screenshots/screen.png)
 
 ---
 
