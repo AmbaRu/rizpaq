@@ -2,7 +2,7 @@
 
 Графическая оболочка для архивов **zpaqfranz** / GUI explorer for **zpaqfranz** archives.
 
-Скачать: https://github.com/fcorbelli/zpaqfranz
+Скачать архиватор (только командная строка): https://github.com/fcorbelli/zpaqfranz
 
 ## Скриншоты
 
