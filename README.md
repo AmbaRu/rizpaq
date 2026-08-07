@@ -6,7 +6,8 @@
 
 Главное окно программы:
 
-![Главное окно](screenshots/screen.png)
+<img width="1984" height="1276" alt="screen" src="https://github.com/user-attachments/assets/871e8ab0-303c-44c2-9f20-98f280c99b9e" />
+
 
 ---
 
