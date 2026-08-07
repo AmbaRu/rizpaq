@@ -1,6 +1,7 @@
 # Rizpaq
 
 Графическая оболочка для архивов **zpaqfranz** / GUI explorer for **zpaqfranz** archives.
+
 Скачать: https://github.com/fcorbelli/zpaqfranz
 
 ## Скриншоты
