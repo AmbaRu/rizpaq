@@ -2,6 +2,19 @@
 
 ### Русский
 
+**1.2**
+
+- Исправлено зависание программы при открытии архивов.
+- Автоматическая подстановка латинского имени при создании архива
+  из папки или файла с нелатинским названием.
+- Защита от открытия и проверки архивов с нелатинскими именами:
+  вместо зависания показывается предупреждение с подсказкой.
+- Устранена ложная ошибка «невозможно записать» при создании архивов
+  на некоторых дисках.
+- Итоговое окно после создания архива теперь появляется без задержки.
+- Пароль зашифрованного архива корректно запоминается при создании
+  независимо от включённых опций.
+
 **1.1**
 
 - Создание архивов из папок и файлов.
@@ -52,6 +65,18 @@
 ---
 
 ### English
+
+**1.2**
+
+- Fixed program freeze when opening archives.
+- Automatic Latin name suggestion when creating an archive from
+  a folder or file with a non-Latin name.
+- Protection against opening and testing archives with non-Latin
+  filenames: a warning with guidance is shown instead of freezing.
+- Fixed false "cannot write" error when creating archives on some drives.
+- Completion window after archive creation now appears without delay.
+- Encrypted archive password is correctly remembered during creation
+  regardless of enabled options.
 
 **1.1**
 
