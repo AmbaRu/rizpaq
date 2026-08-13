@@ -29,7 +29,8 @@ Rizpaq turns the powerful command-line archiver into a familiar,
 friendly window. No console, no memorizing flags — just click and go.
 All the power of zpaqfranz (versioning, deduplication, strong hashing)
 with the comfort of a regular file manager.
-![Uploading v1.3.png…]()
+<img width="2280" height="1474" alt="v1 3" src="https://github.com/user-attachments/assets/11c6ece0-c7c1-4784-93fd-da710c855587" />
+
 
 ### Why Rizpaq?
 
