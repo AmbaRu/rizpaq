@@ -1,169 +1,220 @@
-## zpaqfranz
-
-**zpaqfranz** is a command-line archiver built on the zpaq format.
-It keeps *every version of every file* in a single archive: when you add
-files again, nothing is duplicated — only the changed parts are written.
-This is called *deduplication*, and it turns a folder of daily backups
-into a small file that still contains the full history.
-
-Key strengths of zpaqfranz:
-
-- **Versioning.** Every add creates a new version. You can see, compare and extract the state of the archive at any version.
-- **Deduplication.** Identical file blocks are stored once, even across different files and versions.
-- **Strong hashing.** A wide choice of file hashes (xxhash, SHA-1/2/3, BLAKE3, MD5, whirlpool and more).
-- **Integrity.** Built-in test modes up to *paranoid* — bit-level verification of the whole archive.
-- **Encryption.** Password-protected archives with strong encryption.
-
-The price for all this power is a console interface with many flags.
-That's where Rizpaq comes in.
-
 ## Rizpaq
 
-**Rizpaq** is a simple, beautiful graphical interface for zpaqfranz.
+A simple and beautiful graphical interface for the
+[zpaqfranz](https://github.com/corroll/zpaqfranz) archiver.
 
-Rizpaq turns the powerful command-line archiver into a familiar, friendly
-window. No console, no memorizing flags — just click and go. All the power
-of zpaqfranz (versioning, deduplication, strong hashing) with the comfort
-of a regular file manager.
+> The convenience of 7-Zip. The power of zpaq. A history of every file.
+> Create and extract archives by drag and drop, without a single console
+> command. And zpaq's unique superpower — file versions and deduplication —
+> becomes a visual "time machine".
 
-### Why Rizpaq?
+### What is it?
 
-- **No console.** Everything happens in a familiar window: drives, folders and archives on the left, files on the right.
-- **Archives behave like folders.** Double-click a `.zpaq` and browse it as if it were already extracted. Several archives open at once.
-- **A time machine for your data.** Every archive keeps its history: view it "as of version N", compare two versions, extract any version.
-- **Create archives with a few clicks.** Compression levels, hashing, masks, password, multipart, SFX, VSS and more.
-- **Safe by default.** Integrity tests, automatic free-space check, passwords, and protection against common archiving pitfalls.
-- **Honest progress.** A live progress panel with a timer and Cancel for every long operation.
-- **14 interface languages**, switched on the fly.
+**Rizpaq** is a graphical shell over the console archiver **zpaqfranz**.
+You no longer need to learn complex console commands: all the power of zpaq
+is available through a familiar and beautiful interface.
+
+- A unified tree of drives and archives — your whole system at a glance
+- File versions — every pack creates a new version, you can roll back to any
+- Deduplication — identical blocks are stored once, archives are more compact
+- Drag & Drop — drop files into the window to pack; drag them out to extract
+- Explorer integration — right-click and double-click on `.zpaq`
+
+### Why do I need it?
+
+If you have heard about **zpaq** and its "time machine" for files but were
+put off by the console, **Rizpaq** is made for you.
+
+| Capability | zpaqfranz CLI | Other GUIs | Rizpaq |
+|---|---|---|---|
+| View archive | yes | yes | yes |
+| Create archive | yes | partial | yes, full control |
+| Drag & Drop | no | no | yes |
+| Explorer integration | no | no | yes |
+| Version time-travel | manual | limited | visual |
+| Version comparison | no | no | yes |
+| 15 languages | no | limited | yes |
+
+**The main difference of Rizpaq:** we do not just show the archive — we give
+**full control over its creation** (compression level, hashes, masks,
+password, multipart, SFX, VSS shadow copies) **and** turn zpaq's unique
+versioning into a visual "time machine" that no other archiver has.
 
 ### Features
 
-- Unified tree of drives, folders and `.zpaq` archives
-- Browse archive contents like a normal folder; multiple archives open at once
-- Create archives: source selection, compression level, hashing algorithm, include/exclude masks, comment, password
-- Multipart archives (choose a volume size) and self-extracting SFX
-- Second copy of the archive to a chosen folder
-- Automatic free-space check before archiving
-- Post-creation verification (test / verify / paranoid)
-- VSS shadow copies, skip OneDrive placeholders, ignore access errors with an error log, shut down PC on completion
-- Date templates in the archive name
-- Sort the file table by any column with a header click
-- Search inside an archive (`*` and `?` wildcards, Ctrl+F)
-- Extract: a single file, a folder, or all versions at once
-- Integrity test: full / all versions with checksums / paranoid
-- Archive information and two-version comparison
-- Light "Soft Azure" theme; portable mode; settings and window state persist
+#### Creating archives
+- Compression levels: from "store without compression" to "maximum"
+- Choice of file hashing algorithm
+- Include/exclude masks
+- Password and encryption
+- Multipart archives (split into parts)
+- Self-extracting SFX archives
+- VSS — packing open and locked files
+- Automatic free-space check
 
-### Getting started (Windows)
+#### Working with archives
+- View contents like a regular folder
+- Version history: extract any version of a file or folder
+- Comparison of two versions — what was added, changed, removed
+- Integrity check (3 modes, including "paranoid")
+- Search by names and paths
 
-- **Download** the latest release and unpack it to any folder.
-- **Add the engine**: download `zpaqfranz.exe` and put it next to `Rizpaq.exe` — or point Rizpaq at it later via *Settings → Path to zpaqfranz…*.
-- **Run** `Rizpaq.exe`. That's it — you are archiving.
+#### Convenience
+- The zpaqfranz engine is built in — no extra download or install needed
+- Drag & Drop in both directions: drop files into the window to create an
+  archive; drag files out of the archive into Explorer to extract them
+- Explorer context menu: "Add to Rizpaq archive…", "Extract here", "Test"
+- Double-click on `.zpaq` opens it in Rizpaq
+- Live progress with a stopwatch and cancel
+- 15 interface languages, light theme
 
-- **Portable mode:** create an empty `portable.txt` file next to the executable and all settings will be stored next to the program.
-- Without `zpaqfranz.exe` the file manager still works, but archives will not open.
+### Quick start
 
-### A 30-second tour
+1. Download the latest Rizpaq release and unpack it into any folder.
+2. Run `Rizpaq.exe`. Done!
 
-- **Open an archive** — double-click it in the tree or the file table.
-- **Create** — right-click a folder → Create archive…; choose compression, hash, masks, password.
-- **Extract** — right-click a file or folder → Extract; live progress, cancel anytime.
-- **Travel in time** — *Archive operations → Archive versions*, or compare two versions.
-- **Find anything** — Ctrl+F inside an archive.
+The zpaqfranz archiving engine is already built into Rizpaq — you don't
+need to download or install anything else.
+
+> If you ever want the very latest zpaqfranz engine, you can always
+> download it from the
+> [zpaqfranz releases page](https://github.com/corroll/zpaqfranz/releases)
+> and point Rizpaq to it via Settings → Path to zpaqfranz.
+
+#### Your first archive in 30 seconds
+1. Drag a folder into the Rizpaq window.
+2. In the creation dialog, press OK.
+3. Done — the `.zpaq` archive is created.
+
+### Requirements
+
+- Windows 10/11
+- To run from source: Python 3.9+ and PySide6
 
 ### Languages
 
-- English · Русский · Deutsch · Français · Italiano · Español · Polski · हिन्दी · Nederlands · Português · 中文 · 日本語 · Ελληνικά · Tiếng Việt
+English, Русский, Deutsch, Français, Italiano, Español, Polski, हिन्दी,
+Nederlands, Português, 中文, 日本語, Ελληνικά, Tiếng Việt.
 
-Switch via *Settings → Language* — no restart needed.
+The language is switched in Settings → Language without a restart.
 
-### Changelog
+### Portable mode
 
-- See [CHANGELOG.md](CHANGELOG.md).
-- Repository: https://github.com/AmbaRu/rizpaq
+Create an empty `portable.txt` file next to `Rizpaq.exe` — and all settings
+will be stored next to the program (convenient for a USB stick).
+
+### License
+
+[specify the project license]
 
 ---
 
-## zpaqfranz
-
-**zpaqfranz** — это консольный архиватор, построенный на формате zpaq.
-Он хранит в одном архиве *каждую версию каждого файла*: когда вы добавляете
-файлы повторно, дубликаты не пишутся — дописываются только изменившиеся
-части. Это называется *дедупликация*, и она превращает папку ежедневных
-бэкапов в небольшой файл, в котором по-прежнему лежит вся история.
-
-Сильные стороны zpaqfranz:
-
-- **Версионность.** Каждое добавление создаёт новую версию. Можно увидеть, сравнить и извлечь состояние архива на любую версию.
-- **Дедупликация.** Одинаковые блоки файлов хранятся один раз, даже между разными файлами и версиями.
-- **Надёжные хэши.** Широкий выбор хэшей файлов (xxhash, SHA-1/2/3, BLAKE3, MD5, whirlpool и другие).
-- **Целостность.** Встроенные режимы проверки вплоть до *параноидального* — побитовая верификация всего архива.
-- **Шифрование.** Архивы с паролем и надёжным шифрованием.
-
-Плата за всю эту мощь — консольный интерфейс с множеством флагов.
-Именно здесь на сцену выходит Rizpaq.
-
 ## Rizpaq
 
-**Rizpaq** — это простой и красивый графический интерфейс для zpaqfranz.
+Простой и красивый графический интерфейс для архиватора
+[zpaqfranz](https://github.com/corroll/zpaqfranz).
 
-Rizpaq превращает мощный консольный архиватор в привычное дружелюбное окно.
-Без консоли и заучивания флагов — просто кликайте и работайте. Вся мощь
-zpaqfranz (версионность, дедупликация, надёжные хэши) с удобством уровня
-обычного файлового менеджера.
+> Удобство 7-Zip. Мощь zpaq. История каждого файла.
+> Создавайте и распаковывайте архивы перетаскиванием мыши, без единой
+> команды консоли. А уникальная суперсила zpaq — версии файлов и
+> дедупликация — превращается в наглядную «машину времени».
 
-### Зачем Rizpaq?
+### Что это?
 
-- **Без консоли.** Всё происходит в привычном окне: диски, папки и архивы слева, файлы справа.
-- **Архив ведёт себя как папка.** Двойной клик по `.zpaq` — и вы ходите по нему, как по уже распакованному. Несколько архивов открыты одновременно.
-- **Машина времени для данных.** Каждый архив хранит историю: состояние «на версию N», сравнение двух версий, извлечение любой версии.
-- **Создание архивов в пару кликов.** Уровни сжатия, хэширование, маски, пароль, многотомность, SFX, VSS и другое.
-- **Безопасность по умолчанию.** Проверки целостности, автоматическая проверка свободного места, пароли и защита от типичных ловушек архивации.
-- **Честный прогресс.** Живая панель прогресса с секундомером и кнопкой «Отмена» для каждой долгой операции.
-- **14 языков интерфейса**, переключение на лету.
+**Rizpaq** — графическая оболочка над консольным архиватором **zpaqfranz**.
+Вам больше не нужно учить сложные команды: вся мощь zpaq доступна через
+привычный и красивый интерфейс.
+
+- Единое дерево дисков и архивов — вся система как на ладони
+- Версии файлов — каждая упаковка создаёт новую версию, можно откатиться к любой
+- Дедупликация — одинаковые блоки хранятся один раз, архивы компактнее
+- Drag & Drop — бросьте файлы в окно, чтобы упаковать; вытащите — чтобы распаковать
+- Интеграция с проводником — правый клик и двойной клик по `.zpaq`
+
+### Зачем мне это?
+
+Если вы слышали про **zpaq** и его «машину времени» для файлов, но вас
+отпугивала консоль, **Rizpaq** создан для вас.
+
+| Возможность | zpaqfranz CLI | Другие GUI | Rizpaq |
+|---|---|---|---|
+| Просмотр архива | да | да | да |
+| Создание архива | да | частично | да, полный контроль |
+| Drag & Drop | нет | нет | да |
+| Интеграция с проводником | нет | нет | да |
+| Путешествие по версиям | вручную | ограничено | наглядно |
+| Сравнение версий | нет | нет | да |
+| 15 языков | нет | ограничено | да |
+
+**Главное отличие Rizpaq:** мы не просто показываем архив — мы даём
+**полный контроль над его созданием** (уровень сжатия, хэши, маски, пароль,
+многотомность, SFX, VSS-теневые копии) **и** превращаем уникальную
+версионность zpaq в наглядную «машину времени», которой нет ни у одного
+другого архиватора.
 
 ### Возможности
 
-- Единое дерево дисков, папок и архивов `.zpaq`
-- Просмотр архива как обычной папки; несколько архивов открыты сразу
-- Создание архивов: выбор источников, уровень сжатия, алгоритм хэширования, маски включения/исключения, комментарий, пароль
-- Многотомные архивы (выбор размера тома) и самораспаковывающийся SFX
-- Вторая копия архива в выбранную папку
-- Автоматическая проверка свободного места перед архивацией
-- Проверка после создания (тест / сверка с ФС / параноидальная)
-- Теневые копии VSS, пропуск заглушек OneDrive, игнор ошибок доступа с журналом ошибок, выключение ПК по завершении
-- Шаблоны дат в имени архива
-- Сортировка таблицы файлов кликом по заголовку любой колонки
-- Поиск внутри архива (маски `*` и `?`, Ctrl+F)
-- Извлечение: файл, папка или все версии сразу
-- Проверка целостности: полная / все версии с контрольными суммами / параноидальная
-- Информация об архиве и сравнение двух версий
-- Светлая тема «Soft Azure»; portable-режим; настройки и окно запоминаются
+#### Создание архивов
+- Уровни сжатия: от «хранить без сжатия» до «максимум»
+- Выбор алгоритма хэширования файлов
+- Маски включения/исключения
+- Пароль и шифрование
+- Многотомные архивы (разбиение на части)
+- Самораспаковывающиеся SFX-архивы
+- VSS — упаковка открытых и заблокированных файлов
+- Автоматическая проверка свободного места
 
-### Как начать (Windows)
+#### Работа с архивами
+- Просмотр содержимого как обычной папки
+- История версий: извлечь любую версию файла или папки
+- Сравнение двух версий — что добавлено, изменено, удалено
+- Проверка целостности (3 режима, включая «параноидальный»)
+- Поиск по именам и путям
 
-- **Скачайте** свежий релиз и распакуйте его в любую папку.
-- **Добавьте движок**: скачайте `zpaqfranz.exe` и положите его рядом с `Rizpaq.exe` — или укажите путь позже: *Настройки → Путь к zpaqfranz…*.
-- **Запустите** `Rizpaq.exe`. Всё — можно архивировать.
+#### Удобство
+- Движок zpaqfranz уже встроен — ничего дополнительно скачивать и устанавливать не нужно
+- Drag & Drop в обе стороны: бросьте файлы в окно, чтобы создать архив;
+  перетащите файлы из архива в проводник, чтобы распаковать их
+- Контекстное меню проводника: «Добавить в архив Rizpaq…», «Распаковать сюда», «Проверить»
+- Двойной клик по `.zpaq` открывает его в Rizpaq
+- Живой прогресс с секундомером и отменой
+- 15 языков интерфейса, светлая тема
 
-- **Portable-режим:** создайте пустой файл `portable.txt` рядом с программой — и все настройки будут храниться рядом с ней.
-- Без `zpaqfranz.exe` файловый менеджер работает, но архивы не открываются.
+### Быстрый старт
 
-### Экскурсия за 30 секунд
+1. Скачайте свежий релиз Rizpaq и распакуйте в любую папку.
+2. Запустите `Rizpaq.exe`. Готово!
 
-- **Открыть архив** — двойной клик по архиву в дереве или в таблице.
-- **Создать** — правый клик по папке → Создать архив…; сжатие, хэш, маски, пароль.
-- **Извлечь** — правый клик по файлу или папке → Извлечь; живой прогресс, отмена в любой момент.
-- **Путешествовать во времени** — *Работа с архивом → Версии архива* или сравнение двух версий.
-- **Найти что угодно** — Ctrl+F внутри архива.
+Движок архивации zpaqfranz уже встроен в Rizpaq — ничего дополнительно
+скачивать и устанавливать не нужно.
+
+> Если вам когда-нибудь понадобится самая свежая версия движка zpaqfranz,
+> её всегда можно скачать на
+> [странице релизов zpaqfranz](https://github.com/corroll/zpaqfranz/releases)
+> и указать путь в Настройки → Путь к zpaqfranz.
+
+#### Первый архив за 30 секунд
+1. Перетащите папку в окно Rizpaq.
+2. В диалоге создания нажмите ОК.
+3. Готово — архив `.zpaq` создан.
+
+### Требования
+
+- Windows 10/11
+- Для запуска из исходников: Python 3.9+ и PySide6
 
 ### Языки
 
-- English · Русский · Deutsch · Français · Italiano · Español · Polski · हिन्दी · Nederlands · Português · 中文 · 日本語 · Ελληνικά · Tiếng Việt
+English, Русский, Deutsch, Français, Italiano, Español, Polski, हिन्दी,
+Nederlands, Português, 中文, 日本語, Ελληνικά, Tiếng Việt.
 
-Переключение: *Настройки → Язык*, без перезапуска.
+Язык переключается в Настройки → Язык без перезапуска.
 
-### История изменений
+### Portable-режим
 
-- См. [CHANGELOG.md](CHANGELOG.md).
-- Репозиторий: https://github.com/AmbaRu/rizpaq
+Создайте пустой файл `portable.txt` рядом с `Rizpaq.exe` — и все настройки
+будут храниться рядом с программой (удобно для флешки).
+
+### Лицензия
+
+[указать лицензию проекта]
