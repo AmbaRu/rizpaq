@@ -92,7 +92,6 @@ need to download or install anything else.
 ### Requirements
 
 - Windows 10/11
-- To run from source: Python 3.9+ and PySide6
 
 ### Languages
 
@@ -201,7 +200,6 @@ will be stored next to the program (convenient for a USB stick).
 ### Требования
 
 - Windows 10/11
-- Для запуска из исходников: Python 3.9+ и PySide6
 
 ### Языки
 
