@@ -19,6 +19,9 @@ is available through a familiar and beautiful interface.
 - Deduplication — identical blocks are stored once, archives are more compact
 - Drag & Drop — drop files into the window to pack; drag them out to extract
 - Explorer integration — right-click and double-click on `.zpaq`
+- 
+<img width="2280" height="1474" alt="en" src="https://github.com/user-attachments/assets/83478f15-8737-40f2-8344-4b3284f433a6" />
+
 
 ### Why do I need it?
 
