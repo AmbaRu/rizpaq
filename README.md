@@ -78,7 +78,7 @@ need to download or install anything else.
 
 > If you ever want the very latest zpaqfranz engine, you can always
 > download it from the
-> [zpaqfranz releases page](https://github.com/corroll/zpaqfranz/releases)
+> [zpaqfranz releases page](https://github.com/fcorbelli/zpaqfranz)
 > and point Rizpaq to it via Settings → Path to zpaqfranz.
 
 #### Your first archive in 30 seconds
@@ -112,7 +112,7 @@ will be stored next to the program (convenient for a USB stick).
 ## Rizpaq
 
 Простой и красивый графический интерфейс для архиватора
-[zpaqfranz](https://github.com/corroll/zpaqfranz).
+[zpaqfranz](https://github.com/fcorbelli/zpaqfranz).
 
 > Удобство 7-Zip. Мощь zpaq. История каждого файла.
 > Создавайте и распаковывайте архивы перетаскиванием мыши, без единой
