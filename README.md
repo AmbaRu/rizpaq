@@ -1,7 +1,7 @@
 ## Rizpaq
 
 A simple and beautiful graphical interface for the
-[zpaqfranz](https://github.com/corroll/zpaqfranz) archiver.
+[zpaqfranz](https://github.com/fcorbelli/zpaqfranz) archiver.
 
 > The convenience of 7-Zip. The power of zpaq. A history of every file.
 > Create and extract archives by drag and drop, without a single console
@@ -103,9 +103,6 @@ The language is switched in Settings → Language without a restart.
 Create an empty `portable.txt` file next to `Rizpaq.exe` — and all settings
 will be stored next to the program (convenient for a USB stick).
 
-### License
-
-[specify the project license]
 
 ---
 
@@ -190,7 +187,7 @@ will be stored next to the program (convenient for a USB stick).
 
 > Если вам когда-нибудь понадобится самая свежая версия движка zpaqfranz,
 > её всегда можно скачать на
-> [странице релизов zpaqfranz](https://github.com/corroll/zpaqfranz/releases)
+> [странице релизов zpaqfranz](https://github.com/fcorbelli/zpaqfranz)
 > и указать путь в Настройки → Путь к zpaqfranz.
 
 #### Первый архив за 30 секунд
