@@ -20,6 +20,9 @@ is available through a familiar and beautiful interface.
 - Drag & Drop — drop files into the window to pack; drag them out to extract
 - Explorer integration — right-click and double-click on `.zpaq`
 
+<img width="2280" height="1474" alt="en" src="https://github.com/user-attachments/assets/bcf1565d-fe6d-41f4-8c71-4a7810b8aea1" />
+
+  
 ### Why do I need it?
 
 If you have heard about **zpaq** and its "time machine" for files but were
