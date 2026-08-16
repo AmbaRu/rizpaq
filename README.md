@@ -1,7 +1,7 @@
 ## Rizpaq
 
 A simple and beautiful graphical interface for the
-[zpaqfranz](https://github.com/fcorbelli/zpaqfranz) archiver.
+[zpaqfranz](https://github.com/corroll/zpaqfranz) archiver.
 
 > The convenience of 7-Zip. The power of zpaq. A history of every file.
 > Create and extract archives by drag and drop, without a single console
@@ -19,9 +19,6 @@ is available through a familiar and beautiful interface.
 - Deduplication — identical blocks are stored once, archives are more compact
 - Drag & Drop — drop files into the window to pack; drag them out to extract
 - Explorer integration — right-click and double-click on `.zpaq`
-  
-<img width="2280" height="1474" alt="en" src="https://github.com/user-attachments/assets/83478f15-8737-40f2-8344-4b3284f433a6" />
-
 
 ### Why do I need it?
 
@@ -36,7 +33,8 @@ put off by the console, **Rizpaq** is made for you.
 | Explorer integration | no | no | yes |
 | Version time-travel | manual | limited | visual |
 | Version comparison | no | no | yes |
-| 15 languages | no | limited | yes |
+| Open files from archive | no | no | yes |
+| 10 languages + your own | no | limited | yes |
 
 **The main difference of Rizpaq:** we do not just show the archive — we give
 **full control over its creation** (compression level, hashes, masks,
@@ -46,6 +44,7 @@ versioning into a visual "time machine" that no other archiver has.
 ### Features
 
 #### Creating archives
+- Three-tab creation dialog: everything at hand, no scrolling
 - Compression levels: from "store without compression" to "maximum"
 - Choice of file hashing algorithm
 - Include/exclude masks
@@ -53,7 +52,7 @@ versioning into a visual "time machine" that no other archiver has.
 - Multipart archives (split into parts)
 - Self-extracting SFX archives
 - VSS — packing open and locked files
-- Automatic free-space check
+- Automatic free-space check with a +5% headroom
 
 #### Working with archives
 - View contents like a regular folder
@@ -61,6 +60,16 @@ versioning into a visual "time machine" that no other archiver has.
 - Comparison of two versions — what was added, changed, removed
 - Integrity check (3 modes, including "paranoid")
 - Search by names and paths
+- Open files with the associated app — double-click a file inside an
+  archive: it is extracted to a temporary folder and opened
+- Non-Latin archive names: Rizpaq offers to rename to transliterated
+  Latin and opens the archive right away
+
+#### Files and folders on disk
+- Delete to the Recycle Bin (context menu and Del key) — drive roots
+  are protected, the view follows the changes
+- Rename (context menu and F2), case change allowed; renaming the
+  currently open archive keeps the view, cache and stored password
 
 #### Convenience
 - The zpaqfranz engine is built in — no extra download or install needed
@@ -69,7 +78,7 @@ versioning into a visual "time machine" that no other archiver has.
 - Explorer context menu: "Add to Rizpaq archive…", "Extract here", "Test"
 - Double-click on `.zpaq` opens it in Rizpaq
 - Live progress with a stopwatch and cancel
-- 15 interface languages, light theme
+- 10 interface languages plus your own (drop-in), light theme
 
 ### Quick start
 
@@ -81,7 +90,7 @@ need to download or install anything else.
 
 > If you ever want the very latest zpaqfranz engine, you can always
 > download it from the
-> [zpaqfranz releases page](https://github.com/fcorbelli/zpaqfranz)
+> [zpaqfranz releases page](https://github.com/corroll/zpaqfranz/releases)
 > and point Rizpaq to it via Settings → Path to zpaqfranz.
 
 #### Your first archive in 30 seconds
@@ -92,11 +101,13 @@ need to download or install anything else.
 ### Requirements
 
 - Windows 10/11
+- To run from source: Python 3.9+ and PySide6
 
 ### Languages
 
-English, Русский, Deutsch, Français, Italiano, Español, Polski, हिन्दी,
-Nederlands, Português, 中文, 日本語, Ελληνικά, Tiếng Việt.
+English, Русский, Italiano, Deutsch, Français, Español, 中文, Português,
+日本語, Polski — and your own language can be added by dropping a
+`locales/<code>.json` file next to the app, no rebuild needed.
 
 The language is switched in Settings → Language without a restart.
 
@@ -105,13 +116,16 @@ The language is switched in Settings → Language without a restart.
 Create an empty `portable.txt` file next to `Rizpaq.exe` — and all settings
 will be stored next to the program (convenient for a USB stick).
 
+### License
+
+[specify the project license]
 
 ---
 
 ## Rizpaq
 
 Простой и красивый графический интерфейс для архиватора
-[zpaqfranz](https://github.com/fcorbelli/zpaqfranz).
+[zpaqfranz](https://github.com/corroll/zpaqfranz).
 
 > Удобство 7-Zip. Мощь zpaq. История каждого файла.
 > Создавайте и распаковывайте архивы перетаскиванием мыши, без единой
@@ -143,7 +157,8 @@ will be stored next to the program (convenient for a USB stick).
 | Интеграция с проводником | нет | нет | да |
 | Путешествие по версиям | вручную | ограничено | наглядно |
 | Сравнение версий | нет | нет | да |
-| 15 языков | нет | ограничено | да |
+| Открытие файлов из архива | нет | нет | да |
+| 10 языков + свои | нет | ограничено | да |
 
 **Главное отличие Rizpaq:** мы не просто показываем архив — мы даём
 **полный контроль над его созданием** (уровень сжатия, хэши, маски, пароль,
@@ -154,6 +169,7 @@ will be stored next to the program (convenient for a USB stick).
 ### Возможности
 
 #### Создание архивов
+- Диалог создания на трёх вкладках: всё под рукой, без прокрутки
 - Уровни сжатия: от «хранить без сжатия» до «максимум»
 - Выбор алгоритма хэширования файлов
 - Маски включения/исключения
@@ -161,7 +177,7 @@ will be stored next to the program (convenient for a USB stick).
 - Многотомные архивы (разбиение на части)
 - Самораспаковывающиеся SFX-архивы
 - VSS — упаковка открытых и заблокированных файлов
-- Автоматическая проверка свободного места
+- Автоматическая проверка свободного места с запасом +5%
 
 #### Работа с архивами
 - Просмотр содержимого как обычной папки
@@ -169,6 +185,17 @@ will be stored next to the program (convenient for a USB stick).
 - Сравнение двух версий — что добавлено, изменено, удалено
 - Проверка целостности (3 режима, включая «параноидальный»)
 - Поиск по именам и путям
+- Открытие файлов по ассоциации — двойной клик по файлу в архиве
+  извлекает его во временную папку и открывает штатным приложением
+- Нелатинские имена архивов: программа предлагает переименовать
+  в латиницу (транслит) и сразу открывает архив
+
+#### Файлы и папки на диске
+- Удаление в корзину (контекстное меню и клавиша Del) — корни дисков
+  защищены, вид автоматически обновляется
+- Переименование (контекстное меню и F2), смена регистра разрешена;
+  переименование открытого архива не сбрасывает просмотр — кэш
+  и сохранённый пароль переезжают на новое имя
 
 #### Удобство
 - Движок zpaqfranz уже встроен — ничего дополнительно скачивать и устанавливать не нужно
@@ -177,7 +204,7 @@ will be stored next to the program (convenient for a USB stick).
 - Контекстное меню проводника: «Добавить в архив Rizpaq…», «Распаковать сюда», «Проверить»
 - Двойной клик по `.zpaq` открывает его в Rizpaq
 - Живой прогресс с секундомером и отменой
-- 15 языков интерфейса, светлая тема
+- 10 языков интерфейса плюс свои (drop-in), светлая тема
 
 ### Быстрый старт
 
@@ -189,7 +216,7 @@ will be stored next to the program (convenient for a USB stick).
 
 > Если вам когда-нибудь понадобится самая свежая версия движка zpaqfranz,
 > её всегда можно скачать на
-> [странице релизов zpaqfranz](https://github.com/fcorbelli/zpaqfranz)
+> [странице релизов zpaqfranz](https://github.com/corroll/zpaqfranz/releases)
 > и указать путь в Настройки → Путь к zpaqfranz.
 
 #### Первый архив за 30 секунд
@@ -200,11 +227,13 @@ will be stored next to the program (convenient for a USB stick).
 ### Требования
 
 - Windows 10/11
+- Для запуска из исходников: Python 3.9+ и PySide6
 
 ### Языки
 
-English, Русский, Deutsch, Français, Italiano, Español, Polski, हिन्दी,
-Nederlands, Português, 中文, 日本語, Ελληνικά, Tiếng Việt.
+English, Русский, Italiano, Deutsch, Français, Español, 中文, Português,
+日本語, Polski — свой язык добавляется файлом `locales/<код>.json` рядом
+с программой, без пересборки.
 
 Язык переключается в Настройки → Язык без перезапуска.
 
@@ -213,3 +242,6 @@ Nederlands, Português, 中文, 日本語, Ελληνικά, Tiếng Việt.
 Создайте пустой файл `portable.txt` рядом с `Rizpaq.exe` — и все настройки
 будут храниться рядом с программой (удобно для флешки).
 
+### Лицензия
+
+[указать лицензию проекта]
