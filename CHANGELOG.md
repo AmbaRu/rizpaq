@@ -2,6 +2,17 @@ Rizpaq — Changelog
 
 English
 
+1.6
+- **Open files with the associated app — double-click a file on disk or inside an archive** (the archive copy is extracted to a temporary folder and opened).
+- **Delete files and folders on disk to the Recycle Bin** (context menu and Del key); drive roots are protected.
+- **Rename files and folders on disk** (context menu and F2), case change allowed.
+- Renaming the currently open archive keeps the view: cache, stored password and paths move to the new name.
+- Non-Latin archive names: instead of a dead-end warning, Rizpaq offers to rename the file to transliterated Latin and opens it right away.
+- Create-archive dialog rebuilt as three tabs: compact fixed size, no scrolling.
+- Free-space auto-check now keeps a +5% headroom (rounded to a whole number).
+- Fixed single-file extraction: the file now appears at the chosen path instead of a folder with the full stored tree inside.
+- Fixed batch folder extraction: contents go straight into the destination, without a C\Users\... branch.
+
 1.5
 - **Explorer integration: right-click context menu and .zpaq association — double-click opens Rizpaq.**
 - **Drag & Drop: drop files or folders onto the window to create an archive.**
@@ -45,6 +56,17 @@ English
 - Passwords, portable mode, ready Windows build.
 
 Русский
+
+1.6
+- **Открытие файлов штатным приложением: двойной клик по файлу на диске или внутри архива** (копия из архива извлекается во временную папку и открывается).
+- **Удаление файлов и папок на диске в корзину** (контекстное меню и клавиша Del); корни дисков защищены.
+- **Переименование файлов и папок на диске** (контекстное меню и F2), смена регистра разрешена.
+- Переименование открытого архива не сбрасывает просмотр: кэш, сохранённый пароль и пути переезжают на новое имя.
+- Нелатинские имена архивов: вместо тупикового предупреждения программа предлагает переименовать файл в латиницу (транслит) и сразу открывает.
+- Диалог создания архива перестроен на три вкладки: компактный фиксированный размер, без прокрутки.
+- Автопроверка свободного места теперь с запасом +5% (целое число).
+- Исправлено извлечение одного файла: файл появляется по выбранному пути, а не папкой с полным деревом хранения внутри.
+- Исправлено пачечное извлечение папки: содержимое ложится прямо в назначение, без ветки C\Users\...
 
 1.5
 - **Интеграция с проводником: контекстное меню и ассоциация .zpaq — двойной клик открывает Rizpaq.**
