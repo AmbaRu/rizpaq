@@ -102,7 +102,6 @@ need to download or install anything else.
 ### Requirements
 
 - Windows 10/11
-- To run from source: Python 3.9+ and PySide6
 
 ### Languages
 
@@ -117,9 +116,7 @@ The language is switched in Settings → Language without a restart.
 Create an empty `portable.txt` file next to `Rizpaq.exe` — and all settings
 will be stored next to the program (convenient for a USB stick).
 
-### License
 
-[specify the project license]
 
 ---
 
@@ -228,7 +225,6 @@ will be stored next to the program (convenient for a USB stick).
 ### Требования
 
 - Windows 10/11
-- Для запуска из исходников: Python 3.9+ и PySide6
 
 ### Языки
 
@@ -242,7 +238,3 @@ English, Русский, Italiano, Deutsch, Français, Español, 中文, Portugu
 
 Создайте пустой файл `portable.txt` рядом с `Rizpaq.exe` — и все настройки
 будут храниться рядом с программой (удобно для флешки).
-
-### Лицензия
-
-[указать лицензию проекта]
