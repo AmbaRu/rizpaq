@@ -1,7 +1,7 @@
 ## Rizpaq
 
 A simple and beautiful graphical interface for the
-[zpaqfranz](https://github.com/fcorbelli/zpaqfranz) archiver.
+[zpaqfranz](https://github.com/corroll/zpaqfranz) archiver.
 
 > The convenience of 7-Zip. The power of zpaq. A history of every file.
 > Create and extract archives by drag and drop, without a single console
@@ -20,9 +20,6 @@ is available through a familiar and beautiful interface.
 - Drag & Drop — drop files into the window to pack; drag them out to extract
 - Explorer integration — right-click and double-click on `.zpaq`
 
-<img width="2280" height="1474" alt="en" src="https://github.com/user-attachments/assets/bcf1565d-fe6d-41f4-8c71-4a7810b8aea1" />
-
-  
 ### Why do I need it?
 
 If you have heard about **zpaq** and its "time machine" for files but were
@@ -93,7 +90,7 @@ need to download or install anything else.
 
 > If you ever want the very latest zpaqfranz engine, you can always
 > download it from the
-> [zpaqfranz releases page](https://github.com/fcorbelli/zpaqfranz)
+> [zpaqfranz releases page](https://github.com/corroll/zpaqfranz/releases)
 > and point Rizpaq to it via Settings → Path to zpaqfranz.
 
 #### Your first archive in 30 seconds
@@ -119,13 +116,16 @@ The language is switched in Settings → Language without a restart.
 Create an empty `portable.txt` file next to `Rizpaq.exe` — and all settings
 will be stored next to the program (convenient for a USB stick).
 
+### License
+
+[specify the project license]
 
 ---
 
 ## Rizpaq
 
 Простой и красивый графический интерфейс для архиватора
-[zpaqfranz](https://github.com/fcorbelli/zpaqfranz).
+[zpaqfranz](https://github.com/corroll/zpaqfranz).
 
 > Удобство 7-Zip. Мощь zpaq. История каждого файла.
 > Создавайте и распаковывайте архивы перетаскиванием мыши, без единой
@@ -216,7 +216,7 @@ will be stored next to the program (convenient for a USB stick).
 
 > Если вам когда-нибудь понадобится самая свежая версия движка zpaqfranz,
 > её всегда можно скачать на
-> [странице релизов zpaqfranz](https://github.com/fcorbelli/zpaqfranz)
+> [странице релизов zpaqfranz](https://github.com/corroll/zpaqfranz/releases)
 > и указать путь в Настройки → Путь к zpaqfranz.
 
 #### Первый архив за 30 секунд
@@ -242,3 +242,6 @@ English, Русский, Italiano, Deutsch, Français, Español, 中文, Portugu
 Создайте пустой файл `portable.txt` рядом с `Rizpaq.exe` — и все настройки
 будут храниться рядом с программой (удобно для флешки).
 
+### Лицензия
+
+[указать лицензию проекта]
