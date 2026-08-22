@@ -1,7 +1,7 @@
 ## Rizpaq
 
 A simple and beautiful graphical interface for the
-[zpaqfranz](https://github.com/corroll/zpaqfranz) archiver.
+[zpaqfranz](https://github.com/fcorbelli/zpaqfranz) archiver.
 
 > The convenience of 7-Zip. The power of zpaq. A history of every file.
 > Create and extract archives by drag and drop, without a single console
@@ -90,7 +90,7 @@ need to download or install anything else.
 
 > If you ever want the very latest zpaqfranz engine, you can always
 > download it from the
-> [zpaqfranz releases page](https://github.com/corroll/zpaqfranz/releases)
+> [zpaqfranz releases page](https://github.com/fcorbelli/zpaqfranz)
 > and point Rizpaq to it via Settings → Path to zpaqfranz.
 
 #### Your first archive in 30 seconds
@@ -125,7 +125,7 @@ will be stored next to the program (convenient for a USB stick).
 ## Rizpaq
 
 Простой и красивый графический интерфейс для архиватора
-[zpaqfranz](https://github.com/corroll/zpaqfranz).
+[zpaqfranz](https://github.com/fcorbelli/zpaqfranz).
 
 > Удобство 7-Zip. Мощь zpaq. История каждого файла.
 > Создавайте и распаковывайте архивы перетаскиванием мыши, без единой
@@ -216,7 +216,7 @@ will be stored next to the program (convenient for a USB stick).
 
 > Если вам когда-нибудь понадобится самая свежая версия движка zpaqfranz,
 > её всегда можно скачать на
-> [странице релизов zpaqfranz](https://github.com/corroll/zpaqfranz/releases)
+> [странице релизов zpaqfranz](https://github.com/fcorbelli/zpaqfranz)
 > и указать путь в Настройки → Путь к zpaqfranz.
 
 #### Первый архив за 30 секунд
