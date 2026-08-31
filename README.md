@@ -22,6 +22,8 @@ is available through a familiar and beautiful interface.
 - **Explorer integration** — right-click and double-click on `.zpaq` and `.rzt`
 - **Backup tasks** — save your backup routine as a portable `.rzt` file and run it with a double-click
 - **Advanced compression** — visual constructor for the `-method` parameter with block size, preprocessing, search depth and context models
+<img width="2280" height="1474" alt="en" src="https://github.com/user-attachments/assets/0f875a4f-a91a-441c-944d-486172b6fee9" />
+
 
 ## Why do I need it?
 
