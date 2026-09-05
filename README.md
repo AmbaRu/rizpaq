@@ -17,6 +17,7 @@ Rizpaq is a graphical shell over the console archiver zpaqfranz. You no longer n
 - **Explorer integration** — right-click and double-click on `.zpaq` and `.rzt`
 - **Backup tasks & Scheduler** — save your backup routine as a portable `.rzt` file, schedule it via Windows Task Scheduler, and run it silently in the background
 - **Advanced compression** — visual constructor for the `-method` parameter with block size, preprocessing, search depth and context models
+<img width="2280" height="1474" alt="en" src="https://github.com/user-attachments/assets/2fdf8140-1c23-4b58-ab41-5e87d5708789" />
 
 ## Why do I need it?
 
