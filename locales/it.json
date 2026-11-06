@@ -756,6 +756,20 @@
     "digest.last_error": "Ultimo errore: {job} ({when})",
     "digest.btn.history": "Mostra cronologia",
     "digest.btn.ok": "Capito",
-    "digest.show_on_start": "Mostra riepilogo all'avvio"
+    "digest.show_on_start": "Mostra riepilogo all'avvio",
+    "menu.unpack.salvage": "Recupera archivio danneggiato…",
+    "salvage.dialog_title": "Recupero dati",
+    "salvage.intro": "Il recupero legge l'archivio strettamente in sequenza ed estrae tutto ciò che è fisicamente leggibile. Per file grandi su dischi rigidi è anche più veloce dell'estrazione normale. Il risultato può essere parziale: qui è un esito normale.",
+    "salvage.ram_label": "Cache RAM del motore:",
+    "salvage.ram_gb": "{gb} GB",
+    "salvage.warn_partial": "I dati vengono scritti direttamente nella cartella scelta; si può annullare in qualsiasi momento e i file già salvati restano.",
+    "salvage.start_button": "Avvia recupero",
+    "salvage.choose_folder_title": "Dove recuperare i dati",
+    "salvage.status_done": "Recuperato in: {dest}",
+    "salvage.status_partial": "Recupero terminato con errori — salvata una parte dei dati",
+    "salvage.done_title": "Recupero completato",
+    "salvage.done_text": "Dati recuperati nella cartella:\n{dest}",
+    "salvage.partial_title": "Salvata una parte dei dati",
+    "salvage.partial_text": "L'archivio è danneggiato: è stato salvato tutto il leggibile. Cartella dei risultati:\n{dest}\n\nDettagli nel registro sotto."
   }
 }

@@ -15,7 +15,7 @@ from urllib.parse import unquote, urlparse
 
 
 DEFAULT_MANIFEST_URL = (
-    "https://sourceforge.net/projects/rizpaq/files/latest.json/download"
+    "https://github.com/AmbaRu/rizpaq/releases/latest/download/latest.json"
 )
 
 
@@ -384,6 +384,8 @@ try {{
         throw 'Rizpaq did not exit in time'
     }}
 
+    # zip распаковываем в ПОДПАПКУ: сам zip и этот скрипт живут
+    # в $temp, удалять их до распаковки нельзя (§72 DIARY).
     $stage = Join-Path $temp 'stage'
     Expand-Archive -LiteralPath $zip -DestinationPath $stage -Force
 

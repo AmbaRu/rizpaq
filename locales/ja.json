@@ -756,6 +756,20 @@
     "digest.last_error": "最後の失敗: {job} ({when})",
     "digest.btn.history": "履歴を表示",
     "digest.btn.ok": "了解",
-    "digest.show_on_start": "起動時にサマリーを表示"
+    "digest.show_on_start": "起動時にサマリーを表示",
+    "menu.unpack.salvage": "破損したアーカイブを救出…",
+    "salvage.dialog_title": "データ救出",
+    "salvage.intro": "救出はアーカイブを厳密に順番に読み、物理的に読めるものを最大限取り出します。HDD 上の大きなファイルでは通常の展開より速いこともあります。結果が一部分でもこれは正常な終了です。",
+    "salvage.ram_label": "エンジンの RAM キャッシュ:",
+    "salvage.ram_gb": "{gb} GB",
+    "salvage.warn_partial": "データは選択したフォルダーに直接書き込まれます。いつでも中断でき、すでに救出されたファイルは残ります。",
+    "salvage.start_button": "救出を開始",
+    "salvage.choose_folder_title": "救出先のフォルダー",
+    "salvage.status_done": "救出先: {dest}",
+    "salvage.status_partial": "救出はエラーで終了 — データの一部が保存されました",
+    "salvage.done_title": "救出完了",
+    "salvage.done_text": "データを保存しました:\n{dest}",
+    "salvage.partial_title": "データの一部が保存されました",
+    "salvage.partial_text": "アーカイブは破損しています。読めたものはすべて保存しました。\n結果フォルダー:\n{dest}\n\n詳細は下のログを参照。"
   }
 }

@@ -7,6 +7,7 @@ from workers import (
     ExtractFileWorker,
     ExtractFolderBatchWorker,
     ExtractFolderWorker,
+    ExtractSalvageWorker,
 )
 
 
@@ -102,6 +103,29 @@ class WorkerLaunchMixin:
         self._connect_extract_stream(worker)
 
         worker.done.connect(self._on_extract_done)
+        worker.finished.connect(lambda w=worker: self._cleanup_worker(w))
+
+        self._workers.append(worker)
+        worker.start()
+
+    def _start_salvage_worker(self, dest_folder: str, ram_gb):
+        if not self.archive_path:
+            return
+
+        worker = ExtractSalvageWorker(
+            self.zpaq_bin,
+            self.archive_path,
+            self.password,
+            dest_folder,
+            ram_gb,
+        )
+
+        worker.worker_started.connect(self._ui_folder_batch_started)
+        worker.percent.connect(self._ui_folder_percent)
+
+        self._connect_extract_stream(worker)
+
+        worker.done.connect(self._on_salvage_done)
         worker.finished.connect(lambda w=worker: self._cleanup_worker(w))
 
         self._workers.append(worker)

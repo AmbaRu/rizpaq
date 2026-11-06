@@ -74,6 +74,8 @@ class MenuActionsMixin:
         self._unpack_all_action.triggered.connect(self._on_unpack_all)
         self._unpack_ver_menu = m_unpack.addMenu(tr("menu.unpack.version"))
         m_unpack.aboutToShow.connect(self._rebuild_unpack_menu)
+        self._salvage_action = m_unpack.addAction(tr("menu.unpack.salvage"))
+        self._salvage_action.triggered.connect(self._on_salvage_archive)
 
         m_test = m_arc.addMenu(tr("menu.test"))
         self._test_menu = m_test

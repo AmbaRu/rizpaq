@@ -756,6 +756,20 @@
     "digest.last_error": "Último erro: {job} ({when})",
     "digest.btn.history": "Mostrar histórico",
     "digest.btn.ok": "Entendido",
-    "digest.show_on_start": "Mostrar resumo ao iniciar"
+    "digest.show_on_start": "Mostrar resumo ao iniciar",
+    "menu.unpack.salvage": "Resgatar arquivo danificado…",
+    "salvage.dialog_title": "Resgate de dados",
+    "salvage.intro": "O resgate lê o arquivo estritamente em sequência e extrai tudo o que é fisicamente legível. Para arquivos grandes em discos rígidos também é mais rápido que a extração normal. O resultado pode ser parcial — aqui isso é normal.",
+    "salvage.ram_label": "Cache RAM do motor:",
+    "salvage.ram_gb": "{gb} GB",
+    "salvage.warn_partial": "Os dados são gravados diretamente na pasta escolhida; é possível cancelar a qualquer momento e o já resgatado permanece.",
+    "salvage.start_button": "Iniciar resgate",
+    "salvage.choose_folder_title": "Onde resgatar os dados",
+    "salvage.status_done": "Resgatado em: {dest}",
+    "salvage.status_partial": "Resgate terminou com erros — parte dos dados foi salva",
+    "salvage.done_title": "Resgate concluído",
+    "salvage.done_text": "Dados resgatados na pasta:\n{dest}",
+    "salvage.partial_title": "Parte dos dados foi salva",
+    "salvage.partial_text": "O arquivo está danificado: tudo o que era legível foi salvo. Pasta de resultado:\n{dest}\n\nDetalhes no registro abaixo."
   }
 }

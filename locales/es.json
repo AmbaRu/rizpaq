@@ -756,6 +756,20 @@
     "digest.last_error": "Último error: {job} ({when})",
     "digest.btn.history": "Mostrar historial",
     "digest.btn.ok": "Entendido",
-    "digest.show_on_start": "Mostrar resumen al iniciar"
+    "digest.show_on_start": "Mostrar resumen al iniciar",
+    "menu.unpack.salvage": "Rescatar archivo dañado…",
+    "salvage.dialog_title": "Rescate de datos",
+    "salvage.intro": "El rescate lee el archivo estrictamente en secuencia y extrae todo lo físicamente legible. Para archivos grandes en discos duros también es más rápido que la extracción normal. El resultado puede ser parcial: es un desenlace normal aquí.",
+    "salvage.ram_label": "Caché RAM del motor:",
+    "salvage.ram_gb": "{gb} GB",
+    "salvage.warn_partial": "Los datos se escriben directamente en la carpeta elegida; puede cancelarse en cualquier momento y lo ya rescatado se conserva.",
+    "salvage.start_button": "Iniciar rescate",
+    "salvage.choose_folder_title": "Dónde rescatar los datos",
+    "salvage.status_done": "Rescatado en: {dest}",
+    "salvage.status_partial": "Rescate terminado con errores — se salvó parte de los datos",
+    "salvage.done_title": "Rescate finalizado",
+    "salvage.done_text": "Datos rescatados en la carpeta:\n{dest}",
+    "salvage.partial_title": "Se salvó parte de los datos",
+    "salvage.partial_text": "El archivo está dañado: se salvó todo lo legible. Carpeta de resultado:\n{dest}\n\nDetalles en el registro de abajo."
   }
 }

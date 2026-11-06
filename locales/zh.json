@@ -756,6 +756,20 @@
     "digest.last_error": "最近一次失败：{job}（{when}）",
     "digest.btn.history": "查看历史",
     "digest.btn.ok": "知道了",
-    "digest.show_on_start": "启动时显示摘要"
+    "digest.show_on_start": "启动时显示摘要",
+    "menu.unpack.salvage": "抢救损坏的存档…",
+    "salvage.dialog_title": "数据抢救",
+    "salvage.intro": "抢救模式按顺序完整读取存档，取出所有物理上可读的数据。对机械硬盘上的大文件，这也比普通解压更快。结果可能不完整，这在本模式中属于正常结果。",
+    "salvage.ram_label": "引擎 RAM 缓存：",
+    "salvage.ram_gb": "{gb} GB",
+    "salvage.warn_partial": "数据会直接写入所选文件夹；可随时取消，已抢救的文件会保留。",
+    "salvage.start_button": "开始抢救",
+    "salvage.choose_folder_title": "抢救数据到哪个文件夹",
+    "salvage.status_done": "已抢救到：{dest}",
+    "salvage.status_partial": "抢救结束但有错误 — 仅抢救出部分数据",
+    "salvage.done_title": "抢救完成",
+    "salvage.done_text": "数据已抢救到文件夹：\n{dest}",
+    "salvage.partial_title": "仅抢救出部分数据",
+    "salvage.partial_text": "存档已损坏：可读取的数据均已保存。\n结果文件夹：\n{dest}\n\n详情见下方日志。"
   }
 }

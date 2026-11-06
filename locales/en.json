@@ -756,6 +756,20 @@
     "digest.last_error": "Last failure: {job} ({when})",
     "digest.btn.history": "Show history",
     "digest.btn.ok": "Got it",
-    "digest.show_on_start": "Show digest at startup"
+    "digest.show_on_start": "Show digest at startup",
+    "menu.unpack.salvage": "Salvage damaged archive…",
+    "salvage.dialog_title": "Data salvage",
+    "salvage.intro": "Salvage reads the archive strictly sequentially and pulls out everything that is physically readable. For large files on hard drives it is also faster than normal extraction. The result may be partial — that is a normal outcome here.",
+    "salvage.ram_label": "Engine RAM cache:",
+    "salvage.ram_gb": "{gb} GB",
+    "salvage.warn_partial": "Data is written straight into the chosen folder; you can cancel at any moment and already saved files remain.",
+    "salvage.start_button": "Start salvage",
+    "salvage.choose_folder_title": "Where to salvage data",
+    "salvage.status_done": "Salvaged to: {dest}",
+    "salvage.status_partial": "Salvage finished with errors — part of the data was saved",
+    "salvage.done_title": "Salvage finished",
+    "salvage.done_text": "Data salvaged to folder:\n{dest}",
+    "salvage.partial_title": "Part of the data was saved",
+    "salvage.partial_text": "The archive is damaged: everything readable was saved. Result folder:\n{dest}\n\nSee the log below for details."
   }
 }

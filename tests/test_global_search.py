@@ -263,6 +263,7 @@ _MENU_STUBS = (
     "_on_open_scheduler",
     "_on_refresh",
     "_on_run_task",
+    "_on_salvage_archive",
     "_on_test_archive",
     "_on_toggle_latest",
     "_on_unpack_all",

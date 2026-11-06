@@ -756,6 +756,20 @@
     "digest.last_error": "Dernier échec : {job} ({when})",
     "digest.btn.history": "Afficher l'historique",
     "digest.btn.ok": "Compris",
-    "digest.show_on_start": "Afficher le résumé au démarrage"
+    "digest.show_on_start": "Afficher le résumé au démarrage",
+    "menu.unpack.salvage": "Récupérer l'archive endommagée…",
+    "salvage.dialog_title": "Récupération de données",
+    "salvage.intro": "La récupération lit l'archive strictement en séquence et extrait tout ce qui est physiquement lisible. Pour les gros fichiers sur disque dur c'est aussi plus rapide que l'extraction normale. Le résultat peut être partiel — c'est un déroulement normal ici.",
+    "salvage.ram_label": "Cache RAM du moteur :",
+    "salvage.ram_gb": "{gb} Go",
+    "salvage.warn_partial": "Les données sont écrites directement dans le dossier choisi ; annulation possible à tout moment, les fichiers déjà récupérés sont conservés.",
+    "salvage.start_button": "Lancer la récupération",
+    "salvage.choose_folder_title": "Où récupérer les données",
+    "salvage.status_done": "Récupéré vers : {dest}",
+    "salvage.status_partial": "Récupération terminée avec erreurs — une partie des données est sauvée",
+    "salvage.done_title": "Récupération terminée",
+    "salvage.done_text": "Données récupérées dans :\n{dest}",
+    "salvage.partial_title": "Une partie des données est sauvée",
+    "salvage.partial_text": "L'archive est endommagée : tout ce qui était lisible a été récupéré. Dossier de résultat :\n{dest}\n\nDétails dans le journal ci-dessous."
   }
 }

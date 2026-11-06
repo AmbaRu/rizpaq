@@ -469,11 +469,20 @@ class ArchiveActionsMixin:
             and self.archive_path is not None
             and bool(self.versions)
         )
+
+
+        has_salvage = (
+            self.mode == "archive" and self.archive_path is not None
+        )
         try:
             self._unpack_all_action.setEnabled(has_archive)
         except Exception:
             pass
-        menu.setEnabled(has_archive)
+        menu.setEnabled(has_archive or has_salvage)
+        try:
+            self._salvage_action.setEnabled(has_salvage)
+        except Exception:
+            pass
         if not has_archive:
             return
 

@@ -482,3 +482,83 @@ class ExtractFolderWorker(QThread):
                 "cancelled": bool(self._cancel),
             }
         )
+
+
+class ExtractSalvageWorker(StreamingZpaqThread):
+
+
+    worker_started = Signal()
+    done = Signal(dict)
+
+    def __init__(
+        self,
+        zpaq,
+        archive,
+        password,
+        dest_folder,
+        ram_gb=None,
+        parent=None,
+    ):
+        self.zpaq = zpaq
+        self.archive = archive
+        self.password = password
+        self.dest_folder = str(dest_folder)
+        self.ram_gb = ram_gb
+
+
+        self.cmd = self._build_cmd(self.dest_folder)
+
+        super().__init__(self.cmd, parent)
+
+    def _build_cmd(self, out_dir):
+        cmd = [self.zpaq, "xx", self.archive]
+
+        if self.password:
+            cmd += ["-key", self.password]
+
+
+        cmd.append("-force")
+
+        if self.ram_gb:
+            cmd += ["-ramsize", f"{int(self.ram_gb)}GB"]
+
+        cmd += ["-to", str(out_dir)]
+
+        return cmd
+
+    def run(self):
+        self.worker_started.emit()
+
+        dest = Path(self.dest_folder)
+
+        try:
+            dest.mkdir(parents=True, exist_ok=True)
+        except OSError as exc:
+            self.done.emit(
+                {
+                    "kind": "extract_salvage",
+                    "ok": False,
+                    "cancelled": False,
+                    "rc": -1,
+                    "log": f"ERROR: {exc}\n",
+                    "dest_folder": self.dest_folder,
+                }
+            )
+            return
+
+        rc, log = self._run_stream()
+        cancelled = bool(self._cancel)
+
+
+        ok = rc == 0 and not cancelled
+
+        self.done.emit(
+            {
+                "kind": "extract_salvage",
+                "ok": ok,
+                "cancelled": cancelled,
+                "rc": int(rc),
+                "log": log,
+                "dest_folder": self.dest_folder,
+            }
+        )

@@ -10,6 +10,7 @@ from workers.extract_workers import (
     ExtractFileWorker,
     ExtractFolderBatchWorker,
     ExtractFolderWorker,
+    ExtractSalvageWorker,
 )
 
 __all__ = [
@@ -22,4 +23,5 @@ __all__ = [
     "ExtractFileWorker",
     "ExtractFolderWorker",
     "ExtractFolderBatchWorker",
+    "ExtractSalvageWorker",
 ]

@@ -756,6 +756,20 @@
     "digest.last_error": "Ostatni błąd: {job} ({when})",
     "digest.btn.history": "Pokaż historię",
     "digest.btn.ok": "Rozumiem",
-    "digest.show_on_start": "Pokazuj podsumowanie przy starcie"
+    "digest.show_on_start": "Pokazuj podsumowanie przy starcie",
+    "menu.unpack.salvage": "Uratuj uszkodzone archiwum…",
+    "salvage.dialog_title": "Ratowanie danych",
+    "salvage.intro": "Ratowanie czyta archiwum ściśle sekwencyjnie i wyciąga wszystko, co jest fizycznie czytelne. Dla dużych plików na dyskach twardych jest to też szybsze niż zwykłe rozpakowanie. Wynik może być częściowy — to normalny przebieg tego trybu.",
+    "salvage.ram_label": "Pamięć podręczna RAM silnika:",
+    "salvage.ram_gb": "{gb} GB",
+    "salvage.warn_partial": "Dane są zapisywane od razu do wybranego folderu; można przerwać w każdej chwili, a uratowane pliki pozostaną.",
+    "salvage.start_button": "Rozpocznij ratowanie",
+    "salvage.choose_folder_title": "Dokąd ratować dane",
+    "salvage.status_done": "Uratowano do: {dest}",
+    "salvage.status_partial": "Ratowanie zakończone z błędami — uratowano część danych",
+    "salvage.done_title": "Ratowanie zakończone",
+    "salvage.done_text": "Dane uratowano w folderze:\n{dest}",
+    "salvage.partial_title": "Uratowano część danych",
+    "salvage.partial_text": "Archiwum jest uszkodzone: uratowano wszystko, co czytelne. Folder wynikowy:\n{dest}\n\nSzczegóły w dzienniku poniżej."
   }
 }

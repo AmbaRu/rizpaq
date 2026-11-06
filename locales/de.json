@@ -756,6 +756,20 @@
     "digest.last_error": "Letzter Fehler: {job} ({when})",
     "digest.btn.history": "Verlauf anzeigen",
     "digest.btn.ok": "Verstanden",
-    "digest.show_on_start": "Zusammenfassung beim Start zeigen"
+    "digest.show_on_start": "Zusammenfassung beim Start zeigen",
+    "menu.unpack.salvage": "Beschädigtes Archiv retten…",
+    "salvage.dialog_title": "Datenrettung",
+    "salvage.intro": "Die Rettung liest das Archiv streng sequenziell und zieht alles heraus, was physisch lesbar ist. Für große Dateien auf Festplatten ist das auch schneller als normales Entpacken. Das Ergebnis darf unvollständig sein — das ist hier normal.",
+    "salvage.ram_label": "RAM-Cache der Engine:",
+    "salvage.ram_gb": "{gb} GB",
+    "salvage.warn_partial": "Daten werden direkt in den gewählten Ordner geschrieben; Abbruch ist jederzeit möglich, Gerettetes bleibt erhalten.",
+    "salvage.start_button": "Rettung starten",
+    "salvage.choose_folder_title": "Wohin die Daten retten",
+    "salvage.status_done": "Gerettet nach: {dest}",
+    "salvage.status_partial": "Rettung mit Fehlern beendet — Teil der Daten gerettet",
+    "salvage.done_title": "Rettung abgeschlossen",
+    "salvage.done_text": "Daten gerettet nach:\n{dest}",
+    "salvage.partial_title": "Teil der Daten gerettet",
+    "salvage.partial_text": "Das Archiv ist beschädigt: alles Lesbare wurde gerettet. Ergebnisordner:\n{dest}\n\nDetails im Protokoll unten."
   }
 }

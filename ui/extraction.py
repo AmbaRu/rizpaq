@@ -521,6 +521,72 @@ class ExtractionMixin:
                     msg[:5000],
                 )
 
+
+    def _on_salvage_archive(self):
+        if self.mode != "archive" or self.archive_path is None:
+            self.statusBar().showMessage(tr("status.test_only_archive"))
+            return
+
+        from ui.salvage_dialog import SalvageOptionsDialog
+
+        dlg = SalvageOptionsDialog(
+            archive_name=Path(self.archive_path).name, parent=self
+        )
+        if dlg.exec() != SalvageOptionsDialog.Accepted:
+            return
+
+        dest = QFileDialog.getExistingDirectory(
+            self,
+            tr("salvage.choose_folder_title"),
+            str(self._initial_extract_dir()),
+        )
+        if not dest:
+            return
+
+        self._start_salvage_worker(dest, dlg.ram_gb())
+
+    def _on_salvage_done(self, result):
+        log = result.get("log", "")
+        if log:
+            self.log_output(log)
+
+        dest = result.get("dest_folder", "")
+
+        if result.get("cancelled"):
+            cancelled_text = tr("status.extract_cancelled")
+            self.statusBar().showMessage(cancelled_text)
+            self._ui_extract_finished(False, 0, cancelled_text)
+            return
+
+        if result.get("ok"):
+            if dest:
+                dp = Path(dest)
+                if dp.is_dir():
+                    self.last_extract_dir = dp.parent if dp.parent != dp else dp
+                    self._remember_extract_dir()
+
+            self.statusBar().showMessage(tr("salvage.status_done", dest=dest))
+            self._ui_extract_finished(True, 0, dest or "")
+            QMessageBox.information(
+                self,
+                tr("salvage.done_title"),
+                tr("salvage.done_text", dest=dest),
+            )
+        else:
+            self.statusBar().showMessage(tr("salvage.status_partial"))
+            self._ui_extract_finished(False, 0, tr("salvage.status_partial"))
+
+            msg = tr("salvage.partial_text", dest=dest)
+            tail = (log or "").strip().splitlines()[-15:]
+            if tail:
+                msg += "\n\n" + "\n".join(tail)
+
+            QMessageBox.warning(
+                self,
+                tr("salvage.partial_title"),
+                msg[:5000],
+            )
+
     def _initial_extract_dir(self):
         last = getattr(self, "last_extract_dir", None)
 
