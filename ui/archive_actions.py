@@ -170,6 +170,12 @@ from core.password_store import set_password
 from core.incomplete_archive import incomplete_archive_action
 from core.tasks import (
     ACTION_TEST,
+    ACTION_CROP,
+    ACTION_CONSOLIDATE,
+    ACTION_SFX,
+    ACTION_INFO,
+    ACTION_PASSWORD,
+    ACTION_CHECKPASSWORD,
     CONTAINER_NAME,
     ContainerLockBusy,
     JOB_FIELDS,
@@ -547,7 +553,10 @@ class ArchiveActionsMixin:
 
         cmd = [self.zpaq_bin, "t", arc]
         tmp = None
-        if mode == "checksum":
+        if mode == "verify_fs":
+                                                                       
+            cmd = [self.zpaq_bin, "v", arc]
+        elif mode == "checksum":
             cmd += ["-all", "-checksum"]
         elif mode == "verify":
             cmd += ["-verify"]
@@ -672,6 +681,602 @@ class ArchiveActionsMixin:
             self.statusBar().showMessage(tr("test.fail", name=name))
             QMessageBox.warning(
                 self, tr("test.title"), tr("test.fail", name=name) + "\n\n" + tail
+            )
+
+                                                                              
+
+    def _run_crop(self, path: str, job_context: dict):
+        pass
+
+
+
+
+
+        arc = multipart_pattern(path or self.archive_path)
+        if not arc:
+            self.statusBar().showMessage(tr("status.test_only_archive"))
+            return
+        arc = str(arc)
+
+        if not self.zpaq_available:
+            QMessageBox.warning(
+                self, tr("zpaq.not_found_title"), tr("zpaq.not_found_text")
+            )
+            return
+
+                                             
+        ans = QMessageBox.question(
+            self,
+            tr("crop.dialog_title"),
+            tr("crop.confirm_text", name=Path(arc).name),
+            QMessageBox.Yes | QMessageBox.No,
+        )
+        if ans != QMessageBox.Yes:
+            return
+
+        cmd = [self.zpaq_bin, "crop", arc, "-kill", "-to", arc]
+
+        self.log_command(cmd)
+
+        worker = ZpaqWorker(
+            "crop",
+            cmd,
+            {
+                "path": arc,
+                "from_create": False,
+                "job_context": dict(job_context) if job_context else None,
+            },
+        )
+        worker.result.connect(self._on_crop_result)
+        try:
+            worker.percent.connect(self._crop_progress.set_percent)
+        except Exception:
+            pass
+        try:
+            worker.progress_info.connect(self._crop_progress.update_info)
+        except Exception:
+            pass
+        try:
+            worker.line_received.connect(self._crop_progress.append_output)
+        except Exception:
+            pass
+
+        worker.finished.connect(lambda w=worker: self._cleanup_worker(w))
+        self._workers.append(worker)
+        worker.start()
+
+    def _on_crop_result(self, result):
+        pass
+        try:
+            self._stop_busy()
+        except Exception:
+            pass
+
+        rc = result.get("rc", 1)
+        output = result.get("output", "") or ""
+        ctx = result.get("context", {})
+        path = ctx.get("path", "")
+        job_context = ctx.get("job_context")
+        name = Path(path).name if path else ""
+
+        if job_context:
+            status = "ok" if rc == 0 else "error"
+            self._update_job_meta_after_run(
+                job_context, status, rc=rc, output=output
+            )
+
+        if output:
+            self.log_output(output)
+
+        if rc == 0:
+            self.statusBar().showMessage(tr("crop.ok", name=name))
+            QMessageBox.information(
+                self, tr("crop.title"), tr("crop.ok", name=name)
+            )
+        else:
+            tail = output.strip()[-_TEST_TAIL:]
+            self.statusBar().showMessage(tr("crop.fail", name=name))
+            QMessageBox.warning(
+                self,
+                tr("crop.title"),
+                tr("crop.fail", name=name) + "\n\n" + tail,
+            )
+
+                                                                                          
+
+    def _run_consolidate(self, path: str, job_context: dict):
+        pass
+
+
+
+
+
+
+        arc = multipart_pattern(path or self.archive_path)
+        if not arc:
+            self.statusBar().showMessage(tr("status.test_only_archive"))
+            return
+        arc = str(arc)
+
+        if not self.zpaq_available:
+            QMessageBox.warning(
+                self, tr("zpaq.not_found_title"), tr("zpaq.not_found_text")
+            )
+            return
+
+                                                       
+        ans = QMessageBox.question(
+            self,
+            tr("consolidate.dialog_title"),
+            tr("consolidate.confirm_text", name=Path(arc).name),
+            QMessageBox.Yes | QMessageBox.No,
+        )
+        if ans != QMessageBox.Yes:
+            return
+
+        cmd = [self.zpaq_bin, "consolidate", arc, "-to", arc]
+
+        self.log_command(cmd)
+
+        worker = ZpaqWorker(
+            "consolidate",
+            cmd,
+            {
+                "path": arc,
+                "from_create": False,
+                "job_context": dict(job_context) if job_context else None,
+            },
+        )
+        worker.result.connect(self._on_consolidate_result)
+        try:
+            worker.percent.connect(self._consolidate_progress.set_percent)
+        except Exception:
+            pass
+        try:
+            worker.progress_info.connect(self._consolidate_progress.update_info)
+        except Exception:
+            pass
+        try:
+            worker.line_received.connect(self._consolidate_progress.append_output)
+        except Exception:
+            pass
+
+        worker.finished.connect(lambda w=worker: self._cleanup_worker(w))
+        self._workers.append(worker)
+        worker.start()
+
+    def _on_consolidate_result(self, result):
+        pass
+        try:
+            self._stop_busy()
+        except Exception:
+            pass
+
+        rc = result.get("rc", 1)
+        output = result.get("output", "") or ""
+        ctx = result.get("context", {})
+        path = ctx.get("path", "")
+        job_context = ctx.get("job_context")
+        name = Path(path).name if path else ""
+
+        if job_context:
+            status = "ok" if rc == 0 else "error"
+            self._update_job_meta_after_run(
+                job_context, status, rc=rc, output=output
+            )
+
+        if output:
+            self.log_output(output)
+
+        if rc == 0:
+            self.statusBar().showMessage(tr("consolidate.ok", name=name))
+            QMessageBox.information(
+                self, tr("consolidate.title"), tr("consolidate.ok", name=name)
+            )
+        else:
+            tail = output.strip()[-_TEST_TAIL:]
+            self.statusBar().showMessage(tr("consolidate.fail", name=name))
+            QMessageBox.warning(
+                self,
+                tr("consolidate.title"),
+                tr("consolidate.fail", name=name) + "\n\n" + tail,
+            )
+
+                                                                        
+
+    def _run_sfx(self, path: str, job_context: dict):
+        pass
+
+
+
+
+
+
+        arc = multipart_pattern(path or self.archive_path)
+        if not arc:
+            self.statusBar().showMessage(tr("status.test_only_archive"))
+            return
+        arc = str(arc)
+
+        if not self.zpaq_available:
+            QMessageBox.warning(
+                self, tr("zpaq.not_found_title"), tr("zpaq.not_found_text")
+            )
+            return
+
+        sfx_dest = str(Path(arc).with_suffix(".exe"))
+
+                                                     
+        ans = QMessageBox.question(
+            self,
+            tr("sfx.dialog_title"),
+            tr("sfx.confirm_text", name=Path(arc).name, sfx=Path(sfx_dest).name),
+            QMessageBox.Yes | QMessageBox.No,
+        )
+        if ans != QMessageBox.Yes:
+            return
+
+        cmd = [self.zpaq_bin, "sfx", arc, sfx_dest]
+
+        self.log_command(cmd)
+
+        worker = ZpaqWorker(
+            "sfx",
+            cmd,
+            {
+                "path": arc,
+                "from_create": False,
+                "job_context": dict(job_context) if job_context else None,
+            },
+        )
+        worker.result.connect(self._on_sfx_result)
+        try:
+            worker.percent.connect(self._sfx_progress.set_percent)
+        except Exception:
+            pass
+        try:
+            worker.progress_info.connect(self._sfx_progress.update_info)
+        except Exception:
+            pass
+        try:
+            worker.line_received.connect(self._sfx_progress.append_output)
+        except Exception:
+            pass
+
+        worker.finished.connect(lambda w=worker: self._cleanup_worker(w))
+        self._workers.append(worker)
+        worker.start()
+
+    def _on_sfx_result(self, result):
+        pass
+        try:
+            self._stop_busy()
+        except Exception:
+            pass
+
+        rc = result.get("rc", 1)
+        output = result.get("output", "") or ""
+        ctx = result.get("context", {})
+        path = ctx.get("path", "")
+        job_context = ctx.get("job_context")
+        name = Path(path).name if path else ""
+
+        if job_context:
+            status = "ok" if rc == 0 else "error"
+            self._update_job_meta_after_run(
+                job_context, status, rc=rc, output=output
+            )
+
+        if output:
+            self.log_output(output)
+
+        if rc == 0:
+            self.statusBar().showMessage(tr("sfx.ok", name=name))
+            QMessageBox.information(
+                self, tr("sfx.title"), tr("sfx.ok", name=name)
+            )
+        else:
+            tail = output.strip()[-_TEST_TAIL:]
+            self.statusBar().showMessage(tr("sfx.fail", name=name))
+            QMessageBox.warning(
+                self,
+                tr("sfx.title"),
+                tr("sfx.fail", name=name) + "\n\n" + tail,
+            )
+
+                                                                                 
+
+    def _run_info(self, path: str, job_context: dict):
+        pass
+
+
+
+
+        arc = multipart_pattern(path or self.archive_path)
+        if not arc:
+            self.statusBar().showMessage(tr("status.test_only_archive"))
+            return
+        arc = str(arc)
+
+        if not self.zpaq_available:
+            QMessageBox.warning(
+                self, tr("zpaq.not_found_title"), tr("zpaq.not_found_text")
+            )
+            return
+
+        cmd = [self.zpaq_bin, "i", arc, "-comment"]
+
+        self.log_command(cmd)
+
+        worker = ZpaqWorker(
+            "info",
+            cmd,
+            {
+                "path": arc,
+                "from_create": False,
+                "job_context": dict(job_context) if job_context else None,
+            },
+        )
+        worker.result.connect(self._on_info_result)
+        try:
+            worker.percent.connect(self._info_progress.set_percent)
+        except Exception:
+            pass
+        try:
+            worker.progress_info.connect(self._info_progress.update_info)
+        except Exception:
+            pass
+        try:
+            worker.line_received.connect(self._info_progress.append_output)
+        except Exception:
+            pass
+
+        worker.finished.connect(lambda w=worker: self._cleanup_worker(w))
+        self._workers.append(worker)
+        worker.start()
+
+    def _on_info_result(self, result):
+        pass
+        try:
+            self._stop_busy()
+        except Exception:
+            pass
+
+        rc = result.get("rc", 1)
+        output = result.get("output", "") or ""
+        ctx = result.get("context", {})
+        path = ctx.get("path", "")
+        job_context = ctx.get("job_context")
+        name = Path(path).name if path else ""
+
+        if job_context:
+            status = "ok" if rc == 0 else "error"
+            self._update_job_meta_after_run(
+                job_context, status, rc=rc, output=output
+            )
+
+        if output:
+            self.log_output(output)
+
+        if rc == 0:
+            self.statusBar().showMessage(tr("info.ok", name=name))
+            QMessageBox.information(
+                self, tr("info.title"), tr("info.ok", name=name)
+            )
+        else:
+            tail = output.strip()[-_TEST_TAIL:]
+            self.statusBar().showMessage(tr("info.fail", name=name))
+            QMessageBox.warning(
+                self,
+                tr("info.title"),
+                tr("info.fail", name=name) + "\n\n" + tail,
+            )
+
+                                                                                       
+
+    def _run_password(self, path: str, job_context: dict, settings: dict):
+        pass
+
+
+
+
+        arc = multipart_pattern(path or self.archive_path)
+        if not arc:
+            self.statusBar().showMessage(tr("status.test_only_archive"))
+            return
+        arc = str(arc)
+
+        if not self.zpaq_available:
+            QMessageBox.warning(
+                self, tr("zpaq.not_found_title"), tr("zpaq.not_found_text")
+            )
+            return
+
+        old_pw = str(settings.get("password") or "").strip()
+        new_pw = str(settings.get("new_password") or "").strip()
+        if not old_pw or not new_pw:
+            QMessageBox.warning(
+                self,
+                tr("password.dialog_title"),
+                tr("password.confirm_text_missing"),
+            )
+            return
+
+        sfx_dest = str(Path(arc).with_suffix(".zpaq"))
+
+                                                                     
+        ans = QMessageBox.question(
+            self,
+            tr("password.dialog_title"),
+            tr("password.confirm_text", name=Path(arc).name, sfx=Path(sfx_dest).name),
+            QMessageBox.Yes | QMessageBox.No,
+        )
+        if ans != QMessageBox.Yes:
+            return
+
+        cmd = [self.zpaq_bin, "password", arc, sfx_dest, "-key", old_pw, "-key2", new_pw]
+
+        self.log_command(cmd)
+
+        worker = ZpaqWorker(
+            "password",
+            cmd,
+            {
+                "path": arc,
+                "from_create": False,
+                "job_context": dict(job_context) if job_context else None,
+            },
+        )
+        worker.result.connect(self._on_password_result)
+        try:
+            worker.percent.connect(self._password_progress.set_percent)
+        except Exception:
+            pass
+        try:
+            worker.progress_info.connect(self._password_progress.update_info)
+        except Exception:
+            pass
+        try:
+            worker.line_received.connect(self._password_progress.append_output)
+        except Exception:
+            pass
+
+        worker.finished.connect(lambda w=worker: self._cleanup_worker(w))
+        self._workers.append(worker)
+        worker.start()
+
+    def _on_password_result(self, result):
+        pass
+        try:
+            self._stop_busy()
+        except Exception:
+            pass
+
+        rc = result.get("rc", 1)
+        output = result.get("output", "") or ""
+        ctx = result.get("context", {})
+        path = ctx.get("path", "")
+        job_context = ctx.get("job_context")
+        name = Path(path).name if path else ""
+
+        if job_context:
+            status = "ok" if rc == 0 else "error"
+            self._update_job_meta_after_run(
+                job_context, status, rc=rc, output=output
+            )
+
+        if output:
+            self.log_output(output)
+
+        if rc == 0:
+            self.statusBar().showMessage(tr("password.ok", name=name))
+            QMessageBox.information(
+                self, tr("password.title"), tr("password.ok", name=name)
+            )
+        else:
+            tail = output.strip()[-_TEST_TAIL:]
+            self.statusBar().showMessage(tr("password.fail", name=name))
+            QMessageBox.warning(
+                self,
+                tr("password.title"),
+                tr("password.fail", name=name) + "\n\n" + tail,
+            )
+
+                                                                                               
+
+    def _run_checkpassword(self, path: str, job_context: dict, settings: dict):
+        pass
+
+
+
+
+        arc = multipart_pattern(path or self.archive_path)
+        if not arc:
+            self.statusBar().showMessage(tr("status.test_only_archive"))
+            return
+        arc = str(arc)
+
+        if not self.zpaq_available:
+            QMessageBox.warning(
+                self, tr("zpaq.not_found_title"), tr("zpaq.not_found_text")
+            )
+            return
+
+        pw = str(settings.get("password") or "").strip()
+        if not pw:
+            QMessageBox.warning(
+                self,
+                tr("checkpassword.dialog_title"),
+                tr("checkpassword.confirm_text_missing"),
+            )
+            return
+
+        cmd = [self.zpaq_bin, "checkpassword", arc, "-key", pw]
+
+        self.log_command(cmd)
+
+        worker = ZpaqWorker(
+            "checkpassword",
+            cmd,
+            {
+                "path": arc,
+                "from_create": False,
+                "job_context": dict(job_context) if job_context else None,
+            },
+        )
+        worker.result.connect(self._on_checkpassword_result)
+        try:
+            worker.percent.connect(self._checkpassword_progress.set_percent)
+        except Exception:
+            pass
+        try:
+            worker.progress_info.connect(self._checkpassword_progress.update_info)
+        except Exception:
+            pass
+        try:
+            worker.line_received.connect(self._checkpassword_progress.append_output)
+        except Exception:
+            pass
+
+        worker.finished.connect(lambda w=worker: self._cleanup_worker(w))
+        self._workers.append(worker)
+        worker.start()
+
+    def _on_checkpassword_result(self, result):
+        pass
+        try:
+            self._stop_busy()
+        except Exception:
+            pass
+
+        rc = result.get("rc", 1)
+        output = result.get("output", "") or ""
+        ctx = result.get("context", {})
+        path = ctx.get("path", "")
+        job_context = ctx.get("job_context")
+        name = Path(path).name if path else ""
+
+        if job_context:
+            status = "ok" if rc == 0 else "error"
+            self._update_job_meta_after_run(
+                job_context, status, rc=rc, output=output
+            )
+
+        if output:
+            self.log_output(output)
+
+        if rc == 0:
+            self.statusBar().showMessage(tr("checkpassword.ok", name=name))
+            QMessageBox.information(
+                self, tr("checkpassword.title"), tr("checkpassword.ok", name=name)
+            )
+        else:
+            tail = output.strip()[-_TEST_TAIL:]
+            self.statusBar().showMessage(tr("checkpassword.fail", name=name))
+            QMessageBox.warning(
+                self,
+                tr("checkpassword.title"),
+                tr("checkpassword.fail", name=name) + "\n\n" + tail,
             )
 
                                                                
@@ -1019,6 +1624,57 @@ class ArchiveActionsMixin:
                 from_create=False,
                 job_context=job_context,
                 password=settings.get("password"),
+            )
+            return
+
+        if action == ACTION_CROP:
+                                                                   
+                                                                     
+            self._run_crop(
+                path=settings.get("dest"),
+                job_context=job_context,
+            )
+            return
+
+        if action == ACTION_CONSOLIDATE:
+                                                                         
+            self._run_consolidate(
+                path=settings.get("dest"),
+                job_context=job_context,
+            )
+            return
+
+        if action == ACTION_SFX:
+                                                                    
+            self._run_sfx(
+                path=settings.get("dest"),
+                job_context=job_context,
+            )
+            return
+
+        if action == ACTION_INFO:
+                                                            
+            self._run_info(
+                path=settings.get("dest"),
+                job_context=job_context,
+            )
+            return
+
+        if action == ACTION_PASSWORD:
+                                                           
+            self._run_password(
+                path=settings.get("dest"),
+                job_context=job_context,
+                settings=settings,
+            )
+            return
+
+        if action == ACTION_CHECKPASSWORD:
+                                                                   
+            self._run_checkpassword(
+                path=settings.get("dest"),
+                job_context=job_context,
+                settings=settings,
             )
             return
 
