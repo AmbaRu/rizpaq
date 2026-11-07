@@ -410,6 +410,40 @@ def _now() -> str:
     return datetime.now().strftime("%d.%m.%Y %H:%M:%S")
 
 
+def _normalize_date(value: Optional[str]) -> Optional[str]:
+    pass
+
+
+
+
+
+
+
+    if not value:
+        return value
+    text = str(value).strip()
+    if not text:
+        return value
+                                       
+    if len(text) == 19 and text[2] == "." and text[5] == ".":
+        return text
+                                        
+    if len(text) == 19 and text[4] == "-" and text[7] == "-":
+        try:
+            dt = datetime.strptime(text, "%Y-%m-%d %H:%M:%S")
+            return dt.strftime("%d.%m.%Y %H:%M:%S")
+        except ValueError:
+            return text
+                             
+    if len(text) == 10 and text[4] == "-" and text[7] == "-":
+        try:
+            dt = datetime.strptime(text, "%Y-%m-%d")
+            return dt.strftime("%d.%m.%Y")
+        except ValueError:
+            return text
+    return text
+
+
 def new_id() -> str:
     pass
     return str(uuid.uuid4())
@@ -564,8 +598,8 @@ def _normalise_work(w: dict) -> Optional[dict]:
     work = {
         "id": wid,
         "title": str(w.get("title") or "").strip() or "Работа",
-        "created": str(w.get("created") or _now()),
-        "modified": str(w.get("modified") or _now()),
+        "created": _normalize_date(str(w.get("created") or _now())),
+        "modified": _normalize_date(str(w.get("modified") or _now())),
         "sources": [str(s) for s in (w.get("sources") or []) if str(s).strip()],
         "dest": str(w.get("dest") or ""),
         "password_b64": w.get("password_b64") or None,
@@ -575,7 +609,7 @@ def _normalise_work(w: dict) -> Optional[dict]:
                                                                       
                                                          
         "par2_size": _norm_par2_size(w.get("par2_size")),
-        "par2_created": str(w.get("par2_created") or "") or None,
+        "par2_created": _normalize_date(str(w.get("par2_created") or "")) or None,
         "jobs": [],
     }
 
@@ -597,9 +631,9 @@ def _normalise_job(j: dict) -> Optional[dict]:
     job: Dict[str, Any] = {
         "id": jid,
         "title": str(j.get("title") or "").strip() or "Задание",
-        "created": str(j.get("created") or _now()),
-        "modified": str(j.get("modified") or _now()),
-        "last_run": j.get("last_run"),
+        "created": _normalize_date(str(j.get("created") or _now())),
+        "modified": _normalize_date(str(j.get("modified") or _now())),
+        "last_run": _normalize_date(j.get("last_run")),
                                                                
                                                             
                                                            
