@@ -1,4 +1,65 @@
 #!/usr/bin/env python3
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import argparse
@@ -11,22 +72,37 @@ import time
 from pathlib import Path
 
 
+                                                              
+                                                                     
+                                                              
 READY_TIMEOUT_S = 30.0
 
-
+                                                                  
+                                                                      
+                                       
 READY_MARKER = b"Add "
 
-
+                                                                  
+                                                  
 READY_SETTLE_S = 1.0
 
-
+                                                                     
+                                                                  
+                                                                   
 COMMAND_TIMEOUT_S = 900.0
 
-
+                                 
 POLL_INTERVAL_S = 0.25
 
 
 def _find_zpaq(explicit: str | None) -> Path:
+    pass
+
+
+
+
+
+
     if explicit:
         p = Path(explicit)
         if p.is_file():
@@ -53,6 +129,14 @@ def _find_zpaq(explicit: str | None) -> Path:
 
 
 def _make_blob(path: Path, size_mb: int) -> None:
+    pass
+
+
+
+
+
+
+
     chunk = 4 * 1024 * 1024
     total = size_mb * 1024 * 1024
     written = 0
@@ -64,13 +148,24 @@ def _make_blob(path: Path, size_mb: int) -> None:
 
 
 def _wait_for_ready(log_path: Path, timeout: float) -> tuple[bool, float]:
+    pass
+
+
+
+
+
+
+
+
+
+
     t0 = time.monotonic()
     while time.monotonic() - t0 < timeout:
         try:
             if log_path.is_file():
                 data = log_path.read_bytes()
                 if READY_MARKER in data:
-
+                                                                   
                     time.sleep(READY_SETTLE_S)
                     return True, time.monotonic() - t0
         except OSError:
@@ -80,6 +175,13 @@ def _wait_for_ready(log_path: Path, timeout: float) -> tuple[bool, float]:
 
 
 def _terminate_gracefully(proc: subprocess.Popen, grace_s: float = 3.0) -> int:
+    pass
+
+
+
+
+
+
     if proc.poll() is not None:
         return proc.returncode
     try:
@@ -101,7 +203,7 @@ def _terminate_gracefully(proc: subprocess.Popen, grace_s: float = 3.0) -> int:
 
 
 def _wait_for_exit(proc: subprocess.Popen, timeout: float = COMMAND_TIMEOUT_S) -> int:
-
+    pass
     try:
         return proc.wait(timeout=timeout)
     except subprocess.TimeoutExpired:
@@ -116,6 +218,13 @@ def _run_command(
     use_open: bool,
     log_path: Path,
 ) -> tuple[int, float]:
+    pass
+
+
+
+
+
+
     cmd = [str(zpaq), "a", str(archive), str(source)]
     if use_open:
         cmd.append("-open")
@@ -141,6 +250,16 @@ def _run_concurrent(
     second_rc_path: Path,
     label: str,
 ) -> tuple[str, int | None, float | None, int | None, float | None]:
+    pass
+
+
+
+
+
+
+
+
+
     print(f"\n=== {label} ===")
 
     first_cmd = [str(zpaq), "a", str(archive), str(source)]
@@ -157,8 +276,9 @@ def _run_concurrent(
     ready, waited = _wait_for_ready(first_log, READY_TIMEOUT_S)
 
     if not ready:
-
-
+                                                                 
+                                                                     
+                    
         rc = _terminate_gracefully(first)
         print(f"  [ОШИБКА ЗАМЕРА] первая не начала добавление за "
               f"{READY_TIMEOUT_S:.0f} с (прошло {waited:.1f} с, "
@@ -167,8 +287,8 @@ def _run_concurrent(
         return "not_started", rc, waited, None, None
 
     if first.poll() is not None:
-
-
+                                                               
+                                                                
         rc = first.returncode
         print(f"  [ОШИБКА ЗАМЕРА] первая завершилась за {waited:.1f} с, "
               f"не успев стать 'занятой' (код {rc}).")
@@ -242,7 +362,7 @@ def main() -> int:
         "",
     ]
 
-
+                                                                            
     arc1 = probe / "archive.zpaq"
     state, rc1, dt1, rc2, dt2 = _run_concurrent(
         zpaq, arc1, blob, args.level,
@@ -260,7 +380,7 @@ def main() -> int:
         "",
     ]
 
-
+                                                                            
     arc2 = probe / "archive2.zpaq"
     state, rc1, dt1, rc2, dt2 = _run_concurrent(
         zpaq, arc2, blob, args.level,
@@ -278,7 +398,7 @@ def main() -> int:
         "",
     ]
 
-
+                                                                            
     print("\n=== Случай 3: контроль, свободный архив, -open ===")
     arc3 = probe / "archive3.zpaq"
     rc3, dt3 = _run_command(

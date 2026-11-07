@@ -1,3 +1,22 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -45,7 +64,7 @@ class TestSafeCmdline(unittest.TestCase):
         self.assertIn("a.zpaq", text)
 
     def test_7z_inline_password_masked(self):
-
+        pass
         cmd = ["7z.exe", "l", "-slt", "a.zip", "-psecret123"]
         text = safe_cmdline(cmd, "secret123")
 
@@ -53,12 +72,16 @@ class TestSafeCmdline(unittest.TestCase):
         self.assertIn("-p***", text)
 
     def test_7z_inline_password_unmasked_in_gui_log(self):
+        pass
+
+
+
         text = safe_cmdline(["7z.exe", "x", "a.zip", "-pS3cr3t"], "S3cr3t")
         self.assertNotIn("S3cr3t", text)
 
 
 class TestMaskSecrets(unittest.TestCase):
-
+    pass
 
     def test_key_flag_masks_next_argument(self):
         self.assertEqual(
@@ -79,6 +102,11 @@ class TestMaskSecrets(unittest.TestCase):
         )
 
     def test_does_not_clobber_similar_flags(self):
+        pass
+
+
+
+
         cmd = ["7z.exe", "-preclean", "-pmysecret", "-psecret", "a.zip"]
         self.assertEqual(
             mask_secrets(cmd, "secret"),
@@ -94,14 +122,14 @@ class TestMaskSecrets(unittest.TestCase):
         self.assertEqual(mask_secrets(None, "s"), [])
 
     def test_trailing_key_flag_does_not_crash(self):
-
+        pass
         self.assertEqual(
             mask_secrets(["zpaqfranz", "-key"], "s3cr3t"),
             ["zpaqfranz", "-key"],
         )
 
     def test_source_path_equal_to_password_is_masked(self):
-
+        pass
         cmd = ["zpaqfranz", "a", "out.zpaq", "topsecret", "topsecret2"]
         self.assertEqual(
             mask_secrets(cmd, "topsecret"),

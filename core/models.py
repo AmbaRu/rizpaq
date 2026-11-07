@@ -1,3 +1,4 @@
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -6,7 +7,7 @@ from typing import Optional
 
 @dataclass
 class ArchiveEntry:
-
+    pass
     path: str
     size: int
     datetime: str
@@ -26,7 +27,7 @@ class ArchiveEntry:
 
 @dataclass
 class ArchiveSummary:
-
+    pass
     versions: int = 0
     files: int = 0
     size: int = 0
@@ -35,7 +36,7 @@ class ArchiveSummary:
 
 @dataclass
 class ArchiveVersion:
-
+    pass
     number: int
     date: str
     time: str

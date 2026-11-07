@@ -1,3 +1,77 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import json
@@ -7,28 +81,51 @@ from typing import Callable, List, Optional
 from PySide6.QtCore import QObject, Signal
 from PySide6.QtNetwork import QLocalServer, QLocalSocket
 
-
+                                                                      
+                                                   
 _USER = os.environ.get("USERNAME") or os.environ.get("USER") or "default"
 SERVER_NAME = f"rizpaq_single_instance_{_USER}"
 
 
 class SingleInstance(QObject):
+    pass
 
-
+                                                            
+                                            
+     
+                                                                    
+                                                                   
+                                                                    
+                                                       
     command_received = Signal(list)
 
     def __init__(self, parent=None):
         super().__init__(parent)
         self._server = None
-
-
+                                                                     
+                                                    
         self._pending: List[list] = []
-
-
+                                                                 
+                                                                   
+                                                
         self._receiver: Optional[Callable[[list], None]] = None
 
+                                                                            
 
     def try_send_to_existing(self, args: list) -> bool:
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
         socket = QLocalSocket()
         socket.connectToServer(SERVER_NAME)
         if not socket.waitForConnected(500):
@@ -47,10 +144,11 @@ class SingleInstance(QObject):
         try:
             written = socket.write(payload)
             if written == len(payload):
-
-
+                                                                 
+                                                                     
+                                   
                 if socket.waitForBytesWritten(1000):
-
+                                                                        
                     if socket.bytesWritten() >= len(payload):
                         ok = True
         except Exception:
@@ -63,17 +161,49 @@ class SingleInstance(QObject):
 
         return ok
 
+                                                                         
 
     def connect_command_receiver(self, receiver: Callable[[list], None]) -> None:
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self._receiver = receiver
-
-
+                                                                    
+                                                                 
+                                                                 
         pending = list(self._pending)
         self._pending.clear()
         for args in pending:
             self._call_receiver(args)
 
     def _call_receiver(self, args: list) -> None:
+        pass
+
+
+
+
+
+
+
         receiver = self._receiver
         if receiver is None:
             return
@@ -83,26 +213,60 @@ class SingleInstance(QObject):
             pass
 
     def _deliver(self, args: list) -> None:
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if self._receiver is not None:
             self._call_receiver(args)
             return
 
-
+                                                                 
+                                                                   
+                  
         self._pending.append(list(args))
 
-
+                                                                
+                                                                   
+                                                              
+                                                               
+                                                                 
+                                                     
         try:
             self.command_received.emit(list(args))
         except Exception:
             pass
 
     def listen(self) -> bool:
+        pass
+
+
+
+
+
+
+
         self._server = QLocalServer()
         if self._server.listen(SERVER_NAME):
             self._server.newConnection.connect(self._on_new_connection)
             return True
 
-
+                                                                   
+                                                                       
         try:
             QLocalServer.removeServer(SERVER_NAME)
         except Exception:
@@ -124,8 +288,10 @@ class SingleInstance(QObject):
                     try:
                         args = json.loads(data.decode("utf-8"))
                         if isinstance(args, list):
-
-
+                                                                        
+                                                                   
+                                                                        
+                                                                  
                             self._deliver([str(a) for a in args])
                     except Exception:
                         pass

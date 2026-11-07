@@ -1,3 +1,9 @@
+
+
+
+
+
+
 from __future__ import annotations
 
 import sys
@@ -27,6 +33,11 @@ def _d(path: str, version: int, flag: str = "#") -> ArchiveEntry:
     )
 
 
+           
+                                          
+               
+                                               
+                  
 ENTRIES = [
     _f("d:/a", 1, "+", "2026-01-01 10:00:00"),
     _f("d:/a", 2, "+", "2026-01-02 10:00:00"),
@@ -52,7 +63,7 @@ def _file_version(slice_: list, path: str) -> int:
 class TestSliceAtVersion(unittest.TestCase):
     def test_version_1(self):
         s = slice_at_version(ENTRIES, 1)
-
+                                                   
         self.assertEqual(_paths(s) & {"d:/a", "d:/b", "d:/c"}, {"d:/a", "d:/b"})
         self.assertIn("d:/dir", _paths(s))
         self.assertEqual(_file_version(s, "d:/a"), 1)
@@ -65,7 +76,7 @@ class TestSliceAtVersion(unittest.TestCase):
 
     def test_version_3_drops_deleted(self):
         s = slice_at_version(ENTRIES, 3)
-
+                                                                                
         self.assertNotIn("d:/a", _paths(s))
         self.assertIn("d:/b", _paths(s))
         self.assertIn("d:/c", _paths(s))

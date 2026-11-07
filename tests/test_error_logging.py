@@ -1,3 +1,17 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import io
@@ -11,7 +25,7 @@ from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-import core.config as cfg
+import core.config as cfg              
 
 
 class TestWriteErrorLog(unittest.TestCase):
@@ -21,7 +35,7 @@ class TestWriteErrorLog(unittest.TestCase):
         self.addCleanup(self._tmp.cleanup)
 
     def _with_config_dir(self, d: Path):
-
+        pass
         return mock.patch.object(
             cfg, "default_path", return_value=d / cfg.CONFIG_NAME
         )
@@ -49,11 +63,19 @@ class TestWriteErrorLog(unittest.TestCase):
         self.assertTrue(path.is_file(), "вложенные папки должны создаваться")
 
     def test_not_current_directory_by_default(self):
+        pass
+
+
+
         with self._with_config_dir(self.dir):
             path = cfg.write_error_log("boom")
         self.assertNotEqual(path.parent, Path.cwd() / ".")
 
     def test_falls_back_when_preferred_dir_unwritable(self):
+        pass
+
+
+
         with self._with_config_dir(self.dir):
             real_mkdir = Path.mkdir
 
@@ -83,7 +105,7 @@ class TestWriteErrorLog(unittest.TestCase):
             self.assertIsNone(cfg.write_error_log(""))
 
     def test_second_error_appends(self):
-
+        pass
         with self._with_config_dir(self.dir):
             cfg.write_error_log("ПЕРВОЕ ПАДЕНИЕ")
             cfg.write_error_log("ВТОРОЕ ПАДЕНИЕ")
@@ -105,7 +127,7 @@ class TestWriteErrorLog(unittest.TestCase):
         )
 
     def test_deduplicates_same_path(self):
-
+        pass
         with self._with_config_dir(self.dir):
             cands = cfg._log_candidates(cfg.LOG_NAME)
         self.assertLessEqual(
@@ -125,10 +147,18 @@ class TestLogPath(unittest.TestCase):
             self.assertEqual(cfg.log_path(), Path("C:/x") / cfg.LOG_NAME)
 
     def test_log_name_is_not_the_old_cwd_name(self):
-
+        pass
         self.assertNotEqual(cfg.LOG_NAME, "zpaq_gui_error.log")
 
     def test_config_module_does_not_import_qt(self):
+        pass
+
+
+
+
+
+
+
         import ast
 
         tree = ast.parse(Path(cfg.__file__).read_text(encoding="utf-8"))
@@ -144,7 +174,7 @@ class TestLogPath(unittest.TestCase):
         self.assertEqual(offenders, [], f"core/config.py тянет Qt: {offenders}")
 
     def test_log_survives_without_qt_importable(self):
-
+        pass
         import subprocess
 
         script = (
@@ -172,6 +202,10 @@ class TestLogPath(unittest.TestCase):
 
 
 class TestMainConsoleGuard(unittest.TestCase):
+    pass
+
+
+
 
     def test_has_console_true_for_tty(self):
         import main as app_main
@@ -206,6 +240,10 @@ class TestMainConsoleGuard(unittest.TestCase):
             self.assertFalse(app_main._has_console())
 
     def test_report_fatal_does_not_block_without_console(self):
+        pass
+
+
+
         import main as app_main
 
         broken = io.StringIO()
@@ -232,7 +270,8 @@ class TestMainConsoleGuard(unittest.TestCase):
     def test_report_fatal_writes_log(self):
         import main as app_main
 
-
+                                                                           
+                                               
         with tempfile.TemporaryDirectory() as d, \
              mock.patch.dict(os.environ, {"ZPAQ_GUI_CONFIG": str(Path(d) / "zpaq_gui.json")}), \
              mock.patch.object(sys, "stdin", None), \
@@ -248,7 +287,7 @@ class TestMainConsoleGuard(unittest.TestCase):
 
 
 class TestMainNoCwdLog(unittest.TestCase):
-
+    pass
 
     def test_source_has_no_cwd_log_write(self):
         src = (Path(__file__).resolve().parent.parent / "main.py").read_text(
@@ -268,6 +307,16 @@ class TestMainNoCwdLog(unittest.TestCase):
 
 
 class TestFatalStartEndToEnd(unittest.TestCase):
+    pass
+
+
+
+
+
+
+
+
+
 
     HARNESS = '''
 import builtins, runpy
@@ -287,6 +336,16 @@ runpy.run_path("main.py", run_name="__main__")
         self.addCleanup(self.harness.unlink, True)
 
     def test_broken_qt_without_console_exits_promptly(self):
+        pass
+
+
+
+
+
+
+
+
+
         with tempfile.TemporaryDirectory() as d:
             env = dict(os.environ)
             env["ZPAQ_GUI_CONFIG"] = str(Path(d) / "zpaq_gui.json")
@@ -295,7 +354,7 @@ runpy.run_path("main.py", run_name="__main__")
                 [sys.executable, str(self.harness)],
                 cwd=str(self.root),
                 env=env,
-                stdin=subprocess.PIPE,
+                stdin=subprocess.PIPE,                                     
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
             )
@@ -341,7 +400,7 @@ runpy.run_path("main.py", run_name="__main__")
             self.assertIn("No module named 'PySide6'", text)
 
     def test_stderr_reports_log_location(self):
-
+        pass
         with tempfile.TemporaryDirectory() as d:
             env = dict(os.environ)
             env["ZPAQ_GUI_CONFIG"] = str(Path(d) / "zpaq_gui.json")
@@ -363,6 +422,14 @@ runpy.run_path("main.py", run_name="__main__")
         )
 
     def test_source_uses_report_fatal_on_import_failure(self):
+        pass
+
+
+
+
+
+
+
         import ast
 
         src = (Path(__file__).resolve().parent.parent / "main.py").read_text(
@@ -370,7 +437,7 @@ runpy.run_path("main.py", run_name="__main__")
         )
         tree = ast.parse(src)
 
-
+                                                           
         main_fn = next(
             n for n in ast.walk(tree)
             if isinstance(n, ast.FunctionDef) and n.name == "main"

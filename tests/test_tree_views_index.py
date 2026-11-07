@@ -1,3 +1,30 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import shutil
@@ -10,7 +37,7 @@ from unittest import mock
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from PySide6.QtWidgets import QApplication, QTreeWidgetItem
+from PySide6.QtWidgets import QApplication, QTreeWidgetItem              
 
 _APP = QApplication.instance() or QApplication([])
 from PySide6.QtGui import QFont
@@ -19,13 +46,13 @@ if _APP is not None:
     _APP.setFont(QFont("Segoe UI", 9))
 
 
-from ui.i18n import set_language
+from ui.i18n import set_language              
 
 set_language("ru", notify=False)
 
-from ui.qt_compat import K_FS, K_FS_ARC, KIND_ROLE, TCOL, USER_ROLE
-from ui.tree_views import ArchiveTree
-from core.models import ArchiveEntry
+from ui.qt_compat import K_FS, K_FS_ARC, KIND_ROLE, TCOL, USER_ROLE              
+from ui.tree_views import ArchiveTree              
+from core.models import ArchiveEntry              
 
 
 def _entry(path: str, is_dir: bool = False) -> ArchiveEntry:
@@ -35,14 +62,14 @@ def _entry(path: str, is_dir: bool = False) -> ArchiveEntry:
 
 
 def _make_tree(self) -> ArchiveTree:
-
+    pass
     tree = ArchiveTree()
     self.addCleanup(tree.deleteLater)
     return tree
 
 
 def _put_arc_node(tree: ArchiveTree, arc_path: str = "D:/x.zpaq") -> QTreeWidgetItem:
-
+    pass
     item = QTreeWidgetItem(["🗜 x.zpaq"])
     item.setData(TCOL, USER_ROLE, arc_path)
     item.setData(TCOL, KIND_ROLE, K_FS_ARC)
@@ -64,12 +91,12 @@ class TestSubtreeIndex(unittest.TestCase):
         self.assertIsNotNone(idx, "индекс не создан")
         self.assertIn("a", idx)
         self.assertIn("a/b", idx)
-
+                                                       
         self.assertNotIn("a/d.txt", idx)
         self.assertNotIn("only.txt", idx)
 
     def test_build_indexes_directory_entries(self):
-
+        pass
         tree = _make_tree(self)
         _put_arc_node(tree)
         tree.build_archive_subtree("D:/x.zpaq", [
@@ -98,13 +125,18 @@ class TestSubtreeIndex(unittest.TestCase):
         self.assertIsNone(tree._arc_find_under(arc, "no_such_folder"))
 
     def test_find_under_without_index_returns_none(self):
+        pass
+
+
+
+
         tree = _make_tree(self)
         arc = _put_arc_node(tree)
-
+                                            
         self.assertIsNone(tree._arc_find_under(arc, "a"))
 
     def test_rebuild_replaces_index(self):
-
+        pass
         tree = _make_tree(self)
         arc = _put_arc_node(tree)
 
@@ -120,8 +152,13 @@ class TestSubtreeIndex(unittest.TestCase):
         self.assertIsNotNone(tree._arc_find_under(arc, "new"))
 
     def test_rebuild_after_arc_node_missing_clears_index(self):
-        tree = _make_tree(self)
+        pass
 
+
+
+
+        tree = _make_tree(self)
+                                                              
         tree._arc_subtree_index["D:/ghost.zpaq"] = {"x": object()}
 
         tree.build_archive_subtree("D:/ghost.zpaq", [_entry("a/b.txt")])
@@ -132,12 +169,12 @@ class TestSubtreeIndex(unittest.TestCase):
 
 
 class TestIndexCleanupOnRebuild(unittest.TestCase):
-
+    pass
 
     def test_build_fs_roots_clears_index(self):
         tree = _make_tree(self)
         tree._arc_subtree_index["D:/x.zpaq"] = {"a": object()}
-
+                                                                      
         with mock.patch("ui.tree_views.windows_drives",
                         return_value=["C:\\", "D:\\"]):
             tree.build_fs_roots()
@@ -147,9 +184,13 @@ class TestIndexCleanupOnRebuild(unittest.TestCase):
                          "на них")
 
     def test_ensure_loaded_clears_index_for_removed_arcs(self):
+        pass
+
+
+
         tmp = Path(tempfile.mkdtemp(prefix="rizpaq_tv_"))
         self.addCleanup(shutil.rmtree, tmp, ignore_errors=True)
-
+                                                        
         (tmp / "x.zpaq").write_bytes(b"x")
 
         tree = _make_tree(self)
@@ -163,10 +204,10 @@ class TestIndexCleanupOnRebuild(unittest.TestCase):
         self.assertIn(arc_path, tree._arc_items,
                       "тест-подготовка сломана: узел архива не появился")
 
-
+                                         
         tree._arc_subtree_index[arc_path] = {"a": object()}
 
-
+                                                     
         tree._ensure_loaded(fs_node)
 
         self.assertNotIn(

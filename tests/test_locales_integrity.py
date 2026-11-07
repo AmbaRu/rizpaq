@@ -1,3 +1,41 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import json
@@ -9,10 +47,10 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from PySide6.QtWidgets import QApplication
+from PySide6.QtWidgets import QApplication              
 
-import ui.i18n as i18n
-from ui.i18n import set_language, tr
+import ui.i18n as i18n              
+from ui.i18n import set_language, tr              
 
 _APP = QApplication.instance() or QApplication([])
 from PySide6.QtGui import QFont
@@ -23,15 +61,19 @@ if _APP is not None:
 ROOT = Path(__file__).resolve().parent.parent
 LOCALES = ROOT / "locales"
 
-
+                                                          
+                                                             
+                                                       
 ALL_LANGS = ("de", "en", "es", "fr", "it", "ja", "pl", "pt", "ru", "zh")
 
-
+                                                                   
+                                                            
+                                                 
 BASE_LANGS = ("ru", "en")
 
 
 class TestLocaleFilesAreValidJson(unittest.TestCase):
-
+    pass
 
     def test_all_locale_files_parse(self):
         broken = []
@@ -62,9 +104,28 @@ class TestLocaleFilesAreValidJson(unittest.TestCase):
 
 
 class TestNoMissingTranslations(unittest.TestCase):
+    pass
+
+
+
+
 
     @staticmethod
     def _keys_used_in_code() -> set:
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
         literal_re = re.compile(r"\btr\(\s*[\"']([^\"']+)[\"']")
         skip_dirs = {"__pycache__", "build", "dist", "locales", "tools", "tests"}
         root = ROOT
@@ -78,7 +139,8 @@ class TestNoMissingTranslations(unittest.TestCase):
                 continue
             used |= set(literal_re.findall(text))
 
-
+                                                                  
+                                                         
         used = {
             k for k in used
             if k and k.strip() and k != "..." and " " not in k
@@ -96,8 +158,17 @@ class TestNoMissingTranslations(unittest.TestCase):
         self.assertEqual(problems, [], "\n".join(problems))
 
     def test_new_keys_present_explicitly(self):
-        explicit = (
+        pass
 
+
+
+
+
+
+
+
+        explicit = (
+                           
             "check.archive",
             "check.dest_missing",
             "check.dialog_title",
@@ -116,18 +187,18 @@ class TestNoMissingTranslations(unittest.TestCase):
             "check.password_set",
             "check.title",
             "check.title_placeholder",
-
+                         
             "work.dialog_title",
             "work.edit_title",
             "work.password_clear",
             "work.password_confirm",
             "work.password_enter",
             "work.password_set",
-
+                                     
             "context.edit_work",
             "context.add_backup_job",
             "context.add_check_job",
-
+                                          
             "create.work_title",
             "create.work_title_placeholder",
             "create.job_title",
@@ -148,6 +219,12 @@ class TestNoMissingTranslations(unittest.TestCase):
         )
 
     def test_placeholders_match_english(self):
+        pass
+
+
+
+
+
         en_strings = json.loads(
             (LOCALES / "en.json").read_text(encoding="utf-8")
         )["strings"]
@@ -169,7 +246,7 @@ class TestNoMissingTranslations(unittest.TestCase):
         self.assertEqual(problems, [], "\n".join(problems))
 
     def test_no_empty_translation_values(self):
-
+        pass
         problems = []
         for code in ALL_LANGS:
             strings = json.loads(
@@ -182,6 +259,11 @@ class TestNoMissingTranslations(unittest.TestCase):
 
 
 class TestBaseLanguagesAlwaysLoad(unittest.TestCase):
+    pass
+
+
+
+
 
     def setUp(self):
         self._lang = i18n._current_lang
@@ -201,6 +283,14 @@ class TestBaseLanguagesAlwaysLoad(unittest.TestCase):
                 )
 
     def test_base_languages_have_all_used_keys(self):
+        pass
+
+
+
+
+
+
+
         used = TestNoMissingTranslations._keys_used_in_code()
         problems = []
         for code in BASE_LANGS:
@@ -213,7 +303,7 @@ class TestBaseLanguagesAlwaysLoad(unittest.TestCase):
 
 
 class TestEveryLanguageLoadsText(unittest.TestCase):
-
+    pass
 
     def setUp(self):
         self._lang = i18n._current_lang
@@ -224,6 +314,12 @@ class TestEveryLanguageLoadsText(unittest.TestCase):
         i18n._current_strings = self._strings
 
     def _probes(self):
+        pass
+
+
+
+
+
         en = json.loads(
             (LOCALES / "en.json").read_text(encoding="utf-8")
         )["strings"]
@@ -233,8 +329,8 @@ class TestEveryLanguageLoadsText(unittest.TestCase):
             ("menu.file.exit", {}),
             ("open.nonlatin_offer_text", {"old": "A", "new": "B"}),
             ("table.not_found", {"query": "x"}),
-
-
+                                                                   
+                      
             ("check.dialog_title", {}),
             ("check.mode_full", {}),
             ("work.password_set", {}),
@@ -257,7 +353,7 @@ class TestEveryLanguageLoadsText(unittest.TestCase):
         self.assertEqual(problems, [], "\n".join(problems))
 
     def test_no_language_loads_empty(self):
-
+        pass
         for code in ALL_LANGS:
             with self.subTest(lang=code):
                 set_language(code, locales_dir=str(LOCALES), notify=False)
@@ -278,6 +374,10 @@ class TestEveryLanguageLoadsText(unittest.TestCase):
                 )
 
     def test_all_declared_languages_available(self):
+        pass
+
+
+
         available = i18n.available_languages()
         for code in ALL_LANGS:
             with self.subTest(lang=code):
@@ -288,6 +388,11 @@ class TestEveryLanguageLoadsText(unittest.TestCase):
 
 
 class TestBrokenLanguageFallsBackToEnglish(unittest.TestCase):
+    pass
+
+
+
+
 
     def setUp(self):
         self._tmp = tempfile.TemporaryDirectory()
@@ -301,7 +406,7 @@ class TestBrokenLanguageFallsBackToEnglish(unittest.TestCase):
         self._tmp.cleanup()
 
     def _broken(self, code: str = "xx") -> Path:
-
+                                                                         
         p = self.dir / f"{code}.json"
         p.write_text(
             '{"_meta":{"name":"Broken"},'
@@ -341,13 +446,13 @@ class TestBrokenLanguageFallsBackToEnglish(unittest.TestCase):
         self.assertEqual(i18n.load_errors, {})
 
     def test_missing_english_is_not_fatal(self):
-
+        pass
         (self.dir / "en.json").unlink()
         set_language("en", locales_dir=self.dir, notify=False)
         self.assertEqual(i18n._current_lang, "en")
 
     def test_missing_keys_come_from_english(self):
-
+        pass
         (self.dir / "zz.json").write_text(
             '{"_meta":{"name":"Tiny"},"strings":{"menu.file.exit":"EXIT"}}',
             encoding="utf-8",
@@ -356,7 +461,7 @@ class TestBrokenLanguageFallsBackToEnglish(unittest.TestCase):
 
         self.assertEqual(i18n._current_lang, "zz")
         self.assertEqual(tr("menu.file.exit"), "EXIT")
-
+                                                                              
         self.assertNotEqual(tr("status.cancel_none"), "status.cancel_none")
 
 

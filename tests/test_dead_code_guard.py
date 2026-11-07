@@ -1,3 +1,39 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import ast
@@ -10,14 +46,20 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 ROOT = Path(__file__).resolve().parent.parent
 SKIP_DIRS = {"__pycache__", "build", "dist", "version", "locales", "doc"}
 
-
+                                                                           
 WATCHED = [
     ROOT / "core" / "zpaq_cli.py",
     ROOT / "core" / "universal_ops.py",
     ROOT / "core" / "tasks.py",
 ]
 
-
+                                           
+ 
+                                                                           
+                                                                        
+                                                                          
+                                                                     
+                              
 ALLOWED_DEAD = {
     "core/source_sets.py": "заготовка фичи «наборы источников», ждёт решения",
 }
@@ -31,6 +73,11 @@ def _project_files():
 
 
 def reachable_from_production(module: Path):
+    pass
+
+
+
+
     src = module.read_text(encoding="utf-8")
     tree = ast.parse(src)
 
@@ -39,7 +86,7 @@ def reachable_from_production(module: Path):
         if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
             funcs[node.name] = node
 
-
+                                 
     calls = {name: set() for name in funcs}
     for name, node in funcs.items():
         seen = set()
@@ -55,7 +102,7 @@ def reachable_from_production(module: Path):
                 seen.add(sub.attr)
         calls[name] = seen
 
-
+                                     
     mod_name = module.stem
     entries = set()
     for other in _project_files():
@@ -100,6 +147,10 @@ def reachable_from_production(module: Path):
 
 
 class TestNoDeadCodeInCore(unittest.TestCase):
+    pass
+
+
+
 
     def test_no_unreachable_functions(self):
         problems = []
@@ -128,6 +179,10 @@ class TestNoDeadCodeInCore(unittest.TestCase):
         )
 
     def test_allowed_dead_modules_still_exist(self):
+        pass
+
+
+
         for key, reason in ALLOWED_DEAD.items():
             with self.subTest(module=key):
                 path = ROOT / key
@@ -143,6 +198,11 @@ class TestNoDeadCodeInCore(unittest.TestCase):
                     )
 
     def test_zpaq_cli_has_no_extraction_code_left(self):
+        pass
+
+
+
+
         src = (ROOT / "core" / "zpaq_cli.py").read_text(encoding="utf-8")
         tree = ast.parse(src)
         names = {
@@ -162,7 +222,7 @@ class TestNoDeadCodeInCore(unittest.TestCase):
             )
 
     def test_extraction_lives_in_workers(self):
-
+        pass
         path = ROOT / "workers" / "extract_workers.py"
         self.assertTrue(path.is_file(), "workers/extract_workers.py исчез")
         src = path.read_text(encoding="utf-8")
@@ -174,7 +234,7 @@ class TestNoDeadCodeInCore(unittest.TestCase):
             self.assertIn(cls, src, f"{cls} исчез из workers/extract_workers.py")
 
     def test_removed_functions_are_not_imported_anywhere(self):
-
+        pass
         removed = {
             "extract_one_file",
             "extract_folder_batch",
@@ -201,10 +261,46 @@ class TestNoDeadCodeInCore(unittest.TestCase):
 
 
 class TestOrphanedCopiesRemoved(unittest.TestCase):
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     ORPHAN_PATH = ROOT / "tests" / "association_dialog.py"
 
     def test_orphan_file_is_gone(self):
+        pass
+
+
+
+
+
+
+
         if not self.ORPHAN_PATH.is_file():
             return
         rel = self.ORPHAN_PATH.relative_to(ROOT).as_posix()
@@ -227,6 +323,15 @@ class TestOrphanedCopiesRemoved(unittest.TestCase):
         )
 
     def test_ui_copy_still_present(self):
+        pass
+
+
+
+
+
+
+
+
         ui_path = ROOT / "ui" / "association_dialog.py"
         self.assertTrue(
             ui_path.is_file(),
@@ -235,6 +340,15 @@ class TestOrphanedCopiesRemoved(unittest.TestCase):
         )
 
     def test_ui_copy_is_still_imported(self):
+        pass
+
+
+
+
+
+
+
+
         consumers = [
             ROOT / "ui" / "menu_actions.py",
         ]
@@ -252,8 +366,8 @@ class TestOrphanedCopiesRemoved(unittest.TestCase):
                     if mod == "ui.association_dialog":
                         found = True
                         break
-
-
+                                                                                     
+                                                                
                     if mod.endswith(".association_dialog") and "ui" in mod:
                         found = True
                         break

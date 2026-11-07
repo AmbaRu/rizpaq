@@ -1,3 +1,25 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -7,25 +29,49 @@ import time
 from pathlib import Path
 from typing import Iterable, List, Optional, Tuple
 
-
+                                                                 
+                                      
+ 
+                                                                      
+                                                                     
+                                                             
+                                                                       
+                                                                        
+                                                 
+ 
+                                                              
+                                                                    
+                                                              
+                                                                      
+                                                                     
+                                   
+ 
+                                                                   
+                                                                     
+                                                                  
+                                                                  
+                                                                   
+                                                                    
+                                                   
 TEMP_PREFIXES: Tuple[str, ...] = (
-    "rizpaq_open_",
-    "rizpaq_test_",
-    "rizpaq_transcode_",
-    "rizpaq_drag_",
-    "rizpaq_batch_",
-    "rizpaq_link_",
-    "rizpaq_task_test_",
-    "zpaq_gui_ex_",
-    "zpaq_gui_batch_",
+    "rizpaq_open_",                                                    
+    "rizpaq_test_",                                                     
+    "rizpaq_transcode_",                                                   
+    "rizpaq_drag_",                                                         
+    "rizpaq_batch_",                                                        
+    "rizpaq_link_",                                                          
+    "rizpaq_task_test_",                                                      
+    "zpaq_gui_ex_",                                                
+    "zpaq_gui_batch_",                                            
 )
 
-
+                                                                   
+                                                                       
 DEFAULT_MAX_AGE = 3600
 
 
 def is_stale(path: Path, max_age: float, now: Optional[float] = None) -> bool:
-
+    pass
     try:
         ts = path.stat().st_mtime
     except OSError:
@@ -38,26 +84,26 @@ def is_stale(path: Path, max_age: float, now: Optional[float] = None) -> bool:
 
 
 def _is_link_or_reparse(path: Path) -> bool:
-
+    pass
     try:
         if path.is_symlink():
             return True
     except OSError:
         return True
 
-
+                                                              
     try:
         import stat as _stat
 
         return bool(path.stat(follow_symlinks=False).st_file_attributes
                     & _stat.FILE_ATTRIBUTE_REPARSE_POINT)
     except (AttributeError, OSError, ValueError):
-
+                                                                              
         return False
 
 
 def _is_owned_temp_dir(path: Path, temp_root: Path, prefixes: Tuple[str, ...]) -> bool:
-
+    pass
     if path.parent.resolve() != temp_root.resolve():
         return False
 
@@ -70,6 +116,13 @@ def cleanup_stale_temp(
     temp_root: Optional[str] = None,
     dry_run: bool = False,
 ) -> List[str]:
+    pass
+
+
+
+
+
+
     removed: List[str] = []
 
     try:
@@ -106,6 +159,13 @@ def cleanup_stale_temp(
 
 
 def remove_temp_dir(path, prefixes: Iterable[str] = TEMP_PREFIXES) -> bool:
+    pass
+
+
+
+
+
+
     try:
         p = Path(path)
         root = Path(tempfile.gettempdir())

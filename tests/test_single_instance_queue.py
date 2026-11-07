@@ -1,3 +1,33 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import sys
@@ -7,7 +37,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from PySide6.QtWidgets import QApplication
+from PySide6.QtWidgets import QApplication              
 
 _APP = QApplication.instance() or QApplication([])
 from PySide6.QtGui import QFont
@@ -16,7 +46,7 @@ if _APP is not None:
     _APP.setFont(QFont("Segoe UI", 9))
 
 
-from core.single_instance import SingleInstance
+from core.single_instance import SingleInstance              
 
 
 class _SI(unittest.TestCase):
@@ -34,7 +64,7 @@ class TestPendingQueue(_SI):
         self.assertEqual(si._pending, [["a1"], ["a2"]])
 
     def test_pending_order_preserved(self):
-
+        pass
         si = self._make()
         for i in range(5):
             si._deliver([f"n{i}"])
@@ -56,6 +86,11 @@ class TestPendingQueue(_SI):
                          "следующем приёме продублируется")
 
     def test_pending_list_is_copied_not_aliased(self):
+        pass
+
+
+
+
         si = self._make()
         original = ["a", "b"]
         si._deliver(original)
@@ -71,7 +106,7 @@ class TestPendingQueue(_SI):
 
 class TestReceiverReplacesSignal(_SI):
     def test_receiver_gets_commands_after_connect(self):
-
+        pass
         si = self._make()
         received = []
         si.connect_command_receiver(received.append)
@@ -80,6 +115,12 @@ class TestReceiverReplacesSignal(_SI):
         self.assertEqual(si._pending, [])
 
     def test_signal_not_emitted_when_receiver_set(self):
+        pass
+
+
+
+
+
         si = self._make()
         signal_received = []
         si.command_received.connect(signal_received.append)
@@ -95,6 +136,12 @@ class TestReceiverReplacesSignal(_SI):
                          "приёмнике — старый подписчик получит дубль")
 
     def test_signal_emitted_when_no_receiver(self):
+        pass
+
+
+
+
+
         si = self._make()
         signal_received = []
         si.command_received.connect(signal_received.append)
@@ -116,6 +163,10 @@ class TestReceiverReplacesSignal(_SI):
 
 class TestReceiverFailure(_SI):
     def test_receiver_exception_does_not_break_queue(self):
+        pass
+
+
+
         si = self._make()
         calls = []
 
@@ -135,6 +186,14 @@ class TestReceiverFailure(_SI):
 
 class TestSignalAndReceiverInterleaved(_SI):
     def test_signal_before_connect_then_receiver_after(self):
+        pass
+
+
+
+
+
+
+
         si = self._make()
         si._deliver(["a"])
 

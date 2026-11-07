@@ -1,3 +1,9 @@
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -18,7 +24,7 @@ from core.temp_cleanup import (
 
 
 def _age(path: Path, seconds: float) -> None:
-
+    pass
     t = time.time() - seconds
     os.utime(path, (t, t))
 
@@ -47,7 +53,7 @@ class TestCleanupStaleTemp(unittest.TestCase):
         self.assertFalse(d.exists(), "старая папка должна быть удалена")
 
     def test_keeps_fresh_dir(self):
-
+        pass
         d = self._make("rizpaq_open_fresh")
 
         cleanup_stale_temp(max_age=3600, temp_root=str(self.root))
@@ -55,7 +61,7 @@ class TestCleanupStaleTemp(unittest.TestCase):
         self.assertTrue(d.exists(), "свежая папка не должна удаляться")
 
     def test_keeps_foreign_dir(self):
-
+        pass
         d = self._make("some_other_app_data")
         _age(d, 7200)
 
@@ -64,7 +70,7 @@ class TestCleanupStaleTemp(unittest.TestCase):
         self.assertTrue(d.exists(), "чужая папка не должна удаляться")
 
     def test_ignores_nested_rizpaq_dir(self):
-
+        pass
         outer = self._make("container")
         inner = outer / "rizpaq_open_nested"
         inner.mkdir()
@@ -75,7 +81,7 @@ class TestCleanupStaleTemp(unittest.TestCase):
         self.assertTrue(inner.exists(), "вложенная папка не должна удаляться")
 
     def test_ignores_files_with_prefix(self):
-
+        pass
         f = self.root / "rizpaq_open_file.txt"
         f.write_text("x", encoding="utf-8")
         _age(f, 7200)
@@ -85,6 +91,10 @@ class TestCleanupStaleTemp(unittest.TestCase):
         self.assertTrue(f.exists(), "файл не должен удаляться")
 
     def test_ignores_prefix_lookalike(self):
+        pass
+
+
+
         d = self._make("my_rizpaq_open_x")
         _age(d, 7200)
 
@@ -119,11 +129,15 @@ class TestCleanupStaleTemp(unittest.TestCase):
         self.assertEqual(removed, [])
 
     def test_real_temp_dir_used_by_default(self):
-
+        pass
         removed = cleanup_stale_temp(max_age=999999)
         self.assertIsInstance(removed, list)
 
     def test_covers_all_known_prefixes(self):
+        pass
+
+
+
         for prefix in TEMP_PREFIXES:
             with self.subTest(prefix=prefix):
                 d = self._make(prefix + "case")
@@ -168,7 +182,7 @@ class TestRemoveTempDir(unittest.TestCase):
         d.mkdir()
         (d / "f.txt").write_text("x", encoding="utf-8")
 
-
+                                             
         import core.temp_cleanup as tc
 
         original = tc.tempfile.gettempdir
@@ -198,7 +212,7 @@ class TestRemoveTempDir(unittest.TestCase):
         self.assertTrue(d.exists())
 
     def test_refuses_path_outside_temp(self):
-
+        pass
         import core.temp_cleanup as tc
 
         original = tc.tempfile.gettempdir

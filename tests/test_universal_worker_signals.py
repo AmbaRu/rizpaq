@@ -1,3 +1,15 @@
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import sys
@@ -6,14 +18,15 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from PySide6.QtCore import QCoreApplication, QMetaMethod, QThread, Signal
-from PySide6.QtWidgets import QApplication
+from PySide6.QtCore import QCoreApplication, QMetaMethod, QThread, Signal              
+from PySide6.QtWidgets import QApplication              
 
 _APP = QApplication.instance() or QApplication([])
 from PySide6.QtGui import QFont
 _APP = QApplication.instance()
 if _APP is not None:
     _APP.setFont(QFont("Segoe UI", 9))
+
 
 
 class TestUniversalListWorkerSignals(unittest.TestCase):
@@ -32,20 +45,20 @@ class TestUniversalListWorkerSignals(unittest.TestCase):
         ]
 
     def test_result_signal_is_named_listed(self):
-
+        pass
         self.assertIn("listed(QVariantList,QString)", self._own_signals())
 
     def test_does_not_define_finished_signal(self):
-
+        pass
         self.assertNotIn("finished()", self._own_signals())
 
     def test_finished_is_inherited_qthread_signal(self):
-
+        pass
         self.assertIsInstance(self.worker.finished, Signal)
-
+                                                                                
         self.assertNotIn("finished", vars(self.cls))
-
-
+                                                                       
+                                                          
         mo = self.worker.metaObject()
         all_signals = [
             mo.method(i).methodSignature().data().decode()
@@ -59,6 +72,10 @@ class TestUniversalListWorkerSignals(unittest.TestCase):
         self.assertIn("finished()", all_signals)
 
     def test_both_slots_receive_expected_arity(self):
+        pass
+
+
+
         got: dict = {}
 
         self.worker.listed.connect(

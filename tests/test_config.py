@@ -1,3 +1,11 @@
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import json
@@ -14,7 +22,7 @@ from core.config import Settings, load, save, update
 
 
 class _TmpCfg:
-
+    pass
 
     def __init__(self):
         import tempfile
@@ -30,7 +38,7 @@ class TestDefaults(unittest.TestCase):
     def test_missing_file_returns_defaults(self):
         t = _TmpCfg()
         try:
-            s = load(t.path)
+            s = load(t.path)                  
             self.assertIsInstance(s, Settings)
             self.assertIsNone(s.zpaq_path)
             self.assertIsNone(s.last_fs_path)
@@ -43,6 +51,10 @@ class TestDefaults(unittest.TestCase):
             t.cleanup()
 
     def test_associations_asked_default_false(self):
+        pass
+
+
+
         t = _TmpCfg()
         try:
             s = load(t.path)
@@ -87,16 +99,21 @@ class TestRoundTrip(unittest.TestCase):
             t.cleanup()
 
     def test_associations_asked_round_trip(self):
+        pass
+
+
+
+
         t = _TmpCfg()
         try:
-
+                                                                              
             update(t.path, associations_asked=True)
             self.assertTrue(load(t.path).associations_asked)
 
             data = json.loads(t.path.read_text(encoding="utf-8"))
             self.assertIs(data.get("associations_asked"), True)
 
-
+                                                           
             update(t.path, associations_asked=False)
             self.assertFalse(load(t.path).associations_asked)
         finally:
@@ -120,24 +137,30 @@ class TestRobustness(unittest.TestCase):
         try:
             t.path.write_text(
                 json.dumps({
-                    "zpaq_path": 12345,
-                    "latest_only": "maybe",
-                    "window_geometry": [1, 2],
-                    "left_split": [1, 2, 3, 4],
-                    "window_maximized": True,
+                    "zpaq_path": 12345,                       
+                    "latest_only": "maybe",                 
+                    "window_geometry": [1, 2],                     
+                    "left_split": [1, 2, 3, 4],                     
+                    "window_maximized": True,          
                 }),
                 encoding="utf-8",
             )
             s = load(t.path)
             self.assertIsNone(s.zpaq_path)
-            self.assertFalse(s.latest_only)
-            self.assertIsNone(s.window_geometry)
-            self.assertIsNone(s.left_split)
-            self.assertTrue(s.window_maximized)
+            self.assertFalse(s.latest_only)                                 
+            self.assertIsNone(s.window_geometry)               
+            self.assertIsNone(s.left_split)                    
+            self.assertTrue(s.window_maximized)                          
         finally:
             t.cleanup()
 
     def test_associations_asked_wrong_type_is_false(self):
+        pass
+
+
+
+
+
         t = _TmpCfg()
         try:
             t.path.write_text(
@@ -178,14 +201,14 @@ class TestUpdate(unittest.TestCase):
             update(t.path, zpaq_path="a", latest_only=True)
             update(t.path, latest_only=False, totally_unknown="x")
             s = load(t.path)
-            self.assertEqual(s.zpaq_path, "a")
-            self.assertFalse(s.latest_only)
+            self.assertEqual(s.zpaq_path, "a")                                    
+            self.assertFalse(s.latest_only)                    
         finally:
             t.cleanup()
 
 
 if __name__ == "__main__":
-
-
+                                                                            
+                                                  
     unittest.main(verbosity=2, exit=False)
     input("\nНажмите Enter для выхода...")

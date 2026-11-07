@@ -1,3 +1,36 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import shutil
@@ -9,10 +42,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from PySide6.QtWidgets import QApplication
+from PySide6.QtWidgets import QApplication              
 
-from core.paths import merge_tree
-from workers.extract_workers import ExtractFolderBatchWorker
+from core.paths import merge_tree              
+from workers.extract_workers import ExtractFolderBatchWorker              
 
 _APP = QApplication.instance() or QApplication([])
 from PySide6.QtGui import QFont
@@ -21,15 +54,22 @@ if _APP is not None:
     _APP.setFont(QFont("Segoe UI", 9))
 
 
+                                                                     
 DATA = "данные".encode("utf-8") * 50
 
 
 class _Worker(ExtractFolderBatchWorker):
+    pass
+
+
+
+
+
 
     def __init__(self, dest, files, rc=0):
         super().__init__(
-            zpaq="zpaqfranz",
-            archive="archive.zpaq",
+            zpaq="zpaqfranz",                          
+            archive="archive.zpaq",                     
             password=None,
             inner_prefix="",
             version=None,
@@ -37,13 +77,14 @@ class _Worker(ExtractFolderBatchWorker):
         )
         self._files = files
         self._rc = rc
-
-
+                                                                      
+                                                                       
+                                                                          
         self.staging_seen = None
 
     def _run_stream(self):
-
-        staging = Path(self.cmd[-1])
+        pass
+        staging = Path(self.cmd[-1])                                     
         self.staging_seen = staging
         for name, data in self._files.items():
             p = staging / name
@@ -58,6 +99,12 @@ class StagingTestBase(unittest.TestCase):
         self.addCleanup(shutil.rmtree, self.tmp, ignore_errors=True)
 
     def _make_dest(self, block: bool) -> Path:
+        pass
+
+
+
+
+
         dest = self.tmp / "dest"
         dest.mkdir()
         (dest / "уже_было.txt").write_text("старое\n", encoding="utf-8")
@@ -66,22 +113,23 @@ class StagingTestBase(unittest.TestCase):
         return dest
 
     def _run(self, dest, files, rc=0):
-
+        pass
         captured = {}
         w = _Worker(dest, files, rc=rc)
         w.done.connect(lambda res: captured.update(res))
-
-
+                                                                      
+                                                                       
+                                              
         w.worker_started.connect(lambda: None)
-        w.run()
+        w.run()                                                    
         return captured, w
 
 
 class TestFailureKeepsData(StagingTestBase):
-
+    pass
 
     def test_merge_really_fails(self):
-
+        pass
         dest = self._make_dest(block=True)
         src = self.tmp / "staging_probe"
         (src / "папка").mkdir(parents=True)
@@ -97,7 +145,7 @@ class TestFailureKeepsData(StagingTestBase):
             "признак не сработал: перенос прошёл, тест проверял бы не то")
 
     def test_data_survives_failed_merge(self):
-
+        pass
         dest = self._make_dest(block=True)
         files = {
             "папка/внутри.txt": DATA,
@@ -115,7 +163,7 @@ class TestFailureKeepsData(StagingTestBase):
             "воркер не сообщил, где остались данные: ключ 'staging' пуст")
         staging_path = Path(staging)
 
-
+                                                                           
         self.assertEqual(
             staging_path, w.staging_seen,
             "отчёт назвал не ту папку, которую создал движок")
@@ -130,7 +178,7 @@ class TestFailureKeepsData(StagingTestBase):
             "документ потерян: его нет ни во временной папке, ни в назначении")
 
     def test_log_points_at_kept_data(self):
-
+        pass
         dest = self._make_dest(block=True)
         res, w = self._run(dest, {"папка/внутри.txt": DATA})
         log = res.get("log", "")
@@ -142,7 +190,7 @@ class TestFailureKeepsData(StagingTestBase):
 
 
 class TestSuccessAndCancelCleanUp(StagingTestBase):
-
+    pass
 
     def test_success_removes_staging(self):
         dest = self._make_dest(block=False)
@@ -166,7 +214,7 @@ class TestSuccessAndCancelCleanUp(StagingTestBase):
         w._cancel = True
         captured = {}
         w.done.connect(lambda res: captured.update(res))
-
+                                                            
         w.worker_started.connect(lambda: None)
         w.run()
 
@@ -181,6 +229,10 @@ class TestSuccessAndCancelCleanUp(StagingTestBase):
             f"после отмены осталась папка с недораспакованным: {w.staging_seen}")
 
     def test_engine_error_keeps_data(self):
+        pass
+
+
+
         dest = self._make_dest(block=False)
         res, w = self._run(dest, {"a.txt": DATA}, rc=2)
 
@@ -203,6 +255,11 @@ class TestSuccessAndCancelCleanUp(StagingTestBase):
 
 
 class TestMergeTreeKeepsSource(unittest.TestCase):
+    pass
+
+
+
+
 
     def setUp(self):
         self.tmp = Path(tempfile.mkdtemp(prefix="rizpaq_merge_"))

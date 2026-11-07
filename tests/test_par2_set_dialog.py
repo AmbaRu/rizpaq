@@ -1,3 +1,12 @@
+
+
+
+
+
+
+
+
+
 import os
 import sys
 import unittest
@@ -7,7 +16,7 @@ from unittest import mock
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from PySide6.QtWidgets import QApplication, QDialog, QWidget
+from PySide6.QtWidgets import QApplication, QDialog, QWidget              
 
 _APP = QApplication.instance() or QApplication([])
 from PySide6.QtGui import QFont
@@ -16,10 +25,10 @@ if _APP is not None:
     _APP.setFont(QFont("Segoe UI", 9))
 
 
-from ui.i18n import set_language
-from ui.par2_actions import Par2ActionsMixin
-from ui.par2_options import Par2OptionsWidget
-from ui.par2_set_dialog import (
+from ui.i18n import set_language              
+from ui.par2_actions import Par2ActionsMixin              
+from ui.par2_options import Par2OptionsWidget              
+from ui.par2_set_dialog import (              
     Par2SetDialog,
     last_options,
     remember_options,
@@ -27,7 +36,7 @@ from ui.par2_set_dialog import (
 
 
 class _Host(Par2ActionsMixin, QWidget):
-
+    pass
 
     def __init__(self):
         QWidget.__init__(self)
@@ -67,12 +76,12 @@ class _TmpCase(unittest.TestCase):
         self.addCleanup(shutil.rmtree, self.dir, ignore_errors=True)
         self.arch = self.dir / "backup.zpaq"
         self.arch.write_bytes(b"Z" * 4096)
-        remember_options({})
+        remember_options({})                                          
         self.addCleanup(remember_options, {})
 
 
 class TestOptionsWidget(_TmpCase):
-
+    pass
 
     def test_fields_present(self):
         w = Par2OptionsWidget(show_master=False)
@@ -81,6 +90,12 @@ class TestOptionsWidget(_TmpCase):
         self.assertFalse(w.manual_blocks.isChecked())
 
     def test_no_master_checkbox_without_master(self):
+        pass
+
+
+
+
+
         w = Par2OptionsWidget(show_master=False)
         self.assertIsNone(w.master)
         self.assertTrue(w.box.isEnabled(),
@@ -103,7 +118,7 @@ class TestOptionsWidget(_TmpCase):
         self.assertIsNone(w.collect()["block_size"])
 
     def test_apply_round_trip(self):
-
+        pass
         w = Par2OptionsWidget(show_master=False)
         w.apply({"redundancy": 17, "block_size": 131072, "threads": 4,
                  "uniform": True})
@@ -115,7 +130,7 @@ class TestOptionsWidget(_TmpCase):
 
 
 class TestSetDialog(_TmpCase):
-
+    pass
 
     def test_shows_archive_name(self):
         dlg = Par2SetDialog("backup.zpaq", {"redundancy": 9})
@@ -135,7 +150,7 @@ class TestSetDialog(_TmpCase):
 
 
 class TestCreateAsksParameters(_TmpCase):
-
+    pass
 
     def _run(self, chosen=None, accepted=True, job_options=None):
         host = _Host()
@@ -171,11 +186,18 @@ class TestCreateAsksParameters(_TmpCase):
         return host, worker, started, _Stub
 
     def test_dialog_asked_before_creating(self):
-
+        pass
         _host, _worker, started, _stub = self._run()
         self.assertTrue(started)
 
     def test_chosen_options_reach_worker(self):
+        pass
+
+
+
+
+
+
         host = _Host()
         worker = mock.Mock()
         worker.done = mock.Mock()
@@ -216,7 +238,7 @@ class TestCreateAsksParameters(_TmpCase):
         self.assertFalse(started)
 
     def test_job_settings_used_as_prefill(self):
-
+        pass
         host = _Host()
         worker = mock.Mock()
         worker.done = mock.Mock()
@@ -248,6 +270,13 @@ class TestCreateAsksParameters(_TmpCase):
         self.assertEqual(prefill.get("redundancy"), 11)
 
     def test_previous_choice_reused_next_time(self):
+        pass
+
+
+
+
+
+
         remember_options({"redundancy": 77})
         self.assertEqual(last_options()["redundancy"], 77)
 

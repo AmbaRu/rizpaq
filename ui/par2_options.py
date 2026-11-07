@@ -1,3 +1,29 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 from PySide6.QtCore import Signal
@@ -16,6 +42,12 @@ from ui.i18n import tr
 
 
 class Par2OptionsWidget(QWidget):
+    pass
+
+
+
+
+
 
     masterToggled = Signal(bool)
 
@@ -27,14 +59,18 @@ class Par2OptionsWidget(QWidget):
         outer.setContentsMargins(0, 0, 0, 0)
         outer.setSpacing(10)
 
-
+                                                                            
+                                                                  
+                                                                    
+                                                                    
+                           
         self.intro = QLabel(tr("par2.intro"))
         self.intro.setWordWrap(True)
-
+                                                                       
         self.intro.setProperty("hint", True)
         outer.addWidget(self.intro)
 
-
+                                                                            
         if self._show_master:
             self.master = QCheckBox(tr("par2.enable"))
             self.master.toggled.connect(self._on_master)
@@ -42,12 +78,13 @@ class Par2OptionsWidget(QWidget):
         else:
             self.master = None
 
-
+                                                                           
         self.box = QGroupBox(tr("par2.settings_group"))
         gl = QVBoxLayout(self.box)
         gl.setSpacing(8)
 
-
+                                                                        
+                                         
         form = QFormLayout()
         form.setSpacing(8)
         self.redundancy = QSpinBox()
@@ -61,7 +98,31 @@ class Par2OptionsWidget(QWidget):
         self.redundancy_hint.setProperty("hint", True)
         gl.addWidget(self.redundancy_hint)
 
-
+                                                                     
+                                           
+         
+                                                                       
+                                                                      
+                                                              
+                     
+         
+                                           
+                                                               
+                                                              
+                                                              
+                                                              
+         
+                                            
+                                                                
+                                                               
+         
+                                                                    
+                                                                       
+                                                                    
+                                                                     
+                                                                   
+                                                                       
+                                
         self.auto_blocks = QRadioButton(tr("par2.block_auto"))
         self.manual_blocks = QRadioButton(tr("par2.block_manual"))
         gl.addWidget(self.auto_blocks)
@@ -93,14 +154,15 @@ class Par2OptionsWidget(QWidget):
         self.auto_blocks.toggled.connect(self._on_blocks)
         self.manual_blocks.toggled.connect(self._on_blocks)
 
-
+                 
         other = QFormLayout()
         other.setSpacing(8)
         self.memory = QSpinBox()
         self.memory.setRange(0, 1024 * 64)
         self.memory.setSuffix(tr("par2.mb_suffix"))
-
-
+                                                                    
+                                                                
+                                                   
         self.memory.setSpecialValueText(tr("par2.automatic"))
         other.addRow(tr("par2.memory"), self.memory)
 
@@ -116,7 +178,9 @@ class Par2OptionsWidget(QWidget):
         other.addRow(self.uniform)
         gl.addLayout(other)
 
-
+                                                                           
+                                                                   
+                                              
         self.limits = QLabel(tr("par2.limits_note"))
         self.limits.setWordWrap(True)
         self.limits.setProperty("hint", True)
@@ -124,7 +188,8 @@ class Par2OptionsWidget(QWidget):
 
         outer.addWidget(self.box)
 
-
+                                                                 
+                                                                  
         self.redundancy.setValue(5)
         self.auto_blocks.setChecked(True)
         self.manual_blocks.setChecked(False)
@@ -135,13 +200,22 @@ class Par2OptionsWidget(QWidget):
         if self.master is not None:
             self._on_master(self.master.isChecked())
 
+                                                                                
 
     def _on_master(self, checked: bool):
-
+        pass
         self.box.setEnabled(bool(checked))
         self.masterToggled.emit(bool(checked))
 
     def _on_blocks(self, _checked=None):
+        pass
+
+
+
+
+
+
+
         manual = self.manual_blocks.isChecked()
         self.block_size.setEnabled(manual)
         self.block_count.setEnabled(manual)
@@ -149,7 +223,7 @@ class Par2OptionsWidget(QWidget):
         self.auto_hint.setVisible(not manual)
 
     def set_master(self, checked: bool):
-
+        pass
         if self.master is None:
             return
         blocked = self.master.blockSignals(True)
@@ -157,8 +231,20 @@ class Par2OptionsWidget(QWidget):
         self.master.blockSignals(blocked)
         self._on_master(self.master.isChecked())
 
+                                                                             
 
     def collect(self) -> dict:
+        pass
+
+
+
+
+
+
+
+
+
+
         out = {"redundancy": self.redundancy.value()}
 
         if self.manual_blocks.isChecked():
@@ -180,13 +266,20 @@ class Par2OptionsWidget(QWidget):
         return out
 
     def apply(self, options: dict):
+        pass
+
+
+
+
+
         opts = dict(options or {})
 
         self.redundancy.setValue(int(opts.get("redundancy") or 5))
 
         saved_manual = bool(opts.get("block_size") or opts.get("block_count"))
-
-
+                                                                      
+                                                                    
+                                                    
         for btn in (self.auto_blocks, self.manual_blocks):
             btn.blockSignals(True)
         self.manual_blocks.setChecked(saved_manual)

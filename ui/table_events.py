@@ -1,3 +1,7 @@
+
+
+
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -21,7 +25,7 @@ from ui.qt_compat import (
 
 
 class TableEventsMixin:
-
+    pass
 
     def _row_payload(self):
         row = self.table.currentRow()
@@ -74,8 +78,9 @@ class TableEventsMixin:
                 lambda: self._on_create_archive_paths([payload])
             )
             menu.addSeparator()
-
-
+                                                                    
+                                                                      
+                                                      
             test_menu = menu.addMenu(tr("menu.test"))
             for mode, label in test_mode_entries():
                 act = test_menu.addAction(label)
@@ -84,22 +89,23 @@ class TableEventsMixin:
                     lambda _c=False, m=mode: self._on_test_archive(payload, m)
                 )
 
-
+                                                                        
+                                                                             
             if par2_set_exists(payload):
                 menu.addSeparator()
                 act_restore = menu.addAction(tr("par2.repair"))
                 act_restore.triggered.connect(
                     lambda: self._start_par2_repair(payload)
                 )
-
-
+                                                                
+                                    
                 act_recreate = menu.addAction(tr("par2.recreate_now"))
                 act_recreate.triggered.connect(
                     lambda: self._start_par2_create(payload, recreate=True)
                 )
             else:
-
-
+                                                                    
+                                    
                 menu.addSeparator()
                 act_create = menu.addAction(tr("par2.create_now"))
                 act_create.triggered.connect(
@@ -114,17 +120,17 @@ class TableEventsMixin:
         elif kind == K_FS_UNI_ARC:
             open_act = menu.addAction(tr("context.open_archive"))
             open_act.triggered.connect(lambda: self._enter_archive(payload))
-
+            
             extract_act = menu.addAction(tr("context.extract_universal"))
             extract_act.triggered.connect(
                 lambda: self._extract_universal_dialog(payload)
             )
-
+            
             convert_act = menu.addAction(tr("context.convert_to_zpaq"))
             convert_act.triggered.connect(
                 lambda: self._convert_universal_to_zpaq(payload)
             )
-
+            
             menu.addSeparator()
             rename_act = menu.addAction(tr("context.rename"))
             rename_act.triggered.connect(lambda: self._rename_fs_path(payload))
@@ -162,7 +168,7 @@ class TableEventsMixin:
 
         elif kind == K_ARC_FILE:
             entry = payload
-
+                                                                            
             open_act = menu.addAction(tr("context.open"))
             open_act.triggered.connect(lambda: self._open_arc_file_entry(entry))
             menu.addSeparator()
@@ -184,6 +190,14 @@ class TableEventsMixin:
         self._exec_menu(menu, pos)
 
     def _exec_menu(self, menu, pos):
+        pass
+
+
+
+
+
+
+
         if menu.isEmpty():
             return
         try:

@@ -1,3 +1,55 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import sys
@@ -9,8 +61,8 @@ from unittest import mock
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QApplication, QPushButton
+from PySide6.QtCore import Qt              
+from PySide6.QtWidgets import QApplication, QPushButton              
 
 _APP = QApplication.instance() or QApplication([])
 from PySide6.QtGui import QFont
@@ -19,11 +71,16 @@ if _APP is not None:
     _APP.setFont(QFont("Segoe UI", 9))
 
 
-from ui.i18n import set_language
+                                                               
+                                                                
+                                                            
+                                                                 
+                         
+from ui.i18n import set_language              
 
 set_language("ru", notify=False)
 
-from core.tasks import (
+from core.tasks import (              
     ACTION_TEST,
     add_job,
     add_work,
@@ -31,7 +88,7 @@ from core.tasks import (
     empty_container,
     save_container,
 )
-from ui.backup_page import (
+from ui.backup_page import (              
     BackupPage,
     _COL_LAST_RUN,
     _COL_NAME,
@@ -44,15 +101,33 @@ from ui.backup_page import (
 
 
 class _Host:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     def __init__(self, tasks_dir=None):
         cfg = type("Cfg", (), {"tasks_dir": tasks_dir})()
         self._cfg = cfg
         self._status = []
-
+                                                                     
         self.calls = []
-
-
+                                                                
+                                                                    
+                                                              
+                                                                 
         self._workers = []
 
     def statusBar(self):
@@ -62,10 +137,19 @@ class _Host:
         self._status.append(text)
 
     def _cleanup_worker(self, worker):
+        pass
+
+
+
+
+
+
+
+
         if worker in self._workers:
             self._workers.remove(worker)
 
-
+                                                           
     def _enter_archive(self, path):
         self.calls.append(("_enter_archive", path))
 
@@ -90,12 +174,23 @@ class _Host:
 
 
 class _HostWithoutEditWork(_Host):
+    pass
+
+
+
+
+
+
+
+
+
+
 
     _edit_work = None
 
 
 class _HostWithoutCheckJob(_Host):
-
+    pass
 
     _on_add_check_to_work = None
 
@@ -108,6 +203,12 @@ class _TmpMixin(unittest.TestCase):
         self.addCleanup(shutil.rmtree, self.dir, ignore_errors=True)
 
     def write_container(self, works=None):
+        pass
+
+
+
+
+
         c = empty_container()
         for w_spec in (works or []):
             w = add_work(
@@ -126,6 +227,12 @@ class _TmpMixin(unittest.TestCase):
         return c
 
     def make_page(self, works=None, patch_schedule=True):
+        pass
+
+
+
+
+
         container = self.write_container(works)
         host = _Host(tasks_dir=str(self.dir))
         if patch_schedule:
@@ -137,6 +244,43 @@ class _TmpMixin(unittest.TestCase):
         return page, container
 
     def _dispose_page(self, page):
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         try:
             page._watch_timer.stop()
         except Exception:
@@ -146,7 +290,7 @@ class _TmpMixin(unittest.TestCase):
         except Exception:
             pass
 
-
+                                                                 
         worker = getattr(page, "_schedule_worker", None)
         if worker is not None:
             try:
@@ -162,6 +306,11 @@ class _TmpMixin(unittest.TestCase):
         page.deleteLater()
 
     def make_page_with_worker_mock(self, works=None):
+        pass
+
+
+
+
         container = self.write_container(works)
         host = _Host(tasks_dir=str(self.dir))
         with mock.patch("ui.backup_page._ScheduleWorker") as worker_cls:
@@ -180,16 +329,31 @@ def _payload(item):
 
 
 def _cell_widget(item, page):
-
+    pass
     return page._tree.itemWidget(item, _COL_NEXT_RUN)
 
 
 def _force_visible(page):
+    pass
+
+
+
+
+
+
     page.isVisible = lambda: True
     page._stack.setCurrentWidget(page._tree)
 
 
 def _select_item(page, item):
+    pass
+
+
+
+
+
+
+
     parent = item.parent()
     while parent is not None:
         parent.setExpanded(True)
@@ -197,6 +361,9 @@ def _select_item(page, item):
     _APP.processEvents()
     page._tree.setCurrentItem(item)
     _APP.processEvents()
+
+
+                                                                    
 
 
 class TestRefreshAndEmptyState(_TmpMixin):
@@ -222,9 +389,12 @@ class TestRefreshAndEmptyState(_TmpMixin):
         self.assertEqual(page._tree.topLevelItemCount(), 1)
 
 
+                                                                   
+
+
 class TestTreeStructure(_TmpMixin):
     def test_six_columns(self):
-
+        pass
         page, _ = self.make_page(works=[
             {"work_title": "W", "jobs": [{"title": "j"}]},
         ])
@@ -283,7 +453,7 @@ class TestTreeStructure(_TmpMixin):
                          "у работы нет своего расписания — колонка пуста")
 
     def test_work_row_has_no_schedule(self):
-
+        pass
         page, _ = self.make_page(works=[
             {"work_title": "Docs", "jobs": [{"title": "Daily"}]},
         ])
@@ -299,14 +469,14 @@ class TestTreeStructure(_TmpMixin):
                         "статус должен быть заполнен даже для новой задачи")
 
     def test_no_worker_started_when_no_jobs(self):
-
+        pass
         _, _, worker_cls = self.make_page_with_worker_mock(works=[
             {"work_title": "Docs", "jobs": []},
         ])
         worker_cls.assert_not_called()
 
     def test_worker_started_when_jobs_present(self):
-
+        pass
         _, _, worker_cls = self.make_page_with_worker_mock(works=[
             {"work_title": "Docs", "jobs": [{"title": "Daily"}]},
         ])
@@ -314,6 +484,13 @@ class TestTreeStructure(_TmpMixin):
 
 
 class TestJobIcons(_TmpMixin):
+    pass
+
+
+
+
+
+
 
     def test_backup_job_has_gear_icon(self):
         page, _ = self.make_page(works=[
@@ -338,6 +515,11 @@ class TestJobIcons(_TmpMixin):
                         f"у проверки должен быть значок 🔍: {text!r}")
 
     def test_legacy_job_without_action_gets_backup_icon(self):
+        pass
+
+
+
+
         page, _ = self.make_page(works=[
             {"work_title": "W", "jobs": [{"title": "Old job"}]},
         ])
@@ -347,7 +529,7 @@ class TestJobIcons(_TmpMixin):
                         f"legacy-задание — это бэкап: {text!r}")
 
     def test_two_jobs_one_work_have_different_icons(self):
-
+        pass
         page, _ = self.make_page(works=[
             {"work_title": "W", "jobs": [
                 {"title": "Backup", "action": "backup"},
@@ -363,6 +545,13 @@ class TestJobIcons(_TmpMixin):
 
 
 class TestScheduleColumn(_TmpMixin):
+    pass
+
+
+
+
+
+
 
     def test_empty_schedule_shows_dash(self):
         page, _ = self.make_page(works=[
@@ -372,7 +561,7 @@ class TestScheduleColumn(_TmpMixin):
         self.assertEqual(job_item.text(_COL_SCHEDULE), "—")
 
     def test_disabled_schedule_shows_dash(self):
-
+        pass
         page, _ = self.make_page(works=[
             {"work_title": "W", "jobs": [{
                 "title": "j",
@@ -422,7 +611,7 @@ class TestScheduleColumn(_TmpMixin):
                          "должно быть три дня недели через запятую")
 
     def test_unknown_frequency_shows_dash(self):
-
+        pass
         page, _ = self.make_page(works=[
             {"work_title": "W", "jobs": [{
                 "title": "j",
@@ -433,6 +622,9 @@ class TestScheduleColumn(_TmpMixin):
         self.assertEqual(job_item.text(_COL_SCHEDULE), "—")
 
 
+                                                                      
+
+
 class TestSelectedJob(_TmpMixin):
     def test_none_when_nothing_selected(self):
         page, _ = self.make_page(works=[
@@ -441,6 +633,12 @@ class TestSelectedJob(_TmpMixin):
         self.assertIsNone(page.selected_job())
 
     def test_none_when_page_hidden(self):
+        pass
+
+
+
+
+
         page, _ = self.make_page(works=[
             {"work_title": "Docs", "jobs": [{"title": "Daily"}]},
         ])
@@ -468,6 +666,10 @@ class TestSelectedJob(_TmpMixin):
         self.assertEqual(sel["job_id"], c["works"][0]["jobs"][0]["id"])
 
     def test_returns_job_for_test_job(self):
+        pass
+
+
+
         page, c = self.make_page(works=[
             {"work_title": "Docs", "jobs": [
                 {"title": "Check", "action": ACTION_TEST},
@@ -483,7 +685,7 @@ class TestSelectedJob(_TmpMixin):
         self.assertEqual(sel["job_id"], c["works"][0]["jobs"][0]["id"])
 
     def test_none_when_work_selected(self):
-
+        pass
         page, _ = self.make_page(works=[
             {"work_title": "Docs", "jobs": [{"title": "Daily"}]},
         ])
@@ -511,13 +713,16 @@ class TestSelectedWork(_TmpMixin):
         self.assertEqual(page.selected_work(), c["works"][0]["id"])
 
     def test_returns_parent_work_when_job_selected(self):
-
+        pass
         page, c = self.make_page(works=[
             {"work_title": "Docs", "jobs": [{"title": "Daily"}]},
         ])
         job_item = _top_level_work_items(page)[0].child(0)
         _select_item(page, job_item)
         self.assertEqual(page.selected_work(), c["works"][0]["id"])
+
+
+                                                                              
 
 
 class TestScheduleCell(_TmpMixin):
@@ -551,6 +756,12 @@ class TestScheduleCell(_TmpMixin):
         self.assertIsNotNone(widget, "кнопка не поставлена в ячейку")
 
     def test_button_has_link_object_name(self):
+        pass
+
+
+
+
+
         page, _ = self.make_page(works=[
             {"work_title": "W", "jobs": [{"title": "Daily"}]},
         ])
@@ -595,6 +806,9 @@ class TestScheduleCell(_TmpMixin):
         self.assertIsNone(_cell_widget(job_item, page),
                           "старая кнопка не снята")
         self.assertEqual(job_item.text(_COL_NEXT_RUN), "2026-10-03 02:00")
+
+
+                                                                                  
 
 
 class TestApplySchedule(_TmpMixin):
@@ -644,7 +858,7 @@ class TestApplySchedule(_TmpMixin):
         self.assertIsNotNone(_cell_widget(job_item, page))
 
     def test_visible_page_puts_button_when_job_missing_from_info(self):
-
+        pass
         page, _ = self.make_page(works=[
             {"work_title": "W", "jobs": [{"title": "Daily"}]},
         ])
@@ -656,6 +870,12 @@ class TestApplySchedule(_TmpMixin):
         self.assertIsNotNone(_cell_widget(job_item, page))
 
     def test_schedule_column_not_touched_by_worker_result(self):
+        pass
+
+
+
+
+
         page, _ = self.make_page(works=[
             {"work_title": "W", "jobs": [{
                 "title": "j",
@@ -676,9 +896,11 @@ class TestApplySchedule(_TmpMixin):
         self.assertEqual(job_item.text(_COL_SCHEDULE), before)
 
 
+                                                                          
+
 class TestWorkOrderIsPreserved(_TmpMixin):
     def test_works_kept_in_file_order(self):
-
+        pass
         page, c = self.make_page(works=[
             {"work_title": "First", "jobs": [{"title": "A"}]},
             {"work_title": "Second", "jobs": [{"title": "B"}]},
@@ -689,7 +911,19 @@ class TestWorkOrderIsPreserved(_TmpMixin):
         self.assertEqual(_payload(works[1])["work_id"], c["works"][1]["id"])
 
 
+                                                                          
+
+
 class TestMenuActions(_TmpMixin):
+    pass
+
+
+
+
+
+
+
+
 
     def test_edit_work_calls_host(self):
         page, c = self.make_page(works=[
@@ -716,7 +950,7 @@ class TestMenuActions(_TmpMixin):
         self.assertIn(("_on_add_check_to_work", work_id), page._host.calls)
 
     def test_edit_work_empty_id_does_nothing(self):
-
+        pass
         page, _ = self.make_page(works=[
             {"work_title": "Docs", "jobs": [{"title": "Daily"}]},
         ])
@@ -741,23 +975,40 @@ class TestMenuActions(_TmpMixin):
         self.assertEqual(page._host.calls, before)
 
     def test_edit_work_missing_host_method_is_safe(self):
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
         container = self.write_container(works=[
             {"work_title": "Docs", "jobs": [{"title": "Daily"}]},
         ])
         host = _HostWithoutEditWork(tasks_dir=str(self.dir))
         with mock.patch.object(BackupPage, "_load_schedule"):
             page = BackupPage(host)
-
+                            
         page._edit_work(container["works"][0]["id"])
 
     def test_add_check_job_missing_host_method_is_safe(self):
+        pass
+
+
+
         container = self.write_container(works=[
             {"work_title": "Docs", "jobs": [{"title": "Daily"}]},
         ])
         host = _HostWithoutCheckJob(tasks_dir=str(self.dir))
         with mock.patch.object(BackupPage, "_load_schedule"):
             page = BackupPage(host)
-
+                            
         page._add_check_job(container["works"][0]["id"])
 
 

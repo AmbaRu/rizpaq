@@ -1,3 +1,17 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -12,10 +26,10 @@ from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from PySide6.QtWidgets import QApplication
+from PySide6.QtWidgets import QApplication              
 
-import workers.extract_workers as ew
-from workers.extract_workers import ExtractFolderWorker
+import workers.extract_workers as ew              
+from workers.extract_workers import ExtractFolderWorker              
 
 _APP = QApplication.instance() or QApplication([])
 from PySide6.QtGui import QFont
@@ -24,7 +38,15 @@ if _APP is not None:
     _APP.setFont(QFont("Segoe UI", 9))
 
 
+
 class _FakeProc:
+    pass
+
+
+
+
+
+
 
     def __init__(self, payload: bytes = b"", rc: int = 0, hang: bool = False):
         self._r, self._w = os.pipe()
@@ -77,7 +99,7 @@ class ExtractWorkerTestBase(unittest.TestCase):
 
 class TestStallAndCancel(ExtractWorkerTestBase):
     def test_silent_process_is_stopped(self):
-
+        pass
         fake = _FakeProc(hang=True)
         self.addCleanup(fake.stdout.close)
 
@@ -97,7 +119,7 @@ class TestStallAndCancel(ExtractWorkerTestBase):
         self.assertIn("движок не отвечал", result["error_logs"][0])
 
     def test_cancel_kills_current_file(self):
-
+        pass
         fake = _FakeProc(hang=True)
         self.addCleanup(fake.stdout.close)
 
@@ -128,7 +150,7 @@ class TestStallAndCancel(ExtractWorkerTestBase):
 
 class TestFailureReason(ExtractWorkerTestBase):
     def test_missing_engine_keeps_reason(self):
-
+        pass
         with self._patch_popen(side_effect=FileNotFoundError("нет движка")):
             result = self._run(self._worker())
 
@@ -140,7 +162,7 @@ class TestFailureReason(ExtractWorkerTestBase):
 
 class TestErrorLogsAreBounded(ExtractWorkerTestBase):
     def test_logs_are_capped_and_truncated(self):
-
+        pass
         self.tasks = [
             (f"f{i}.txt", 1, str(self.dir / f"f{i}.txt"))
             for i in range(ew.MAX_ERROR_LOGS + 2)

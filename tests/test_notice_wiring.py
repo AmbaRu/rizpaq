@@ -1,3 +1,26 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import ast
@@ -20,6 +43,14 @@ def _func(name: str):
 
 
 def _calls_in_order(func: ast.FunctionDef) -> list:
+    pass
+
+
+
+
+
+
+
     calls = []
     for node in ast.walk(func):
         if not isinstance(node, ast.Call):
@@ -33,7 +64,7 @@ def _calls_in_order(func: ast.FunctionDef) -> list:
 
 
 def _count_call(func: ast.FunctionDef, name: str) -> int:
-
+    pass
     return sum(
         1 for node in ast.walk(func)
         if isinstance(node, ast.Call)
@@ -44,6 +75,11 @@ def _count_call(func: ast.FunctionDef, name: str) -> int:
 
 class TestTwoPhasesAreOneOperation(unittest.TestCase):
     def test_info_phase_raises_busy(self):
+        pass
+
+
+
+
         calls = _calls_in_order(_func("_load_info"))
         self.assertIn(
             "_start_busy",
@@ -52,6 +88,13 @@ class TestTwoPhasesAreOneOperation(unittest.TestCase):
         )
 
     def test_list_stop_happens_after_handling(self):
+        pass
+
+
+
+
+
+
         order = _calls_in_order(_func("_on_streaming_list_result"))
 
         self.assertIn("_apply_list_entries", order,
@@ -66,7 +109,7 @@ class TestTwoPhasesAreOneOperation(unittest.TestCase):
         )
 
     def test_info_stop_happens_after_handling(self):
-
+        pass
         order = _calls_in_order(_func("_on_worker_result"))
 
         self.assertIn("_handle_info_result", order,
@@ -80,6 +123,14 @@ class TestTwoPhasesAreOneOperation(unittest.TestCase):
         )
 
     def test_both_kinds_stop_busy(self):
+        pass
+
+
+
+
+
+
+
         n_list = _count_call(_func("_on_streaming_list_result"), "_stop_busy")
         n_info = _count_call(_func("_on_worker_result"), "_stop_busy")
         self.assertEqual(
@@ -101,6 +152,10 @@ class TestNoticeWiring(unittest.TestCase):
                 )
 
     def test_busy_uses_counter_not_flag(self):
+        pass
+
+
+
         from ui.app_services import AppServicesMixin
 
         src = Path(inspect.getfile(AppServicesMixin)).read_text(encoding="utf-8")
@@ -113,7 +168,7 @@ class TestNoticeWiring(unittest.TestCase):
         )
 
     def test_main_window_initializes_notice_state(self):
-
+        pass
         mw = (
             Path(__file__).resolve().parent.parent / "ui" / "main_window.py"
         ).read_text(encoding="utf-8")
@@ -122,6 +177,10 @@ class TestNoticeWiring(unittest.TestCase):
                 self.assertIn(f"self.{attr}", mw, f"main_window не инициализирует {attr}")
 
     def test_tick_busy_does_not_stomp_foreign_message(self):
+        pass
+
+
+
         from ui.app_services import AppServicesMixin
 
         src = Path(inspect.getfile(AppServicesMixin)).read_text(encoding="utf-8")

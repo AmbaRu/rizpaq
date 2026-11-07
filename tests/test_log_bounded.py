@@ -1,3 +1,16 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -10,9 +23,9 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from PySide6.QtWidgets import QApplication, QPlainTextEdit
+from PySide6.QtWidgets import QApplication, QPlainTextEdit              
 
-import ui.window_layout as wl
+import ui.window_layout as wl              
 
 APP = QApplication.instance() or QApplication([])
 from PySide6.QtGui import QFont
@@ -32,17 +45,32 @@ class TestLimitIsApplied(unittest.TestCase):
         self.assertGreater(wl.LOG_MAX_BLOCKS, 0)
 
     def test_limit_set_on_document(self):
+        pass
+
+
+
+
+
+
         self.assertIn(
             "self.log.document().setMaximumBlockCount(", SRC,
             "предел не применяется к документу журнала")
 
     def test_limit_really_binds(self):
+        pass
+
+
+
+
+
+
         w = QPlainTextEdit()
         w.document().setMaximumBlockCount(wl.LOG_MAX_BLOCKS)
 
-
+                                                                   
+                                     
         total = wl.LOG_MAX_BLOCKS + 500
-
+                                                                          
         for _ in range(total // 500 + 1):
             w.appendPlainText("\n".join(["строка журнала"] * 500))
             APP.processEvents()
@@ -55,20 +83,48 @@ class TestLimitIsApplied(unittest.TestCase):
 
 
 class TestLimitIsSensible(unittest.TestCase):
+    pass
+
+
+
+
+
+
 
     def test_not_so_small_it_throttles(self):
+        pass
+
+
+
+
+
+
         self.assertGreaterEqual(
             wl.LOG_MAX_BLOCKS, 30000,
             "предел слишком мал: по замеру документ начнёт переполняться "
             "за несколько открытий, а журнал замедлится в разы")
 
     def test_not_so_large_it_does_not_bound(self):
+        pass
+
+
+
+
+
+
         self.assertLessEqual(
             wl.LOG_MAX_BLOCKS, 80000,
             "предел слишком велик: по замеру это десятки мегабайт и то же "
             "замедление при переполнении")
 
     def test_bounded_memory_in_megabytes(self):
+        pass
+
+
+
+
+
+
         per_block_kb = 0.384
         expected = wl.LOG_MAX_BLOCKS * per_block_kb / 1024
         self.assertLess(expected, 32,
@@ -79,6 +135,18 @@ class TestLimitIsSensible(unittest.TestCase):
                            f"на диагностику маловато")
 
     def test_existing_call_site_limits_kept(self):
+        pass
+
+
+
+
+
+
+
+
+
+
+
         import re
 
         acts = (ROOT / "ui" / "archive_actions.py").read_text(encoding="utf-8")
@@ -96,6 +164,13 @@ class TestLimitIsSensible(unittest.TestCase):
 
 
 class TestDiagnosticsSurvive(unittest.TestCase):
+    pass
+
+
+
+
+
+
 
     def test_report_fits_in_the_window(self):
         from core.parser import parse_csv_list_reported
@@ -113,11 +188,17 @@ class TestDiagnosticsSurvive(unittest.TestCase):
             "отчёт о потерях занимает заметную часть окна журнала")
 
     def test_log_still_holds_recent_work(self):
+        pass
+
+
+
+
+
         w = QPlainTextEdit()
         w.document().setMaximumBlockCount(100)
         w.appendPlainText("старое")
-
-
+                                                                     
+                                                           
         for _ in range(300):
             w.appendPlainText("свежее")
         APP.processEvents()

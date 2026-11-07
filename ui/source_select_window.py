@@ -1,3 +1,35 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -14,14 +46,17 @@ from PySide6.QtWidgets import (
 from core.paths import windows_drives
 from ui.i18n import tr
 
-
+                                                                    
+                                                              
+                                                                  
+                          
 MAX_CHILDREN = 1000
 
 _PATH_ROLE = Qt.UserRole + 100
 
 
 class SourceSelectWindow(QDialog):
-
+    pass
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -83,6 +118,19 @@ class SourceSelectWindow(QDialog):
             self._load_children(item)
 
     def _load_children(self, item: QTreeWidgetItem):
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
         path = item.data(0, _PATH_ROLE)
         if not path:
             return
@@ -103,8 +151,10 @@ class SourceSelectWindow(QDialog):
                         except OSError:
                             continue
             except OSError:
-
-
+                                                                    
+                                                                    
+                                                                    
+                             
                 return
 
             dirs.sort(key=lambda x: os.path.normcase(x[0]))
@@ -114,7 +164,10 @@ class SourceSelectWindow(QDialog):
             parent_check = item.checkState(0)
             shown = 0
 
-
+                                                               
+                                                                
+                                                                
+                               
             for name, full in dirs:
                 if shown >= MAX_CHILDREN:
                     break
@@ -137,8 +190,13 @@ class SourceSelectWindow(QDialog):
                 shown += 1
 
             if total > shown:
-
-
+                                                                               
+                                                                             
+                                                                            
+                                                                         
+                                                                              
+                                                                         
+                                                             
                 note = QTreeWidgetItem(
                     [tr("table.truncated", max=shown, count=total)]
                 )

@@ -1,3 +1,27 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import ast
@@ -10,15 +34,16 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from ui import skins
-from ui.palette import build_palette, build_style
+from ui import skins              
+from ui.palette import build_palette, build_style              
 
 UI_DIR = ROOT / "ui"
 LOCALES = ROOT / "locales"
 
 HEX_RE = re.compile(r"^#[0-9a-fA-F]{6}$")
 
-
+                                                                    
+                            
 QSS_PSEUDO = {
     "down-arrow", "up-arrow", "left-arrow", "right-arrow",
     "indicator", "section", "item", "chunk", "tab", "close", "float",
@@ -29,7 +54,12 @@ QSS_PSEUDO = {
 
 MIN_CONTRAST = 3.0
 
-
+                                                                    
+                                                                       
+                                                                           
+                               
+ 
+                                            
 KNOWN_LOW_CONTRAST = [
     ("soft_azure", "item:selected:hover", 2.96),
 ]
@@ -53,6 +83,16 @@ def contrast(fg: str, bg: str) -> float:
 
 
 def ui_files() -> list:
+    pass
+
+
+
+
+
+
+
+
+
     return [
         p for p in sorted(UI_DIR.glob("*.py"))
         if p.name not in ("palette.py", "skins.py")
@@ -66,6 +106,10 @@ def qss_template() -> str:
     return src[t0:t1]
 
 
+                                                                        
+                
+                                                                        
+
 class TestSkinRegistry(unittest.TestCase):
     def test_registry_not_empty(self):
         self.assertGreaterEqual(len(skins.skin_names()), 2,
@@ -75,7 +119,7 @@ class TestSkinRegistry(unittest.TestCase):
         self.assertIn(skins.DEFAULT_SKIN, skins.SKINS)
 
     def test_every_skin_has_all_tokens(self):
-
+        pass
         for name in skins.skin_names():
             with self.subTest(skin=name):
                 missing = skins.missing_tokens(name)
@@ -84,7 +128,7 @@ class TestSkinRegistry(unittest.TestCase):
                     f"в скине {name} нет токенов: {missing}")
 
     def test_no_extra_tokens(self):
-
+        pass
         for name in skins.skin_names():
             with self.subTest(skin=name):
                 self.assertEqual(
@@ -100,6 +144,13 @@ class TestSkinRegistry(unittest.TestCase):
                         f"{name}/{token} = {value!r} — не цвет #rrggbb")
 
     def test_soft_azure_is_the_original_palette(self):
+        pass
+
+
+
+
+
+
         expected = {
             "WINDOW_BG": "#eef3fa",
             "BASE_BG": "#ffffff",
@@ -128,7 +179,7 @@ class TestSkinSelection(unittest.TestCase):
             self.assertEqual(skins.current_name(), name)
 
     def test_unknown_name_is_ignored(self):
-
+        pass
         before = skins.current_name()
         self.assertEqual(skins.set_current("нет_такой_темы"), before)
         self.assertEqual(skins.current_name(), before)
@@ -143,8 +194,19 @@ class TestSkinSelection(unittest.TestCase):
             self.assertEqual(skins.color(token), air[token])
 
     def test_unknown_token_is_loud(self):
+        pass
+
+
+
+
+
+
         self.assertEqual(skins.color("ТАКОГО_НЕТ"), "#ff00ff")
 
+
+                                                                        
+                       
+                                                                        
 
 class TestStyleBuild(unittest.TestCase):
     def test_no_unsubstituted_tokens(self):
@@ -163,6 +225,10 @@ class TestStyleBuild(unittest.TestCase):
         self.assertNotEqual(a, b, "скины собираются в одинаковый QSS")
 
     def test_palette_builds_with_skin_colours(self):
+        pass
+
+
+
         from PySide6.QtGui import QPalette
 
         for name in skins.skin_names():
@@ -179,6 +245,12 @@ class TestStyleBuild(unittest.TestCase):
                     "роль Highlight в палитре не совпала со скином")
 
     def test_template_has_no_literal_colors(self):
+        pass
+
+
+
+
+
         tpl = qss_template()
         for match in re.findall(r"#[0-9a-fA-F]{6}", tpl):
             line = tpl[:tpl.find(match)].count("\n") + 1
@@ -196,15 +268,42 @@ class TestStyleBuild(unittest.TestCase):
             "в шаблоне есть токены, которых нет ни в одном скине")
 
 
+                                                                        
+                                          
+                                                                        
+
 class TestNoColourBypassesTheme(unittest.TestCase):
+    pass
 
 
+
+
+
+
+
+
+
+
+
+                                                 
+     
+                                                                    
+                                                                     
+                                                                  
+                                      
     _LITERAL_COLOR_RE = re.compile(r"#[0-9a-fA-F]{3,8}")
 
-
+                                                                     
+                
+     
+                                                               
+                                                                
+                                                                      
+                                                                         
+                                                             
     @staticmethod
     def _setstylesheet_calls(src: str):
-
+        pass
         try:
             tree = ast.parse(src)
         except SyntaxError:
@@ -220,13 +319,22 @@ class TestNoColourBypassesTheme(unittest.TestCase):
                 continue
             seg = ast.get_source_segment(src, node)
             if seg is None:
-
-
+                                                                     
+                                                                      
+                                                       
                 continue
             yield node.lineno, seg
 
     @staticmethod
     def _color_constructor_calls(src: str):
+        pass
+
+
+
+
+
+
+
         try:
             tree = ast.parse(src)
         except SyntaxError:
@@ -259,8 +367,8 @@ class TestNoColourBypassesTheme(unittest.TestCase):
                 literal = self._LITERAL_COLOR_RE.findall(seg)
                 if not literal:
                     continue
-
-
+                                                                        
+                                                                
                 if re.search(r"\bcolor\s*\(", seg):
                     continue
                 offenders.append(
@@ -271,6 +379,21 @@ class TestNoColourBypassesTheme(unittest.TestCase):
             "скина он останется прежнего цвета:\n    " + "\n    ".join(offenders))
 
     def test_no_hardcoded_colour_in_qcolor(self):
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         offenders = []
         for path in ui_files():
             src = path.read_text(encoding="utf-8")
@@ -285,6 +408,12 @@ class TestNoColourBypassesTheme(unittest.TestCase):
             + "\n    ".join(offenders))
 
     def test_no_dead_qss_objectname_rules(self):
+        pass
+
+
+
+
+
         declared = set()
         for path in sorted(UI_DIR.glob("*.py")):
             for m in re.finditer(
@@ -304,6 +433,11 @@ class TestNoColourBypassesTheme(unittest.TestCase):
             f"{dead} — они не срабатывают никогда")
 
     def test_objectnames_have_rules(self):
+        pass
+
+
+
+
         tpl = qss_template()
         have_rule = set(re.findall(r"#([A-Za-z_][A-Za-z0-9_]*)", tpl))
         skipped = []
@@ -319,7 +453,20 @@ class TestNoColourBypassesTheme(unittest.TestCase):
             + "\n".join("    " + s for s in skipped))
 
 
+                                                                        
+           
+                                                                        
+
 class TestContrast(unittest.TestCase):
+    pass
+
+
+
+
+
+
+
+
 
     RULES = re.compile(r"([^{}]+)\{([^{}]*)\}", re.DOTALL)
     GRAD = re.compile(r"stop:\s*\d+\s*(#[0-9a-fA-F]{6})")
@@ -348,8 +495,9 @@ class TestContrast(unittest.TestCase):
             style = build_style(skins.SKINS[name])
             for sel, fg, bg in self._pairs(style):
                 if ":disabled" in sel:
-
-
+                                                                            
+                                                                       
+                                                
                     continue
                 ratio = contrast(fg, bg)
                 if any(
@@ -365,6 +513,12 @@ class TestContrast(unittest.TestCase):
                         f"нечитаема")
 
     def test_known_low_contrast_list_is_still_accurate(self):
+        pass
+
+
+
+
+
         for name in skins.skin_names():
             style = build_style(skins.SKINS[name])
             found = [
@@ -386,7 +540,7 @@ class TestContrast(unittest.TestCase):
                         f"KNOWN_LOW_CONTRAST")
 
     def test_something_actually_checked(self):
-
+        pass
         style = build_style(skins.SKINS[skins.DEFAULT_SKIN])
         pairs = list(self._pairs(style))
         self.assertGreater(
@@ -394,6 +548,10 @@ class TestContrast(unittest.TestCase):
             f"разобрано всего {len(pairs)} пар «фон/надпись» — "
             f"разбор QSS перестал работать")
 
+
+                                                                        
+                       
+                                                                        
 
 class TestSkinSetting(unittest.TestCase):
     KEYS = ("menu.tools.skin", "status.skin_changed",
@@ -420,7 +578,7 @@ class TestSkinSetting(unittest.TestCase):
             self.assertEqual(load(path).skin, "soft_azure")
 
     def test_unknown_skin_in_config_does_not_crash(self):
-
+        pass
         import tempfile
 
         from core.config import load, update
@@ -456,6 +614,10 @@ class TestSkinSetting(unittest.TestCase):
                         f"{path.stem}:{key} — набор плейсхолдеров не тот")
 
 
+                                                                        
+                       
+                                                                        
+
 class TestLiveSwitch(unittest.TestCase):
     def test_refresh_theme_replaces_stylesheet(self):
         from PySide6.QtWidgets import QApplication
@@ -477,7 +639,10 @@ class TestLiveSwitch(unittest.TestCase):
                 app.styleSheet(), first,
                 "возврат к прежнему скину дал другой QSS")
 
-
+                                                                        
+                                                                          
+                                                                            
+                                          
             app.setStyleSheet("заведомо сломанный стиль")
             self.assertEqual(refresh_theme(app), skins.current_name())
             self.assertNotEqual(
@@ -490,6 +655,10 @@ class TestLiveSwitch(unittest.TestCase):
             apply_theme(app, skins.DEFAULT_SKIN)
 
     def test_widget_without_own_stylesheet_follows_theme(self):
+        pass
+
+
+
         from PySide6.QtCore import Qt
         from PySide6.QtGui import QColor
         from PySide6.QtWidgets import QApplication, QLabel
@@ -500,7 +669,7 @@ class TestLiveSwitch(unittest.TestCase):
         try:
             apply_theme(app, "soft_azure")
             label = QLabel("проверка")
-            label.setObjectName("noticeElapsed")
+            label.setObjectName("noticeElapsed")                       
             label.setAlignment(Qt.AlignLeft)
             label.resize(260, 40)
             label.show()
@@ -511,13 +680,16 @@ class TestLiveSwitch(unittest.TestCase):
             app.processEvents()
             img_air = label.grab().toImage()
 
-
+                                                                      
+                                                                    
+                                                        
             self.assertEqual(
                 (img_azure.width(), img_azure.height()),
                 (img_air.width(), img_air.height()),
                 "размер подписи изменился при смене скина")
 
-
+                                                                         
+                                                                         
             colors_azure = {
                 img_azure.pixel(x, y)
                 for y in range(img_azure.height())

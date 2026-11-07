@@ -1,3 +1,18 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import re
@@ -10,6 +25,7 @@ from PySide6.QtWidgets import (
     QMessageBox,
 )
 
+                                                                            
 
 try:
     VERTICAL = Qt.Orientation.Vertical
@@ -21,6 +37,7 @@ try:
 except AttributeError:
     HORIZONTAL = Qt.Horizontal
 
+                                                                            
 
 try:
     USER_ROLE = int(Qt.ItemDataRole.UserRole)
@@ -33,15 +50,16 @@ except Exception:
 KIND_ROLE = USER_ROLE + 1
 ARC_OWNER_ROLE = KIND_ROLE + 1
 
-
+                                     
 SIZE_RAW_ROLE = ARC_OWNER_ROLE + 1
 DATE_RAW_ROLE = ARC_OWNER_ROLE + 2
 VERSION_RAW_ROLE = ARC_OWNER_ROLE + 3
 NAME_SORT_ROLE = ARC_OWNER_ROLE + 4
 
-
+                                                               
 TCOL = 0
 
+                                                                           
 
 try:
     CUSTOM_CONTEXT = Qt.ContextMenuPolicy.CustomContextMenu
@@ -90,7 +108,7 @@ try:
 except AttributeError:
     WINDOW_SHORTCUT = Qt.WindowShortcut
 
-
+                                                                            
 try:
     WIDGET_SHORTCUT = Qt.ShortcutContext.WidgetShortcut
 except AttributeError:
@@ -99,6 +117,7 @@ except AttributeError:
     except AttributeError:
         WIDGET_SHORTCUT = WINDOW_SHORTCUT
 
+                                                                            
 
 try:
     ASCENDING_ORDER = Qt.SortOrder.AscendingOrder
@@ -111,25 +130,31 @@ except AttributeError:
         ASCENDING_ORDER = 0
         DESCENDING_ORDER = 1
 
+                                                                            
 
-from core.paths import (
+                                                                   
+                                                                
+                                                                    
+from core.paths import (                                               
     MULTIPART_RE as _MULTIPART_RE,
     multipart_pattern,
 )
 
-
+                                              
 MULTIPART_RE = _MULTIPART_RE
 
 
-K_FS = "fs"
-K_ARC = "arc"
-K_FS_ARC = "fs_arc"
-K_FS_UNI_ARC = "fs_uni_arc"
-K_PLACE = "place"
-K_UP = "up"
-K_FS_DIR = "fs_dir"
-K_FS_FILE = "fs_file"
-K_ARC_DIR = "arc_dir"
-K_ARC_FILE = "arc_file"
+                                                                            
+
+K_FS = "fs"                                               
+K_ARC = "arc"                                         
+K_FS_ARC = "fs_arc"                                                                  
+K_FS_UNI_ARC = "fs_uni_arc"                                                                 
+K_PLACE = "place"                                     
+K_UP = "up"                                    
+K_FS_DIR = "fs_dir"                               
+K_FS_FILE = "fs_file"                            
+K_ARC_DIR = "arc_dir"                                  
+K_ARC_FILE = "arc_file"                               
 
 PLACEHOLDER = "placeholder"

@@ -1,3 +1,44 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import hashlib
@@ -13,28 +54,34 @@ from pathlib import Path, PurePosixPath
 from typing import Callable, Optional
 from urllib.parse import unquote, urlparse
 
-
+                                                                     
+                                                                   
+                                                                     
+                                                                   
+                                                          
 DEFAULT_MANIFEST_URL = (
     "https://github.com/AmbaRu/rizpaq/releases/latest/download/latest.json"
 )
 
-
+                                                                
+                                                                          
 APP_EXE = "Rizpaq.exe"
 APP_INTERNAL = "_internal"
 UPDATE_LOG = "rizpaq_update.log"
 
-
+                                                                 
 MAX_MANIFEST_BYTES = 256 * 1024
 MAX_ARCHIVE_BYTES = 3 * 1024 * 1024 * 1024
 MAX_UNPACKED_BYTES = 4 * 1024 * 1024 * 1024
 
-
+                                                   
 USER_AGENT = "Rizpaq-updater/1.0"
 
-
+                                                       
 DEFAULT_TIMEOUT = 15
-
-
+                                                                        
+                                                                   
+                                                          
 CHECK_TIMEOUT = 5
 
 _CHUNK = 256 * 1024
@@ -49,7 +96,17 @@ class UpdateCancelled(Exception):
     pass
 
 
+                                                                             
+                    
+                                                                             
+
 def version_key(text: str) -> tuple:
+    pass
+
+
+
+
+
     parts = re.findall(r"\d+", str(text or ""))
     if not parts:
         raise UpdateError(f"bad version: {text!r}")
@@ -57,7 +114,7 @@ def version_key(text: str) -> tuple:
 
 
 def is_newer(remote: str, local: str) -> bool:
-
+    pass
     r = version_key(remote)
     l = version_key(local)
     length = max(len(r), len(l))
@@ -75,6 +132,12 @@ def _https(url: str, what: str) -> str:
 
 
 def parse_manifest(data) -> dict:
+    pass
+
+
+
+
+
     if isinstance(data, bytes):
         try:
             data = data.decode("utf-8-sig")
@@ -93,7 +156,7 @@ def parse_manifest(data) -> dict:
     version = str(data.get("version") or "").strip()
     if not version:
         raise UpdateError("manifest has no version")
-    version_key(version)
+    version_key(version)                    
 
     url = _https(data.get("url"), "archive url")
 
@@ -127,6 +190,12 @@ def parse_manifest(data) -> dict:
 def fetch_manifest(url: Optional[str] = None,
                    timeout: int = DEFAULT_TIMEOUT,
                    opener=None) -> dict:
+    pass
+
+
+
+
+
     target = _https(url or DEFAULT_MANIFEST_URL, "manifest url")
     open_func = opener or urllib.request.urlopen
     request = urllib.request.Request(target, headers={"User-Agent": USER_AGENT})
@@ -153,8 +222,12 @@ def fetch_manifest(url: Optional[str] = None,
     return parse_manifest(text)
 
 
-def sha256_file(path) -> str:
+                                                                             
+                        
+                                                                             
 
+def sha256_file(path) -> str:
+    pass
     h = hashlib.sha256()
     with open(path, "rb") as f:
         for block in iter(lambda: f.read(_CHUNK), b""):
@@ -163,7 +236,7 @@ def sha256_file(path) -> str:
 
 
 def verify_sha256(path, expected: str) -> bool:
-
+    pass
     if not expected:
         return False
     try:
@@ -186,6 +259,14 @@ def download_update(info: dict, dest_dir, progress: Optional[Callable] = None,
                     is_cancelled: Optional[Callable] = None,
                     timeout: int = DEFAULT_TIMEOUT,
                     opener=None) -> Path:
+    pass
+
+
+
+
+
+
+
     url = _https(info.get("url"), "archive url")
     dest_dir = Path(dest_dir)
     dest_dir.mkdir(parents=True, exist_ok=True)
@@ -256,8 +337,12 @@ def download_update(info: dict, dest_dir, progress: Optional[Callable] = None,
     return dest
 
 
-def _safe_zip_name(name: str) -> str:
+                                                                             
+                           
+                                                                             
 
+def _safe_zip_name(name: str) -> str:
+    pass
     n = str(name or "").replace("\\", "/")
     if not n or n.startswith("/"):
         raise UpdateError("zip contains an absolute path")
@@ -270,6 +355,15 @@ def _safe_zip_name(name: str) -> str:
 
 
 def inspect_update_zip(path) -> dict:
+    pass
+
+
+
+
+
+
+
+
     try:
         zf = zipfile.ZipFile(path)
     except (OSError, zipfile.BadZipFile) as exc:
@@ -313,12 +407,20 @@ def inspect_update_zip(path) -> dict:
     return {"root": root, "exe": exe, "internal": internal}
 
 
-def is_frozen() -> bool:
+                                                                             
+                                         
+                                                                             
 
+def is_frozen() -> bool:
+    pass
     return bool(getattr(sys, "frozen", False))
 
 
 def install_dir() -> Optional[Path]:
+    pass
+
+
+
     if not is_frozen():
         return None
     try:
@@ -328,7 +430,7 @@ def install_dir() -> Optional[Path]:
 
 
 def _ps_quote(value) -> str:
-
+    pass
     return "'" + str(value).replace("'", "''") + "'"
 
 
@@ -336,6 +438,19 @@ def build_update_script(zip_path, install_path, wait_pid: int,
                         temp_path, app_exe: str = APP_EXE,
                         internal: str = APP_INTERNAL,
                         log_name: str = UPDATE_LOG) -> str:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
     install = _ps_quote(install_path)
     zip_q = _ps_quote(zip_path)
     temp_q = _ps_quote(temp_path)
@@ -384,8 +499,8 @@ try {{
         throw 'Rizpaq did not exit in time'
     }}
 
-    # zip распаковываем в ПОДПАПКУ: сам zip и этот скрипт живут
-    # в $temp, удалять их до распаковки нельзя (§72 DIARY).
+
+
     $stage = Join-Path $temp 'stage'
     Expand-Archive -LiteralPath $zip -DestinationPath $stage -Force
 
@@ -440,6 +555,12 @@ try {{
 
 def prepare_update(zip_path, install_path=None, wait_pid: Optional[int] = None,
                    temp_root=None) -> tuple:
+    pass
+
+
+
+
+
     if install_path is None:
         install_path = install_dir()
     if not install_path:
@@ -471,14 +592,15 @@ def prepare_update(zip_path, install_path=None, wait_pid: Optional[int] = None,
 
 
 def launch_updater(script_path) -> None:
-
+    pass
     powershell = shutil.which("powershell.exe") or shutil.which("powershell")
     if not powershell:
         raise UpdateError("powershell.exe not found")
     flags = 0
     if os.name == "nt":
-
-
+                                                                     
+                                                                         
+                                                                  
         flags = 0x08000000
     try:
         subprocess.Popen(
@@ -486,8 +608,9 @@ def launch_updater(script_path) -> None:
              "-ExecutionPolicy", "Bypass", "-File", str(script_path)],
             creationflags=flags,
             close_fds=True,
-
-
+                                                                         
+                                                                          
+                                                                        
         )
     except Exception as exc:
         raise UpdateError(f"{type(exc).__name__}: {exc}") from exc

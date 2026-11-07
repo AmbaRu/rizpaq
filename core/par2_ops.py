@@ -1,3 +1,90 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -11,50 +98,100 @@ from typing import List, NamedTuple, Optional
 
 from core.zpaq_cli import decode_bytes
 
+                                                                             
+                      
+                                                                             
 
+                            
 STATE_OK = "ok"
-
+                                                                        
 STATE_DAMAGED = "damaged"
-
-
+                                                                 
+                                                                     
+                                                                        
+                                                                  
+                                                               
+                                                                  
+                                        
 STATE_UNREPAIRABLE = "unrepairable"
-
+                                               
 STATE_MISSING = "missing"
-
+                                                   
 STATE_BROKEN = "broken"
-
+                                                             
 STATE_FAILED = "failed"
 
-
+                                                                       
+                                                                   
+                                                          
 DAMAGED_STATES = (STATE_DAMAGED, STATE_UNREPAIRABLE)
 
 
 class Par2Result(NamedTuple):
+    pass
+
+
+
+
+
+
+
+
+
+
+
 
     ok: bool
     state: str
     log: str = ""
     recorded_size: Optional[int] = None
-
-
+                                                                  
+                                                                        
+                                                                      
+                                                                        
+                                                                       
+                                 
     skipped: bool = False
 
     @property
     def damaged(self) -> bool:
+        pass
+
+
+
+
+
+
         return self.state in DAMAGED_STATES
 
     @property
     def repairable(self) -> bool:
-
+        pass
         return self.state == STATE_DAMAGED
 
     @property
     def has_set(self) -> bool:
-
+        pass
         return self.state in (STATE_OK,) + DAMAGED_STATES
 
 
+                                                                             
+               
+                                                                             
+
+
 def find_par2() -> Optional[str]:
+    pass
+
+
+
+
+
+
+
+
+
+
     env_bin = os.environ.get("PAR2_BIN")
     if env_bin and os.path.isfile(env_bin):
         return env_bin
@@ -71,7 +208,7 @@ def find_par2() -> Optional[str]:
 
 
 def check_par2(bin_path: str) -> bool:
-
+    pass
     if not bin_path or not os.path.isfile(bin_path):
         return False
     try:
@@ -88,10 +225,35 @@ def check_par2(bin_path: str) -> bool:
         return False
 
 
+                                                                             
+                     
+ 
+                                                                      
+                                                                      
+                        
+                                                                             
+
+                                                   
+                                           
+                                       
+                                       
+                                                                      
+                         
 _VOL_RE = re.compile(r"\.vol\d+\+\d+\.par2$", re.IGNORECASE)
 
 
 def default_options() -> dict:
+    pass
+
+
+
+
+
+
+
+
+
+
     return {
         "redundancy": 5,
         "block_size": None,
@@ -102,10 +264,28 @@ def default_options() -> dict:
 
 
 def par2_main_name(archive_path: str) -> str:
+    pass
+
+
+
+
+
+
     return str(archive_path) + ".par2"
 
 
 def par2_set_files(archive_path: str) -> List[str]:
+    pass
+
+
+
+
+
+
+
+
+
+
     main = par2_main_name(archive_path)
     out: List[str] = []
     if os.path.isfile(main):
@@ -131,6 +311,13 @@ def par2_set_files(archive_path: str) -> List[str]:
 
 
 def remove_par2_set(archive_path: str) -> List[str]:
+    pass
+
+
+
+
+
+
     removed: List[str] = []
     for path in par2_set_files(archive_path):
         try:
@@ -141,16 +328,37 @@ def remove_par2_set(archive_path: str) -> List[str]:
     return removed
 
 
+                                                                             
+              
+ 
+                                                                
+                                                               
+                                                                       
+                                                                             
+
+                                                                       
+                                                                  
+                           
 _MAX_SET_PATH = 240
 
 
 class SubstLetter:
+    pass
+
+
+
+
+
+
+
 
     def __init__(self, folder: str):
         self.folder = folder
         self.letter: Optional[str] = None
-
-
+                                                                 
+                                                                       
+                                                                     
+                                                 
         self.required = False
         self.failed = False
 
@@ -159,15 +367,15 @@ class SubstLetter:
         if not self.required:
             return None
         if os.name != "nt":
-
-
+                                                                        
+                                                                      
             self.required = False
             return None
 
         for letter in string.ascii_uppercase:
             drive = letter + ":"
-
-
+                                                                     
+                                                
             if os.path.exists(drive):
                 continue
             try:
@@ -206,13 +414,24 @@ class SubstLetter:
 
 
 def needs_subst(folder: str) -> bool:
+    pass
+
+
+
+
+
     name = os.path.basename(str(folder).rstrip("\\/")) or "x"
     probe = os.path.join(str(folder), name + ".zpaq.vol127+35.par2")
     return len(probe) > _MAX_SET_PATH
 
 
-def _popen_kwargs() -> dict:
+                                                                             
+        
+                                                                             
 
+
+def _popen_kwargs() -> dict:
+    pass
     kw = {}
     if os.name == "nt":
         kw["creationflags"] = getattr(subprocess, "CREATE_NO_WINDOW", 0)
@@ -220,7 +439,7 @@ def _popen_kwargs() -> dict:
 
 
 def _kill(proc) -> None:
-
+    pass
     try:
         proc.kill()
     except Exception:
@@ -229,6 +448,30 @@ def _kill(proc) -> None:
 
 def _run(bin_path: str, args: List[str], timeout: int, register=None,
          on_line=None):
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     try:
         proc = subprocess.Popen(
             [bin_path] + args,
@@ -273,7 +516,7 @@ def _run(bin_path: str, args: List[str], timeout: int, register=None,
                 try:
                     on_line(text)
                 except Exception:
-
+                                                                    
                     pass
         except Exception:
             pass
@@ -301,12 +544,21 @@ def _run(bin_path: str, args: List[str], timeout: int, register=None,
     return rc, "\n".join(lines)
 
 
+                                                                  
+                                                                
+                        
 _SIZE_RE = re.compile(
     r"total size of the data files is\s+([0-9,]+)\s*bytes", re.IGNORECASE
 )
 
 
 def read_recorded_size(log: str) -> Optional[int]:
+    pass
+
+
+
+
+
     if not log:
         return None
     m = _SIZE_RE.search(log)
@@ -317,6 +569,38 @@ def read_recorded_size(log: str) -> Optional[int]:
     except ValueError:
         return None
 
+
+                                                                             
+                           
+                                                                             
+ 
+                                 
+ 
+                                                                      
+ 
+                                     
+                                      
+                                      
+                                      
+                                                       
+ 
+                                                                    
+                                                        
+                                                                     
+                                                                 
+ 
+                                                                
+                                                                     
+                                                                      
+                                                              
+                                                              
+                                                                   
+                                   
+ 
+                                                             
+                                                                     
+                                                               
+                                                   
 
 _RE_OK = re.compile(r"All files are correct", re.IGNORECASE)
 _RE_DAMAGED = re.compile(r"-\s*damaged", re.IGNORECASE)
@@ -331,30 +615,48 @@ _RE_SET_UNREADABLE = re.compile(
 
 
 def classify_verify_log(log: str) -> Optional[str]:
+    pass
+
+
+
+
+
+
+
+
+
+
+
     if not log:
         return None
 
-
+                                          
     if _RE_OK.search(log):
         return STATE_OK
 
-
+                                                                
+                                                                     
+                                                    
     if _RE_DAMAGED.search(log):
-
-
+                                                         
+                                                                   
+                                                                 
+                                                                   
+                                                           
         if _RE_REPAIR_IMPOSSIBLE.search(log):
             return STATE_UNREPAIRABLE
         if _RE_REPAIR_POSSIBLE.search(log):
             return STATE_DAMAGED
-
-
+                                                               
+                                                                     
+                                                          
         return STATE_UNREPAIRABLE
 
-
+                                        
     if _RE_TARGET_MISSING.search(log):
         return STATE_MISSING
 
-
+                                                              
     if _RE_SET_UNREADABLE.search(log):
         return STATE_BROKEN
 
@@ -362,6 +664,14 @@ def classify_verify_log(log: str) -> Optional[str]:
 
 
 def _classify_verify(rc, log: str) -> Par2Result:
+    pass
+
+
+
+
+
+
+
     by_log = classify_verify_log(log)
     if by_log == STATE_OK:
         return Par2Result(True, STATE_OK, log, read_recorded_size(log))
@@ -372,7 +682,7 @@ def _classify_verify(rc, log: str) -> Par2Result:
     if by_log in (STATE_MISSING, STATE_BROKEN):
         return Par2Result(False, by_log, log, read_recorded_size(log))
 
-
+                                                          
     if rc == 0:
         return Par2Result(True, STATE_OK, log, read_recorded_size(log))
     if rc == 1:
@@ -380,14 +690,21 @@ def _classify_verify(rc, log: str) -> Par2Result:
             False, STATE_DAMAGED, log, read_recorded_size(log)
         )
     if rc == 3:
-
+                                                                      
         return Par2Result(False, STATE_MISSING, log)
     if rc == 2:
-
-
+                                                              
+                                                             
+                                                            
+                                                            
         return Par2Result(False, STATE_UNREPAIRABLE, log,
                           read_recorded_size(log))
     return Par2Result(False, STATE_FAILED, log)
+
+
+                                                                             
+          
+                                                                             
 
 
 def create_parset(
@@ -404,10 +721,32 @@ def create_parset(
     register=None,
     on_line=None,
 ) -> Par2Result:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
     if not bin_path or not os.path.isfile(bin_path):
         return Par2Result(False, STATE_FAILED, "par2 не найден")
 
-
+                                                                      
+                                                                         
+     
+                                                                    
+                                                                     
+                                                                    
+                                                              
+                                                              
+                                                            
     subst = SubstLetter(os.path.dirname(str(archive_path)) or ".")
     with subst as drive:
         target = str(archive_path)
@@ -440,7 +779,11 @@ def create_parset(
     if rc == 0:
         return Par2Result(True, STATE_OK, log)
 
-
+                                                                      
+                                                                       
+                                                                       
+                                                                  
+                                                                 
     if subst.failed:
         log = (
             f"[rizpaq] путь слишком длинный: Windows не дала укоротить его "
@@ -451,8 +794,9 @@ def create_parset(
     if rc == 3 and "already exists" in (log or ""):
         return Par2Result(False, STATE_FAILED, log)
     if rc == 3 and "must specify a list of files" in (log or ""):
-
-
+                                                                    
+                                                                
+                                              
         return Par2Result(False, STATE_MISSING, log)
     if rc == "timeout":
         return Par2Result(False, STATE_FAILED, "превышено время ожидания")
@@ -467,6 +811,20 @@ def verify_parset(
     timeout: int = 3600,
     register=None,
 ) -> Par2Result:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
     if not bin_path or not os.path.isfile(bin_path):
         return Par2Result(False, STATE_FAILED, "par2 не найден")
     if not par2_path or not os.path.isfile(par2_path):
@@ -491,6 +849,26 @@ def repair_parset(
     timeout: int = 7200,
     register=None,
 ) -> Par2Result:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     if not bin_path or not os.path.isfile(bin_path):
         return Par2Result(False, STATE_FAILED, "par2 не найден")
     if not par2_path or not os.path.isfile(par2_path):
@@ -523,7 +901,9 @@ def repair_parset(
             "набор для текущего архива.",
         )
 
-
+                                                                      
+                                                                         
+                                                          
     folder = os.path.dirname(str(par2_path)) or "."
     subst = SubstLetter(folder)
     with subst as drive:
@@ -531,8 +911,9 @@ def repair_parset(
         if drive:
             target = os.path.join(drive + "\\", os.path.basename(par2_path))
         rc, log = _run(bin_path, ["r", str(target)], timeout, register=register)
-
-
+                                                                      
+                                                                     
+                                  
         subst_failed = subst.failed
 
     if rc == 0:
@@ -551,6 +932,16 @@ def repair_parset(
 
 
 def set_is_stale(archive_path: str, recorded_size: Optional[int]) -> Optional[bool]:
+    pass
+
+
+
+
+
+
+
+
+
     if recorded_size is None:
         return None
     try:
@@ -560,19 +951,37 @@ def set_is_stale(archive_path: str, recorded_size: Optional[int]) -> Optional[bo
     return actual > int(recorded_size)
 
 
+                                                                             
+                        
+ 
+                                                                      
+                                                                       
+                                                                       
+                                
+                                                                             
+
+                                                                      
+                                                               
 _TEMP_MARK = ".rizpaq-new"
 
 
 def par2_temp_set_name(archive_path: str) -> str:
-
+    pass
     return str(archive_path) + _TEMP_MARK + ".par2"
 
 
 def _temp_set_files(archive_path: str) -> List[str]:
+    pass
+
+
+
+
+
+
     temp_main = par2_temp_set_name(archive_path)
     folder = os.path.dirname(temp_main) or "."
     base = os.path.basename(temp_main)
-    stem = os.path.splitext(base)[0]
+    stem = os.path.splitext(base)[0]                                 
     out: List[str] = []
     try:
         names = os.listdir(folder)
@@ -588,6 +997,16 @@ def _temp_set_files(archive_path: str) -> List[str]:
 
 
 def cleanup_orphans(archive_path: str) -> List[str]:
+    pass
+
+
+
+
+
+
+
+
+
     removed: List[str] = []
     for path in _temp_set_files(archive_path):
         try:
@@ -612,6 +1031,40 @@ def refresh_par2_set(
     register=None,
     on_line=None,
 ) -> Par2Result:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     if not bin_path or not os.path.isfile(bin_path):
         return Par2Result(False, STATE_FAILED, "par2 не найден")
     if not archive_path or not os.path.isfile(archive_path):
@@ -633,7 +1086,7 @@ def refresh_par2_set(
                 skipped=True,
             )
 
-
+                                                                
     cleanup_orphans(archive_path)
 
     created = create_parset(
@@ -649,8 +1102,11 @@ def refresh_par2_set(
         on_line=on_line,
     )
     if not created.ok:
-
-
+                                                                     
+                                                                       
+                                                                      
+                                                               
+                                                                    
         cleanup_orphans(archive_path)
         return created
 
@@ -660,7 +1116,7 @@ def refresh_par2_set(
         size_after = None
 
     if size_after != size_before:
-
+                                                                    
         cleanup_orphans(archive_path)
         return Par2Result(
             False,
@@ -670,10 +1126,13 @@ def refresh_par2_set(
             recorded_size=size_after,
         )
 
-
+                                                      
     remove_par2_set(archive_path)
 
-
+                                                                  
+                                                                         
+                                                                           
+                                                      
     renamed = 0
     for path in _temp_set_files(archive_path):
         folder_path = os.path.dirname(path) or "."
@@ -685,8 +1144,9 @@ def refresh_par2_set(
             os.replace(path, os.path.join(folder_path, target_name))
             renamed += 1
         except OSError:
-
-
+                                                                          
+                                                                      
+                                                    
             continue
 
     if renamed == 0:

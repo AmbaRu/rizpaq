@@ -1,3 +1,33 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -6,7 +36,7 @@ import subprocess
 import time
 from typing import Callable, Optional
 
-
+                                                                 
 from core.engine_path import (
     EnginePathError,
     drop_substitutes,
@@ -20,8 +50,11 @@ from core.proc_health import (
 CANCELLED_TEXT = "Operation cancelled by user"
 
 
+                                                                             
+                       
+                                                                             
 def decode_bytes(data: bytes) -> str:
-
+    pass
     if not data:
         return ""
 
@@ -34,13 +67,25 @@ def decode_bytes(data: bytes) -> str:
     return data.decode("utf-8", errors="replace")
 
 
+                                                                    
 _PASSWORD_VALUE_FLAGS = ("-key",)
-
+                                                                      
 _PASSWORD_INLINE_PREFIX = "-p"
 _MASK = "***"
 
 
 def mask_secrets(cmd: list, password: Optional[str] = None) -> list:
+    pass
+
+
+
+
+
+
+
+
+
+
     args = list(cmd or [])
     if not password:
         return args
@@ -59,7 +104,8 @@ def mask_secrets(cmd: list, password: Optional[str] = None) -> list:
             expect_value = True
             continue
 
-
+                                                                             
+                                                                
         if (
             isinstance(arg, str)
             and arg.startswith(_PASSWORD_INLINE_PREFIX)
@@ -74,7 +120,7 @@ def mask_secrets(cmd: list, password: Optional[str] = None) -> list:
 
 
 def safe_cmdline(cmd: list, password: Optional[str] = None) -> str:
-
+    pass
     masked = mask_secrets(cmd, password)
 
     try:
@@ -93,10 +139,33 @@ def looks_like_password_error(text: str) -> bool:
     )
 
 
+                                                                  
+                                                             
+                            
+ 
+                                                                  
+ 
+                                                                     
+                                                   
 _BUSY_MARKER = "another zpaqfranz is running"
 
 
 def looks_like_busy_error(text: str) -> bool:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     return _BUSY_MARKER in (text or "").lower()
 
 
@@ -111,6 +180,14 @@ def _is_cancelled(is_cancelled: Optional[Callable[[], bool]]) -> bool:
 
 
 def _kill_proc(proc, timeout: float = 5.0) -> None:
+    pass
+
+
+
+
+
+
+
     if proc is None:
         return
 
@@ -126,6 +203,13 @@ def _kill_proc(proc, timeout: float = 5.0) -> None:
 
 
 def _close_pipe(proc) -> None:
+    pass
+
+
+
+
+
+
     if proc is None:
         return
 
@@ -136,32 +220,66 @@ def _close_pipe(proc) -> None:
         pass
 
 
+                                                                             
+                  
+                                                                             
 def _popen_kwargs() -> dict:
     kwargs: dict = {}
 
     if os.name == "nt":
-
+                                                  
         kwargs["creationflags"] = subprocess.CREATE_NO_WINDOW
 
     return kwargs
 
 
+                                                                  
+                    
+ 
+                                                                           
+                                                                      
+ 
+                                                                       
+                                                                    
+                                                                       
+                                                                       
+                                                                        
+                                                                   
+                                                               
+                                                 
+ 
+                                                                  
+                                                             
+                                                                 
+                                                                  
+                                                             
+                                                             
+                                                   
+                                      
 DEFAULT_STALL_TIMEOUT = 90
 STALL_TIMEOUT = DEFAULT_STALL_TIMEOUT
 
-
+                                                                   
+                                                                       
+                                                                        
+                                                 
 BUSY_STALL_MULTIPLIER = 30
 
 
 def _stall_timeout() -> float:
-
+    pass
     from core.proc_health import effective_stall_timeout
     return effective_stall_timeout(DEFAULT_STALL_TIMEOUT, STALL_TIMEOUT)
 
-
+                                                                  
+                                                                           
+                                                                        
+                                 
 _PASSWORD_PROMPT = re.compile(rb"Enter AES password", re.IGNORECASE)
 
-
+                                                                         
+                                                                       
+                                                              
 POLL_INTERVAL = 0.05
 
 
@@ -170,20 +288,31 @@ def run_zpaq(
     is_cancelled: Optional[Callable[[], bool]] = None,
     set_proc: Optional[Callable] = None,
 ) -> tuple:
+    pass
 
 
+
+
+
+
+                                                                       
+                                                                       
+                                 
     try:
         cmd, cwd, subs = rewrite_cmd(cmd)
     except EnginePathError as exc:
-
-
+                                                                         
+                                                                      
+                                                    
         return 1, f"ERROR: {exc}\n"
     except Exception:
-
-
+                                                                        
+                                                      
         cmd, cwd, subs = list(cmd), None, []
 
-
+                                                                          
+                                                                           
+                                                        
     try:
         return _run_prepared(cmd, cwd, is_cancelled, set_proc)
     finally:
@@ -196,7 +325,7 @@ def _run_prepared(
     is_cancelled: Optional[Callable[[], bool]],
     set_proc: Optional[Callable],
 ) -> tuple:
-
+    pass
 
     try:
         popen_kwargs = _popen_kwargs()
@@ -221,13 +350,17 @@ def _run_prepared(
 
     chunks: list = []
     last_data = time.monotonic()
-
-
+                                                                   
+                                                                         
+                                                                    
     stall_used = _stall_timeout()
     liv = Liveness(make_cpu_reader(proc), stall_timeout=stall_used,
                    busy_timeout=stall_used * BUSY_STALL_MULTIPLIER)
 
-
+                                                                       
+                                                                           
+                                                                           
+                                                                    
     try:
         os.set_blocking(proc.stdout.fileno(), False)
     except Exception:
@@ -243,7 +376,10 @@ def _run_prepared(
             _close_pipe(proc)
             return -1, CANCELLED_TEXT + "\n"
 
-
+                                                                        
+                                                                      
+                                                                        
+                                          
         if proc.poll() is None:
             liv.verdict()
             if liv.stalled:
@@ -285,8 +421,8 @@ def _run_prepared(
         try:
             chunk = proc.stdout.read(4096)
         except Exception:
-
-
+                                                                      
+                                                        
             break
 
         if chunk:
@@ -295,9 +431,10 @@ def _run_prepared(
             liv.note_data()
             continue
 
-
+                                                                  
+                                                              
         if proc.poll() is not None:
-
+                                                
             try:
                 tail = proc.stdout.read()
                 if tail:
@@ -319,7 +456,7 @@ def _run_prepared(
 
 
 def check_zpaq(bin_path: str) -> bool:
-
+    pass
     try:
         subprocess.run(
             [bin_path],

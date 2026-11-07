@@ -1,3 +1,11 @@
+                       
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -81,11 +89,11 @@ class TestMissing(unittest.TestCase):
         self.assertNotIn("source_missing", kinds)
 
     def test_archive_missing_only_after_run(self):
-
+                                                             
         w = _work(dest=r"Q:\нет\такого\a.zpaq", jobs=[_job()])
         kinds = [a.kind for a in DA.collect_alerts({"works": [w]}, [])]
         self.assertNotIn("archive_missing", kinds)
-
+                                                    
         w2 = _work(dest=r"Q:\нет\такого\a.zpaq",
                    jobs=[_job(run_count=3, last_run="2026-10-01 10:00:00")])
         kinds2 = [a.kind for a in DA.collect_alerts({"works": [w2]}, [])]
@@ -121,7 +129,7 @@ class TestPar2Check(unittest.TestCase):
 
     def test_checked_recently_no_alert(self):
         dest = self._with_set("alerts_rec_")
-
+                                                            
         j = _job("jpar2", action="test", test_mode="par2",
                  last_run=(datetime.now()
                            - timedelta(days=5)).strftime("%Y-%m-%d %H:%M:%S"))
@@ -144,7 +152,7 @@ class TestJobSilent(unittest.TestCase):
     def test_hourly_silent(self):
         j = _job("j1", schedule={"enabled": True, "frequency": "hourly",
                                  "interval": 1})
-
+                                                                  
         history = [_entry("j1", "ok", minutes_ago=48 * 60)]
         alerts = DA.collect_alerts({"works": [_work(jobs=[j])]}, history)
         silent = [a for a in alerts if a.kind == "job_silent"]
@@ -174,7 +182,7 @@ class TestStreaks(unittest.TestCase):
             _entry("j2", "ok", minutes_ago=30),
             _entry("j2", "ok", minutes_ago=20),
             _entry("j2", "ok", minutes_ago=10),
-            _entry("j3", "busy", minutes_ago=10),
+            _entry("j3", "busy", minutes_ago=10),                     
         ]
         streaks = DA.job_streaks(history)
         self.assertEqual(streaks["j1"], ("error", 1))
@@ -182,7 +190,7 @@ class TestStreaks(unittest.TestCase):
         self.assertNotIn("j3", streaks)
 
     def test_order_independent(self):
-
+                                                  
         history = [
             _entry("j1", "ok", minutes_ago=30),
             _entry("j1", "error", minutes_ago=20),
@@ -207,11 +215,11 @@ class TestFreeBytes(unittest.TestCase):
         self.assertGreater(free, 0)
 
     def test_missing_path(self):
-
-
+                                                                
+                                                             
         try:
             free = DA.free_bytes(r"Q:\нет\такого")
-        except Exception as exc:
+        except Exception as exc:                    
             self.fail(f"free_bytes raised: {exc}")
         else:
             self.assertTrue(free is None or free >= 0)

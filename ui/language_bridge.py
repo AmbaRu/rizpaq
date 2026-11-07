@@ -1,3 +1,23 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 from ui.config_bridge import _merge_cfg
@@ -11,10 +31,10 @@ from ui.i18n import (
 
 
 class LanguageBridgeMixin:
-
+    pass
 
     def _init_language(self):
-
+        pass
         lang = getattr(self._cfg, "language", None)
 
         if not lang:
@@ -23,7 +43,7 @@ class LanguageBridgeMixin:
         set_language(lang, notify=False)
 
     def _setup_language_listener(self):
-
+        pass
         if getattr(self, "_language_listener_registered", False):
             return
 
@@ -31,7 +51,7 @@ class LanguageBridgeMixin:
         self._language_listener_registered = True
 
     def _switch_language(self, lang: str):
-
+        pass
         if lang == current_language():
             return
 
@@ -53,8 +73,9 @@ class LanguageBridgeMixin:
             pass
 
     def _retranslate_ui(self):
-
-
+        pass
+                                                                
+                                            
         latest_checked = bool(getattr(self._cfg, "latest_only", False))
 
         try:
@@ -62,7 +83,7 @@ class LanguageBridgeMixin:
         except Exception:
             pass
 
-
+                                              
         try:
             self._create_actions()
         except Exception:
@@ -73,13 +94,14 @@ class LanguageBridgeMixin:
         except Exception:
             pass
 
-
+                                                                   
         try:
             self._rebuild_versions_menu()
         except Exception:
             pass
 
-
+                                                                   
+                                                              
         bar = getattr(self, "profile_bar", None)
         if bar is not None:
             try:
@@ -87,7 +109,9 @@ class LanguageBridgeMixin:
             except Exception:
                 pass
 
-
+                                                                       
+                                                                      
+                                                                      
         page = getattr(self, "backup_page", None)
         if page is not None:
             retranslate = getattr(page, "retranslate", None)
@@ -97,7 +121,9 @@ class LanguageBridgeMixin:
                 except Exception:
                     pass
 
-
+                                                                  
+                                                                
+                       
         dash = getattr(self, "dashboard_page", None)
         if dash is not None:
             dash_retranslate = getattr(dash, "retranslate", None)
@@ -107,7 +133,7 @@ class LanguageBridgeMixin:
                 except Exception:
                     pass
 
-
+                  
         try:
             self.table.setHorizontalHeaderLabels(
                 [
@@ -121,19 +147,19 @@ class LanguageBridgeMixin:
         except Exception:
             pass
 
-
+                
         try:
             self.search_edit.setPlaceholderText(tr("search.placeholder"))
         except Exception:
             pass
 
-
+                 
         try:
             self.tree.setHeaderLabel(tr("tree.header"))
         except Exception:
             pass
 
-
+                         
         try:
             self._update_title()
         except Exception:

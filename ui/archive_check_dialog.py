@@ -1,3 +1,60 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 from PySide6.QtWidgets import (
@@ -17,7 +74,7 @@ from ui.test_modes import combo_entries as test_mode_combo_entries
 
 
 class ArchiveCheckDialog(QDialog):
-
+    pass
 
     def __init__(
         self,
@@ -44,7 +101,7 @@ class ArchiveCheckDialog(QDialog):
         layout.setContentsMargins(14, 14, 14, 14)
         layout.setSpacing(10)
 
-
+                                                         
         info = QFormLayout()
         info.setContentsMargins(0, 0, 0, 0)
         info.setSpacing(6)
@@ -54,7 +111,9 @@ class ArchiveCheckDialog(QDialog):
         dest_label.setWordWrap(True)
         info.addRow(tr("check.archive"), dest_label)
 
-
+                                                                    
+                                                                      
+                                                
         pw_set = bool(self._work.get("password_b64"))
         pw_label = QLabel(
             tr("check.password_set") if pw_set else tr("check.password_not_set")
@@ -63,7 +122,7 @@ class ArchiveCheckDialog(QDialog):
 
         layout.addLayout(info)
 
-
+                                       
         form = QFormLayout()
         form.setContentsMargins(0, 8, 0, 0)
         form.setSpacing(8)
@@ -73,16 +132,21 @@ class ArchiveCheckDialog(QDialog):
         form.addRow(tr("check.title"), self._title_edit)
 
         self._mode_combo = QComboBox()
-
-
+                                                                     
+                                                                   
+                                         
+         
+                                                                     
+                                                              
         for mode, label in test_mode_combo_entries():
             self._mode_combo.addItem(label, mode)
         form.addRow(tr("check.mode"), self._mode_combo)
 
         hint = QLabel(tr("check.mode_hint"))
         hint.setWordWrap(True)
-
-
+                                                                  
+                                                                
+                           
         hint.setObjectName("schedHint")
         form.addRow("", hint)
 
@@ -96,7 +160,7 @@ class ArchiveCheckDialog(QDialog):
 
         layout.addStretch(1)
 
-
+                        
         buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
         for std in (QDialogButtonBox.Ok, QDialogButtonBox.Cancel):
             b = buttons.button(std)
@@ -110,7 +174,9 @@ class ArchiveCheckDialog(QDialog):
         btn_sched.clicked.connect(self._on_schedule)
         buttons.addButton(btn_sched, QDialogButtonBox.ActionRole)
 
-
+                                                                
+                                                           
+                                                        
         buttons.accepted.connect(self._on_accept)
         buttons.rejected.connect(self.reject)
         layout.addWidget(buttons)
@@ -118,9 +184,10 @@ class ArchiveCheckDialog(QDialog):
         if initial_settings:
             self._apply_settings(initial_settings)
 
+                         
 
     def _apply_settings(self, s: dict):
-
+        pass
         title = str(s.get("title") or "").strip()
         if title:
             self._title_edit.setText(title)
@@ -140,6 +207,23 @@ class ArchiveCheckDialog(QDialog):
         self._schedule = s.get("schedule")
 
     def _collect_settings(self) -> dict:
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         s = {
             "action": "test",
             "test_mode": self._mode_combo.currentData() or "full",
@@ -155,8 +239,17 @@ class ArchiveCheckDialog(QDialog):
             s["schedule"] = self._schedule
         return s
 
+                        
 
     def _validate_settings(self, s: dict) -> bool:
+        pass
+
+
+
+
+
+
+
         if not s.get("dest"):
             QMessageBox.warning(
                 self,
@@ -166,8 +259,15 @@ class ArchiveCheckDialog(QDialog):
             return False
         return True
 
+                                     
 
     def _save(self, settings: dict) -> bool:
+        pass
+
+
+
+
+
         host = self.parent()
         try:
             if self._edit_work_id and self._edit_job_id:
@@ -205,7 +305,7 @@ class ArchiveCheckDialog(QDialog):
             return False
 
     def _on_accept(self):
-
+        pass
         settings = self._collect_settings()
         if not self._validate_settings(settings):
             return
@@ -214,6 +314,13 @@ class ArchiveCheckDialog(QDialog):
             self.accept()
 
     def _on_schedule(self):
+        pass
+
+
+
+
+
+
         settings = self._collect_settings()
         if not self._validate_settings(settings):
             return
@@ -235,4 +342,12 @@ class ArchiveCheckDialog(QDialog):
             self.accept()
 
     def result_settings(self):
+        pass
+
+
+
+
+
+
+
         return self._result

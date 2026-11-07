@@ -1,3 +1,17 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import sys
@@ -9,7 +23,7 @@ sys.path.insert(0, str(ROOT))
 
 
 def csv_line(name: str, pad: int = 0) -> bytes:
-
+    pass
     path = "C:/dir/test_" + name + "_" + ("a" * pad)
     return (
         "2026-10-22 10:00:00\tA....\t734\t107%\t0002\t#\t" + path
@@ -17,10 +31,14 @@ def csv_line(name: str, pad: int = 0) -> bytes:
 
 
 def path_name(entry) -> str:
-
+    pass
     return entry.path.split("test_")[-1].split("_", 1)[0]
 
 
+                                                                     
+                                                              
+                                                                     
+                                                       
 CHILD = (
     "import sys, time\n"
     "w = sys.stdout.buffer.write\n"
@@ -29,12 +47,12 @@ CHILD = (
     f"w(b'\\n'); f(); time.sleep(0.2)\n"
     f"w({csv_line('beta')!r} + b'\\r'); f(); time.sleep(0.2)\n"
     f"w({csv_line('gamma')!r}); f(); time.sleep(0.15)\n"
-
-
+                                                                  
+                                                                
     f"w(b'\\r'); f(); time.sleep(0.15)\n"
     f"w(b'\\n'); f(); time.sleep(0.15)\n"
     f"w({csv_line('delta')!r} + b'\\n'); f(); time.sleep(0.15)\n"
-
+                                                                      
     f"w({csv_line('epsilon')!r}); f()\n"
 )
 
@@ -42,7 +60,7 @@ EXPECTED = ["alpha", "beta", "gamma", "delta", "epsilon"]
 
 
 class TestListWorkerSplitLines(unittest.TestCase):
-
+    pass
 
     @classmethod
     def setUpClass(cls):
@@ -77,7 +95,7 @@ class TestListWorkerSplitLines(unittest.TestCase):
             [str(stub), "l", str(arc)], context={"marker": "ok"}
         )
         worker.result.connect(results.append)
-
+                                                                      
         worker.run()
 
         self.assertEqual(len(results), 1, "сигнал result должен прийти один")
@@ -90,8 +108,8 @@ class TestListWorkerSplitLines(unittest.TestCase):
         self.assertEqual(
             names, EXPECTED,
             f"строки потерялись или продублировались: {names}")
-
-
+                                                                   
+                                                                       
         self.assertGreater(
             len(res["entries"][0].path), 4096,
             "строка alpha короче порции чтения — разрезание не проверено")

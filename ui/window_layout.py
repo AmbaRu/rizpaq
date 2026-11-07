@@ -1,3 +1,26 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 from PySide6.QtWidgets import (
@@ -29,12 +52,27 @@ from ui.qt_compat import (
 )
 from ui.tree_views import ArchiveTree
 
-
+                                
+ 
+                                                               
+                                                               
+                                                                   
+ 
+                                                                 
+                                                                 
+                                                            
+                                                             
+                                                           
+                                                     
+ 
+                                                             
+                                                                  
+                                                              
 LOG_MAX_BLOCKS = 50000
 
 
 class WindowLayoutMixin:
-
+    pass
 
     def _apply_persisted_geometry(self):
         try:
@@ -55,7 +93,12 @@ class WindowLayoutMixin:
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 
-
+                                                                         
+                                                                     
+                        
+         
+                                                                       
+                                               
         try:
             self.profile_bar = ProfileBar(host=self, parent=self)
             layout.addWidget(self.profile_bar)
@@ -65,11 +108,14 @@ class WindowLayoutMixin:
         self.crumb = BreadcrumbBar()
         layout.addWidget(self.crumb)
 
-
+                                                                   
+                                                                    
+                                                                          
+                                                                    
         self._main_stack = QStackedWidget()
         self._main_stack.setObjectName("mainStack")
 
-
+                                     
         self._archive_page = QWidget()
         self._archive_page.setObjectName("archivePage")
         archive_lay = QVBoxLayout(self._archive_page)
@@ -122,7 +168,7 @@ class WindowLayoutMixin:
         header.setSectionResizeMode(0, HEADER_STRETCH)
         header.setSectionResizeMode(4, HEADER_STRETCH)
         header.setStretchLastSection(True)
-
+                                          
         header.setSectionsClickable(True)
         header.setSortIndicatorShown(True)
         header.sectionClicked.connect(self._on_right_header_clicked)
@@ -143,8 +189,10 @@ class WindowLayoutMixin:
 
         self.log = QPlainTextEdit()
         self.log.setReadOnly(True)
-
-
+                                                                     
+                                                                        
+                                                                       
+                                   
         self.log.document().setMaximumBlockCount(LOG_MAX_BLOCKS)
 
         splitter.addWidget(top)
@@ -155,14 +203,25 @@ class WindowLayoutMixin:
         archive_lay.addWidget(splitter)
         self._main_stack.addWidget(self._archive_page)
 
-
+                                 
+         
+                                                                   
+                                                                 
+                                                                     
+                                                                 
+                              
         try:
             self.backup_page = BackupPage(host=self)
             self._main_stack.addWidget(self.backup_page)
         except Exception:
             self.backup_page = None
 
-
+                                   
+         
+                                                                    
+                                                                     
+                                                                    
+                                                                   
         try:
             self.dashboard_page = DashboardPage(host=self)
             self._main_stack.addWidget(self.dashboard_page)
@@ -171,7 +230,8 @@ class WindowLayoutMixin:
 
         layout.addWidget(self._main_stack, 1)
 
-
+                                                                      
+                                                                          
         self.extract_bar = ExtractProgressBar()
         layout.addWidget(self.extract_bar)
 

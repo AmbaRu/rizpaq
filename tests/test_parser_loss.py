@@ -1,3 +1,15 @@
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import sys
@@ -7,20 +19,21 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from core.parser import (
+from core.parser import (              
     ParseReport,
     parse_csv_list,
     parse_csv_list_reported,
 )
 
-
+                                                                     
+                                      
 GOOD7 = "#2026-09-26 18:35:48\tA....\t30\t720%\t0001\t+\tфайл.txt#"
 GOOD_DIR7 = "#2026-09-26 18:35:48\tD....\t30\tdir\t0001\t#\tпапка/#"
 GOOD6 = "#2026-09-26 18:35:48\tA....\t30\t720%\t+\tфайл.txt#"
 
 
 class TestNoLossOnGoodInput(unittest.TestCase):
-
+    pass
 
     def test_seven_columns(self):
         entries, report = parse_csv_list_reported(
@@ -45,6 +58,12 @@ class TestNoLossOnGoodInput(unittest.TestCase):
         self.assertEqual(entries[0].path, "папка")
 
     def test_blank_lines_are_not_losses(self):
+        pass
+
+
+
+
+
         _entries, report = parse_csv_list_reported(
             "\n\n" + GOOD7 + "\n\n\n" + GOOD7 + "\n"
         )
@@ -53,6 +72,13 @@ class TestNoLossOnGoodInput(unittest.TestCase):
         self.assertEqual(report.data_lines, 2)
 
     def test_header_line_is_not_a_loss(self):
+        pass
+
+
+
+
+
+
         _entries, report = parse_csv_list_reported(
             "<<C:/путь/backup.zpaq>>:\n" + GOOD7
         )
@@ -62,7 +88,7 @@ class TestNoLossOnGoodInput(unittest.TestCase):
 
 
 class TestLossesAreCounted(unittest.TestCase):
-
+    pass
 
     def test_wrong_column_count(self):
         bad5 = "#2026-09-26 18:35:48\tA....\t30\tфайл.txt#"
@@ -89,6 +115,12 @@ class TestLossesAreCounted(unittest.TestCase):
         self.assertEqual(report.reasons.get("empty_path"), 1)
 
     def test_mixed_input_counts_only_lost(self):
+        pass
+
+
+
+
+
         text = "\n".join([
             GOOD7,
             "#2026-09-26 18:35:48\tA....\t30\t720%\t0001\t+\tдва.txt#",
@@ -105,6 +137,10 @@ class TestLossesAreCounted(unittest.TestCase):
         self.assertEqual(report.reasons.get("version"), 1)
 
     def test_many_losses_all_counted(self):
+        pass
+
+
+
         bad = "#2026-09-26 18:35:48\tA....\t30\tплохая.txt#"
         _entries, report = parse_csv_list_reported("\n".join([bad] * 20))
         self.assertEqual(report.dropped, 20)
@@ -113,7 +149,7 @@ class TestLossesAreCounted(unittest.TestCase):
 
 
 class TestReportText(unittest.TestCase):
-
+    pass
 
     def build(self):
         text = "\n".join([
@@ -137,7 +173,7 @@ class TestReportText(unittest.TestCase):
         self.assertIn("плохая", out, "в журнале нет примера строки")
 
     def test_text_has_no_traceback_or_exception(self):
-
+        pass
         out = self.build().log_text()
         for bad in ("Traceback", "Exception", "None"):
             self.assertNotIn(bad, out)
@@ -161,6 +197,12 @@ class TestReportText(unittest.TestCase):
 
 
 class TestPlainApiKept(unittest.TestCase):
+    pass
+
+
+
+
+
 
     def test_returns_list(self):
         out = parse_csv_list(GOOD7)

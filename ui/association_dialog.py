@@ -1,3 +1,64 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 from PySide6.QtWidgets import (
@@ -13,7 +74,7 @@ from ui.i18n import tr
 
 
 class AssociationDialog(QDialog):
-
+    pass
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -24,7 +85,7 @@ class AssociationDialog(QDialog):
         layout.setContentsMargins(16, 16, 16, 16)
         layout.setSpacing(10)
 
-
+                                         
         native_group = QGroupBox(tr("association.native_group"))
         native_layout = QVBoxLayout()
 
@@ -41,7 +102,7 @@ class AssociationDialog(QDialog):
         native_group.setLayout(native_layout)
         layout.addWidget(native_group)
 
-
+                                       
         uni_group = QGroupBox(tr("association.universal_group"))
         uni_layout = QVBoxLayout()
 
@@ -62,16 +123,16 @@ class AssociationDialog(QDialog):
         uni_group.setLayout(uni_layout)
         layout.addWidget(uni_group)
 
-
+                                
         warn = QLabel(tr("association.warning"))
         warn.setWordWrap(True)
-
+                                                 
         warn.setObjectName("assocWarn")
         layout.addWidget(warn)
 
         layout.addStretch(1)
 
-
+                        
         buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
         buttons.accepted.connect(self._apply_and_accept)
         buttons.rejected.connect(self.reject)
@@ -90,10 +151,20 @@ class AssociationDialog(QDialog):
             unregister_zpaq,
         )
 
-
+                                                                    
+                                                                       
+                                                                     
         stuck: list = []
 
-
+               
+         
+                                                              
+                                                                      
+                                                                       
+                                                               
+                                                                  
+                                                                    
+                                                    
         want_zpaq = self._cb_zpaq.isChecked()
         if want_zpaq:
             if not is_registered():
@@ -102,7 +173,7 @@ class AssociationDialog(QDialog):
             if not unregister_zpaq():
                 stuck.append(".zpaq")
 
-
+                                               
         want_rzp = self._cb_rzp.isChecked()
         if want_rzp:
             if not is_rzp_registered():
@@ -111,7 +182,7 @@ class AssociationDialog(QDialog):
             if not unregister_rzp():
                 stuck.append(".rzp")
 
-
+                                               
         for cb, ext in [
             (self._cb_zip, ".zip"),
             (self._cb_7z, ".7z"),
@@ -125,14 +196,16 @@ class AssociationDialog(QDialog):
                 if not unregister_universal(ext):
                     stuck.append(ext)
 
-
+                                                                          
         try:
             from core.config import update as _cfg_update
             _cfg_update(associations_asked=True)
         except Exception:
             pass
 
-
+                                                                       
+                                                                        
+                                      
         if stuck:
             ext_list = ", ".join(stuck)
             try:

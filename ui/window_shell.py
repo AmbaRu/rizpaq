@@ -1,3 +1,36 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -12,12 +45,12 @@ from ui.config_bridge import _load_cfg, _save_cfg
 from ui.i18n import tr
 from ui.qt_compat import YES_BUTTON, YES_NO_BUTTONS
 
-
+                                                                
 _SHUTDOWN_TIMEOUT_MS = 8000
 
 
 def _is_alive(worker) -> bool:
-
+    pass
     try:
         return bool(worker.isRunning())
     except Exception:
@@ -25,11 +58,15 @@ def _is_alive(worker) -> bool:
 
 
 class WindowShellMixin:
+    pass
 
+                                                                         
 
     def _on_about(self):
-
-
+                                                                          
+                                                                      
+                                                                     
+                                                      
         c_header = skins.color("TEXT_HEADER")
         c_accent = skins.color("ACCENT")
         c_main = skins.color("TEXT_MAIN")
@@ -55,6 +92,7 @@ class WindowShellMixin:
         )
         QMessageBox.about(self, title, text)
 
+                                                                         
 
     def _update_title(self):
         if self.mode == "archive" and self.archive_path:
@@ -69,15 +107,17 @@ class WindowShellMixin:
         else:
             self.setWindowTitle(f"{APP_NAME} v{APP_VERSION_FULL}")
 
+                                                                         
 
     def _show_fs(self, path):
         self.mode = "fs"
         self.tree.build_fs_roots()
         self.navigate_fs(path)
 
+                                                                         
 
     def _running_workers(self) -> list:
-
+        pass
         out = []
         for w in list(getattr(self, "_workers", []) or []):
             if _is_alive(w):
@@ -89,6 +129,17 @@ class WindowShellMixin:
         workers: list,
         timeout_ms: int = _SHUTDOWN_TIMEOUT_MS,
     ) -> list:
+        pass
+
+
+
+
+
+
+
+
+
+
         for w in workers:
             try:
                 w.cancel_request()
@@ -99,14 +150,15 @@ class WindowShellMixin:
         alive = list(workers)
 
         while alive and time.monotonic() < deadline:
-
-
+                                                                         
+                                                                      
+                                    
             QApplication.processEvents()
             alive = [w for w in alive if _is_alive(w)]
             if alive:
                 time.sleep(0.02)
 
-
+                                                              
         if alive:
             QApplication.processEvents()
             alive = [w for w in alive if _is_alive(w)]
@@ -130,6 +182,12 @@ class WindowShellMixin:
         return alive
 
     def _confirm_close_with_busy_workers(self) -> bool:
+        pass
+
+
+
+
+
         running = self._running_workers()
         if not running:
             return True
@@ -154,8 +212,18 @@ class WindowShellMixin:
 
         return True
 
+                                                                       
 
     def _discard_transcode_temp_dir(self):
+        pass
+
+
+
+
+
+
+
+
         cleanup = getattr(self, "_cleanup_transcode_temp_dir", None)
         if callable(cleanup):
             try:
@@ -163,17 +231,23 @@ class WindowShellMixin:
             except Exception:
                 pass
 
+                                                                         
 
     def closeEvent(self, ev):
-
-
+                                                                   
+                                                                 
+                                                                   
+                                                                   
+                                              
         self._closing = True
         if not self._confirm_close_with_busy_workers():
             self._closing = False
             ev.ignore()
             return
 
-
+                                                                         
+                                                                  
+                                                            
         self._discard_transcode_temp_dir()
 
         try:
@@ -212,14 +286,15 @@ class WindowShellMixin:
             except Exception:
                 pass
 
-
+                                                            
             try:
                 cfg.right_sort_column = getattr(self, "_right_sort_column", None)
                 cfg.right_sort_desc = getattr(self, "_right_sort_desc", False)
             except Exception:
                 pass
 
-
+                                                                     
+                                                                 
             try:
                 cfg.last_close = int(time.time())
             except Exception:

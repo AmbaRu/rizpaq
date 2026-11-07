@@ -1,3 +1,22 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -11,9 +30,11 @@ from unittest import mock
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from PySide6.QtWidgets import QApplication, QWidget
+from PySide6.QtWidgets import QApplication, QWidget              
 
-
+                                                                      
+                                                                          
+                                 
 _APP = QApplication.instance() or QApplication([])
 from PySide6.QtGui import QFont
 _APP = QApplication.instance()
@@ -21,8 +42,8 @@ if _APP is not None:
     _APP.setFont(QFont("Segoe UI", 9))
 
 
-from core import par2_ops
-from core.par2_ops import (
+from core import par2_ops              
+from core.par2_ops import (              
     STATE_DAMAGED,
     STATE_FAILED,
     STATE_OK,
@@ -37,9 +58,9 @@ from core.par2_ops import (
     set_is_stale,
     verify_parset,
 )
-from workers import Par2RepairWorker
-from ui.par2_actions import Par2ActionsMixin
-from ui.i18n import set_language
+from workers import Par2RepairWorker              
+from ui.par2_actions import Par2ActionsMixin              
+from ui.i18n import set_language              
 
 PAR2_BIN = find_par2()
 HAVE_PAR2 = bool(PAR2_BIN) and os.path.isfile(PAR2_BIN)
@@ -50,15 +71,17 @@ requires_par2 = unittest.skipUnless(
 
 
 class _TempCase(unittest.TestCase):
-
+    pass
 
     def setUp(self):
         self.base = Path(tempfile.mkdtemp(prefix="par2_repair_test_"))
         self.arch = self.base / "backup.zpaq"
         self.good = b"A" * 120000
         self.arch.write_bytes(self.good)
-
-
+                                                                    
+                                                                       
+                                                                      
+                                                  
         self.fake_bin = self.base / "par2.exe"
         self.fake_bin.write_bytes(b"not a real binary")
 
@@ -72,7 +95,16 @@ class _TempCase(unittest.TestCase):
         self.arch.write_bytes(bytes(d))
 
 
+                                                                     
+                                  
+                                                                     
+
 class TestRollbackGuard(unittest.TestCase):
+    pass
+
+
+
+
 
     def setUp(self):
         self.base = Path(tempfile.mkdtemp(prefix="par2_guard_"))
@@ -89,10 +121,14 @@ class TestRollbackGuard(unittest.TestCase):
         self.assertFalse(set_is_stale(str(self.arch), 1000))
 
     def test_smaller_file_is_not_stale(self):
-
+        pass
         self.assertFalse(set_is_stale(str(self.arch), 5000))
 
     def test_missing_size_is_unknown_not_false(self):
+        pass
+
+
+
         self.assertIsNone(set_is_stale(str(self.arch), None))
 
     def test_missing_file_is_unknown(self):
@@ -102,12 +138,16 @@ class TestRollbackGuard(unittest.TestCase):
 
 
 class TestRepairRefusesWithoutSize(_TempCase):
-
+    pass
 
     def setUp(self):
         super().setUp()
-
-
+                                                                  
+                                                                    
+                                                                  
+                                                                 
+                                                                  
+                                               
         self.main = self.base / "backup.zpaq.par2"
         self.main.write_bytes(b"x")
 
@@ -129,6 +169,11 @@ class TestRepairRefusesWithoutSize(_TempCase):
         self.assertFalse(r.ok)
 
     def test_engine_never_started_when_blocked(self):
+        pass
+
+
+
+
         with mock.patch.object(
             par2_ops, "_run", side_effect=AssertionError("движок запущен")
         ):
@@ -139,7 +184,7 @@ class TestRepairRefusesWithoutSize(_TempCase):
         self.assertFalse(r.ok)
 
     def test_error_text_explains_why(self):
-
+        pass
         self.arch.write_bytes(b"x" * 100000)
         with mock.patch.object(par2_ops, "_run", return_value=(0, "ok")):
             r = repair_parset(
@@ -150,8 +195,12 @@ class TestRepairRefusesWithoutSize(_TempCase):
         self.assertIn("откат", r.log)
 
 
-class TestRepairCommand(unittest.TestCase):
+                                                                     
+                
+                                                                     
 
+class TestRepairCommand(unittest.TestCase):
+    pass
 
     def setUp(self):
         self.base = Path(tempfile.mkdtemp(prefix="par2_cmd_"))
@@ -178,6 +227,14 @@ class TestRepairCommand(unittest.TestCase):
         self.assertIn(str(self.main), args)
 
     def test_process_is_registered_for_cancel(self):
+        pass
+
+
+
+
+
+
+
         seen = {}
 
         def fake_run(bin_path, args, timeout, register=None):
@@ -196,7 +253,28 @@ class TestRepairCommand(unittest.TestCase):
         self.assertIs(seen.get("register"), my_register)
 
 
+                                                                     
+                              
+                                                                     
+
 class _RepairHost(Par2ActionsMixin, QWidget):
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     def __init__(self):
         QWidget.__init__(self)
@@ -225,18 +303,25 @@ class _RepairHost(Par2ActionsMixin, QWidget):
 
 @requires_par2
 class TestConfirmationRequired(_TempCase):
+    pass
+
+
+
+
+
+
 
     def setUp(self):
         super().setUp()
-
-
+                                                                        
+                                                                           
         set_language("ru", str(ROOT / "locales"))
         create_parset(PAR2_BIN, str(self.arch))
         self.damage()
         self.host = _RepairHost()
 
     def test_no_question_when_set_is_stale(self):
-
+        pass
         self.arch.write_bytes(self.good + b"NEW-VERSION" * 500)
 
         with mock.patch(
@@ -259,7 +344,7 @@ class TestConfirmationRequired(_TempCase):
         self.assertIn("заблокировано", text)
 
     def test_declined_by_user_does_not_start(self):
-
+        pass
         with mock.patch(
             "ui.par2_actions.QMessageBox.question", return_value=0
         ) as q:
@@ -271,6 +356,11 @@ class TestConfirmationRequired(_TempCase):
         wcls.assert_not_called()
 
     def test_confirmed_starts_worker_with_recorded_size(self):
+        pass
+
+
+
+
         with mock.patch(
             "ui.par2_actions.QMessageBox.question", return_value=0x4000
         ):
@@ -282,7 +372,7 @@ class TestConfirmationRequired(_TempCase):
         self.assertEqual(kwargs["recorded_size"], len(self.good))
 
     def test_healthy_set_does_not_offer_repair(self):
-
+        pass
         self.arch.write_bytes(self.good)
         with mock.patch(
             "ui.par2_actions.QMessageBox.question",
@@ -302,7 +392,17 @@ class TestConfirmationRequired(_TempCase):
         wcls.assert_not_called()
 
 
+                                                                     
+                              
+                                                                     
+
 class TestWorkerAlwaysEmits(unittest.TestCase):
+    pass
+
+
+
+
+
 
     def test_emits_done_when_ops_raise(self):
         base = Path(tempfile.mkdtemp(prefix="par2_wf_"))
@@ -318,7 +418,7 @@ class TestWorkerAlwaysEmits(unittest.TestCase):
                 par2_ops, "repair_parset",
                 side_effect=RuntimeError("сломалось"),
             ):
-                worker.run()
+                worker.run()                                 
 
             self.assertEqual(len(seen), 1, "done обязан прийти всегда")
             self.assertFalse(seen[0]["ok"])
@@ -347,9 +447,13 @@ class TestWorkerAlwaysEmits(unittest.TestCase):
             shutil.rmtree(base, ignore_errors=True)
 
 
+                                                                     
+              
+                                                                     
+
 @requires_par2
 class TestLiveRepair(_TempCase):
-
+    pass
 
     def test_repairs_real_damage(self):
         create_parset(PAR2_BIN, str(self.arch))
@@ -366,6 +470,13 @@ class TestLiveRepair(_TempCase):
         self.assertEqual(self.arch.read_bytes(), self.good)
 
     def test_stale_set_cannot_roll_back(self):
+        pass
+
+
+
+
+
+
         create_parset(PAR2_BIN, str(self.arch))
         grown = self.good + b"SECOND" * 2000
         self.arch.write_bytes(grown)

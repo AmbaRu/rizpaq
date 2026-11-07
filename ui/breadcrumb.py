@@ -1,3 +1,18 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 from pathlib import Path, PurePosixPath
@@ -15,21 +30,24 @@ from ui.i18n import tr
 
 
 class _CrumbButton(QPushButton):
-
+    pass
 
     def __init__(self, text: str, parent=None):
         super().__init__(text, parent)
         self.setFlat(True)
         self.setCursor(Qt.PointingHandCursor)
+                                                                             
+                                                                          
+                           
 
 
 class BreadcrumbBar(QFrame):
-
+    pass
 
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setFrameShape(QFrame.NoFrame)
-
+                                                                          
         self.setObjectName("breadcrumb")
 
         self._layout = QHBoxLayout(self)
@@ -37,17 +55,24 @@ class BreadcrumbBar(QFrame):
         self._layout.setSpacing(2)
         self._layout.addStretch()
 
-
+                   
         self._on_fs = None
         self._on_archive = None
 
     def set_callbacks(self, on_fs=None, on_archive=None):
-
+        pass
         self._on_fs = on_fs
         self._on_archive = on_archive
 
     def update_state(self, mode, fs_path, archive_name, archive_inner):
+        pass
 
+
+
+
+
+
+                                 
         while self._layout.count():
             item = self._layout.takeAt(0)
             w = item.widget()
@@ -62,13 +87,13 @@ class BreadcrumbBar(QFrame):
         self._layout.addStretch()
 
     def _build_fs_crumbs(self, fs_path):
-
+        pass
         if fs_path is None:
             return
 
         fs_path = Path(fs_path)
 
-
+                                 
         parts = []
         p = fs_path
         while True:
@@ -84,14 +109,15 @@ class BreadcrumbBar(QFrame):
             label = part.name or str(part)
 
             if is_last:
-
-
+                                                   
+                                                             
                 lbl = QLabel(label)
                 lbl.setObjectName("crumb_last")
                 self._layout.addWidget(lbl)
             else:
-
-
+                                      
+                                                                    
+                                                                         
                 path_str = str(part)
                 btn = _CrumbButton(label)
                 btn.clicked.connect(
@@ -101,17 +127,17 @@ class BreadcrumbBar(QFrame):
                 self._add_separator()
 
     def _build_archive_crumbs(self, archive_name, archive_inner):
-
-
+        pass
+                       
         if not archive_inner:
             lbl = QLabel(f"{archive_name} :: /")
-
-
+                                                                       
+                                                              
             lbl.setObjectName("crumb_last")
             self._layout.addWidget(lbl)
             return
 
-
+                                                          
         btn = _CrumbButton(archive_name)
         btn.clicked.connect(
             lambda checked=False: self._on_archive_clicked("")
@@ -119,17 +145,17 @@ class BreadcrumbBar(QFrame):
         self._layout.addWidget(btn)
         self._add_separator()
 
-
+                             
         inner_parts = PurePosixPath(archive_inner).parts
         for i, part in enumerate(inner_parts):
             is_last = i == len(inner_parts) - 1
-
+                                       
             seg_path = "/".join(inner_parts[: i + 1])
 
             if is_last:
                 lbl = QLabel(part)
-
-
+                                                                     
+                                                                     
                 lbl.setObjectName("crumb_last")
                 self._layout.addWidget(lbl)
             else:
@@ -141,17 +167,17 @@ class BreadcrumbBar(QFrame):
                 self._add_separator()
 
     def _add_separator(self):
-
+        pass
         sep = QLabel("›")
         sep.setObjectName("sep")
         self._layout.addWidget(sep)
 
     def _on_fs_clicked(self, path_str: str):
-
+        pass
         if self._on_fs:
             self._on_fs(path_str)
 
     def _on_archive_clicked(self, inner: str):
-
+        pass
         if self._on_archive:
             self._on_archive(inner)

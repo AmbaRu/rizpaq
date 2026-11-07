@@ -1,3 +1,32 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import sys
@@ -7,7 +36,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from PySide6.QtWidgets import QApplication
+from PySide6.QtWidgets import QApplication              
 
 _APP = QApplication.instance() or QApplication([])
 from PySide6.QtGui import QFont
@@ -16,17 +45,21 @@ if _APP is not None:
     _APP.setFont(QFont("Segoe UI", 9))
 
 
-from ui.i18n import set_language, tr
+from ui.i18n import set_language, tr              
 
-
+                                                                  
+                                                            
+                         
 set_language("ru", str(ROOT / "locales"))
 
-from ui.archive_create_dialog import ArchiveCreateDialog
+from ui.archive_create_dialog import ArchiveCreateDialog              
 
 SRC = ["D:/Данные"]
 DEST = r"D:\backup.zpaq"
 
-
+                                                                       
+                                                                 
+                                  
 EXPECTED_KEYS_AUTO = {
     "redundancy", "block_size", "block_count", "recursion", "uniform",
 }
@@ -63,12 +96,21 @@ class _TabCase(unittest.TestCase):
         self.dlg.deleteLater()
 
     def enable(self):
+        pass
+
+
+
+
+
+
+
+
         self.dlg._opt_par2.setChecked(True)
         return self.dlg
 
 
 class TestTabPlacement(_TabCase):
-
+    pass
 
     def _titles(self):
         tabs = self.dlg._tabs
@@ -88,11 +130,18 @@ class TestTabPlacement(_TabCase):
         )
 
     def test_no_settings_button_anymore(self):
+        pass
+
+
+
+
+
+
         self.assertFalse(hasattr(self.dlg, "_on_par2_settings"))
 
 
 class TestIntroText(_TabCase):
-
+    pass
 
     def _labels(self):
         from PySide6.QtWidgets import QLabel
@@ -103,17 +152,23 @@ class TestIntroText(_TabCase):
         self.assertIn(tr("par2.intro"), self._labels())
 
     def test_intro_is_short(self):
+        pass
+
+
+
+
+
         text = tr("par2.intro")
         self.assertLess(len(text), 400,
                         "текст в начале вкладки стал слишком длинным")
 
     def test_limits_note_still_present(self):
-
+        pass
         self.assertIn(tr("par2.limits_note"), self._labels())
 
 
 class TestMasterSwitch(_TabCase):
-
+    pass
 
     def test_fields_on_tab(self):
         for name in ("_par2_redundancy", "_par2_auto_blocks",
@@ -135,6 +190,13 @@ class TestMasterSwitch(_TabCase):
         self.assertTrue(self.dlg._par2_box.isEnabled())
 
     def test_not_clickable_while_disabled(self):
+        pass
+
+
+
+
+
+
         self.dlg._opt_par2.setChecked(False)
         self.assertFalse(self.dlg._par2_manual_blocks.isEnabled())
         self.dlg._par2_manual_blocks.click()
@@ -145,6 +207,12 @@ class TestMasterSwitch(_TabCase):
         self.assertTrue(self.dlg._par2_manual_blocks.isChecked())
 
     def test_off_toggle_keeps_values_visible(self):
+        pass
+
+
+
+
+
         self.dlg._apply_settings(_settings(True, enabled=True,
                                            redundancy=17))
         self.dlg._opt_par2.setChecked(False)
@@ -152,7 +220,7 @@ class TestMasterSwitch(_TabCase):
 
 
 class TestBlockMode(_TabCase):
-
+    pass
 
     def test_auto_mode_disables_manual_fields(self):
         self.enable()
@@ -188,6 +256,10 @@ class TestBlockMode(_TabCase):
         self.assertEqual(self.dlg._par2_collect()["block_size"], 65536)
 
     def test_never_both_size_and_count(self):
+        pass
+
+
+
         self.enable()
         for manual in (True, False):
             with self.subTest(manual=manual):
@@ -200,7 +272,7 @@ class TestBlockMode(_TabCase):
 
 
 class TestCollectApply(_TabCase):
-
+    pass
 
     def _round_trip(self, source):
         self.dlg._apply_settings(source)
@@ -228,6 +300,14 @@ class TestCollectApply(_TabCase):
         self.assertTrue(got["uniform"])
 
     def test_mode_switch_in_same_dialog(self):
+        pass
+
+
+
+
+
+
+
         self.dlg._apply_settings(_settings(True))
         self.assertTrue(self.dlg._par2_manual_blocks.isChecked())
 
@@ -239,7 +319,7 @@ class TestCollectApply(_TabCase):
         self.assertIsNone(self.dlg._par2_collect()["block_size"])
 
     def test_hints_correct_after_switch(self):
-
+        pass
         self.dlg._apply_settings(_settings(True))
         self.dlg._apply_settings(_settings(False))
         self.assertFalse(self.dlg._par2_auto_hint.isHidden())
@@ -247,7 +327,7 @@ class TestCollectApply(_TabCase):
         self.assertFalse(self.dlg._par2_block_size.isEnabled())
 
     def test_values_shown_when_checkbox_off(self):
-
+        pass
         self.dlg._apply_settings(_settings(True, enabled=False,
                                            redundancy=31))
         self.assertEqual(self.dlg._par2_redundancy.value(), 31)
@@ -255,6 +335,12 @@ class TestCollectApply(_TabCase):
         self.assertFalse(self.dlg._par2_box.isEnabled())
 
     def test_checkbox_off_omits_options(self):
+        pass
+
+
+
+
+
         self.dlg._apply_settings(_settings(True, enabled=False))
         out = self.dlg._collect_settings()
         self.assertNotIn("par2_options", out)
@@ -268,6 +354,14 @@ class TestCollectApply(_TabCase):
 
 
 class TestOptionKeys(_TabCase):
+    pass
+
+
+
+
+
+
+
 
     def test_auto_keys(self):
         self.enable()
@@ -281,6 +375,13 @@ class TestOptionKeys(_TabCase):
                          EXPECTED_KEYS_MANUAL)
 
     def test_zero_means_auto_not_zero(self):
+        pass
+
+
+
+
+
+
         self.dlg._par2_memory.setValue(0)
         self.dlg._par2_threads.setValue(0)
         opts = self.dlg._par2_collect()
@@ -288,18 +389,24 @@ class TestOptionKeys(_TabCase):
         self.assertNotIn("threads", opts)
 
     def test_zero_shows_auto_in_field(self):
-
+        pass
         self.assertEqual(self.dlg._par2_memory.specialValueText(),
                          tr("par2.automatic"))
         self.assertEqual(self.dlg._par2_threads.specialValueText(),
                          tr("par2.automatic"))
 
     def test_redundancy_minimum_is_one(self):
+        pass
+
+
+
+
+
         self.assertEqual(self.dlg._par2_redundancy.minimum(), 1)
 
 
 class TestOtherLanguages(_TabCase):
-
+    pass
 
     def test_tab_title_translated(self):
         import io

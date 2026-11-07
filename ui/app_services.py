@@ -1,3 +1,20 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -11,8 +28,9 @@ from ui.qt_compat import WAIT_CURSOR, YES_BUTTON, YES_NO_BUTTONS
 
 
 class AppServicesMixin:
+    pass
 
-
+                                                                          
     def _verify_zpaq(self):
         if check_zpaq(self.zpaq_bin):
             self.zpaq_available = True
@@ -45,25 +63,27 @@ class AppServicesMixin:
         else:
             self.statusBar().showMessage(tr("status.zpaq_not_started", path=path))
 
-
+                                                                        
     def _verify_7z(self):
-
+        pass
         from core.universal_ops import check_7z, find_7z
-
+        
         if not self.seven_zip_bin:
             self.seven_zip_bin = find_7z()
-
+            
         if self.seven_zip_bin and check_7z(self.seven_zip_bin):
             self.seven_zip_available = True
             return
-
+            
         self.seven_zip_available = False
-
+                                                                            
+                                                             
+                                                           
 
     def _choose_7z_path(self):
-
+        pass
         from core.universal_ops import check_7z
-
+        
         path, _ = QFileDialog.getOpenFileName(
             self,
             tr("zpaq.seven_zip_choose_title"),
@@ -72,10 +92,10 @@ class AppServicesMixin:
         )
         if not path:
             return
-
+            
         self.seven_zip_bin = path
         self.seven_zip_available = check_7z(path)
-
+        
         if self.seven_zip_available:
             _merge_cfg(seven_zip_path=path)
             self.statusBar().showMessage(tr("status.seven_zip_found", path=path))
@@ -84,7 +104,7 @@ class AppServicesMixin:
             _merge_cfg(seven_zip_path="")
             self.statusBar().showMessage(tr("status.seven_zip_not_started", path=path))
 
-
+                                                                         
     def log_command(self, cmd: list):
         self.log.appendPlainText("$ " + safe_cmdline(cmd, self.password))
 
@@ -92,8 +112,19 @@ class AppServicesMixin:
         if text:
             self.log.appendPlainText(text)
 
-
+                                                                          
     def _start_busy(self, base_text: str):
+        pass
+
+
+
+
+
+
+
+
+
+
         self._busy_base = base_text
         self._busy_n = 0
         self._busy_depth = getattr(self, "_busy_depth", 0) + 1
@@ -107,7 +138,7 @@ class AppServicesMixin:
             if self._busy_depth == 1:
                 self._notice.show_notice(base_text)
             else:
-
+                                                                        
                 self._notice.update_step(base_text)
         except Exception:
             pass
@@ -120,7 +151,7 @@ class AppServicesMixin:
         self._busy_depth = max(0, getattr(self, "_busy_depth", 1) - 1)
 
         if self._busy_depth > 0:
-
+                                                         
             return
 
         self._busy_timer.stop()
@@ -134,7 +165,7 @@ class AppServicesMixin:
             pass
 
     def _ensure_notice(self) -> None:
-
+        pass
         if getattr(self, "_notice", None) is not None:
             return
         try:
@@ -146,7 +177,7 @@ class AppServicesMixin:
             self._notice = None
 
     def _on_notice_cancel(self) -> None:
-
+        pass
         try:
             self._cancel_long_operations()
         except Exception:
@@ -154,8 +185,8 @@ class AppServicesMixin:
 
     def _tick_busy(self):
         self._busy_n = (self._busy_n + 1) % 4
-
-
+                                                                    
+                                                        
         shown = self.statusBar().currentMessage()
         if not shown or shown.startswith(self._busy_base):
             self.statusBar().showMessage(self._busy_base + "." * (self._busy_n + 1))
@@ -174,7 +205,7 @@ class AppServicesMixin:
         except Exception:
             pass
 
-
+                                                                           
     def _remember_extract_dir(self):
 
         try:
@@ -183,14 +214,21 @@ class AppServicesMixin:
         except Exception:
             pass
 
-
+                                                                           
     def _on_open_manual(self):
+        pass
+
+
+
+
+
+
         from core.help_docs import open_manual
 
         ok, what = open_manual()
         if ok:
             return
-
+                                                                                
         QMessageBox.warning(
             self,
             tr("menu.help.guide"),

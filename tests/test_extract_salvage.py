@@ -1,3 +1,16 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import unittest
@@ -64,20 +77,20 @@ class TestSalvageCmd(unittest.TestCase):
         self.assertNotIn("-until", cmd)
 
     def test_force_always(self):
-
+                                                                          
         for kwargs in ({}, {"password": "p"}, {"ram_gb": 8}):
             self.assertIn("-force", self._cmd(**kwargs))
 
     def test_to_points_to_dest(self):
-
-
+                                                                       
+                                                                       
         cmd = self._cmd()
         i = cmd.index("-to")
         self.assertEqual(cmd[i + 1], "out")
 
     def test_done_dict_shape(self):
-
-
+                                                                  
+                                                                     
         w = ExtractSalvageWorker("zpaqfranz", "a.zpaq", None, "out", 1)
         self.assertEqual(w.dest_folder, "out")
         self.assertEqual(w.ram_gb, 1)

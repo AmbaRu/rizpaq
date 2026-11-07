@@ -1,3 +1,21 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -12,9 +30,15 @@ from workers import (
 
 
 class WorkerLaunchMixin:
+    pass
 
-
+                                                                          
     def _connect_extract_stream(self, worker) -> None:
+        pass
+
+
+
+
         try:
             worker.progress_info.connect(self._ui_extract_info)
         except Exception:
@@ -25,7 +49,7 @@ class WorkerLaunchMixin:
         except Exception:
             pass
 
-
+                                                                          
     def _start_extract_file_worker(self, entry, dest: str, open_after: bool = False):
         if not self.archive_path:
             return
@@ -41,13 +65,16 @@ class WorkerLaunchMixin:
 
         name = getattr(entry, "name", "") or Path(entry.path).name
 
-
+                                                                    
+                                                                  
+                                                            
         worker.worker_started.connect(lambda n=name: self._ui_file_started(n))
         worker.percent.connect(self._ui_folder_percent)
 
         self._connect_extract_stream(worker)
 
-
+                                                                       
+                              
         if open_after:
             worker.done.connect(
                 lambda r, d=str(dest): self._open_extracted_if_ok(r, d)
@@ -109,6 +136,13 @@ class WorkerLaunchMixin:
         worker.start()
 
     def _start_salvage_worker(self, dest_folder: str, ram_gb):
+        pass
+
+
+
+
+
+
         if not self.archive_path:
             return
 
@@ -131,13 +165,27 @@ class WorkerLaunchMixin:
         self._workers.append(worker)
         worker.start()
 
-
+                                                                          
     def _cleanup_worker(self, worker):
         if worker in self._workers:
             self._workers.remove(worker)
 
-
+                                                                         
     def _cancel_long_operations(self):
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
         cancelled_any = False
 
         for worker in list(self._workers):

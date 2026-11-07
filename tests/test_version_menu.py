@@ -1,3 +1,28 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import sys
@@ -6,18 +31,19 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from PySide6.QtCore import QCoreApplication, QEvent
-from PySide6.QtGui import QActionGroup
-from PySide6.QtWidgets import QApplication, QMenu, QWidget
+from PySide6.QtCore import QCoreApplication, QEvent              
+from PySide6.QtGui import QActionGroup              
+from PySide6.QtWidgets import QApplication, QMenu, QWidget              
 
-from core.models import ArchiveVersion
-from ui.version_menu import VersionMenuMixin
+from core.models import ArchiveVersion              
+from ui.version_menu import VersionMenuMixin              
 
 _APP = QApplication.instance() or QApplication([])
 from PySide6.QtGui import QFont
 _APP = QApplication.instance()
 if _APP is not None:
     _APP.setFont(QFont("Segoe UI", 9))
+
 
 
 def _versions(n: int = 5) -> list:
@@ -36,7 +62,7 @@ def _versions(n: int = 5) -> list:
 
 
 class _Harness(VersionMenuMixin, QWidget):
-
+    pass
 
     def __init__(self):
         QWidget.__init__(self)
@@ -50,12 +76,12 @@ class _Harness(VersionMenuMixin, QWidget):
         self._on_version_slice = lambda n: None
         self._populate_right_archive = lambda: None
 
-    def statusBar(self):
+    def statusBar(self):                                
         return None
 
 
 def _count_action_groups(widget: QWidget) -> int:
-
+    pass
     count = 0
     stack = list(widget.children())
     while stack:
@@ -72,11 +98,21 @@ class TestVersionsMenuLeak(unittest.TestCase):
 
     def tearDown(self):
         self.win.deleteLater()
-
-
+                                                                      
+                                                                     
+                                                                     
+                                                            
         self._drain_events()
 
     def test_repeated_rebuild_does_not_accumulate_action_groups(self):
+        pass
+
+
+
+
+
+
+
         self._drain_events()
         before = _count_action_groups(self.win)
 
@@ -94,11 +130,18 @@ class TestVersionsMenuLeak(unittest.TestCase):
 
     @staticmethod
     def _drain_events() -> None:
+        pass
+
+
+
+
+
+
         for _ in range(3):
             QCoreApplication.sendPostedEvents(None, QEvent.DeferredDelete)
 
     def test_action_group_is_deleted_later(self):
-
+        pass
         self.win._rebuild_versions_menu()
         self._drain_events()
         first = self.win._ver_group
@@ -115,7 +158,7 @@ class TestVersionsMenuLeak(unittest.TestCase):
         )
 
     def test_rebuild_works_without_archive(self):
-
+        pass
         self.win.mode = "fs"
         self.win.archive_path = None
         self.win._rebuild_versions_menu()
@@ -123,18 +166,18 @@ class TestVersionsMenuLeak(unittest.TestCase):
         self.assertEqual(_count_action_groups(self.win), 0)
 
     def test_none_menu_is_safe(self):
-
+        pass
         self.win._versions_menu = None
-        self.win._rebuild_versions_menu()
+        self.win._rebuild_versions_menu()                     
 
     def test_menu_populated_with_actions(self):
-
+        pass
         self.win.version_slice = 3
         self.win._rebuild_versions_menu()
         self._drain_events()
 
         actions = self.win._versions_menu.actions()
-
+                                               
         self.assertEqual(len(actions), 7)
         self.assertTrue(actions[0].isCheckable())
         self.assertIsNone(actions[0].data())

@@ -1,11 +1,67 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 from PySide6.QtCore import QThread, Signal
 
 
 class ScheduleCreateWorker(QThread):
+    pass
 
 
+
+
+
+
+
+                                                                     
+                                                                   
+                        
     done = Signal(bool, str)
 
     def __init__(self, rzp_path, work, job, schedule, parent=None):
@@ -27,19 +83,42 @@ class ScheduleCreateWorker(QThread):
             ))
             self.done.emit(ok, "")
         except Exception as exc:
-
-
+                                                                 
+                                                                       
+                                          
             self.done.emit(False, f"{type(exc).__name__}: {exc}")
 
 
 class ScheduleRemoveWorker(QThread):
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     done = Signal(list, list)
 
     def __init__(self, task_names, parent=None):
         super().__init__(parent)
-
-
+                                                                 
+                                                                 
+                                                                   
         self._names = [
             str(n) for n in (task_names or []) if str(n).strip()
         ]
@@ -50,8 +129,10 @@ class ScheduleRemoveWorker(QThread):
         try:
             from core.scheduler import remove_scheduled_task_by_name
         except Exception:
-
-
+                                                                    
+                                                                
+                                                              
+                                          
             self.done.emit([], list(self._names))
             return
 

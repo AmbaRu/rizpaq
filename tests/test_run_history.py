@@ -1,3 +1,18 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import tempfile
 import unittest
 from pathlib import Path
@@ -80,7 +95,7 @@ class TestParseLog(unittest.TestCase):
         self.assertEqual(e.tail, ("error line one", "error line two"))
 
     def test_full_mode_rc_fallback(self):
-
+                                                                           
         bad = parse_log(_FULL_MODE)[0]
         self.assertEqual(bad.status, "error")
         self.assertEqual(bad.rc, 3)
@@ -91,12 +106,12 @@ class TestParseLog(unittest.TestCase):
     def test_empty_and_garbage(self):
         self.assertEqual(parse_log(""), [])
         self.assertEqual(parse_log("мусор без заголовков\n===\n"), [])
-
+                                                           
         weird = _SAMPLE + "--- Rizpaq task run 2026-10-27 09:00:00 ---\n???\n"
         self.assertEqual(len(parse_log(weird)), 4)
 
     def test_load_history_missing_log(self):
-
+                                                   
         with tempfile.TemporaryDirectory() as tmp:
             self.assertEqual(load_history(tmp), [])
             self.assertTrue(

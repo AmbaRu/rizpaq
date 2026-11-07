@@ -1,3 +1,11 @@
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -27,22 +35,32 @@ from ui.qt_compat import (
     VERSION_RAW_ROLE,
 )
 from ui.presentation import format_size
-
-
+                                                               
+                                                                    
+                                                               
+                                                                
+         
+                                                          
+                                                    
 from ui.skins import color as skin_color
 
 _MAX_SEARCH_ROWS = 2000
 
-
+                                  
 UNI_EXTS = (".zip", ".7z", ".rar")
 
 
 def _safe_format(value: object) -> str:
+    pass
+
+
+
+
     return str(value).replace("{", "{{").replace("}", "}}")
 
 
 def _strip_emoji_prefix(name: str) -> str:
-
+    pass
     for prefix in ("📂 ", "📄 ", "🗜 "):
         if name.startswith(prefix):
             return name[len(prefix):]
@@ -50,10 +68,12 @@ def _strip_emoji_prefix(name: str) -> str:
 
 
 class TableFillMixin:
+    pass
 
+                                                                    
 
     def _is_latest_only(self) -> bool:
-
+        pass
         try:
             if self.latest_only_action is not None:
                 return bool(self.latest_only_action.isChecked())
@@ -61,6 +81,7 @@ class TableFillMixin:
             pass
         return False
 
+                                                                        
 
     def _set_row(self, kind, name, size, date, version, path, payload,
                  bold=False, color=None,
@@ -68,7 +89,7 @@ class TableFillMixin:
         row = self.table.rowCount()
         self.table.insertRow(row)
 
-
+                        
         n = QTableWidgetItem(name)
         if bold:
             n.setFont(self._bold_font)
@@ -79,25 +100,25 @@ class TableFillMixin:
         n.setData(NAME_SORT_ROLE, _strip_emoji_prefix(name))
         self.table.setItem(row, 0, n)
 
-
+                           
         size_item = QTableWidgetItem(size)
         if size_raw is not None:
             size_item.setData(SIZE_RAW_ROLE, size_raw)
         self.table.setItem(row, 1, size_item)
 
-
+                         
         date_item = QTableWidgetItem(date)
         if date_raw is not None:
             date_item.setData(DATE_RAW_ROLE, date_raw)
         self.table.setItem(row, 2, date_item)
 
-
+                           
         version_item = QTableWidgetItem(version)
         if version_raw is not None:
             version_item.setData(VERSION_RAW_ROLE, version_raw)
         self.table.setItem(row, 3, version_item)
 
-
+                         
         self.table.setItem(row, 4, QTableWidgetItem(path))
 
     def _populate_right_fs(self):
@@ -118,8 +139,8 @@ class TableFillMixin:
         is_root = (path == path.parent)
         if not is_root:
             up = QTableWidgetItem("⬆ ..")
-
-
+                                                                 
+                                                  
             up.setForeground(QColor(skin_color("TEXT_MUTED_LIGHT")))
             up.setData(USER_ROLE, None)
             up.setData(KIND_ROLE, K_UP)
@@ -158,7 +179,8 @@ class TableFillMixin:
         for name, full in dirs:
             self._set_row(K_FS_DIR, f"📂 {name}", "", "", "", full, full, bold=True)
 
-
+                                                                            
+                                                                
         arc_color = QColor(skin_color("ARC_BLUE"))
         for name, full, size, mtime in files:
             dt = datetime.fromtimestamp(mtime).strftime("%Y-%m-%d %H:%M:%S")
@@ -274,8 +296,8 @@ class TableFillMixin:
         self.search_count.setText("")
 
         up = QTableWidgetItem("⬆ ..")
-
-
+                                                                     
+                            
         up.setForeground(QColor(skin_color("TEXT_MUTED_LIGHT")))
         up.setData(USER_ROLE, None)
         up.setData(KIND_ROLE, K_UP)
@@ -330,6 +352,7 @@ class TableFillMixin:
 
         self._apply_current_sort()
 
+                                                                   
 
     def _on_search_text_changed(self, _text):
         self._search_timer.start()
@@ -350,49 +373,50 @@ class TableFillMixin:
         self.search_edit.setFocus()
         self.search_edit.selectAll()
 
+                                                                    
 
     def _on_right_header_clicked(self, column: int):
-
+        pass
         if column < 0 or column > 4:
             return
-
+                                
         if self._right_sort_column == column:
-
+                                                
             self._right_sort_desc = not self._right_sort_desc
         else:
-
+                                            
             self._right_sort_column = column
             self._right_sort_desc = False
 
         self._sort_right_table()
 
-
+                            
         order = DESCENDING_ORDER if self._right_sort_desc else ASCENDING_ORDER
         self.table.horizontalHeader().setSortIndicator(column, order)
 
     def _apply_current_sort(self):
-
+        pass
         if self._right_sort_column is None:
-
+                                                          
             self._right_sort_column = 0
             self._right_sort_desc = False
 
         self._sort_right_table()
 
-
+                            
         order = DESCENDING_ORDER if self._right_sort_desc else ASCENDING_ORDER
         header = self.table.horizontalHeader()
         header.setSortIndicator(self._right_sort_column, order)
         header.setSortIndicatorShown(True)
 
     def _sort_right_table(self):
-
+        pass
         table = self.table
         row_count = table.rowCount()
         if row_count <= 1:
             return
 
-
+                                        
         selected_payloads = []
         for row in range(row_count):
             item = table.item(row, 0)
@@ -401,7 +425,7 @@ class TableFillMixin:
                 if payload is not None:
                     selected_payloads.append(payload)
 
-
+                                               
         up_items = None
         data_rows = []
         for row in range(row_count):
@@ -415,14 +439,14 @@ class TableFillMixin:
                 items = [table.takeItem(row, c) for c in range(5)]
                 data_rows.append(items)
 
-
+                                           
         groups = {}
         for items in data_rows:
             kind = items[0].data(KIND_ROLE) if items[0] else None
             priority = self._kind_group_priority(kind)
             groups.setdefault(priority, []).append(items)
 
-
+                                   
         col = self._right_sort_column
         desc = self._right_sort_desc
         sorted_rows = []
@@ -431,18 +455,18 @@ class TableFillMixin:
             sorted_group = self._sort_group(group, col, desc)
             sorted_rows.extend(sorted_group)
 
-
+                                        
         table.setUpdatesEnabled(False)
         table.setRowCount(0)
 
-
+                                     
         if up_items is not None:
             row = table.rowCount()
             table.insertRow(row)
             for c in range(5):
                 table.setItem(row, c, up_items[c])
 
-
+                                        
         for items in sorted_rows:
             row = table.rowCount()
             table.insertRow(row)
@@ -451,7 +475,7 @@ class TableFillMixin:
 
         table.setUpdatesEnabled(True)
 
-
+                                              
         if selected_payloads:
             for row in range(table.rowCount()):
                 item = table.item(row, 0)
@@ -461,17 +485,21 @@ class TableFillMixin:
                         table.selectRow(row)
 
     def _kind_group_priority(self, kind) -> int:
-
+        pass
         if kind == K_UP:
-            return 0
+            return 0                                                 
         elif kind in (K_FS_DIR, K_ARC_DIR):
-            return 1
+            return 1         
         elif kind in (K_FS_ARC, K_FS_UNI_ARC):
-            return 2
+            return 2          
         else:
-            return 3
+            return 3                         
 
     def _sort_group(self, items_list, column: int, desc: bool):
+        pass
+
+
+
         non_empty = []
         empty = []
         for items in items_list:
@@ -484,9 +512,9 @@ class TableFillMixin:
         return non_empty + empty
 
     def _is_empty_sort_value(self, items, column: int) -> bool:
-
+        pass
         if column == 0:
-            return False
+            return False                   
         elif column == 1:
             item = items[1]
             if item:
@@ -510,9 +538,9 @@ class TableFillMixin:
         return True
 
     def _sort_key(self, items, column: int):
-
+        pass
         if column == 0:
-
+                                                  
             item = items[0]
             if item:
                 name = item.data(NAME_SORT_ROLE)
@@ -521,7 +549,7 @@ class TableFillMixin:
                 return name.casefold()
             return ""
         elif column == 1:
-
+                               
             item = items[1]
             if item:
                 raw = item.data(SIZE_RAW_ROLE)
@@ -529,7 +557,7 @@ class TableFillMixin:
                     return raw
             return -1
         elif column == 2:
-
+                                                                  
             item = items[2]
             if item:
                 raw = item.data(DATE_RAW_ROLE)
@@ -537,7 +565,7 @@ class TableFillMixin:
                     return raw
             return ""
         elif column == 3:
-
+                               
             item = items[3]
             if item:
                 raw = item.data(VERSION_RAW_ROLE)
@@ -545,7 +573,7 @@ class TableFillMixin:
                     return raw
             return -1
         elif column == 4:
-
+                                                  
             item = items[4]
             if item:
                 return item.text().casefold()

@@ -1,3 +1,16 @@
+                       
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -12,20 +25,22 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from PySide6.QtCore import QThread, Signal
-from PySide6.QtWidgets import QApplication, QWidget
+from PySide6.QtCore import QThread, Signal              
+from PySide6.QtWidgets import QApplication, QWidget              
 
 _APP = QApplication.instance() or QApplication(sys.argv)
 
-from ui import i18n
+from ui import i18n              
 
 i18n.set_language("ru", notify=False)
 
-from ui.i18n import tr
+from ui.i18n import tr              
+
+                                                                        
 
 
 class TestRunWithStream(unittest.TestCase):
-
+    pass
 
     def test_lines_arrive_live(self):
         from core import par2_ops
@@ -38,15 +53,15 @@ class TestRunWithStream(unittest.TestCase):
             on_line=got.append,
         )
         self.assertEqual(rc, 0)
-
+                                                           
         self.assertIn("line one", got)
         self.assertIn("line two", got)
-
+                                       
         self.assertIn("line one", log)
         self.assertIn("line two", log)
 
     def test_without_callback_old_path_kept(self):
-
+        pass
         from core import par2_ops
 
         rc, log = par2_ops._run(
@@ -58,7 +73,7 @@ class TestRunWithStream(unittest.TestCase):
         self.assertIn("chunk", log)
 
     def test_callback_exception_does_not_break_reading(self):
-
+        pass
         from core import par2_ops
 
         def bad(_line):
@@ -76,7 +91,7 @@ class TestRunWithStream(unittest.TestCase):
 
 
 class TestStreamPipedThrough(unittest.TestCase):
-
+    pass
 
     def test_worker_passes_line_signal(self):
         from core import par2_ops
@@ -93,16 +108,18 @@ class TestStreamPipedThrough(unittest.TestCase):
         worker = Par2CreateWorker("par2.exe", "backup.zpaq")
         with mock.patch.object(par2_ops, "refresh_par2_set",
                                side_effect=fake_refresh):
-            worker.run()
+            worker.run()                          
 
-
+                                                              
+                                                                   
+                                                       
         got = []
         worker.line_received.connect(got.append)
         captured["on_line"]("строка из par2")
         self.assertEqual(got, ["строка из par2"])
 
     def test_refresh_signature_accepts_on_line(self):
-
+        pass
         import inspect
 
         from core import par2_ops
@@ -115,16 +132,19 @@ class TestStreamPipedThrough(unittest.TestCase):
             par2_ops._run).parameters)
 
 
-class TestDialogStage(unittest.TestCase):
+                                                                        
 
+
+class TestDialogStage(unittest.TestCase):
+    pass
 
     @classmethod
     def setUpClass(cls):
         i18n.set_language("ru", notify=False)
 
     def setUp(self):
-
-
+                                                                     
+                                      
         self.dlg = _new_dialog()
 
     def test_stage_title_and_log_kept(self):
@@ -135,10 +155,10 @@ class TestDialogStage(unittest.TestCase):
             tr("progress.par2_stage", name="backup.zpaq"),
             dlg._title.text(),
         )
-
+                                                          
         log_text = dlg._log.toPlainText()
         self.assertIn("строка этапа бэкапа", log_text)
-
+                                               
         self.assertEqual(dlg._btn.text(), tr("progress.cancel"))
 
     def test_info_fields_hidden_but_elapsed(self):
@@ -149,12 +169,12 @@ class TestDialogStage(unittest.TestCase):
         self.assertTrue(dlg._elapsed_label.isVisible())
 
     def test_final_verdict_stays_open(self):
-
+        pass
         dlg = self.dlg
         dlg._finished = False
         dlg.finish(True, "итог", stay=True)
         self.assertTrue(dlg._finished)
-
+                                         
         self.assertTrue(dlg.isVisible())
         dlg.close()
 
@@ -163,6 +183,9 @@ def _new_dialog():
     from ui.archive_progress_dialog import ArchiveProgressDialog
 
     return ArchiveProgressDialog("backup.zpaq")
+
+
+                                                                      
 
 
 class _FakeWorker(QThread):
@@ -182,7 +205,7 @@ class _FakeWorker(QThread):
 
 
 class _StageHost(QWidget):
-
+    pass
 
     def __init__(self):
         QWidget.__init__(self)
@@ -218,7 +241,7 @@ class TestWiring(unittest.TestCase):
         self.arch.write_bytes(b"x" * 100)
 
     def _host_with_started_worker(self, result):
-
+        pass
         from ui.par2_actions import Par2ActionsMixin
 
         class Host(_StageHost, Par2ActionsMixin):
@@ -257,7 +280,7 @@ class TestWiring(unittest.TestCase):
         }, dlg)
         self.assertTrue(dlg._finished)
         self.assertEqual(dlg._title.property("state"), "ok")
-
+                                                 
         self.assertTrue(dlg.isVisible())
 
     def test_done_failed_is_painted_error(self):
@@ -270,7 +293,7 @@ class TestWiring(unittest.TestCase):
         self.assertEqual(dlg._title.property("state"), "err")
 
     def test_done_cancelled_is_not_error(self):
-
+        pass
         host, dlg, worker = self._host_with_started_worker(None)
         host._on_par2_done({}, {
             "ok": False, "cancelled": True, "log": "",
@@ -280,7 +303,7 @@ class TestWiring(unittest.TestCase):
         self.assertEqual(dlg._title.property("state"), "ok")
 
     def test_cancel_cancels_par2_worker(self):
-
+        pass
         from ui.archive_actions import ArchiveActionsMixin
 
         host = ArchiveActionsMixin.__new__(ArchiveActionsMixin)

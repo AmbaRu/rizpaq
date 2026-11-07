@@ -1,3 +1,61 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import json
@@ -10,29 +68,32 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Optional
 
-
+                                                              
 ENV_OVERRIDE = "ZPAQ_GUI_CONFIG"
 
-
+                     
 CONFIG_NAME = "zpaq_gui.json"
 
-
+                                                                         
+                                                                         
+                                               
 LOG_NAME = "rizpaq_error.log"
 
-
+                                                                      
+                                                 
 LOG_MAX_BYTES = 256 * 1024
 LOG_KEEP_BYTES = 64 * 1024
 
-
+                                                                
 PORTABLE_MARKERS = ("portable.txt", "portable")
 
-
+                                                  
 APP_DIR_NAME = "Rizpaq"
 
 
 @dataclass
 class Settings:
-
+    pass
     zpaq_path: Optional[str] = None
     seven_zip_path: Optional[str] = None
     last_fs_path: Optional[str] = None
@@ -42,34 +103,53 @@ class Settings:
     language: Optional[str] = None
     skin: Optional[str] = None
     profile: Optional[str] = None
-    window_geometry: Optional[list] = None
+    window_geometry: Optional[list] = None                 
     window_maximized: bool = False
-    left_split: Optional[list] = None
-    right_sort_column: Optional[int] = None
+    left_split: Optional[list] = None                       
+    right_sort_column: Optional[int] = None                
     right_sort_desc: bool = False
-
-
+                                                                         
+                                                                     
+                                                                  
+                                                                     
+                                                                  
+                                  
     associations_asked: bool = False
-
-
+                                                                      
+                                                                     
+                                                                       
+                                                                      
+                                                                    
+                                                                  
+                                 
     engine_stall_timeout: Optional[int] = None
-
-
+                                                                     
+                                                           
     catalog_roots: Optional[list] = None
     catalog_index_on_scan: bool = True
-
-
+                                                                 
+                                   
     update_url: Optional[str] = None
     update_check_enabled: bool = True
     last_update_check: Optional[int] = None
     skipped_version: Optional[str] = None
-
-
+                                                                       
+                                                                  
+                                                              
+                                                              
     last_close: Optional[int] = None
     digest_enabled: bool = True
 
 
+                                                                             
+                                   
+                                                                             
+
 def _portable_base() -> Optional[Path]:
+    pass
+
+
+
     candidates = []
     if getattr(sys, "frozen", False):
         try:
@@ -92,7 +172,7 @@ def _portable_base() -> Optional[Path]:
 
 
 def _user_config_dir() -> Path:
-
+    pass
     if os.name == "nt":
         appdata = os.environ.get("APPDATA")
         if appdata:
@@ -105,7 +185,7 @@ def _user_config_dir() -> Path:
 
 
 def _legacy_candidates() -> list:
-
+    pass
     cands = []
     if getattr(sys, "frozen", False):
         try:
@@ -123,7 +203,7 @@ def _legacy_candidates() -> list:
 
 
 def _maybe_migrate(target: Path) -> None:
-
+    pass
     if target.is_file():
         return
     for base in _legacy_candidates():
@@ -144,6 +224,13 @@ def _maybe_migrate(target: Path) -> None:
 
 
 def default_path() -> Path:
+    pass
+
+
+
+
+
+
     override = os.environ.get(ENV_OVERRIDE)
     if override:
         return Path(override)
@@ -153,13 +240,20 @@ def default_path() -> Path:
     return _user_config_dir() / CONFIG_NAME
 
 
-def log_path() -> Path:
+                                                                             
+            
+                                                                             
+                                                                          
+                                                                           
+                                                    
 
+def log_path() -> Path:
+    pass
     return default_path().parent / LOG_NAME
 
 
 def _log_candidates(name: str) -> list:
-
+    pass
     out: list = []
 
     try:
@@ -177,13 +271,15 @@ def _log_candidates(name: str) -> list:
         if value:
             out.append(Path(value) / name)
 
-
+                                                               
+                                                                          
     try:
         out.append(Path.cwd() / name)
     except Exception:
         pass
 
-
+                                                                     
+                                                                  
     seen = set()
     unique = []
     for p in out:
@@ -197,11 +293,11 @@ def _log_candidates(name: str) -> list:
 
 
 def _trim_log(path: Path) -> str:
-
+    pass
     try:
         if path.is_file() and path.stat().st_size > LOG_MAX_BYTES:
             data = path.read_bytes()[-LOG_KEEP_BYTES:]
-
+                                                                         
             cut = data.find(b"\n")
             if cut >= 0:
                 data = data[cut + 1:]
@@ -212,6 +308,18 @@ def _trim_log(path: Path) -> str:
 
 
 def write_error_log(text: str, name: str = LOG_NAME) -> Optional[Path]:
+    pass
+
+
+
+
+
+
+
+
+
+
+
     if not text:
         return None
 
@@ -227,15 +335,16 @@ def write_error_log(text: str, name: str = LOG_NAME) -> Optional[Path]:
             previous = _trim_log(path)
 
             if previous:
-
-
+                                                                 
+                                                                       
+                                          
                 with path.open("w", encoding="utf-8") as f:
                     f.write("... (предыдущая запись обрезана) ...\n")
                     f.write(previous)
                     f.write(body)
             else:
-
-
+                                                                       
+                                     
                 with path.open("a", encoding="utf-8") as f:
                     f.write(body)
             return path
@@ -244,6 +353,10 @@ def write_error_log(text: str, name: str = LOG_NAME) -> Optional[Path]:
 
     return None
 
+
+                                                                             
+                                                   
+                                                                             
 
 def _coerce_str(v: Any) -> Optional[str]:
     if v is None:
@@ -261,6 +374,13 @@ def _coerce_bool(v: Any, default: bool) -> bool:
 
 
 def _coerce_str_list(v: Any) -> Optional[list]:
+    pass
+
+
+
+
+
+
     if not isinstance(v, list):
         return None
     out = []
@@ -273,7 +393,7 @@ def _coerce_str_list(v: Any) -> Optional[list]:
 
 
 def _coerce_int_or_none(v: Any) -> Optional[int]:
-
+    pass
     if v is None:
         return None
     if isinstance(v, bool):
@@ -284,7 +404,7 @@ def _coerce_int_or_none(v: Any) -> Optional[int]:
 
 
 def _coerce_int_list(v: Any, length: int) -> Optional[list]:
-
+    pass
     if not isinstance(v, list) or len(v) != length:
         return None
     out = []
@@ -299,7 +419,7 @@ def _coerce_int_list(v: Any, length: int) -> Optional[list]:
 
 
 def _coerce_sort_column(v: Any) -> Optional[int]:
-
+    pass
     if isinstance(v, bool):
         return None
     if isinstance(v, int) and 0 <= v <= 4:
@@ -308,7 +428,7 @@ def _coerce_sort_column(v: Any) -> Optional[int]:
 
 
 def _from_dict(data: dict) -> Settings:
-
+    pass
     s = Settings()
     s.zpaq_path = _coerce_str(data.get("zpaq_path"))
     s.seven_zip_path = _coerce_str(data.get("seven_zip_path"))
@@ -324,11 +444,13 @@ def _from_dict(data: dict) -> Settings:
     s.left_split = _coerce_int_list(data.get("left_split"), 2)
     s.right_sort_column = _coerce_sort_column(data.get("right_sort_column"))
     s.right_sort_desc = _coerce_bool(data.get("right_sort_desc"), False)
-
-
+                                                                   
+                                                                     
+                                                                     
+                                               
     s.associations_asked = _coerce_bool(data.get("associations_asked"), False)
-
-
+                                                                        
+                                                                   
     s.engine_stall_timeout = _coerce_int_or_none(
         data.get("engine_stall_timeout"))
     s.catalog_roots = _coerce_str_list(data.get("catalog_roots"))
@@ -345,7 +467,15 @@ def _from_dict(data: dict) -> Settings:
     return s
 
 
+                                                                             
+                 
+                                                                             
+
 def load(path: Optional[Path] = None) -> Settings:
+    pass
+
+
+
     p = Path(path) if path else default_path()
     if not path:
         _maybe_migrate(p)
@@ -365,6 +495,10 @@ def load(path: Optional[Path] = None) -> Settings:
 
 
 def save(settings: Settings, path: Optional[Path] = None) -> None:
+    pass
+
+
+
     p = Path(path) if path else default_path()
     payload = asdict(settings)
     try:
@@ -390,6 +524,10 @@ def save(settings: Settings, path: Optional[Path] = None) -> None:
 
 
 def update(path: Optional[Path] = None, **changes: Any) -> Settings:
+    pass
+
+
+
     s = load(path)
     known = {f.name for f in fields(Settings)}
     for k, v in changes.items():
@@ -399,11 +537,21 @@ def update(path: Optional[Path] = None, **changes: Any) -> Settings:
     return s
 
 
+                                                                
+                                                                   
+                                                             
 _STALL_MIN_S = 5
 _STALL_MAX_S = 3600
 
 
 def engine_stall_timeout(default: float, path: Optional[Path] = None) -> float:
+    pass
+
+
+
+
+
+
     try:
         value = load(path).engine_stall_timeout
     except Exception:

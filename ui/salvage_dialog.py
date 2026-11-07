@@ -1,3 +1,20 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 from PySide6.QtWidgets import (
@@ -10,9 +27,12 @@ from PySide6.QtWidgets import (
 
 from ui.i18n import tr
 
+                                                                  
+                                                               
+
 
 class SalvageOptionsDialog(QDialog):
-
+    pass
 
     def __init__(self, archive_name: str = "", parent=None):
         super().__init__(parent)
@@ -36,7 +56,7 @@ class SalvageOptionsDialog(QDialog):
         self.ram = QComboBox()
         for gb in (1, 2, 4, 8):
             self.ram.addItem(tr("salvage.ram_gb").format(gb=gb), gb)
-
+                                                           
         lay.addWidget(self.ram)
 
         warn = QLabel(tr("salvage.warn_partial"))
@@ -54,5 +74,5 @@ class SalvageOptionsDialog(QDialog):
         lay.addWidget(buttons)
 
     def ram_gb(self) -> int:
-
+        pass
         return self.ram.currentData()

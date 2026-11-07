@@ -1,3 +1,35 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 from PySide6.QtCore import Qt
@@ -17,6 +49,18 @@ from ui.i18n import tr
 
 
 class SchedulerSyncDialog(QDialog):
+    pass
+
+
+
+
+
+
+
+
+
+
+
 
     def __init__(self, rzp_path, container, parent=None):
         super().__init__(parent)
@@ -28,7 +72,8 @@ class SchedulerSyncDialog(QDialog):
         self._container = container
         self._stats = {"added": 0, "disabled": 0, "removed": 0, "failed": 0}
 
-
+                                                                  
+                                                             
         from core.scheduler import compute_sync_actions
 
         try:
@@ -63,7 +108,7 @@ class SchedulerSyncDialog(QDialog):
             kind="remove",
         )
 
-
+                                                      
         if not any((self._actions.get("add"),
                     self._actions.get("disable"),
                     self._actions.get("remove"))):
@@ -73,7 +118,10 @@ class SchedulerSyncDialog(QDialog):
 
         layout.addStretch(1)
 
-
+                                                      
+                                                                     
+                                                                    
+                                            
         buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
         ok_btn = buttons.button(QDialogButtonBox.Ok)
         if ok_btn is not None:
@@ -85,8 +133,17 @@ class SchedulerSyncDialog(QDialog):
         buttons.rejected.connect(self.reject)
         layout.addWidget(buttons)
 
+                                                                        
 
     def _build_section(self, layout, group_key: str, items: list, kind: str) -> None:
+        pass
+
+
+
+
+
+
+
         if not items:
             return
 
@@ -109,7 +166,7 @@ class SchedulerSyncDialog(QDialog):
         group_layout.addWidget(list_widget)
         layout.addWidget(group)
 
-
+                                                                    
         if kind == "add":
             self._add_list = list_widget
         elif kind == "disable":
@@ -119,13 +176,21 @@ class SchedulerSyncDialog(QDialog):
 
     @staticmethod
     def _format_entry(entry, kind: str) -> str:
+        pass
+
+
+
+
+
+
+
         if kind == "remove":
             name = ""
             if isinstance(entry, dict):
                 name = str(entry.get("name") or "")
             return name or "?"
 
-
+                                   
         try:
             work, job = entry
             work_title = str(work.get("title") or "")
@@ -136,9 +201,10 @@ class SchedulerSyncDialog(QDialog):
         except Exception:
             return "?"
 
+                                                                         
 
     def _checked_entries(self, list_widget) -> list:
-
+        pass
         if list_widget is None:
             return []
         out = []
@@ -151,6 +217,17 @@ class SchedulerSyncDialog(QDialog):
         return out
 
     def _apply_and_accept(self) -> None:
+        pass
+
+
+
+
+
+
+
+
+
+
         try:
             from core.scheduler import (
                 create_scheduled_task,
@@ -166,7 +243,7 @@ class SchedulerSyncDialog(QDialog):
             self.reject()
             return
 
-
+                           
         for entry in self._checked_entries(self._remove_list):
             name = ""
             if isinstance(entry, dict):
@@ -182,7 +259,7 @@ class SchedulerSyncDialog(QDialog):
             except Exception:
                 self._stats["failed"] += 1
 
-
+                                                                    
         for entry in self._checked_entries(self._add_list):
             try:
                 work, job = entry
@@ -195,7 +272,7 @@ class SchedulerSyncDialog(QDialog):
             except Exception:
                 self._stats["failed"] += 1
 
-
+                                                          
         for entry in self._checked_entries(self._disable_list):
             try:
                 work, job = entry
@@ -207,7 +284,8 @@ class SchedulerSyncDialog(QDialog):
             except Exception:
                 self._stats["failed"] += 1
 
-
+                                                                        
+                                                                        
         if self._stats["failed"]:
             QMessageBox.warning(
                 self,
@@ -236,4 +314,8 @@ class SchedulerSyncDialog(QDialog):
         self.accept()
 
     def result_stats(self) -> dict:
+        pass
+
+
+
         return dict(self._stats)

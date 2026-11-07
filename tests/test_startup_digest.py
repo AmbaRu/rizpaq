@@ -1,3 +1,13 @@
+
+
+
+
+
+
+
+
+
+
 import tempfile
 import unittest
 from datetime import datetime, timedelta
@@ -51,11 +61,12 @@ class StartupDigestTests(unittest.TestCase):
         log.write_text(text, encoding="utf-8")
         return str(self.tmp)
 
+                                                                        
 
     def test_counts_new_entries_since_last_close(self):
-
+                                                                           
         log = (
-            _entry(_run("2026-11-03 08:00:00"))
+            _entry(_run("2026-11-03 08:00:00"))                    
             + _entry(_run("2026-11-04 09:00:00"))
             + _entry(_run("2026-11-04 10:00:00", action="test",
                           status="ERROR", tail="par2: damaged"))
@@ -92,9 +103,10 @@ class StartupDigestTests(unittest.TestCase):
         self.assertEqual((d.tests_ok, d.tests_busy), (1, 1))
         self.assertTrue(d.has_problem)
 
+                                                                     
 
     def test_no_since_defaults_to_week_window(self):
-
+                                                              
         old_ts = (_NOW - timedelta(days=DEFAULT_SINCE_DAYS + 1)
                   ).strftime("%Y-%m-%d %H:%M:%S")
         new_ts = (_NOW - timedelta(days=1)).strftime("%Y-%m-%d %H:%M:%S")
@@ -102,18 +114,19 @@ class StartupDigestTests(unittest.TestCase):
         tasks = self._write_log(log)
         d = collect_digest(tasks, since=None, now=_NOW)
         self.assertEqual(len(d.entries), 1)
-
-
+                                                             
+                                              
         d2 = collect_digest(tasks, since="мусор", now=_NOW)
         self.assertEqual(len(d2.entries), 1)
 
     def test_since_older_than_all_returns_none(self):
         log = _entry(_run("2026-11-04 11:00:00"))
         tasks = self._write_log(log)
-
+                                                      
         since = int(_NOW.timestamp())
         self.assertIsNone(collect_digest(tasks, since=since, now=_NOW))
 
+                                                                       
 
     def test_no_log_returns_none(self):
         self.assertIsNone(collect_digest(str(self.tmp), since=None,
@@ -122,7 +135,7 @@ class StartupDigestTests(unittest.TestCase):
         self.assertIsNone(collect_digest(123, since=1, now=_NOW))
 
     def test_broken_timestamps_are_skipped(self):
-
+                                                                       
         log = _entry("--- Rizpaq task run не время ---\nAction: backup\n") \
             + _entry(_run("2026-11-04 09:00:00"))
         tasks = self._write_log(log)

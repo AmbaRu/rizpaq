@@ -1,3 +1,9 @@
+
+
+
+
+
+
 from __future__ import annotations
 
 try:
@@ -13,11 +19,13 @@ except Exception:
             self.tasks_dir = None
             self.latest_only = False
             self.language = None
-
-
+                                                                       
+                                                                         
+                                                                      
             self.skin = None
-
-
+                                                                          
+                                                                       
+                                                          
             self.profile = None
             self.window_geometry = None
             self.window_maximized = False
@@ -33,7 +41,7 @@ except Exception:
 
 
 def _load_cfg() -> "_Cfg":
-
+    pass
     try:
         return _cfg_load()
     except Exception:
@@ -41,7 +49,7 @@ def _load_cfg() -> "_Cfg":
 
 
 def _save_cfg(cfg) -> None:
-
+    pass
     try:
         _cfg_save(cfg)
     except Exception:
@@ -49,7 +57,7 @@ def _save_cfg(cfg) -> None:
 
 
 def _merge_cfg(**changes) -> None:
-
+    pass
     try:
         c = _load_cfg()
         for k, v in changes.items():

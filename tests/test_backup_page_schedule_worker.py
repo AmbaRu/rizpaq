@@ -1,3 +1,29 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import shutil
@@ -10,8 +36,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from PySide6.QtCore import QThread
-from PySide6.QtWidgets import QApplication, QWidget
+from PySide6.QtCore import QThread              
+from PySide6.QtWidgets import QApplication, QWidget              
 
 _APP = QApplication.instance() or QApplication([])
 from PySide6.QtGui import QFont
@@ -20,22 +46,34 @@ if _APP is not None:
     _APP.setFont(QFont("Segoe UI", 9))
 
 
-from ui.i18n import set_language
+from ui.i18n import set_language              
 
 set_language("ru", notify=False)
 
-from core.tasks import (
+from core.tasks import (              
     add_job,
     add_work,
     container_path,
     empty_container,
     save_container,
 )
-from ui import backup_page as bp
-from ui.backup_page import BackupPage, _ScheduleWorker
+from ui import backup_page as bp              
+from ui.backup_page import BackupPage, _ScheduleWorker              
 
 
 class _QHost(QWidget):
+    pass
+
+
+
+
+
+
+
+
+
+
+
 
     def __init__(self, tasks_dir):
         QWidget.__init__(self)
@@ -74,6 +112,11 @@ class _TmpMixin(unittest.TestCase):
         return c
 
     def _dispose_page(self, page, host):
+        pass
+
+
+
+
         try:
             page._watch_timer.stop()
         except Exception:
@@ -101,15 +144,23 @@ class _TmpMixin(unittest.TestCase):
 
 
 class TestWorkerGoesToHostWorkers(_TmpMixin):
-
+    pass
 
     def test_worker_added_to_host_workers(self):
+        pass
+
+
+
+
+
+
         self.write_container([
             {"work_title": "Docs", "jobs": [{"title": "Daily"}]},
         ])
         host = _QHost(tasks_dir=str(self.dir))
 
-
+                                                                   
+                                    
         with unittest.mock.patch(
             "core.scheduler.schedule_info_for_container",
             return_value={},
@@ -130,6 +181,13 @@ class TestWorkerGoesToHostWorkers(_TmpMixin):
         )
 
     def test_worker_is_real_qthread(self):
+        pass
+
+
+
+
+
+
         self.write_container([
             {"work_title": "Docs", "jobs": [{"title": "Daily"}]},
         ])
@@ -148,32 +206,47 @@ class TestWorkerGoesToHostWorkers(_TmpMixin):
 
 
 class TestCancelRequestStopsDone(_TmpMixin):
+    pass
+
+
+
+
+
+
+
 
     def test_cancel_request_sets_flag(self):
-
+        pass
         worker = _ScheduleWorker({})
         self.assertFalse(worker._cancel)
         worker.cancel_request()
         self.assertTrue(worker._cancel)
 
     def test_cancelled_worker_does_not_emit_done(self):
+        pass
+
+
+
+
+
+
         received = []
 
         worker = _ScheduleWorker({})
         worker.done.connect(received.append)
         worker.cancel_request()
 
-
+                                                                         
         with unittest.mock.patch(
             "core.scheduler.schedule_info_for_container",
             return_value={"j1": {"scheduled": True}},
         ):
             worker.run()
 
-
+                                                                 
         _APP.processEvents()
-
-
+                                                                        
+                                                                        
         time.sleep(0.05)
         _APP.processEvents()
 
@@ -185,6 +258,13 @@ class TestCancelRequestStopsDone(_TmpMixin):
 
 
 class TestApplyScheduleSurvivesDeletedPage(_TmpMixin):
+    pass
+
+
+
+
+
+
 
     def test_apply_schedule_survives_isvisible_runtimeerror(self):
         self.write_container([
@@ -199,13 +279,15 @@ class TestApplyScheduleSurvivesDeletedPage(_TmpMixin):
             page = BackupPage(host)
         self.addCleanup(self._dispose_page, page, host)
 
-
+                                                                  
+                                                                       
+                           
         def boom_is_visible():
             raise RuntimeError("Internal C++ object already deleted")
 
         page.isVisible = boom_is_visible
 
-
+                                                       
         try:
             page._apply_schedule({"j1": {"scheduled": True, "next_run": "x"}})
         except RuntimeError:
@@ -216,7 +298,7 @@ class TestApplyScheduleSurvivesDeletedPage(_TmpMixin):
             )
 
 
-import unittest.mock
+import unittest.mock                                                   
 
 
 if __name__ == "__main__":

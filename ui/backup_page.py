@@ -1,3 +1,229 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -42,6 +268,12 @@ from ui.presentation import format_schedule, format_size
 from ui.qt_compat import CUSTOM_CONTEXT, HEADER_STRETCH, NO_EDIT
 
 
+                                                                
+                                                                    
+                                                                          
+ 
+                                                                     
+                                                                    
 _STATUS_TOKENS = {
     JOB_STATUS_OK: "OK_GREEN",
     JOB_STATUS_ERROR: "WARN_ORANGE",
@@ -50,7 +282,8 @@ _STATUS_TOKENS = {
     "read_error": "DIFF_REMOVED",
 }
 
-
+                                                                        
+                                                                         
 _COL_NAME = 0
 _COL_SCHEDULE = 1
 _COL_NEXT_RUN = 2
@@ -58,17 +291,33 @@ _COL_LAST_RUN = 3
 _COL_STATUS = 4
 _COL_SIZE = 5
 
-
+                
 _COL_COUNT = 6
 
-
+                                                                             
 _PAYLOAD_ROLE = Qt.UserRole + 200
 
-
+                                                                   
+                                                                    
+                                                                       
+                                                          
 _WATCH_DELAY_MS = 250
 
 
 def _status_color(token_name: str) -> QColor:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
     try:
         from ui.skins import color
         return QColor(color(token_name))
@@ -77,14 +326,47 @@ def _status_color(token_name: str) -> QColor:
 
 
 def _job_icon(job: dict) -> str:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
     if str(job.get("action") or "").strip().lower() == ACTION_TEST:
         return "🔍"
     return "⚙"
 
 
 class _ScheduleWorker(QThread):
+    pass
 
-    done = Signal(dict)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    done = Signal(dict)                                                       
 
     def __init__(self, container: dict, parent=None):
         super().__init__(parent)
@@ -92,6 +374,17 @@ class _ScheduleWorker(QThread):
         self._cancel = False
 
     def cancel_request(self):
+        pass
+
+
+
+
+
+
+
+
+
+
         self._cancel = True
         try:
             self.requestInterruption()
@@ -105,40 +398,66 @@ class _ScheduleWorker(QThread):
             info = schedule_info_for_container(self._container)
         except Exception:
             info = {}
-
-
+                                                                 
+                                                                 
+                                                                  
+                                                                
+                                  
         if self._cancel:
             return
         self.done.emit(dict(info or {}))
 
 
 class BackupPage(QWidget):
+    pass
+
+
+
+
+
+
+
+
+
+
 
     def __init__(self, host, parent=None):
         super().__init__(parent)
         self._host = host
 
-
+                                                                      
+                                
         self._schedule_worker = None
 
-
+                                                              
         self._schedule_info: dict = {}
 
-
+                                                                      
+                                                                       
+                                                                    
         self._container: dict = {}
 
-
+                                                                
+                                                                  
+                                                                
+                                                                        
         self._watcher = QFileSystemWatcher(self)
         self._watcher.fileChanged.connect(self._on_watch_trigger)
         self._watcher.directoryChanged.connect(self._on_watch_trigger)
 
-
+                                                              
+                                                                 
+                                                            
+                                                                
         self._watch_timer = QTimer(self)
         self._watch_timer.setSingleShot(True)
         self._watch_timer.setInterval(_WATCH_DELAY_MS)
         self._watch_timer.timeout.connect(self._on_watch_timeout)
 
-
+                                                                      
+                                                                         
+                                                                     
+                                                               
         self._last_snapshot = None
 
         self.setObjectName("backupPage")
@@ -152,9 +471,10 @@ class BackupPage(QWidget):
 
         self.refresh()
 
+                                                                           
 
     def _build_top_bar(self, parent_layout):
-
+        pass
         bar = QWidget(self)
         bar.setObjectName("backupTopBar")
         lay = QHBoxLayout(bar)
@@ -175,7 +495,7 @@ class BackupPage(QWidget):
         parent_layout.addWidget(bar)
 
     def _build_body(self, parent_layout):
-
+        pass
         self._stack = QStackedWidget(self)
         self._stack.setObjectName("backupStack")
 
@@ -206,6 +526,14 @@ class BackupPage(QWidget):
         parent_layout.addWidget(self._stack, 1)
 
     def _build_tree(self) -> QTreeWidget:
+        pass
+
+
+
+
+
+
+
         tree = QTreeWidget(self)
         tree.setObjectName("backupTree")
         tree.setColumnCount(_COL_COUNT)
@@ -227,6 +555,10 @@ class BackupPage(QWidget):
 
     @staticmethod
     def _header_labels() -> list:
+        pass
+
+
+
         return [
             tr("backup.table.name"),
             tr("backup.table.schedule"),
@@ -238,13 +570,32 @@ class BackupPage(QWidget):
 
     @staticmethod
     def _align_cells(item: QTreeWidgetItem) -> None:
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         item.setTextAlignment(_COL_NAME, Qt.AlignLeft | Qt.AlignVCenter)
         for col in range(1, _COL_COUNT):
             item.setTextAlignment(col, Qt.AlignCenter)
 
+                                                                         
 
     def tasks_dir(self):
-
+        pass
         cfg = getattr(self._host, "_cfg", None)
         if cfg is None:
             return None
@@ -257,7 +608,7 @@ class BackupPage(QWidget):
         return str(value)
 
     def select_dir(self):
-
+        pass
         start = self.tasks_dir() or str(Path.home())
         chosen = QFileDialog.getExistingDirectory(
             self, tr("menu.settings.tasks_dir"), start
@@ -282,6 +633,13 @@ class BackupPage(QWidget):
         self.refresh()
 
     def retranslate(self) -> None:
+        pass
+
+
+
+
+
+
         try:
             self._tree.setHeaderLabels(self._header_labels())
         except Exception:
@@ -297,6 +655,21 @@ class BackupPage(QWidget):
         self.refresh()
 
     def refresh(self):
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         folder = self.tasks_dir()
         self._update_path_label(folder)
 
@@ -306,11 +679,11 @@ class BackupPage(QWidget):
             self._fill_tree({})
             self._show_empty_or_tree(False, folder)
         else:
-
-
+                                                                 
+                                                     
             self._container = load_container(container_path(folder))
 
-
+                                                                              
             self._schedule_info = {}
 
             has_rows = self._fill_tree(self._container)
@@ -319,7 +692,9 @@ class BackupPage(QWidget):
             if has_rows:
                 self._load_schedule(self._container)
 
-
+                                                                   
+                                                                      
+                                        
         self._update_snapshot()
         self._refresh_watcher()
 
@@ -332,6 +707,13 @@ class BackupPage(QWidget):
             self._path_label.setToolTip("")
 
     def _show_empty_or_tree(self, has_rows: bool, folder):
+        pass
+
+
+
+
+
+
         if has_rows:
             self._stack.setCurrentWidget(self._tree)
             return
@@ -344,6 +726,22 @@ class BackupPage(QWidget):
         self._stack.setCurrentWidget(self._empty_page)
 
     def _fill_tree(self, container: dict) -> bool:
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self._tree.clear()
         self._tree.setUpdatesEnabled(False)
 
@@ -352,7 +750,7 @@ class BackupPage(QWidget):
             self._tree.setUpdatesEnabled(True)
             return False
 
-
+                                                                
         work_items: dict = {}
 
         for row in rows:
@@ -372,7 +770,8 @@ class BackupPage(QWidget):
                                             work_id=work.get("id"))
                 parent.addChild(child)
 
-
+                                                                
+                                                             
         if len(work_items) <= 3:
             for item in work_items.values():
                 item.setExpanded(True)
@@ -381,6 +780,16 @@ class BackupPage(QWidget):
         return True
 
     def _make_work_item(self, work: dict, size) -> QTreeWidgetItem:
+        pass
+
+
+
+
+
+
+
+
+
         title = str(work.get("title") or "—")
         cells = [f"🗂 {title}"] + [""] * (_COL_COUNT - 1)
         item = QTreeWidgetItem(cells)
@@ -389,7 +798,7 @@ class BackupPage(QWidget):
 
         self._align_cells(item)
 
-
+                                                                   
         font = item.font(_COL_NAME)
         font.setBold(True)
         item.setFont(_COL_NAME, font)
@@ -400,6 +809,22 @@ class BackupPage(QWidget):
         return item
 
     def _make_job_item(self, job: dict, size, work_id=None) -> QTreeWidgetItem:
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         title = str(job.get("title") or "—")
         schedule_text = format_schedule(job.get("schedule"))
         icon = _job_icon(job)
@@ -411,21 +836,23 @@ class BackupPage(QWidget):
             "work_id": str(work_id or ""),
         })
 
-
+                           
         last = job.get("last_run") or "—"
         item.setText(_COL_LAST_RUN, str(last))
 
-
+                                
         text, token = self._status_text_and_token(job)
         item.setText(_COL_STATUS, text)
         item.setForeground(_COL_STATUS, _status_color(token))
 
-
+                                                               
+                                                                 
+                                                       
         tip = self._status_tooltip(job)
         if tip:
             item.setToolTip(_COL_STATUS, tip)
 
-
+                                                        
         if isinstance(size, int):
             item.setText(_COL_SIZE, format_size(size))
 
@@ -435,6 +862,20 @@ class BackupPage(QWidget):
 
     @staticmethod
     def _status_text_and_token(job: dict):
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
         status = job.get("last_status")
         if status == JOB_STATUS_OK:
             return tr("backup.status.ok"), _STATUS_TOKENS[JOB_STATUS_OK]
@@ -442,8 +883,9 @@ class BackupPage(QWidget):
             text = tr("backup.status.error")
             reason = job.get("last_reason")
             if reason:
-
-
+                                                                  
+                                                                      
+                                                             
                 key = "backup.reason." + str(reason)
                 detail = tr(key)
                 if detail != key:
@@ -455,6 +897,20 @@ class BackupPage(QWidget):
 
     @staticmethod
     def _status_tooltip(job: dict) -> str:
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
         if job.get("last_status") != JOB_STATUS_ERROR:
             return ""
         reason = job.get("last_reason")
@@ -470,8 +926,17 @@ class BackupPage(QWidget):
             tip += "\n" + tr("backup.tooltip.last_run", last=str(last))
         return tip
 
+                                                                                     
 
     def _container_snapshot(self):
+        pass
+
+
+
+
+
+
+
         folder = self.tasks_dir()
         if not folder:
             return None
@@ -480,16 +945,37 @@ class BackupPage(QWidget):
             st = p.stat()
             return (st.st_mtime_ns, st.st_size)
         except OSError:
-
-
+                                                                 
+                                                
             return None
 
     def _update_snapshot(self):
-
+        pass
         self._last_snapshot = self._container_snapshot()
 
     def _refresh_watcher(self):
+        pass
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                             
         for p in list(self._watcher.files()):
             try:
                 self._watcher.removePath(p)
@@ -505,13 +991,14 @@ class BackupPage(QWidget):
         if not folder:
             return
 
-
+                         
         try:
             self._watcher.addPath(str(Path(folder)))
         except Exception:
             pass
 
-
+                                                              
+                                    
         p = container_path(folder)
         if p.is_file():
             try:
@@ -520,16 +1007,62 @@ class BackupPage(QWidget):
                 pass
 
     def _on_watch_trigger(self, _path: str):
+        pass
+
+
+
+
+
+
+
         self._watch_timer.start()
 
     def _on_watch_timeout(self):
+        pass
+
+
+
+
+
+
+
+
+
+
         current = self._container_snapshot()
         if current == self._last_snapshot:
             return
         self.refresh()
 
+                                                                                          
 
     def _load_schedule(self, container: dict):
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if self._schedule_worker is not None:
             return
         from core.tasks import iter_jobs
@@ -538,14 +1071,16 @@ class BackupPage(QWidget):
             self._schedule_info = {}
             return
 
-
+                                                                      
+                                                                 
+                                                   
         try:
             worker = _ScheduleWorker(container, self._host)
         except Exception:
             worker = None
 
         if worker is None:
-
+                                                      
             try:
                 from core.scheduler import schedule_info_for_container
 
@@ -555,7 +1090,7 @@ class BackupPage(QWidget):
             self._apply_schedule(dict(info or {}))
             return
 
-
+                                              
         self._schedule_worker = worker
         worker.done.connect(self._apply_schedule)
         worker.finished.connect(self._on_schedule_finished)
@@ -585,6 +1120,21 @@ class BackupPage(QWidget):
         self._schedule_worker = None
 
     def _apply_schedule(self, info: dict):
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         try:
             self._schedule_info = dict(info or {})
 
@@ -595,13 +1145,13 @@ class BackupPage(QWidget):
                 lambda item, work, job: self._apply_schedule_for_job(item, job)
             )
         except RuntimeError:
-
+                                                 
             pass
         except Exception:
             pass
 
     def _apply_schedule_for_job(self, item: QTreeWidgetItem, job: dict):
-
+        pass
         job_id = str(job.get("id") or "")
         if not job_id:
             return
@@ -617,9 +1167,16 @@ class BackupPage(QWidget):
 
     def _set_schedule_cell(self, item: QTreeWidgetItem, scheduled: bool,
                            next_run: str, job_id: str):
+        pass
+
+
+
+
+
+
         tree = self._tree
 
-
+                                                                    
         try:
             tree.setItemWidget(item, _COL_NEXT_RUN, None)
         except Exception:
@@ -631,10 +1188,10 @@ class BackupPage(QWidget):
             item.setTextAlignment(_COL_NEXT_RUN, Qt.AlignCenter)
             return
 
-
+                        
         btn = QPushButton(tr("backup.schedule_action"))
-
-
+                                                                             
+                                                                          
         btn.setObjectName("backupScheduleLink")
         btn.setFlat(True)
         btn.setCursor(Qt.PointingHandCursor)
@@ -652,8 +1209,24 @@ class BackupPage(QWidget):
 
         tree.setItemWidget(item, _COL_NEXT_RUN, wrap)
 
+                                                                            
 
     def selected_job(self):
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         try:
             if not self.isVisible():
                 return None
@@ -678,6 +1251,14 @@ class BackupPage(QWidget):
         }
 
     def selected_work(self):
+        pass
+
+
+
+
+
+
+
         item = self._tree.currentItem()
         if item is None:
             return None
@@ -687,12 +1268,12 @@ class BackupPage(QWidget):
         if payload.get("kind") == "work":
             return str(payload.get("work_id") or "")
         if payload.get("kind") == "job":
-
-
+                                                               
+                                              
             work_id = str(payload.get("work_id") or "")
             if work_id:
                 return work_id
-
+                                                       
             parent = item.parent()
             if parent is not None:
                 p_payload = parent.data(_COL_NAME, _PAYLOAD_ROLE)
@@ -701,6 +1282,16 @@ class BackupPage(QWidget):
         return None
 
     def reveal_job(self, work_id: str, job_id: str):
+        pass
+
+
+
+
+
+
+
+
+
         try:
             if not self.isVisible():
                 return
@@ -720,14 +1311,15 @@ class BackupPage(QWidget):
         item = found[0]
         self._tree.setCurrentItem(item)
         self._tree.scrollToItem(item)
-
+                                                       
         parent = item.parent()
         if parent is not None:
             parent.setExpanded(True)
 
+                                                                        
 
     def _walk_jobs(self, callback):
-
+        pass
         for i in range(self._tree.topLevelItemCount()):
             work_item = self._tree.topLevelItem(i)
             work_payload = work_item.data(_COL_NAME, _PAYLOAD_ROLE)
@@ -750,6 +1342,7 @@ class BackupPage(QWidget):
                 work, job = found
                 callback(job_item, work, job)
 
+                                                                           
 
     def _on_item_double_clicked(self, item: QTreeWidgetItem, _column: int):
         payload = item.data(_COL_NAME, _PAYLOAD_ROLE)
@@ -759,6 +1352,17 @@ class BackupPage(QWidget):
             self._run_job(payload.get("job_id"))
 
     def _on_context_menu(self, pos):
+        pass
+
+
+
+
+
+
+
+
+
+
         item = self._tree.itemAt(pos)
         if item is None:
             return
@@ -772,13 +1376,18 @@ class BackupPage(QWidget):
         if payload.get("kind") == "work":
             work_id = payload.get("work_id")
 
-
+                                                                        
+                                                                     
+                                                  
             act_edit_work = menu.addAction(tr("context.edit_work"))
             act_edit_work.triggered.connect(lambda: self._edit_work(work_id))
 
             menu.addSeparator()
 
-
+                                                                   
+                                                                    
+                                                                      
+                          
             act_add_backup = menu.addAction(tr("context.add_backup_job"))
             act_add_backup.triggered.connect(lambda: self._add_job(work_id))
 
@@ -797,7 +1406,9 @@ class BackupPage(QWidget):
             act_open.setEnabled(bool(archive_path))
             act_open.triggered.connect(lambda: self._open_archive_for_work(work_id))
 
-
+                                                                     
+                                                                   
+                                                          
             par2_path = ""
             if archive_path:
                 from core.par2_ops import par2_main_name
@@ -860,9 +1471,10 @@ class BackupPage(QWidget):
         except AttributeError:
             menu.exec_(global_pos)
 
+                                                                                 
 
     def _archive_path_for_work(self, work_id):
-
+        pass
         work = find_work(self._container, str(work_id or ""))
         if work is None:
             return None
@@ -881,6 +1493,15 @@ class BackupPage(QWidget):
                 pass
 
     def _repair_par2(self, archive_path: str):
+        pass
+
+
+
+
+
+
+
+
         handler = getattr(self._host, "_start_par2_repair", None)
         if callable(handler):
             try:
@@ -889,6 +1510,15 @@ class BackupPage(QWidget):
                 pass
 
     def _test_par2_for_work(self, work_id: str):
+        pass
+
+
+
+
+
+
+
+
         archive_path = self._archive_path_for_work(work_id)
         if not archive_path:
             return
@@ -927,6 +1557,14 @@ class BackupPage(QWidget):
                 pass
 
     def _edit_work(self, work_id):
+        pass
+
+
+
+
+
+
+
         if not work_id:
             return
         handler = getattr(self._host, "_edit_work", None)
@@ -937,7 +1575,7 @@ class BackupPage(QWidget):
                 pass
 
     def _add_job(self, work_id):
-
+        pass
         if not work_id:
             return
         handler = getattr(self._host, "_on_add_job_to_work", None)
@@ -948,6 +1586,14 @@ class BackupPage(QWidget):
                 pass
 
     def _add_check_job(self, work_id):
+        pass
+
+
+
+
+
+
+
         if not work_id:
             return
         handler = getattr(self._host, "_on_add_check_to_work", None)
@@ -958,6 +1604,12 @@ class BackupPage(QWidget):
                 pass
 
     def _add_check_par2_job(self, work_id):
+        pass
+
+
+
+
+
         if not work_id:
             return
         handler = getattr(self._host, "_on_add_check_par2_to_work", None)
@@ -967,8 +1619,36 @@ class BackupPage(QWidget):
             except Exception:
                 pass
 
+                                                                                   
 
     def _launch_background_worker(self, worker) -> bool:
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         try:
             worker.setParent(self._host)
         except Exception:
@@ -1000,8 +1680,16 @@ class BackupPage(QWidget):
 
         return True
 
+                                                                           
 
     def _show_container_busy(self, path) -> None:
+        pass
+
+
+
+
+
+
         handler = getattr(self._host, "_show_container_busy", None)
         if callable(handler):
             try:
@@ -1019,7 +1707,7 @@ class BackupPage(QWidget):
             pass
 
     def _show_container_save_error(self, path, exc) -> None:
-
+        pass
         handler = getattr(self._host, "_show_container_save_error", None)
         if callable(handler):
             try:
@@ -1037,6 +1725,32 @@ class BackupPage(QWidget):
             pass
 
     def _delete_work(self, work_id):
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if not work_id:
             return
 
@@ -1061,7 +1775,11 @@ class BackupPage(QWidget):
             return
         path = container_path(folder)
 
-
+                                                                        
+                                                                         
+                                                                        
+                                                                     
+                                                                   
         try:
             task_names = []
             for job in work.get("jobs") or []:
@@ -1075,6 +1793,13 @@ class BackupPage(QWidget):
             task_names = []
 
         def _continue_with_delete():
+            pass
+
+
+
+
+
+
             def mutate(container):
                 remove_work(container, str(work_id))
 
@@ -1090,8 +1815,8 @@ class BackupPage(QWidget):
             self.refresh()
 
         if not task_names:
-
-
+                                                                    
+                                                            
             _continue_with_delete()
             return
 
@@ -1104,8 +1829,9 @@ class BackupPage(QWidget):
                 Qt.QueuedConnection,
             )
             if not self._launch_background_worker(worker):
-
-
+                                                                        
+                                                                   
+                                              
                 try:
                     from core.scheduler import remove_scheduled_task_by_name
                     for nm in task_names:
@@ -1118,8 +1844,8 @@ class BackupPage(QWidget):
                 _continue_with_delete()
                 return
         except Exception:
-
-
+                                                                  
+                                                                   
             try:
                 from core.scheduler import remove_scheduled_task_by_name
                 for nm in task_names:
@@ -1132,6 +1858,14 @@ class BackupPage(QWidget):
             _continue_with_delete()
 
     def _delete_job(self, job_id):
+        pass
+
+
+
+
+
+
+
         if not job_id:
             return
 
@@ -1155,7 +1889,10 @@ class BackupPage(QWidget):
             return
         path = container_path(folder)
 
-
+                                                                     
+                                                            
+                                                                  
+                                                                    
         try:
             task_name = scheduler_task_name(work, job)
         except Exception:
@@ -1189,8 +1926,8 @@ class BackupPage(QWidget):
                 Qt.QueuedConnection,
             )
             if not self._launch_background_worker(worker):
-
-
+                                                                      
+                           
                 try:
                     from core.scheduler import remove_scheduled_task_by_name
                     try:
@@ -1212,8 +1949,35 @@ class BackupPage(QWidget):
                 pass
             _continue_with_remove()
 
+                                                                               
 
     def _schedule_job(self, job_id: str):
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if not job_id:
             return
 
@@ -1237,7 +2001,9 @@ class BackupPage(QWidget):
             return
         path = container_path(folder)
 
-
+                                                                         
+                                                                        
+                                                  
         result = {"work": None, "job": None}
 
         def mutate(container):
@@ -1258,11 +2024,11 @@ class BackupPage(QWidget):
             self._show_container_save_error(path, exc)
             return
 
-
+                                                                          
         work_now = result["work"] or work
         job_now = result["job"] or job
 
-
+                                                               
         job_name = str(job_now.get("title") or "")
 
         try:
@@ -1275,8 +2041,8 @@ class BackupPage(QWidget):
                 Qt.QueuedConnection,
             )
             if not self._launch_background_worker(worker):
-
-
+                                                                   
+                                                           
                 try:
                     from core.scheduler import create_scheduled_task
                     ok = bool(create_scheduled_task(
@@ -1297,6 +2063,26 @@ class BackupPage(QWidget):
     def _on_schedule_create_done(
         self, ok: bool, err: str, schedule, name: str
     ):
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if not schedule or not schedule.get("enabled"):
             return
 

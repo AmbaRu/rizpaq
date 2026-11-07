@@ -1,3 +1,14 @@
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -10,12 +21,12 @@ from unittest import mock
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-import ui.archive_actions as aa
-from core.incomplete_archive import incomplete_archive_action
+import ui.archive_actions as aa              
+from core.incomplete_archive import incomplete_archive_action              
 
 
 class _Stub:
-
+    pass
 
     def __init__(self):
         self.status_messages: list = []
@@ -32,7 +43,7 @@ class _Stub:
 
 
 class _FakeBox:
-
+    pass
 
     def __init__(self):
         self.calls: list = []
@@ -53,8 +64,9 @@ class TestIncompleteArchive(unittest.TestCase):
         self._real_box = aa.QMessageBox
         self._real_tr = aa.tr
         aa.QMessageBox = self.box
-
-
+                                                                            
+                                                                        
+                                                        
         aa.tr = lambda key, **kw: f"[{key}|{kw}]"
         self.addCleanup(setattr, aa, "QMessageBox", self._real_box)
         self.addCleanup(setattr, aa, "tr", self._real_tr)
@@ -69,12 +81,15 @@ class TestIncompleteArchive(unittest.TestCase):
         return p
 
     def test_missing_file_is_noop(self):
-
+        pass
         self._call(self.tmp / "нет.zpaq", False)
         self.assertEqual(self.box.calls, [], "диалог не должен появляться")
         self.assertEqual(self.stub.status_messages, [])
 
     def test_new_archive_is_deleted(self):
+        pass
+
+
         p = self._file()
         self._call(p, False)
         self.assertFalse(p.exists(), "неполный файл обязан быть удалён")
@@ -87,6 +102,12 @@ class TestIncompleteArchive(unittest.TestCase):
                       "в статус-баре должно быть сказано про удаление")
 
     def test_existing_archive_is_kept(self):
+        pass
+
+
+
+
+
         p = self._file()
         engine_text = ("Detected a 'gap' in the archive due to incomplete "
                        "transaction(s) 1\nSuggestion: use the trim command ASAP")
@@ -102,7 +123,7 @@ class TestIncompleteArchive(unittest.TestCase):
                       "текст ошибки движка должен быть показан целиком")
 
     def test_delete_failure_warns_and_keeps(self):
-
+        pass
         p = self._file()
         real_unlink = Path.unlink
 
@@ -121,7 +142,7 @@ class TestIncompleteArchive(unittest.TestCase):
                       "причина неудачи обязана дойти до пользователя")
 
     def test_existing_archive_without_engine_text(self):
-
+        pass
         p = self._file()
         self._call(p, True, "")
         self.assertTrue(p.exists())
@@ -132,6 +153,12 @@ class TestIncompleteArchive(unittest.TestCase):
 
 
 class TestIncompleteArchiveDecision(unittest.TestCase):
+    pass
+
+
+
+
+
 
     def setUp(self):
         self.tmp = Path(tempfile.mkdtemp(prefix="rizpaq_dec_"))
@@ -163,7 +190,7 @@ class TestIncompleteArchiveDecision(unittest.TestCase):
         self.assertTrue(d.exists())
 
     def test_reason_is_always_present(self):
-
+        pass
         for dest, before in ((self.tmp / "a.zpaq", False),
                              (self.tmp / "b.zpaq", True)):
             dest.write_bytes(b"x")

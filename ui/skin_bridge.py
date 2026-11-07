@@ -1,3 +1,26 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 from PySide6.QtGui import QActionGroup
@@ -9,31 +32,52 @@ from ui.palette import refresh_theme
 
 
 def _app():
-
+    pass
     from PySide6.QtWidgets import QApplication
 
     return QApplication.instance()
 
 
 def skin_title(code: str) -> str:
+    pass
+
+
+
+
+
+
     key = f"skin.{code}"
     text = tr(key)
     return code if text == key else text
 
 
 class SkinBridgeMixin:
-
+    pass
 
     def _init_skin(self) -> str:
+        pass
+
+
+
+
+
+
         code = getattr(self._cfg, "skin", None)
         if code:
             skins.set_current(code)
         return skins.current_name()
 
     def _switch_skin(self, code: str) -> str:
+        pass
+
+
+
+
+
+
         applied = skins.set_current(code)
         if applied != code:
-
+                                                                            
             return applied
 
         try:
@@ -53,7 +97,7 @@ class SkinBridgeMixin:
             except Exception:
                 pass
 
-
+                                                
         try:
             self._sync_skin_menu()
         except Exception:
@@ -67,7 +111,7 @@ class SkinBridgeMixin:
         return applied
 
     def _sync_skin_menu(self) -> None:
-
+        pass
         group = getattr(self, "_skin_group", None)
         actions = getattr(self, "_skin_actions", None)
         if group is None or actions is None:
@@ -80,6 +124,14 @@ class SkinBridgeMixin:
                 pass
 
     def _build_skin_menu(self, parent):
+        pass
+
+
+
+
+
+
+
         menu = parent.addMenu(tr("menu.tools.skin"))
 
         old_group = getattr(self, "_skin_group", None)

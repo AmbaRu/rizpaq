@@ -1,3 +1,62 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -8,11 +67,12 @@ from core import par2_ops
 
 
 class Par2CreateWorker(QThread):
-
+    pass
 
     done = Signal(dict)
-
-
+                                                                     
+                                                                    
+                                                                
     line_received = Signal(str)
 
     def __init__(
@@ -32,8 +92,16 @@ class Par2CreateWorker(QThread):
         self._cancel = False
         self._proc = None
 
+                                                                             
 
     def cancel_request(self):
+        pass
+
+
+
+
+
+
         self._cancel = True
         proc = self._proc
         if proc is not None:
@@ -42,6 +110,7 @@ class Par2CreateWorker(QThread):
             except Exception:
                 pass
 
+                                                                             
 
     def run(self):
         result = {
@@ -54,7 +123,9 @@ class Par2CreateWorker(QThread):
             "skipped": False,
         }
 
-
+                                                                    
+                                                                    
+                                                                      
         try:
             res = par2_ops.refresh_par2_set(
                 self._bin_path,
@@ -77,21 +148,28 @@ class Par2CreateWorker(QThread):
                 skipped=bool(res.skipped),
             )
         except Exception as exc:
-
-
+                                                                          
+                                                                
             result["state"] = par2_ops.STATE_FAILED
             result["log"] = f"{type(exc).__name__}: {exc}"
 
         result["cancelled"] = bool(self._cancel)
         if self._cancel:
-
-
+                                                                      
+                                           
             result["ok"] = False
 
         self.done.emit(result)
 
+                                                                            
 
     def _opt(self, key, default=None):
+        pass
+
+
+
+
+
         value = self._options.get(key, default)
         if value is None or value == "":
             return default
@@ -103,10 +181,10 @@ class Par2CreateWorker(QThread):
         return value
 
     def _register_proc(self, proc):
-
+        pass
         self._proc = proc
         if self._cancel:
-
+                                                                
             try:
                 proc.kill()
             except Exception:
@@ -114,6 +192,19 @@ class Par2CreateWorker(QThread):
 
 
 class Par2VerifyWorker(QThread):
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
 
     done = Signal(dict)
 
@@ -126,7 +217,7 @@ class Par2VerifyWorker(QThread):
         self._proc = None
 
     def cancel_request(self):
-
+        pass
         self._cancel = True
         proc = self._proc
         if proc is not None:
@@ -136,8 +227,8 @@ class Par2VerifyWorker(QThread):
                 pass
 
     def run(self):
-
-
+                                                                      
+                                                                
         try:
             par2_path = par2_ops.par2_main_name(self._archive_path)
         except Exception as exc:
@@ -190,6 +281,23 @@ class Par2VerifyWorker(QThread):
 
 
 class Par2RepairWorker(QThread):
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     done = Signal(dict)
 
@@ -222,8 +330,9 @@ class Par2RepairWorker(QThread):
             "recorded_size": self._recorded_size,
             "actual_size": None,
         }
-
-
+                                                                  
+                                                                    
+                                                
         try:
             try:
                 result["actual_size"] = os.path.getsize(self._archive_path)

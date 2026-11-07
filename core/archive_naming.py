@@ -1,10 +1,33 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
 from datetime import datetime
 from pathlib import Path
 
-
+                                                                        
+                                                                     
+                      
 _TRANSLIT = {
     "а": "a", "б": "b", "в": "v", "г": "g", "д": "d", "е": "e", "ё": "yo",
     "ж": "zh", "з": "z", "и": "i", "й": "y", "к": "k", "л": "l", "м": "m",
@@ -15,10 +38,24 @@ _TRANSLIT = {
 
 
 def has_non_latin(name: str) -> bool:
+    pass
+
+
+
+
+
+
     return any(not ch.isascii() for ch in str(name))
 
 
 def transliterate(name: str) -> str:
+    pass
+
+
+
+
+
+
     result = []
     for ch in str(name).lower():
         if ch in _TRANSLIT:
@@ -33,6 +70,18 @@ def transliterate(name: str) -> str:
 
 
 def make_latin_name(dest: str, avoid_existing: bool = True) -> str:
+    pass
+
+
+
+
+
+
+
+
+
+
+
     p = Path(dest)
     stem = p.stem
     suffix = p.suffix or ".zpaq"
@@ -50,9 +99,24 @@ def make_latin_name(dest: str, avoid_existing: bool = True) -> str:
 
 
 def default_dest(source: str) -> str:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     p = Path(source)
 
-
+                                                                       
     try:
         drv = p.drive
         if drv and p == Path(drv + os.sep):
@@ -63,16 +127,20 @@ def default_dest(source: str) -> str:
 
     try:
         if p.is_dir():
-
-
+                                                                          
+                                   
             return str(p.parent / (p.name + ".zpaq"))
         if p.name:
-
+                                                                    
             return str(p.with_suffix(".zpaq"))
     except Exception:
         pass
 
-
+                                                                 
+                                                              
+                                                                     
+                                                                 
+                                    
     drv = (p.drive or "").replace(":", "_").replace("/", "_").replace("\\", "_").strip("_")
     base = drv or "archive"
     try:

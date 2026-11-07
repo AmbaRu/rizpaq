@@ -1,9 +1,17 @@
+
+
+
+
+
 from __future__ import annotations
 
 from ui.i18n import tr
 
 
 def format_size(size: int) -> str:
+    pass
+
+
     if size < 1024:
         return f"{size} B"
     value = float(size)
@@ -15,6 +23,9 @@ def format_size(size: int) -> str:
 
 
 def plural_ru(n: int, forms: tuple) -> str:
+    pass
+
+
     n10, n100 = n % 10, n % 100
     if n10 == 1 and n100 != 11:
         return forms[0]
@@ -23,6 +34,9 @@ def plural_ru(n: int, forms: tuple) -> str:
     return forms[2]
 
 
+                                                                
+                                                                   
+                                                 
 _WEEKDAY_ORDER = ("MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN")
 _WEEKDAY_KEYS = {
     "MON": "scheduler.mon",
@@ -36,11 +50,46 @@ _WEEKDAY_KEYS = {
 
 
 def _weekday_labels(codes) -> list:
+    pass
+
+
+
+
+
+
     present = {str(c).upper() for c in (codes or []) if c}
     return [tr(_WEEKDAY_KEYS[c]) for c in _WEEKDAY_ORDER if c in present]
 
 
 def format_schedule(schedule) -> str:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     if not schedule or not isinstance(schedule, dict):
         return tr("sched.fmt.none")
     if not schedule.get("enabled"):

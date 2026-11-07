@@ -1,4 +1,39 @@
 #!/usr/bin/env python3
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import argparse
@@ -13,12 +48,15 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 PYTHON = sys.executable
 
-
+                                                                    
+                                                                   
+                                                                  
+                             
 PER_FILE_TIMEOUT = 600
 
 
 def _iter_test_files(filter_substr: str | None):
-
+    pass
     files = sorted(HERE.glob("test_*.py"))
     if filter_substr:
         needle = filter_substr.lower()
@@ -27,16 +65,34 @@ def _iter_test_files(filter_substr: str | None):
 
 
 def _dotted_name(path: Path) -> str:
+    pass
+
+
+
+
+
+
+
+
     return f"tests.{path.stem}"
 
 
 def _run_one(path: Path) -> tuple:
+    pass
+
+
+
+
     env = dict(os.environ)
-
-
+                                                                    
+                                 
     env.setdefault("QT_QPA_PLATFORM", "offscreen")
-
-
+                                                                      
+                                                                        
+                                                                     
+                                                                   
+                                                                    
+                                             
     env.setdefault("PYTHONIOENCODING", "utf-8")
 
     cmd = [PYTHON, "-m", "unittest", _dotted_name(path), "-v"]

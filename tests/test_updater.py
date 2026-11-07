@@ -1,3 +1,9 @@
+                       
+
+
+
+
+
 from __future__ import annotations
 
 import io
@@ -19,22 +25,25 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from PySide6.QtWidgets import QApplication
+from PySide6.QtWidgets import QApplication              
 
 _APP = QApplication.instance() or QApplication(sys.argv)
 
-from ui import i18n
-from ui.update_actions import UpdateActionsMixin
-from ui.update_dialog import UpdateDialog
+from ui import i18n              
+from ui.update_actions import UpdateActionsMixin              
+from ui.update_dialog import UpdateDialog              
 
-from core import config as config_mod
-from core import updater
+from core import config as config_mod              
+from core import updater              
 
 ALL_LANGS = ("en", "ru", "it", "de", "fr", "es", "zh", "pt", "ja", "pl")
 
 
-class _Response(io.BytesIO):
+                                                                            
 
+
+class _Response(io.BytesIO):
+    pass
 
     def __init__(self, data: bytes, headers: dict | None = None):
         super().__init__(data)
@@ -74,7 +83,7 @@ def _release_zip(path: Path, flat: bool = False) -> Path:
 
 
 class _Host(UpdateActionsMixin):
-
+    pass
 
     def __init__(self, cfg=None):
         self._cfg = cfg or SimpleNamespace(
@@ -100,6 +109,9 @@ class _Host(UpdateActionsMixin):
         self.shown.append((dict(info), bool(manual)))
 
 
+                                                                            
+
+
 class VersionTests(unittest.TestCase):
     def test_version_key_parses_numbers(self):
         self.assertEqual(updater.version_key("2.9.0"), (2, 9, 0))
@@ -115,12 +127,15 @@ class VersionTests(unittest.TestCase):
         self.assertTrue(updater.is_newer("2.9.0", "2.7.2"))
         self.assertTrue(updater.is_newer("2.7.10", "2.7.9"))
         self.assertFalse(updater.is_newer("2.7.2", "2.7.2"))
-        self.assertFalse(updater.is_newer("2.7", "2.7.0"))
+        self.assertFalse(updater.is_newer("2.7", "2.7.0"))          
         self.assertFalse(updater.is_newer("2.6.9", "2.7.0"))
 
     def test_short_versions_compared_as_zero_padded(self):
         self.assertTrue(updater.is_newer("2.9", "2.8.9"))
         self.assertFalse(updater.is_newer("2.9", "2.9.0"))
+
+
+                                                                            
 
 
 class ManifestTests(unittest.TestCase):
@@ -154,15 +169,15 @@ class ManifestTests(unittest.TestCase):
         self.assertEqual(info["notes"], "Что нового")
         self.assertEqual(info["notes_url"], "https://rizpaq.ru/news/2.9.0")
         self.assertEqual(info["published"], "2026-11-01")
-        self.assertEqual(info["sha256"], sha)
+        self.assertEqual(info["sha256"], sha)                               
 
     def test_rejects_bad_manifests(self):
         cases = [
-            {"url": "https://rizpaq.ru/a.zip"},
-            {"version": "2.9.0"},
+            {"url": "https://rizpaq.ru/a.zip"},                                
+            {"version": "2.9.0"},                                            
             {"version": "", "url": "https://rizpaq.ru/a.zip"},
             {"version": "latest", "url": "https://rizpaq.ru/a.zip"},
-            self._valid(url="http://rizpaq.ru/a.zip"),
+            self._valid(url="http://rizpaq.ru/a.zip"),                        
             self._valid(url="file:///C:/a.zip"),
             self._valid(notes_url="http://rizpaq.ru/news"),
             self._valid(sha256="abc"),
@@ -209,6 +224,9 @@ class ManifestTests(unittest.TestCase):
         with self.assertRaises(updater.UpdateError) as ctx:
             updater.fetch_manifest(opener=boom)
         self.assertIn("no route to host", str(ctx.exception))
+
+
+                                                                             
 
 
 class DownloadTests(unittest.TestCase):
@@ -278,6 +296,9 @@ class DownloadTests(unittest.TestCase):
         self.assertEqual(dest.parent.resolve(), self._tmp.resolve())
 
 
+                                                                             
+
+
 class ZipLayoutTests(unittest.TestCase):
     def setUp(self):
         self._tmp = Path(tempfile.mkdtemp(prefix="rizpaq_upd_zip_"))
@@ -297,8 +318,8 @@ class ZipLayoutTests(unittest.TestCase):
 
     def test_rejects_missing_exe_or_internal(self):
         cases = [
-            ["Rizpaq/Rizpaq.exe"],
-            ["Rizpaq/_internal/a.dll"],
+            ["Rizpaq/Rizpaq.exe"],                                   
+            ["Rizpaq/_internal/a.dll"],                          
             ["other/file.txt"],
         ]
         for names in cases:
@@ -358,6 +379,9 @@ class ZipLayoutTests(unittest.TestCase):
             updater.inspect_update_zip(path)
 
 
+                                                                            
+
+
 class UpdateScriptTests(unittest.TestCase):
     def test_script_waits_for_pid_and_replaces_only_app_files(self):
         script = updater.build_update_script(
@@ -385,14 +409,14 @@ class UpdateScriptTests(unittest.TestCase):
             r"C:\Temp\rizpaq.zip", r"C:\Apps\Rizpaq", 12345,
             r"C:\Temp\rizpaq_update_x",
         )
-
-
+                                                                   
+                                                                
         self.assertIn("Write-Log 'updater started'", script)
-
+                                                                    
         self.assertIn("Expand-Archive -LiteralPath $zip "
                       "-DestinationPath $stage -Force", script)
-
-
+                                                                   
+                                                                 
         idx_expand = script.index("Expand-Archive")
         idx_cleanup = script.index("Remove-Item -LiteralPath $temp")
         self.assertLess(idx_expand, idx_cleanup)
@@ -449,8 +473,9 @@ class UpdateScriptTests(unittest.TestCase):
         self.assertIn("-ExecutionPolicy", args)
         self.assertIn("Bypass", args)
         self.assertIn(r"C:\Temp\u.ps1", args)
-
-
+                                                                     
+                                                                         
+                                                      
         self.assertNotIn("cwd", kwargs)
         self.assertEqual(kwargs["creationflags"], 0x08000000)
 
@@ -462,6 +487,9 @@ class UpdateScriptTests(unittest.TestCase):
     def test_install_dir_none_when_not_frozen(self):
         with mock.patch.object(updater.sys, "frozen", False, create=True):
             self.assertIsNone(updater.install_dir())
+
+
+                                                                             
 
 
 class _FakeSignal:
@@ -495,7 +523,7 @@ class UpdateActionsTests(unittest.TestCase):
     def setUp(self):
         _FakeWorker.instances = []
         self.host = _Host()
-
+                                                      
         patcher = mock.patch("ui.update_actions._merge_cfg")
         self.merge = patcher.start()
         self.addCleanup(patcher.stop)
@@ -614,11 +642,14 @@ def ui_interval():
     return CHECK_INTERVAL_SECONDS
 
 
+                                                                             
+
+
 class UpdateDialogTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-
-
+                                                                    
+                                                         
         i18n.set_language("ru", notify=False)
 
     @classmethod
@@ -650,8 +681,8 @@ class UpdateDialogTests(unittest.TestCase):
     def test_published_hidden_when_absent(self):
         dlg = self._dialog(published="")
         other = self._dialog()
-
-
+                                                                          
+                                                                            
         self.assertFalse(dlg.published_label.isVisibleTo(dlg))
         self.assertTrue(other.published_label.isVisibleTo(other))
 
@@ -688,7 +719,7 @@ class UpdateDialogTests(unittest.TestCase):
         self.assertEqual(dlg.progress.value(), 50)
         dlg._on_progress({"read": 700, "total": 0, "percent": 0})
         self.assertEqual(dlg.progress.minimum(), 0)
-        self.assertEqual(dlg.progress.maximum(), 0)
+        self.assertEqual(dlg.progress.maximum(), 0)                        
 
     def test_download_error_is_shown_and_buttons_restored(self):
         dlg = self._dialog()
@@ -709,6 +740,9 @@ class UpdateDialogTests(unittest.TestCase):
         self.assertEqual(dlg.download_dir(), "")
 
 
+                                                                            
+
+
 class IntegrationTests(unittest.TestCase):
     def test_main_starts_background_check_after_show(self):
         source = (ROOT / "main.py").read_text(encoding="utf-8")
@@ -717,7 +751,7 @@ class IntegrationTests(unittest.TestCase):
         self.assertGreater(check, show)
         self.assertIn("QTimer.singleShot(1500, window.start_update_check)",
                       source)
-
+                                                                 
         headless = (ROOT / "core" / "headless.py").read_text(encoding="utf-8")
         self.assertNotIn("start_update_check", headless)
 

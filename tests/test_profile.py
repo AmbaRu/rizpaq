@@ -1,3 +1,21 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import json
@@ -9,9 +27,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from PySide6.QtWidgets import QApplication
+from PySide6.QtWidgets import QApplication              
 
-from ui.profile_bridge import (
+from ui.profile_bridge import (              
     DEFAULT_PROFILE,
     PROFILES,
     ProfileBridgeMixin,
@@ -25,8 +43,9 @@ if _APP is not None:
     _APP.setFont(QFont("Segoe UI", 9))
 
 
-class _FakeCfg:
 
+class _FakeCfg:
+    pass
 
     def __init__(self, profile=None):
         self.profile = profile
@@ -41,6 +60,12 @@ class _FakeStatusBar:
 
 
 class _Host(ProfileBridgeMixin):
+    pass
+
+
+
+
+
 
     def __init__(self, profile=None):
         self._cfg = _FakeCfg(profile)
@@ -53,13 +78,21 @@ class _Host(ProfileBridgeMixin):
 
 
 class TestDefaults(unittest.TestCase):
-
+    pass
 
     def test_profiles_tuple_is_stable(self):
-
+        pass
         self.assertEqual(PROFILES, ("archive", "backup"))
 
     def test_default_is_archive(self):
+        pass
+
+
+
+
+
+
+
         self.assertEqual(DEFAULT_PROFILE, "archive")
 
     def test_missing_profile_falls_back_to_default(self):
@@ -68,6 +101,12 @@ class TestDefaults(unittest.TestCase):
         self.assertEqual(h.current_profile(), "archive")
 
     def test_unknown_profile_falls_back_to_default(self):
+        pass
+
+
+
+
+
         h = _Host(profile="hybrid")
         self.assertEqual(h._init_profile(), "archive")
         self.assertEqual(h.current_profile(), "archive")
@@ -80,6 +119,10 @@ class TestDefaults(unittest.TestCase):
                 self.assertEqual(h.current_profile(), code)
 
     def test_current_profile_survives_missing_attribute(self):
+        pass
+
+
+
         h = _Host(profile=None)
         if hasattr(h, "_profile"):
             del h._profile
@@ -87,7 +130,7 @@ class TestDefaults(unittest.TestCase):
 
 
 class TestSwitching(unittest.TestCase):
-
+    pass
 
     def test_switch_updates_current(self):
         h = _Host(profile="archive")
@@ -102,7 +145,7 @@ class TestSwitching(unittest.TestCase):
         self.assertEqual(h._cfg.profile, "backup")
 
     def test_switch_to_unknown_is_ignored(self):
-
+        pass
         h = _Host(profile="archive")
         h._init_profile()
         before = h.current_profile()
@@ -112,17 +155,17 @@ class TestSwitching(unittest.TestCase):
         self.assertEqual(h._cfg.profile, "archive")
 
     def test_switch_reports_in_status(self):
-
+        pass
         h = _Host(profile="archive")
         h._init_profile()
         h._switch_profile("backup")
         self.assertTrue(h._status.messages, "статусбар не тронут")
-
-
+                                                                   
+                                                                   
         self.assertTrue(h._status.messages[0])
 
     def test_switch_is_idempotent(self):
-
+        pass
         h = _Host(profile="backup")
         h._init_profile()
         self.assertEqual(h._switch_profile("backup"), "backup")
@@ -130,22 +173,30 @@ class TestSwitching(unittest.TestCase):
 
 
 class TestProfileTitle(unittest.TestCase):
-
+    pass
 
     def test_known_codes_return_text(self):
         for code in PROFILES:
             with self.subTest(profile=code):
                 title = profile_title(code)
                 self.assertTrue(title, "пустой заголовок профиля")
-
+                                                                    
                 self.assertNotIn("{", title)
 
     def test_unknown_code_returns_code(self):
-
+        pass
         self.assertEqual(profile_title("nonexistent"), "nonexistent")
 
 
 class TestLocaleKeys(unittest.TestCase):
+    pass
+
+
+
+
+
+
+
 
     KEYS = (
         "menu.settings.profile",
@@ -171,6 +222,12 @@ class TestLocaleKeys(unittest.TestCase):
                     )
 
     def test_placeholders_match_english(self):
+        pass
+
+
+
+
+
         locales = ROOT / "locales"
         en = json.loads(
             (locales / "en.json").read_text(encoding="utf-8")
@@ -190,6 +247,12 @@ class TestLocaleKeys(unittest.TestCase):
 
 
 class TestConfigRoundtrip(unittest.TestCase):
+    pass
+
+
+
+
+
 
     def _tmp(self):
         d = tempfile.mkdtemp(prefix="rizpaq_profile_test_")
@@ -211,13 +274,19 @@ class TestConfigRoundtrip(unittest.TestCase):
         self.assertEqual(load(path).profile, "backup")
 
     def test_unknown_value_survives_roundtrip(self):
+        pass
+
+
+
+
+
         from core.config import load, update
         path = self._tmp()
         update(path, profile="hybrid")
         self.assertEqual(load(path).profile, "hybrid")
 
     def test_empty_string_is_none(self):
-
+        pass
         from core.config import Settings
         from core.config import _from_dict
         s = _from_dict({"profile": "   "})

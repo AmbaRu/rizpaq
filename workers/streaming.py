@@ -1,3 +1,55 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -5,7 +57,7 @@ import re
 import subprocess
 import time
 
-
+                                                                  
 from core.engine_path import (
     EnginePathError,
     drop_substitutes,
@@ -19,51 +71,91 @@ from core.proc_health import (
 
 from PySide6.QtCore import QThread, Signal
 
+                                                                             
+                                     
+ 
+                                                                  
+                                                                  
+                                                           
+                                                           
+                                                                             
 
+                                                                 
+                                                              
+                                                                    
+                                                                   
+                                         
 PERCENT_RE = re.compile(rb"(\d{1,3}(?:[.,]\d+)?)\s*%")
 
-
+                                                                  
+                                                                  
+                                                                 
+                                
 OF_RE = re.compile(rb"(\d+)\s+of\s+(\d+)")
 
-
+                                                                        
+                                                                  
+                                                                
+                                                                       
+                           
 SPEED_RE = re.compile(
     rb"(?:@\s*)?(\d+(?:[.,]\d+)?)\s*(B|KB|MB|GB|TB)/s",
     re.IGNORECASE,
 )
 
-
+                                                                      
+                                                               
+                                                                 
 ETA_RE = re.compile(rb"\d+(?:[.,]\d+)?%\s+(\d{2}:\d{2}:\d{2})")
 
-
+                                                                            
+                                                               
+                                                                
+                                         
 ADD_FILES_RE = re.compile(
     rb"Add\s+\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}\s+([\d.]+)\s+"
 )
 
-
+                                                   
 ADD_DIRS_RE = re.compile(rb"\(([\d.]+)\s+dirs\)")
 
-
+                                                                             
+                                                                   
+                                                            
+                                                
 EXTRACT_INFO_RE = re.compile(
     rb"Extract\s+([\d.]+)\s+bytes\s+\(([^)]+)\)\s+in\s+([\d.]+)\s+files\s+\(([\d.]+)\s+folders?\)",
     re.IGNORECASE,
 )
 
 
+                                                                  
+                                                             
+                                                                      
+                                                                       
+                                                                         
+                                                                        
 DEFAULT_STALL_TIMEOUT = 90
 STALL_TIMEOUT = DEFAULT_STALL_TIMEOUT
 
-
+                                                                   
+                                                                       
+                                                                      
+                                                                         
 BUSY_STALL_MULTIPLIER = 30
 
-
+                                                                          
+                                                               
 POLL_INTERVAL = 0.05
 
-
+                                                                  
+                                                                      
+                                 
 _PASSWORD_PROMPT = re.compile(rb"Enter AES password", re.IGNORECASE)
 
 
 def popen_kwargs() -> dict:
-
+    pass
     kw = {}
     if os.name == "nt":
         kw["creationflags"] = getattr(subprocess, "CREATE_NO_WINDOW", 0)
@@ -71,6 +163,15 @@ def popen_kwargs() -> dict:
 
 
 def _decode_line(raw: bytes) -> str:
+    pass
+
+
+
+
+
+
+
+
     if not raw:
         return ""
     for enc in ("utf-8", "cp1251", "cp866", "latin-1"):
@@ -82,6 +183,18 @@ def _decode_line(raw: bytes) -> str:
 
 
 def _parse_european_number(raw: bytes) -> int:
+    pass
+
+
+
+
+
+
+
+
+
+
+
     try:
         text = raw.decode("ascii", "replace").strip()
         return int(text.replace(".", ""))
@@ -90,6 +203,17 @@ def _parse_european_number(raw: bytes) -> int:
 
 
 def _extract_percent(chunk: bytes) -> int:
+    pass
+
+
+
+
+
+
+
+
+
+
     best = -1
     for m in PERCENT_RE.finditer(chunk):
         try:
@@ -114,6 +238,14 @@ def _extract_percent(chunk: bytes) -> int:
 
 
 def _extract_speed(chunk: bytes) -> str:
+    pass
+
+
+
+
+
+
+
     matches = list(SPEED_RE.finditer(chunk))
     if matches:
         m = matches[-1]
@@ -127,6 +259,12 @@ def _extract_speed(chunk: bytes) -> str:
 
 
 def _extract_eta(chunk: bytes) -> str:
+    pass
+
+
+
+
+
     matches = list(ETA_RE.finditer(chunk))
     if matches:
         try:
@@ -137,6 +275,13 @@ def _extract_eta(chunk: bytes) -> str:
 
 
 def _extract_add_info(chunk: bytes):
+    pass
+
+
+
+
+
+
     m_files = ADD_FILES_RE.search(chunk)
     m_dirs = ADD_DIRS_RE.search(chunk)
     files = None
@@ -151,6 +296,16 @@ def _extract_add_info(chunk: bytes):
 
 
 def _extract_extract_info(chunk: bytes):
+    pass
+
+
+
+
+
+
+
+
+
     m = EXTRACT_INFO_RE.search(chunk)
     if not m:
         return None, None, None, ""
@@ -165,7 +320,7 @@ def _extract_extract_info(chunk: bytes):
 
 
 class StreamingZpaqThread(QThread):
-
+    pass
     percent = Signal(int)
     progress_info = Signal(dict)
     line_received = Signal(str)
@@ -173,11 +328,23 @@ class StreamingZpaqThread(QThread):
     def __init__(self, cmd, parent=None, cwd=None):
         super().__init__(parent)
         self.cmd = cmd
-        self.cwd = cwd
+        self.cwd = cwd                                     
         self._cancel = False
         self._proc = None
 
     def cancel_request(self):
+        pass
+
+
+
+
+
+
+
+
+
+
+
         self._cancel = True
         p = self._proc
         if p is not None:
@@ -187,17 +354,28 @@ class StreamingZpaqThread(QThread):
                 pass
 
     def _run_stream(self):
+        pass
+
+
+
+
+
+
+
+
         try:
             cmd, prep_cwd, subs = rewrite_cmd(self.cmd)
         except EnginePathError as exc:
-
-
+                                                                         
+                                                                         
+                                     
             return 1, f"ERROR: {exc}\n"
         except Exception:
-
+                                                       
             cmd, prep_cwd, subs = list(self.cmd), None, []
 
-
+                                                                   
+                                       
         run_cwd = self.cwd or prep_cwd
 
         try:
@@ -206,12 +384,13 @@ class StreamingZpaqThread(QThread):
             drop_substitutes(subs)
 
     def _stream_with(self, cmd, run_cwd):
-
+        pass
         chunks = []
         rc = 1
         tail_note = ""
-
-
+                                                                    
+                                                                         
+                                                
         stalled = False
         p = None
 
@@ -220,20 +399,27 @@ class StreamingZpaqThread(QThread):
                 cmd,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
-                cwd=run_cwd,
+                cwd=run_cwd,                               
                 **popen_kwargs(),
             )
             self._proc = p
             fd = p.stdout.fileno()
-
-
+                                                                   
+                                                                      
+                                                                   
+                                                                  
+                                                                      
+                                                                    
+                                                    
             stall_used = effective_stall_timeout(
                 DEFAULT_STALL_TIMEOUT, STALL_TIMEOUT)
             liv = Liveness(make_cpu_reader(p),
                            stall_timeout=stall_used,
                            busy_timeout=stall_used * BUSY_STALL_MULTIPLIER)
 
-
+                                                                         
+                                                                          
+                                                            
             try:
                 os.set_blocking(fd, False)
             except Exception:
@@ -255,7 +441,10 @@ class StreamingZpaqThread(QThread):
                         pass
                     break
 
-
+                                                                            
+                                                                         
+                                                                       
+                                                                        
                 if p.poll() is None:
                     liv.verdict()
                     if liv.stalled:
@@ -273,7 +462,7 @@ class StreamingZpaqThread(QThread):
 
                 if not chunk:
                     if p.poll() is not None:
-
+                                                         
                         try:
                             rest = os.read(fd, 65536)
                             if rest:
@@ -283,8 +472,8 @@ class StreamingZpaqThread(QThread):
                         if not chunk:
                             break
                     else:
-
-
+                                                                         
+                                                          
                         time.sleep(POLL_INTERVAL)
                         continue
 
@@ -293,8 +482,8 @@ class StreamingZpaqThread(QThread):
 
                 line_buf += chunk
                 while True:
-
-
+                                                                        
+                                                                           
                     m = re.search(rb"[\r\n]", line_buf)
                     if not m:
                         break
@@ -337,8 +526,11 @@ class StreamingZpaqThread(QThread):
                     files_total = ef
                     info["files_total"] = ef
                     changed = True
-
-
+                                                                  
+                                                                      
+                                                                          
+                                                                    
+                                                      
                 if ed is not None and ed != dirs_total:
                     dirs_total = ed
                     info["dirs_total"] = ed
@@ -356,7 +548,9 @@ class StreamingZpaqThread(QThread):
 
             rc = p.wait()
 
-
+                                                                        
+                                                                      
+                                             
             if stalled:
                 if _PASSWORD_PROMPT.search(b"".join(chunks[-6:])):
                     tail_note = (
@@ -373,12 +567,15 @@ class StreamingZpaqThread(QThread):
                     )
         except Exception as exc:
             rc = 1
-
-
+                                                                  
+                                                                         
+                                                              
+                               
             tail_note = f"\n[rizpaq] внутренняя ошибка чтения вывода: {exc!r}"
         finally:
-
-
+                                                                      
+                                                          
+                                                       
             if p is not None:
                 try:
                     if p.stdout is not None:

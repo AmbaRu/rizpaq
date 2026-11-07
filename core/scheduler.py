@@ -1,3 +1,39 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import csv
@@ -10,14 +46,27 @@ from typing import Dict, List, Optional, Tuple
 
 from core.tasks import scheduler_task_name
 
-
+                                                                     
+                                                                
+                                                               
+                       
 TASK_PREFIX = "Rizpaq_"
 
-
+                                                                   
+                                                                   
+                                                                 
+                                                                      
 SCHTASKS_TIMEOUT = 20
 
 
 def _run_schtasks(cmd: list) -> "subprocess.CompletedProcess | None":
+    pass
+
+
+
+
+
+
     try:
         return subprocess.run(
             cmd,
@@ -33,8 +82,31 @@ def _schtasks_bin() -> str:
     return "schtasks.exe" if os.name == "nt" else "schtasks"
 
 
-def _rizpaq_cmd() -> str:
+def _runner_exe() -> Optional[str]:
+    pass
 
+
+
+
+
+
+
+
+
+    if not getattr(sys, "frozen", False):
+        return None
+    try:
+        cand = Path(sys.executable).resolve().parent / "rizpaq_task.exe"
+    except Exception:
+        return None
+    return str(cand) if cand.is_file() else None
+
+
+def _rizpaq_cmd() -> str:
+    pass
+    runner = _runner_exe()
+    if runner:
+        return f'"{runner}"'
     if getattr(sys, "frozen", False):
         return f'"{sys.executable}"'
     here = Path(__file__).resolve().parent.parent
@@ -42,7 +114,18 @@ def _rizpaq_cmd() -> str:
     return f'"{sys.executable}" "{main_py}"'
 
 
+                                                                             
+                      
+                                                                             
+
 def _exec_cmd_for(rzp_path, job_id: str) -> str:
+    pass
+
+
+
+
+
+
     rizpaq = _rizpaq_cmd()
     return f'{rizpaq} --task "{rzp_path}" --job "{job_id}"'
 
@@ -53,6 +136,17 @@ def create_scheduled_task(
     job: dict,
     schedule: dict,
 ) -> bool:
+    pass
+
+
+
+
+
+
+
+
+
+
     if os.name != "nt":
         return False
 
@@ -93,13 +187,20 @@ def create_scheduled_task(
 
 
 def remove_scheduled_task(work: dict, job: dict) -> bool:
-
+    pass
     if os.name != "nt":
         return False
     return remove_scheduled_task_by_name(scheduler_task_name(work, job))
 
 
 def remove_scheduled_task_by_name(task_name: str) -> bool:
+    pass
+
+
+
+
+
+
     if os.name != "nt" or not task_name:
         return False
     cmd = [_schtasks_bin(), "/delete", "/tn", task_name, "/f"]
@@ -107,8 +208,12 @@ def remove_scheduled_task_by_name(task_name: str) -> bool:
     return bool(result and result.returncode == 0)
 
 
-def _decode_schtasks_output(data: bytes) -> str:
+                                                                             
+                    
+                                                                             
 
+def _decode_schtasks_output(data: bytes) -> str:
+    pass
     for enc in ("utf-8", "cp866", "cp1251", "latin-1"):
         try:
             return data.decode(enc)
@@ -118,7 +223,7 @@ def _decode_schtasks_output(data: bytes) -> str:
 
 
 def list_rizpaq_tasks() -> List[Dict[str, str]]:
-
+    pass
     if os.name != "nt":
         return []
 
@@ -152,7 +257,7 @@ def list_rizpaq_tasks() -> List[Dict[str, str]]:
 
 
 def is_task_scheduled(work: dict, job: dict) -> bool:
-
+    pass
     if os.name != "nt":
         return False
     task_name = scheduler_task_name(work, job)
@@ -162,6 +267,18 @@ def is_task_scheduled(work: dict, job: dict) -> bool:
 
 
 def schedule_info_for_container(container: dict) -> dict:
+    pass
+
+
+
+
+
+
+
+
+
+
+
     result: Dict[str, Dict[str, object]] = {}
     if os.name != "nt":
         return result
@@ -204,7 +321,25 @@ def schedule_info_for_container(container: dict) -> dict:
     return result
 
 
+                                                                             
+                                                         
+                                                                             
+
 def container_task_map(container: dict) -> Dict[str, Tuple[dict, dict]]:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
     if os.name != "nt":
         return {}
 
@@ -224,7 +359,23 @@ def container_task_map(container: dict) -> Dict[str, Tuple[dict, dict]]:
     return out
 
 
+                                                                             
+                                        
+                                                                             
+
 def find_orphan_tasks(container: dict) -> List[Dict[str, str]]:
+    pass
+
+
+
+
+
+
+
+
+
+
+
     if os.name != "nt":
         return []
 
@@ -241,6 +392,30 @@ def compute_sync_actions(
     container: dict,
     rzp_path,
 ) -> Dict[str, List]:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     empty = {"add": [], "remove": [], "disable": []}
     if os.name != "nt":
         return empty

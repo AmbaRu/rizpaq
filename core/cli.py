@@ -1,3 +1,46 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -5,18 +48,25 @@ from pathlib import Path
 
 from PySide6.QtCore import Qt
 
-
+                                            
+ 
+                                                                       
+                                                                 
+                                                                    
+                                           
 _OPTION_FLAGS = ("--create", "--test", "--extract", "--extract-here", "--task")
 
-
+                                                                    
 _VALUE_FLAGS = ("--dest",)
 
-
+                                                                    
+                                                                 
+                                                                        
 _ARCHIVE_EXTENSIONS = (".zpaq", ".zip", ".7z", ".rar")
 
 
 def find_archive_arg(args: list):
-
+    pass
     i = 0
     n = len(args)
     while i < n:
@@ -32,7 +82,7 @@ def find_archive_arg(args: list):
 
 
 def get_flag_value(args: list, flag: str):
-
+    pass
     for i, a in enumerate(args):
         if a == flag and i + 1 < len(args):
             return args[i + 1]
@@ -40,7 +90,7 @@ def get_flag_value(args: list, flag: str):
 
 
 def _raise_window(window):
-
+    pass
     try:
         window.setWindowState(window.windowState() & ~Qt.WindowMinimized)
         window.show()
@@ -51,6 +101,9 @@ def _raise_window(window):
 
 
 def _extract_direct(window, arc: str, dest: str) -> bool:
+    pass
+
+
     try:
         from PySide6.QtWidgets import QMessageBox
 
@@ -66,13 +119,13 @@ def _extract_direct(window, arc: str, dest: str) -> bool:
         except Exception:
             password = None
 
-
+                          
         try:
             Path(dest).mkdir(parents=True, exist_ok=True)
         except Exception:
             pass
 
-
+                                          
         try:
             window.extract_bar.begin_file(Path(arc).name)
         except Exception:
@@ -136,7 +189,7 @@ def _extract_direct(window, arc: str, dest: str) -> bool:
 
 
 def handle_cli_command(window, args: list):
-
+    pass
     if not args:
         _raise_window(window)
         return
@@ -184,7 +237,7 @@ def handle_cli_command(window, args: list):
             window._enter_archive(arc)
         return
 
-
+                                                        
     if first.lower().endswith(".rzp"):
         _raise_window(window)
         opener = getattr(window, "_open_rzp", None)
@@ -195,7 +248,11 @@ def handle_cli_command(window, args: list):
                 pass
         return
 
-
+                                                                     
+                                                                  
+                                                                     
+                                                                   
+                                                      
     if first.lower().endswith(_ARCHIVE_EXTENSIONS):
         _raise_window(window)
         window._enter_archive(first)

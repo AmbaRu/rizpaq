@@ -1,15 +1,81 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import ctypes
 import os
 from pathlib import Path
 
-
+                                                                     
+                                                               
+ 
+                                                                       
+                                                                              
+                                                          
 READ_ONLY_SUBCOMMANDS = {"l", "t", "e", "x", "v"}
 
 
 class EnginePathError(Exception):
-        pass
+    pass
+
+
+
+
+
 
 
 def has_non_latin(text: str) -> bool:
@@ -17,6 +83,12 @@ def has_non_latin(text: str) -> bool:
 
 
 def short_path(long_path: str) -> str:
+    pass
+
+
+
+
+
     if os.name != "nt":
         return ""
     try:
@@ -32,6 +104,13 @@ def short_path(long_path: str) -> str:
 
 
 def is_zpaq_cmd(cmd: list) -> bool:
+    pass
+
+
+
+
+
+
     if not cmd:
         return False
     exe = cmd[0]
@@ -41,7 +120,7 @@ def is_zpaq_cmd(cmd: list) -> bool:
 
 
 def subcommand_of(cmd: list) -> str:
-
+    pass
     for arg in cmd[1:]:
         if not (isinstance(arg, str) and arg.startswith("-")):
             return arg.lower()
@@ -49,6 +128,13 @@ def subcommand_of(cmd: list) -> str:
 
 
 def archive_index(cmd: list) -> int:
+    pass
+
+
+
+
+
+
     seen_sub = False
     for i in range(1, len(cmd)):
         arg = cmd[i]
@@ -61,27 +147,53 @@ def archive_index(cmd: list) -> int:
     return -1
 
 
+                                                                      
+                                       
+                                                                      
 def read_target(path: str) -> tuple:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
     p = str(path)
 
     if not has_non_latin(p):
         return p, None, []
 
-    short = short_path(p)
+    short = short_path(p)                            
     if short and not has_non_latin(short):
-        return short, None, []
+        return short, None, []                                            
 
-    name = Path(p).name
+    name = Path(p).name                                          
     folder = str(Path(p).parent)
     if not has_non_latin(name) and folder:
-        return name, folder, []
+        return name, folder, []                                           
 
-
+                                                                
     arg, cwd = latin_substitute(p)
     return arg, cwd, [arg]
 
 
 def latin_substitute(path: str) -> tuple:
+    pass
+
+
+
+
+
+
+
+
+
     import shutil
     import tempfile
 
@@ -119,24 +231,42 @@ def latin_substitute(path: str) -> tuple:
     return str(tmp), None
 
 
+                                                                      
+                                
+                                                                      
 def create_target(path: str) -> tuple:
+    pass
+
+
+
+
+
+
+
+
     p = str(path)
 
     if not has_non_latin(p):
         return p, None, []
 
     if os.path.isfile(p):
-
+                                                                             
         return read_target(p)
 
     folder = str(Path(p).parent)
     if folder and has_non_latin(folder):
-        return Path(p).name, folder, []
+        return Path(p).name, folder, []                               
 
-    return p, None, []
+    return p, None, []                                                        
 
 
 def engine_target(path: str) -> tuple:
+    pass
+
+
+
+
+
     p = str(path)
     if os.path.isfile(p):
         return read_target(p)
@@ -144,7 +274,7 @@ def engine_target(path: str) -> tuple:
 
 
 def describe(path: str) -> str:
-
+    pass
     try:
         arg, cwd, subs = engine_target(path)
     except EnginePathError as exc:
@@ -157,6 +287,17 @@ def describe(path: str) -> str:
 
 
 def rewrite_cmd(cmd: list) -> tuple:
+    pass
+
+
+
+
+
+
+
+
+
+
     if not is_zpaq_cmd(cmd):
         return list(cmd), None, []
 
@@ -172,8 +313,8 @@ def rewrite_cmd(cmd: list) -> tuple:
     try:
         if os.path.isfile(raw):
             if sub not in READ_ONLY_SUBCOMMANDS:
-
-
+                                                                    
+                                                                      
                 short = short_path(raw)
                 name = Path(raw).name
                 folder = str(Path(raw).parent)
@@ -195,7 +336,7 @@ def rewrite_cmd(cmd: list) -> tuple:
     except EnginePathError:
         raise
     except Exception:
-
+                                                                       
         return list(cmd), None, []
 
     return _replaced(cmd, idx, new_arg), new_cwd, subs
@@ -208,6 +349,17 @@ def _replaced(cmd: list, idx: int, value: str) -> list:
 
 
 def drop_substitutes(paths: list) -> None:
+    pass
+
+
+
+
+
+
+
+
+
+
     import shutil
 
     for p in paths or ():
@@ -215,7 +367,7 @@ def drop_substitutes(paths: list) -> None:
             parent = os.path.dirname(str(p))
             if os.path.isfile(str(p)):
                 os.unlink(str(p))
-
+                                                                             
             if parent and os.path.isdir(parent) and os.path.basename(
                 parent
             ).startswith("rizpaq_link_"):
@@ -224,7 +376,17 @@ def drop_substitutes(paths: list) -> None:
             pass
 
 
+                                                                      
+                                                            
+                                                                      
 def needs_staging(dest: str) -> bool:
+    pass
+
+
+
+
+
+
     p = str(dest)
     if not has_non_latin(p):
         return False
@@ -233,6 +395,18 @@ def needs_staging(dest: str) -> bool:
 
 
 def make_staging(dest: str) -> str:
+    pass
+
+
+
+
+
+
+
+
+
+
+
     import tempfile
 
     stem = Path(str(dest)).stem
@@ -252,8 +426,18 @@ def make_staging(dest: str) -> str:
                 prefix=f"{ascii_stem}_", suffix=".tmp", dir=str(base)
             )
             os.close(fd)
-
-
+                                                               
+             
+                                                                       
+                                                                      
+                                
+                                                                      
+                                                      
+                                                                            
+                                                 
+             
+                                                                         
+                                                            
             try:
                 os.unlink(path)
             except Exception:
@@ -271,6 +455,22 @@ def make_staging(dest: str) -> str:
 
 
 def move_to_dest(staged: str, dest: str) -> tuple:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     import shutil
 
     staged = str(staged)
@@ -286,10 +486,10 @@ def move_to_dest(staged: str, dest: str) -> tuple:
         )
 
     try:
-        os.replace(staged, dest)
+        os.replace(staged, dest)                                     
         return True, ""
     except OSError:
-        pass
+        pass                                                      
 
     try:
         size_staged = os.path.getsize(staged)
@@ -316,6 +516,17 @@ def move_to_dest(staged: str, dest: str) -> tuple:
     return True, ""
 
 def discard_staging_if_empty(path: str) -> bool:
+    pass
+
+
+
+
+
+
+
+
+
+
     import shutil
 
     p = str(path or "")

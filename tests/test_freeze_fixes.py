@@ -1,3 +1,32 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import subprocess
@@ -9,19 +38,20 @@ from unittest import mock
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-import core.scheduler as sched
-from ui.archive_table import (
+import core.scheduler as sched              
+from ui.archive_table import (              
     _CMDLINE_LIMIT,
     _chunk_patterns,
     _extract_for_drag,
 )
 
-
+                                                                   
+                                                               
 SCHEDULER_DIALOG_SRC = ROOT / "ui" / "scheduler_dialog.py"
 
 
 class TestChunkPatterns(unittest.TestCase):
-
+    pass
 
     def test_empty_gives_one_empty_chunk(self):
         self.assertEqual(_chunk_patterns([]), [[]])
@@ -56,6 +86,10 @@ class TestChunkPatterns(unittest.TestCase):
 
 
 class TestExtractForDragBatching(unittest.TestCase):
+    pass
+
+
+
 
     def _run(self, targets, expect_calls=None, **kwargs):
         with mock.patch("ui.archive_table.tempfile.mkdtemp") as mk, \
@@ -68,7 +102,7 @@ class TestExtractForDragBatching(unittest.TestCase):
             find.side_effect = lambda tmp, inner, want_dir=False: f"{tmp}/found_{inner}"
             run.return_value = mock.Mock(returncode=0, stdout=b"", stderr=b"")
             try:
-
+                                                            
                 urls, temp_dir, notes = _extract_for_drag(
                     "zpaq.exe", "C:/a.zpaq", None, targets, **kwargs
                 )
@@ -130,7 +164,7 @@ class TestExtractForDragBatching(unittest.TestCase):
         self.assertTrue(cmds, "движок вообще не вызван")
 
     def test_every_call_receives_a_timeout(self):
-
+        pass
         import shutil
         import tempfile as real_tempfile
 
@@ -155,14 +189,14 @@ class TestExtractForDragBatching(unittest.TestCase):
             self.assertLessEqual(call.kwargs["timeout"], 120)
 
     def test_timeout_exhausted_stops_early(self):
-
+        pass
         urls, calls, _, notes = self._run(
             [(f"d:/a/f{i}.txt", False) for i in range(50)], timeout=-1
         )
         self.assertEqual(calls, 0, "при исчерпанном таймауте движок звать нельзя")
 
     def test_timeout_expired_breaks_loop(self):
-
+        pass
         import shutil
         import tempfile as real_tempfile
 
@@ -174,7 +208,7 @@ class TestExtractForDragBatching(unittest.TestCase):
             mk.return_value = real_dir
             find.return_value = None
             run.return_value = mock.Mock(returncode=0)
-
+                                                       
             mono.side_effect = [0.0, 0.0, 100.0, 100.0]
             try:
                 _extract_for_drag(
@@ -197,6 +231,14 @@ class TestExtractForDragBatching(unittest.TestCase):
         self.assertIsNotNone(notes, "сведения о ходе возвращаются всегда")
 
     def test_exhausted_timeout_is_reported(self):
+        pass
+
+
+
+
+
+
+
         _urls, calls, _, notes = self._run(
             [(f"d:/a/f{i}.txt", False) for i in range(50)], timeout=-1
         )
@@ -207,6 +249,13 @@ class TestExtractForDragBatching(unittest.TestCase):
             "объяснить пользователю, что произошло")
 
     def test_timeout_reported_in_notes(self):
+        pass
+
+
+
+
+
+
         _urls, _calls, _, notes = self._run([("d:/a/f.txt", False)],
                                             timeout=42)
         self.assertEqual(notes["timeout"], 42,
@@ -218,9 +267,16 @@ class TestExtractForDragBatching(unittest.TestCase):
                          "успешный перенос помечен как прерванный")
 
     def test_pump_called_between_chunks(self):
+        pass
+
+
+
+
+
+
         calls = []
-
-
+                                                                          
+                                     
         targets = [("d:/a/" + "x" * 300 + f"/f{i}.txt", False)
                    for i in range(300)]
         _urls, _c, _cmds, notes = self._run(targets,
@@ -230,6 +286,12 @@ class TestExtractForDragBatching(unittest.TestCase):
         self.assertTrue(calls, "оживление окна между пачками не вызывалось")
 
     def test_pump_failure_does_not_break_drag(self):
+        pass
+
+
+
+
+
         def bad_pump():
             raise RuntimeError("виджет удалён")
 
@@ -240,12 +302,23 @@ class TestExtractForDragBatching(unittest.TestCase):
         self.assertFalse(notes["timed_out"])
 
 
+                                                                   
+                                                                       
+                                                          
 _WORK = {"id": "w-test", "title": "Work"}
 _JOB = {"id": "j-test", "title": "Job"}
 _SCHEDULE = {"enabled": True, "frequency": "daily", "time": "10:00"}
 
 
 class TestSchedulerTimeouts(unittest.TestCase):
+    pass
+
+
+
+
+
+
+
 
     def test_helper_passes_timeout(self):
         with mock.patch("core.scheduler.subprocess.run") as run:
@@ -259,6 +332,10 @@ class TestSchedulerTimeouts(unittest.TestCase):
         self.assertEqual(run.call_args.kwargs["timeout"], sched.SCHTASKS_TIMEOUT)
 
     def test_helper_does_not_use_text_mode(self):
+        pass
+
+
+
         with mock.patch("core.scheduler.subprocess.run") as run:
             run.return_value = mock.Mock(returncode=0, stdout=b"")
             sched._run_schtasks(["schtasks.exe", "/query"])
@@ -283,8 +360,10 @@ class TestSchedulerTimeouts(unittest.TestCase):
     def test_create_task_survives_timeout(self):
         with mock.patch("core.scheduler.subprocess.run") as run:
             run.side_effect = subprocess.TimeoutExpired(cmd="schtasks", timeout=20)
-
-
+                                                               
+                                                                     
+                                                                  
+                                                  
             self.assertFalse(
                 sched.create_scheduled_task(
                     "C:/x.rzp", _WORK, _JOB, _SCHEDULE
@@ -292,12 +371,19 @@ class TestSchedulerTimeouts(unittest.TestCase):
             )
 
     def test_create_task_disabled_schedule_removes(self):
+        pass
+
+
+
+
+
+
         with mock.patch("core.scheduler.subprocess.run") as run:
             run.return_value = mock.Mock(returncode=0)
             sched.create_scheduled_task(
                 "C:/x.rzp", _WORK, _JOB, {"enabled": False}
             )
-
+                                                          
         cmd = run.call_args.args[0]
         self.assertIn("/delete", cmd)
 
@@ -312,26 +398,31 @@ class TestSchedulerTimeouts(unittest.TestCase):
             self.assertFalse(sched.remove_scheduled_task_by_name("Rizpaq_x_1234"))
 
     def test_all_schtasks_calls_go_through_helper(self):
+        pass
+
+
+
+
         src = Path(sched.__file__).read_text(encoding="utf-8")
         self.assertEqual(
             src.count("subprocess.run("),
             1,
             "прямых вызовов subprocess.run должно быть ровно один — в хелпере",
         )
-
+                                                             
         helper = src.split("def _run_schtasks")[1].split("def _schtasks_bin")[0]
         self.assertIn("subprocess.run(", helper)
 
 
 class TestSchedulerDialogDoesNotBlockConstructor(unittest.TestCase):
-
+    pass
 
     def test_load_is_deferred(self):
         from PySide6.QtWidgets import QApplication
 
         app = QApplication.instance() or QApplication([])
-
-
+                                                                  
+                                                                     
         src = SCHEDULER_DIALOG_SRC.read_text(encoding="utf-8")
 
         init = src.split("def _load_tasks")[0]
@@ -347,6 +438,14 @@ class TestSchedulerDialogDoesNotBlockConstructor(unittest.TestCase):
         )
 
     def test_list_runs_off_gui_thread(self):
+        pass
+
+
+
+
+
+
+
         src = SCHEDULER_DIALOG_SRC.read_text(encoding="utf-8")
         load = src.split("def _load_tasks")[1].split("    def ")[0]
         self.assertIn("_TaskListWorker", load,
@@ -355,7 +454,7 @@ class TestSchedulerDialogDoesNotBlockConstructor(unittest.TestCase):
                          "список всё ещё читается на GUI-потоке")
 
     def test_dialog_uses_core_removal(self):
-
+        pass
         src = SCHEDULER_DIALOG_SRC.read_text(encoding="utf-8")
         self.assertNotIn(
             "import subprocess",

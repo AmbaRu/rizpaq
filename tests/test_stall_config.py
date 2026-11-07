@@ -1,3 +1,18 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import tempfile
 import unittest
 from pathlib import Path
@@ -34,8 +49,8 @@ class TestEngineStallTimeout(unittest.TestCase):
             self.assertEqual(cfg.engine_stall_timeout(90, p), 3600.0)
 
     def test_broken_value_returns_default(self):
-
-
+                                                                      
+                                                                    
         with tempfile.TemporaryDirectory() as tmp:
             p = Path(tmp) / "settings.json"
             p.write_text('{"engine_stall_timeout": "много"}', encoding="utf-8")
@@ -51,8 +66,8 @@ class TestEffectiveStallTimeout(unittest.TestCase):
     def test_patched_module_value_wins_over_config(self):
         with tempfile.TemporaryDirectory() as tmp:
             p = _write_config(tmp, engine_stall_timeout=120)
-
-
+                                                                    
+                                                                     
             self.assertEqual(effective_stall_timeout(90, 1, p), 1.0)
 
     def test_config_used_when_module_default(self):
@@ -67,7 +82,7 @@ class TestEffectiveStallTimeout(unittest.TestCase):
 
 
 class TestDefaultsInSync(unittest.TestCase):
-
+    pass
 
     def test_all_defaults_are_90(self):
         import os

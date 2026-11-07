@@ -1,3 +1,38 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import ast
@@ -9,6 +44,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
+
+                                                                           
+                                           
+                                                                           
 
 _ISOLATED_IMPORT = """
 import builtins, sys, os
@@ -28,8 +67,8 @@ sys.path.insert(0, {root!r})
 
 import core.headless as h
 
-# Проверим, что ключевые имена есть и что подмена действительно
-# не пропустила ни PySide6, ни ui.* в sys.modules.
+
+
 assert "PySide6" not in sys.modules, "PySide6 всё-таки импортирован"
 assert not any(m == "ui" or m.startswith("ui.") for m in sys.modules), \\
     "пакет ui всё-таки импортирован"
@@ -44,6 +83,13 @@ print("OK")
 
 
 class TestIsolatedImport(unittest.TestCase):
+    pass
+
+
+
+
+
+
 
     def _run(self, timeout: int = 60):
         script = _ISOLATED_IMPORT.format(root=str(ROOT))
@@ -64,6 +110,11 @@ class TestIsolatedImport(unittest.TestCase):
         )
 
     def test_headless_does_not_pull_tasks_to_qt(self):
+        pass
+
+
+
+
         script = _ISOLATED_IMPORT.format(root=str(ROOT))
         r = subprocess.run(
             [sys.executable, "-c", script],
@@ -79,7 +130,21 @@ class TestIsolatedImport(unittest.TestCase):
         )
 
 
+                                                                           
+                                                                        
+                                                                           
+
 class TestNoQtImportsAtModuleLevel(unittest.TestCase):
+    pass
+
+
+
+
+
+
+
+
+
 
     def _module_ast(self):
         path = ROOT / "core" / "headless.py"
@@ -105,6 +170,12 @@ class TestNoQtImportsAtModuleLevel(unittest.TestCase):
         )
 
     def test_tasks_import_present_at_module_level(self):
+        pass
+
+
+
+
+
         tree = self._module_ast()
         found = False
         for node in tree.body:
@@ -117,8 +188,12 @@ class TestNoQtImportsAtModuleLevel(unittest.TestCase):
         )
 
 
-class TestParseTaskArgs(unittest.TestCase):
+                                                                           
+                            
+                                                                           
 
+class TestParseTaskArgs(unittest.TestCase):
+    pass
 
     def _fn(self):
         from core.headless import _parse_task_args
@@ -142,22 +217,27 @@ class TestParseTaskArgs(unittest.TestCase):
         self.assertEqual(job, "")
 
     def test_missing_job_value(self):
-
+        pass
         f = self._fn()
         path, job = f([r"C:\tasks.rzp", "--job"])
         self.assertEqual(path, r"C:\tasks.rzp")
         self.assertEqual(job, "")
 
     def test_job_before_path_is_not_found(self):
+        pass
+
+
+
+
         f = self._fn()
         path, job = f(["--job", "abc", r"C:\tasks.rzp"])
-
+                                
         self.assertEqual(path, "--job")
-
+                                                          
         self.assertEqual(job, "")
 
     def test_extra_args_ignored(self):
-
+        pass
         f = self._fn()
         path, job = f([r"C:\tasks.rzp", "--job", "abc", "--verbose"])
         self.assertEqual(path, r"C:\tasks.rzp")
@@ -170,7 +250,18 @@ class TestParseTaskArgs(unittest.TestCase):
         self.assertEqual(job, "abc")
 
 
+                                                                           
+                           
+                                                                           
+
 class TestBuildTestCmd(unittest.TestCase):
+    pass
+
+
+
+
+
+
 
     def _fn(self):
         from core.headless import _build_test_cmd
@@ -203,6 +294,11 @@ class TestBuildTestCmd(unittest.TestCase):
         self.assertEqual(cmd[i + 1], r"C:\tmp\out")
 
     def test_paranoid_mode_without_tmp(self):
+        pass
+
+
+
+
         f = self._fn()
         cmd = f("zpaq", r"C:\a.zpaq", None, "paranoid")
         self.assertIn("-paranoid", cmd)
@@ -213,13 +309,13 @@ class TestBuildTestCmd(unittest.TestCase):
         cmd = f("zpaq", r"C:\a.zpaq", "secret", "full")
         self.assertIn("-key", cmd)
         self.assertEqual(cmd[cmd.index("-key") + 1], "secret")
-
+                                                             
         self.assertEqual(cmd[-2:], ["-key", "secret"])
 
     def test_unknown_mode_falls_back_to_full(self):
         f = self._fn()
         cmd = f("zpaq", r"C:\a.zpaq", None, "weird")
-
+                                                                
         self.assertEqual(cmd, ["zpaq", "t", r"C:\a.zpaq"])
 
     def test_missing_mode_falls_back_to_full(self):
@@ -241,7 +337,17 @@ class TestBuildTestCmd(unittest.TestCase):
         self.assertEqual(cmd[cmd.index("-key") + 1], "pw")
 
 
+                                                                           
+                                         
+                                                                           
+
 class TestIsHeadlessOp(unittest.TestCase):
+    pass
+
+
+
+
+
 
     def _fn(self):
         from core.headless import is_headless_op
@@ -261,14 +367,23 @@ class TestIsHeadlessOp(unittest.TestCase):
         f = self._fn()
         self.assertFalse(f(["--nope"]))
         self.assertFalse(f([r"C:\archive.zpaq"]))
-        self.assertFalse(f(["--extract"]))
+        self.assertFalse(f(["--extract"]))                            
 
     def test_whitespace_around_op(self):
         f = self._fn()
         self.assertTrue(f(["  --test  ", "arg"]))
 
 
+                                                                           
+                                     
+                                                                           
+
 class TestConstantsReachable(unittest.TestCase):
+    pass
+
+
+
+
 
     def test_action_test_matches_core_tasks(self):
         import core.headless as h
@@ -284,18 +399,31 @@ class TestConstantsReachable(unittest.TestCase):
         )
 
 
+                                                                           
+                                                  
+                                                                           
+
 class TestRunHeadlessUnknownOp(unittest.TestCase):
+    pass
+
+
+
+
+
+
+
+
 
     def test_unknown_op_returns_one(self):
         from core.headless import run_headless
-
-
+                                                                    
+                                                                     
         rc = run_headless(["--nope"])
         self.assertEqual(rc, 1)
 
     def test_missing_arg_returns_one(self):
         from core.headless import run_headless
-
+                                          
         rc = run_headless(["--test"])
         self.assertEqual(rc, 1)
 

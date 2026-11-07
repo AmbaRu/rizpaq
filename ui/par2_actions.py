@@ -1,3 +1,39 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -6,7 +42,7 @@ from pathlib import Path
 from PySide6.QtWidgets import QDialog, QMessageBox
 
 from ui.i18n import tr
-from ui.par2_set_dialog import Par2SetDialog, last_options, remember_options
+from ui.par2_set_dialog import Par2SetDialog, last_options, remember_options              
 from ui.par2_verify_dialog import (
     Par2CreateDialog,
     Par2RepairDialog,
@@ -26,13 +62,27 @@ from workers import Par2CreateWorker, Par2RepairWorker, Par2VerifyWorker
 
 
 class Par2ActionsMixin:
+    pass
 
+                                                                            
 
     def _par2_current_target(self):
+        pass
+
+
+
+
+
+
+
+
+
         from ui.qt_compat import KIND_ROLE, TCOL, USER_ROLE
         from ui.qt_compat import K_FS_ARC
 
-
+                                                                   
+                                                                 
+                                         
         table = getattr(self, "table", None)
         if table is not None:
             try:
@@ -67,19 +117,38 @@ class Par2ActionsMixin:
         return str(getattr(self, "archive_path", "") or "")
 
     def _par2_target_from_menu(self):
+        pass
+
+
+
+
+
+
+
+
+
         current = self._par2_current_target()
         if current:
             return current
 
         from PySide6.QtWidgets import QFileDialog
 
-
+                                                                       
+                                                                       
         path, _ = QFileDialog.getOpenFileName(
             self, tr("par2.pick_archive"), "", tr("create.filter")
         )
         return str(path or "")
 
     def _par2_menu_create(self):
+        pass
+
+
+
+
+
+
+
         target = self._par2_target_from_menu()
         if not target:
             return
@@ -88,20 +157,30 @@ class Par2ActionsMixin:
         self._start_par2_create(target, recreate=has_par2_for(target))
 
     def _par2_menu_verify(self):
-
+        pass
         target = self._par2_target_from_menu()
         if not target:
             return
         self._start_par2_verify(target)
 
     def _par2_menu_repair(self):
-
+        pass
         target = self._par2_target_from_menu()
         if not target:
             return
         self._start_par2_repair(target)
 
     def _refresh_par2_menu(self):
+        pass
+
+
+
+
+
+
+
+
+
         from ui.test_modes import has_par2_for
 
         create = getattr(self, "_par2_menu_create_action", None)
@@ -109,11 +188,15 @@ class Par2ActionsMixin:
         repair = getattr(self, "_par2_menu_repair_action", None)
         actions = [a for a in (create, verify, repair) if a is not None]
 
-
+                                                                  
+                                                                     
+                                                          
         arc = self._par2_current_target()
         if not arc:
-
-
+                                                                               
+                                                                   
+                                                                         
+                                                        
             for act in actions:
                 act.setEnabled(True)
             return
@@ -121,11 +204,13 @@ class Par2ActionsMixin:
         has_set = has_par2_for(arc)
 
         if create is not None:
-
-
+                                                                  
+                                                                 
+                                                                     
+                                                      
             create.setEnabled(True)
-
-
+                                                                      
+                                                                      
             create.setText(tr("par2.recreate_now" if has_set
                               else "par2.create_now"))
         if verify is not None:
@@ -134,6 +219,22 @@ class Par2ActionsMixin:
             repair.setEnabled(has_set)
 
     def _par2_job_for(self, archive_path: str):
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         try:
             container, _path = self._load_container()
         except Exception:
@@ -164,6 +265,43 @@ class Par2ActionsMixin:
 
     def _start_par2_create(self, archive_path: str,
                            recreate: bool = False) -> bool:
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         try:
             from core.par2_ops import (
                 default_options,
@@ -183,8 +321,9 @@ class Par2ActionsMixin:
 
             if has_par2_for(archive_path):
                 if not recreate:
-
-
+                                                                        
+                                                                     
+                             
                     self._par2_note(tr("par2.already_exists"),
                                     archive_path)
                     return False
@@ -201,7 +340,9 @@ class Par2ActionsMixin:
                     self._par2_note(tr("par2.cancelled"), archive_path)
                     return False
 
-
+                                                                    
+                                                                       
+                                                   
                 try:
                     self._remove_par2_set(archive_path)
                 except Exception as exc:
@@ -214,7 +355,16 @@ class Par2ActionsMixin:
             job_context, job_options, _known = self._par2_job_for(archive_path)
             name = Path(archive_path).name
 
-
+                                                                       
+                                                               
+                                                                         
+                                                                       
+                                                                  
+             
+                                                                 
+                                                                     
+                                                                 
+                                                      
             prefill = job_options or last_options()
             if not prefill:
                 prefill = default_options()
@@ -230,8 +380,9 @@ class Par2ActionsMixin:
 
             dlg = Par2CreateDialog(name, self)
             self._par2_create_dialog = dlg
-
-
+                                                                      
+                                                                       
+                                       
             dlg.finished.connect(
                 lambda *_a, _d=dlg: self._release_create_dialog(_d)
             )
@@ -262,7 +413,7 @@ class Par2ActionsMixin:
             return False
 
     def _release_create_dialog(self, dialog):
-
+        pass
         if getattr(self, "_par2_create_dialog", None) is dialog:
             self._par2_create_dialog = None
 
@@ -273,6 +424,31 @@ class Par2ActionsMixin:
         par2_fallback: dict = None,
         dialog=None,
     ) -> bool:
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         try:
             if not archive_path:
                 return False
@@ -288,8 +464,8 @@ class Par2ActionsMixin:
 
             enabled, options, known_size = self._par2_settings(job_context)
             if par2_fallback:
-
-
+                                                                        
+                                                                  
                 enabled = bool(par2_fallback.get("enabled"))
                 options = dict(par2_fallback.get("options") or {})
             if not enabled:
@@ -309,8 +485,9 @@ class Par2ActionsMixin:
                 lambda w=worker: self._cleanup_worker(w)
             )
             if dialog is not None:
-
-
+                                                                       
+                                                                     
+                                                                     
                 try:
                     dialog.begin_par2_stage(Path(archive_path).name)
                     worker.line_received.connect(dialog.append_output)
@@ -322,12 +499,26 @@ class Par2ActionsMixin:
             worker.start()
             return True
         except Exception:
-
-
+                                                                 
+                                                                         
+                                                               
             return False
 
+                                                                           
 
     def _par2_settings(self, job_context: dict):
+        pass
+
+
+
+
+
+
+
+
+
+
+
         try:
             container, _path = self._load_container()
         except Exception:
@@ -356,9 +547,24 @@ class Par2ActionsMixin:
                 )
         return False, {}, None
 
+                                                                            
 
     def _on_par2_done(self, job_context: dict, result: dict,
                        dialog=None):
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
         self._par2_worker = None
 
         archive_path = result.get("archive_path") or ""
@@ -377,7 +583,8 @@ class Par2ActionsMixin:
         if ok and not cancelled and recorded_size is not None:
             self._save_par2_marker(job_context, recorded_size)
 
-
+                                                                  
+                                                           
         verdict_key = "par2.created_ok"
         verdict_ok = ok
         if cancelled:
@@ -406,8 +613,10 @@ class Par2ActionsMixin:
                 except Exception:
                     pass
         elif dialog is not None:
-
-
+                                                                     
+                                                                   
+                                                                       
+                                                                  
             try:
                 if cancelled:
                     dialog.finish(True, tr("par2.cancelled"), stay=True)
@@ -424,15 +633,17 @@ class Par2ActionsMixin:
                         "par2.create_failed", error=_last_line(log)),
                         stay=True)
             except Exception:
-
-
+                                                                      
+                                       
                 pass
 
         if cancelled:
             self._par2_note(tr("par2.cancelled"), archive_path)
             return
 
-
+                                                                  
+                                                                    
+                                                 
         if ok and skipped:
             self._par2_note(tr("par2.create_skipped"), archive_path)
             return
@@ -449,8 +660,17 @@ class Par2ActionsMixin:
             tr("par2.create_failed", error=_last_line(log)), archive_path
         )
 
+                                                                            
 
     def _save_par2_marker(self, job_context: dict, size: int):
+        pass
+
+
+
+
+
+
+
         try:
             container, path = self._load_container()
             if not container or not path:
@@ -473,8 +693,16 @@ class Par2ActionsMixin:
         except Exception:
             pass
 
+                                                                            
 
     def _par2_note(self, text: str, archive_path: str):
+        pass
+
+
+
+
+
+
         name = Path(archive_path).name if archive_path else ""
         try:
             self.statusBar().showMessage(
@@ -484,12 +712,39 @@ class Par2ActionsMixin:
             pass
 
 
+                                                                           
+
     def _release_verify_dialog(self, dialog):
+        pass
+
+
+
+
+
+
         if getattr(self, "_par2_verify_dialog", None) is dialog:
             self._par2_verify_dialog = None
 
     def _par2_refuse(self, archive_path: str, text_key: str,
                      warn: bool = False) -> bool:
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self._par2_note(tr(text_key), archive_path)
         try:
             from PySide6.QtWidgets import QMessageBox
@@ -505,6 +760,14 @@ class Par2ActionsMixin:
         return False
 
     def _start_par2_verify(self, archive_path: str, job_context: dict = None):
+        pass
+
+
+
+
+
+
+
         try:
             from core.par2_ops import find_par2, par2_main_name
 
@@ -520,19 +783,31 @@ class Par2ActionsMixin:
                     archive_path, "backup.reason_full.par2_missing"
                 )
 
-
+                                                                  
+                                                                     
+                                                         
+                                                                         
+                                     
             name = Path(archive_path).name if archive_path else ""
             dlg = Par2VerifyDialog(name, self)
             self._par2_verify_dialog = dlg
-
-
+                                                                 
+                                                                       
+                                                                       
+                                                                       
+                                                                    
+                              
+                                                                      
+                                                                     
+                                                                      
+                                                         
             dlg.finished.connect(
                 lambda *_args, _d=dlg: self._release_verify_dialog(_d)
             )
 
             worker = Par2VerifyWorker(par2_bin, archive_path)
-
-
+                                                                    
+                                                             
             dlg.cancelRequested.connect(worker.cancel_request)
             worker.done.connect(
                 lambda r, c=job_context: self._on_par2_verify_done(c, r, dlg)
@@ -545,8 +820,10 @@ class Par2ActionsMixin:
             worker.start()
             return True
         except Exception as exc:
-
-
+                                                                  
+                                                                          
+                                                                  
+                                                      
             try:
                 self._par2_note(
                     tr("par2.verify_failed", error=f"{type(exc).__name__}: {exc}"),
@@ -558,6 +835,23 @@ class Par2ActionsMixin:
 
     def _on_par2_verify_done(self, job_context: dict, result: dict,
                              dialog=None):
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         from core.par2_ops import (
             STATE_BROKEN,
             STATE_DAMAGED,
@@ -579,11 +873,15 @@ class Par2ActionsMixin:
             except Exception:
                 pass
 
-
+                                                                    
+                                                                    
+                                                                
+                                        
         verdict_key = "test.title"
         verdict_ok = False
-
-
+                                                                       
+                                                                       
+                                                           
         verdict_extra = {}
         if result.get("cancelled"):
             verdict_key = "par2.cancelled"
@@ -611,8 +909,9 @@ class Par2ActionsMixin:
             verdict_key = "par2.verify_broken"
 
         if dialog is not None:
-
-
+                                                                     
+                                                                         
+                                                             
             detail = ""
             recorded = result.get("recorded_size")
             if isinstance(recorded, int) and recorded > 0:
@@ -624,8 +923,9 @@ class Par2ActionsMixin:
                     log, detail,
                 )
             except Exception as exc:
-
-
+                                                                        
+                                                                         
+                                                            
                 try:
                     self.log_output(
                         f"[par2] окно проверки не показало вердикт: {exc}"
@@ -637,13 +937,19 @@ class Par2ActionsMixin:
             self._par2_note(tr("par2.cancelled"), archive_path)
             return
 
-
+                                                                        
+                                                                    
+                                        
+                                
+                                                                             
+                                                             
+                                                             
         if job_context:
             status = "ok" if state == STATE_OK else "error"
             reason = None if state == STATE_OK else PAR2_REASON_BY_STATE.get(state)
             try:
-
-
+                                                                      
+                                                                 
                 self._update_job_meta_after_run(
                     job_context, status, reason=reason, output=log)
             except Exception:
@@ -654,8 +960,11 @@ class Par2ActionsMixin:
             return
 
         if state == STATE_DAMAGED:
-
-
+                                                                   
+                                                                         
+                                                                      
+                                                                     
+                                                                
             if verdict_extra:
                 self._par2_note(
                     tr("par2.verify_stale", **verdict_extra), archive_path
@@ -665,8 +974,9 @@ class Par2ActionsMixin:
             return
 
         if state == STATE_UNREPAIRABLE:
-
-
+                                                                          
+                                                                      
+                                                                      
             self._par2_note(tr("par2.verify_unrepairable"), archive_path)
             return
 
@@ -682,8 +992,31 @@ class Par2ActionsMixin:
             tr("par2.create_failed", error=_last_line(log)), archive_path
         )
 
+                                                                                 
 
     def _start_par2_repair(self, archive_path: str):
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         from core.par2_ops import (
             STATE_BROKEN,
             STATE_DAMAGED,
@@ -696,17 +1029,28 @@ class Par2ActionsMixin:
         )
 
         name = Path(archive_path).name if archive_path else ""
-
-
+                                                                        
+                                                                         
+                                                                      
+                                                   
         dlg = Par2RepairDialog(name, self)
         self._par2_repair_dialog = dlg
-
-
+                                                                  
+                                                                      
+                                
         dlg.finished.connect(
             lambda *_args, _d=dlg: self._release_repair_dialog(_d)
         )
 
         def refuse(verdict, ok=False):
+            pass
+
+
+
+
+
+
+
             self._par2_note(verdict, archive_path)
             try:
                 dlg.finish_verdict(ok, verdict)
@@ -727,11 +1071,13 @@ class Par2ActionsMixin:
             if res.state in (STATE_MISSING, STATE_BROKEN):
                 return refuse(tr("par2.verify_broken"))
             if res.state == STATE_UNREPAIRABLE:
-
-
+                                                                         
+                                                                  
+                                                                       
+                                                                
                 return refuse(tr("par2.repair_impossible"))
             if res.state != STATE_DAMAGED:
-
+                                                              
                 return refuse(tr("par2.repair_not_needed"), ok=True)
             if res.recorded_size is None:
                 return refuse(tr("par2.repair_no_size"))
@@ -742,8 +1088,13 @@ class Par2ActionsMixin:
                 return refuse(tr("par2.verify_missing"))
 
             if actual != int(res.recorded_size):
-
-
+                                                                    
+                 
+                                                                    
+                                                                
+                                                                       
+                                                                        
+                                                         
                 return refuse(
                     tr("par2.repair_stale",
                        actual=actual, recorded=int(res.recorded_size))
@@ -752,8 +1103,10 @@ class Par2ActionsMixin:
             answer = QMessageBox.question(
                 self,
                 tr("par2.repair_confirm_title"),
-
-
+                                                                        
+                                                                       
+                                                                      
+                                                
                 tr("par2.repair_confirm_same_size"
                    if actual == int(res.recorded_size)
                    else "par2.repair_confirm_text",
@@ -788,11 +1141,18 @@ class Par2ActionsMixin:
             )
 
     def _release_repair_dialog(self, dialog):
-
+        pass
         if getattr(self, "_par2_repair_dialog", None) is dialog:
             self._par2_repair_dialog = None
 
     def _on_par2_repair_done(self, result: dict, dialog=None):
+        pass
+
+
+
+
+
+
         self._par2_repair_worker = None
 
         archive_path = result.get("archive_path") or ""
@@ -832,8 +1192,11 @@ class Par2ActionsMixin:
                 self._on_refresh()
             except Exception:
                 pass
-
-
+                                                                      
+                                                                     
+                                                                      
+                                                                       
+                                                                    
             try:
                 self._refresh_index_after_create(archive_path)
             except Exception:
@@ -844,8 +1207,19 @@ class Par2ActionsMixin:
             tr("par2.repair_failed", error=_last_line(log)), archive_path
         )
 
+                                                                            
 
     def _remove_par2_set(self, archive_path: str) -> int:
+        pass
+
+
+
+
+
+
+
+
+
         try:
             from core.par2_ops import remove_par2_set
 
@@ -855,6 +1229,26 @@ class Par2ActionsMixin:
 
 
 def _par2_set_is_stale(archive_path: str, recorded_size) -> bool:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     if not archive_path or not isinstance(recorded_size, int):
         return False
     if recorded_size <= 0:
@@ -867,7 +1261,7 @@ def _par2_set_is_stale(archive_path: str, recorded_size) -> bool:
 
 
 def _last_line(text: str) -> str:
-
+    pass
     for line in reversed((text or "").splitlines()):
         line = line.strip()
         if line:

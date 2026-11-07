@@ -1,3 +1,52 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import sys
@@ -10,8 +59,12 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 
-from core.zpaq_cli import looks_like_busy_error
-from core.tasks import (
+                                                                             
+                           
+                                                                             
+
+from core.zpaq_cli import looks_like_busy_error              
+from core.tasks import (              
     JOB_STATUS_BUSY,
     JOB_STATUS_ERROR,
     JOB_STATUS_OK,
@@ -30,8 +83,18 @@ from core.tasks import (
 
 
 class TestLooksLikeBusyError(unittest.TestCase):
+    pass
 
 
+
+
+
+
+
+
+
+
+                                                                  
     REAL = (
         "17264$ Running add (updating/creating archive) on "
         "(C2FEEF295DEBDFFB) <<c:/users/riv/appdata/local/temp/"
@@ -47,7 +110,7 @@ class TestLooksLikeBusyError(unittest.TestCase):
         )
 
     def test_recognizes_bare_phrase(self):
-
+        pass
         self.assertTrue(
             looks_like_busy_error(
                 "Sorry, another zpaqfranz is running, we need to abort"
@@ -55,6 +118,10 @@ class TestLooksLikeBusyError(unittest.TestCase):
         )
 
     def test_case_insensitive(self):
+        pass
+
+
+
         self.assertTrue(
             looks_like_busy_error(
                 "ANOTHER ZPAQFRANZ IS RUNNING"
@@ -62,7 +129,7 @@ class TestLooksLikeBusyError(unittest.TestCase):
         )
 
     def test_ignores_normal_output(self):
-
+        pass
         self.assertFalse(
             looks_like_busy_error(
                 "1 +added, 0 -removed.\n0.406s (00:00:00,11.23MB) (all OK)"
@@ -70,6 +137,11 @@ class TestLooksLikeBusyError(unittest.TestCase):
         )
 
     def test_ignores_other_errors(self):
+        pass
+
+
+
+
         self.assertFalse(
             looks_like_busy_error("Wrong password for encrypted archive")
         )
@@ -85,23 +157,27 @@ class TestLooksLikeBusyError(unittest.TestCase):
         self.assertFalse(looks_like_busy_error(None))
 
 
+                                                                             
+                            
+                                                                             
+
 class TestStatusConstants(unittest.TestCase):
     def test_statuses_tuple(self):
-
+        pass
         self.assertEqual(
             set(JOB_STATUSES),
             {JOB_STATUS_OK, JOB_STATUS_ERROR, JOB_STATUS_BUSY},
         )
 
     def test_status_values(self):
-
+        pass
         self.assertEqual(JOB_STATUS_OK, "ok")
         self.assertEqual(JOB_STATUS_ERROR, "error")
         self.assertEqual(JOB_STATUS_BUSY, "busy")
 
 
 class TestNormStatus(unittest.TestCase):
-
+    pass
 
     def test_known_statuses_kept(self):
         for s in JOB_STATUSES:
@@ -109,12 +185,24 @@ class TestNormStatus(unittest.TestCase):
                 self.assertEqual(_norm_status(s), s)
 
     def test_unknown_becomes_none(self):
+        pass
+
+
+
+
         for bad in ("weird", "busy_forever", "", None, 123, {}):
             with self.subTest(value=bad):
                 self.assertIsNone(_norm_status(bad))
 
 
 class TestUpdateJobMetaBusy(unittest.TestCase):
+    pass
+
+
+
+
+
+
 
     def _container_with_job(self):
         c = empty_container()
@@ -131,6 +219,11 @@ class TestUpdateJobMetaBusy(unittest.TestCase):
         self.assertEqual(job["last_status"], JOB_STATUS_BUSY)
 
     def test_busy_counts_as_a_run(self):
+        pass
+
+
+
+
         c, j = self._container_with_job()
         self.assertEqual(j["run_count"], 0)
         self.assertIsNone(j["last_run"])
@@ -139,7 +232,7 @@ class TestUpdateJobMetaBusy(unittest.TestCase):
         self.assertIsNotNone(j["last_run"])
 
     def test_ok_and_error_still_work(self):
-
+        pass
         c, j = self._container_with_job()
         update_job_meta(c, j["id"], JOB_STATUS_OK)
         self.assertEqual(j["last_status"], JOB_STATUS_OK)
@@ -147,6 +240,10 @@ class TestUpdateJobMetaBusy(unittest.TestCase):
         self.assertEqual(j["last_status"], JOB_STATUS_ERROR)
 
     def test_unknown_status_becomes_error(self):
+        pass
+
+
+
         c, j = self._container_with_job()
         update_job_meta(c, j["id"], "weird")
         self.assertEqual(j["last_status"], JOB_STATUS_ERROR)
@@ -157,6 +254,11 @@ class TestUpdateJobMetaBusy(unittest.TestCase):
 
 
 class TestNormaliseJobStatus(unittest.TestCase):
+    pass
+
+
+
+
 
     def test_unknown_status_is_dropped_on_read(self):
         j = {
@@ -177,7 +279,7 @@ class TestNormaliseJobStatus(unittest.TestCase):
                 self.assertEqual(job["last_status"], s)
 
     def test_missing_status_is_none(self):
-
+        pass
         j = {"id": "j1", "title": "Daily"}
         job = _normalise_job(j)
         self.assertIsNotNone(job)
@@ -185,6 +287,12 @@ class TestNormaliseJobStatus(unittest.TestCase):
 
 
 class TestBusyRoundtrip(unittest.TestCase):
+    pass
+
+
+
+
+
 
     def setUp(self):
         self._dir = Path(tempfile.mkdtemp(prefix="rizpaq_busy_test_"))
@@ -206,10 +314,17 @@ class TestBusyRoundtrip(unittest.TestCase):
         self.assertEqual(job["last_status"], JOB_STATUS_BUSY)
 
 
+                                                                             
+                                 
+                                                                             
+
+                                                                  
+                                                                  
+                                                     
 try:
-    from ui import backup_page as _bp
+    from ui import backup_page as _bp              
     _BP_IMPORT_ERROR = None
-except Exception as exc:
+except Exception as exc:                    
     _bp = None
     _BP_IMPORT_ERROR = str(exc)
 
@@ -219,11 +334,24 @@ except Exception as exc:
     f"ui.backup_page не импортируется: {_BP_IMPORT_ERROR}",
 )
 class TestStatusDisplay(unittest.TestCase):
+    pass
+
+
+
 
     def setUp(self):
         super().setUp()
-
-
+                                                                    
+                           
+         
+                                                                       
+                                                                     
+                                                                       
+                                              
+                                                              
+                                                                          
+                                                                      
+                                                  
         from ui import i18n
 
         patcher = mock.patch.object(i18n, "_current_strings", {})
@@ -235,9 +363,13 @@ class TestStatusDisplay(unittest.TestCase):
         return _bp.BackupPage._status_text_and_token(job)
 
     def test_busy_text_and_token(self):
+        pass
+
+
+
         text, token = self._text_and_token(JOB_STATUS_BUSY)
-
-
+                                                                      
+                                                                      
         self.assertEqual(text, "backup.status.busy")
         self.assertEqual(token, "BUSY_STEEL")
 
@@ -252,18 +384,30 @@ class TestStatusDisplay(unittest.TestCase):
         self.assertEqual(token, "WARN_ORANGE")
 
     def test_never_text_and_token(self):
-
+        pass
         text, token = self._text_and_token(None)
         self.assertEqual(text, "backup.status.never")
         self.assertEqual(token, "TEXT_MUTED_LIGHT")
 
     def test_busy_token_differs_from_error(self):
+        pass
+
+
+
+
         _t_busy, tok_busy = self._text_and_token(JOB_STATUS_BUSY)
         _t_err, tok_err = self._text_and_token(JOB_STATUS_ERROR)
         self.assertNotEqual(tok_busy, tok_err)
 
 
 class TestBusyTokenInSkins(unittest.TestCase):
+    pass
+
+
+
+
+
+
 
     def test_token_in_all_skins(self):
         from ui import skins
@@ -281,7 +425,18 @@ class TestBusyTokenInSkins(unittest.TestCase):
                                 f"BUSY_STEEL в {name} = {value!r}: не hex-цвет")
 
 
+                                                                             
+                           
+                                                                             
+
 class TestOpenFlagInCreateCmd(unittest.TestCase):
+    pass
+
+
+
+
+
+
 
     def test_headless_create_cmd_has_open(self):
         from core.headless import _build_create_cmd
@@ -307,6 +462,11 @@ class TestOpenFlagInCreateCmd(unittest.TestCase):
         )
 
     def test_headless_test_cmd_has_no_open(self):
+        pass
+
+
+
+
         from core.headless import _build_test_cmd
 
         cmd = _build_test_cmd(
@@ -323,26 +483,52 @@ class TestOpenFlagInCreateCmd(unittest.TestCase):
 
 
 class TestOpenFlagInUiCreateCmd(unittest.TestCase):
+    pass
+
+
+
+
+
+
+
+
 
     def test_open_appended_after_archive_and_sources(self):
+        pass
 
 
+
+
+
+                                                                             
+                                                           
         cmd = ["zpaqfranz", "a", "D:/backup.zpaq", "D:/docs", "-open", "-m2"]
-
-
+                                                                    
+                         
         self.assertEqual(cmd.count("-open"), 1)
         self.assertLess(cmd.index("-open"), cmd.index("-m2"))
 
 
+                                                                             
+                                                   
+                                                                             
+
 class TestTaskLogBusy(unittest.TestCase):
+    pass
+
+
+
+
+
+
 
     def setUp(self):
         self._dir = Path(tempfile.mkdtemp(prefix="rizpaq_log_test_"))
         self.addCleanup(lambda: __import__("shutil").rmtree(
             self._dir, ignore_errors=True))
         self.rzp = self._dir / "tasks.rzp"
-
-
+                                                                    
+                                                  
         self.rzp.write_text("{}", encoding="utf-8")
 
     def _log_path(self) -> Path:
@@ -367,6 +553,10 @@ class TestTaskLogBusy(unittest.TestCase):
         self.assertNotIn("Status: ERROR", text)
 
     def test_short_mode_error_still_says_error(self):
+        pass
+
+
+
         from core.headless import _write_task_log
 
         _write_task_log(
@@ -382,6 +572,11 @@ class TestTaskLogBusy(unittest.TestCase):
         self.assertNotIn("Status: BUSY", text)
 
     def test_short_mode_ok_unaffected_by_busy_kwarg(self):
+        pass
+
+
+
+
         from core.headless import _write_task_log
 
         _write_task_log(
@@ -397,7 +592,7 @@ class TestTaskLogBusy(unittest.TestCase):
         self.assertNotIn("Status: BUSY", text)
 
     def test_log_mode_none_writes_nothing(self):
-
+        pass
         from core.headless import _write_task_log
 
         _write_task_log(
@@ -414,7 +609,19 @@ class TestTaskLogBusy(unittest.TestCase):
         )
 
 
+                                                                             
+                                  
+                                                                             
+
 class TestBusyLocaleKeys(unittest.TestCase):
+    pass
+
+
+
+
+
+
+
 
     REQUIRED = (
         "create.busy_title",
@@ -443,6 +650,11 @@ class TestBusyLocaleKeys(unittest.TestCase):
                     )
 
     def test_placeholder_matches_between_locales(self):
+        pass
+
+
+
+
         import json
         import re
 

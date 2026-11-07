@@ -1,3 +1,9 @@
+
+
+
+
+
+
 from __future__ import annotations
 
 from PySide6.QtWidgets import (
@@ -16,7 +22,7 @@ from ui.qt_compat import HEADER_STRETCH, NO_EDIT, SELECT_ROWS
 
 
 class ArchiveInfoDialog(QDialog):
-
+    pass
 
     def __init__(
         self,
@@ -34,19 +40,19 @@ class ArchiveInfoDialog(QDialog):
         lay.setContentsMargins(12, 12, 12, 12)
         lay.setSpacing(10)
 
-
+                               
         path_label = QLabel(str(archive_path))
         path_label.setObjectName("archive_info_path")
         path_label.setWordWrap(True)
         lay.addWidget(path_label)
 
-
+                        
         summary_label = QLabel(self._summary_text(summary, password_set))
         summary_label.setObjectName("archive_info_summary")
         summary_label.setWordWrap(True)
         lay.addWidget(summary_label)
 
-
+                        
         versions = sorted(versions or [], key=lambda v: v.number)
 
         if versions:
@@ -93,7 +99,7 @@ class ArchiveInfoDialog(QDialog):
             lay.addWidget(hint)
             lay.addStretch(1)
 
-
+                                 
         bottom = QHBoxLayout()
         bottom.addStretch(1)
 

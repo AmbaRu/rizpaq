@@ -1,9 +1,14 @@
+
+
+
+
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import List, Optional
 
-
+                   
 ADDED = "added"
 REMOVED = "removed"
 CHANGED = "changed"
@@ -12,11 +17,11 @@ UNCHANGED = "unchanged"
 
 @dataclass
 class DiffRecord:
-
+    pass
     path: str
     status: str
-    entry_a: Optional[object] = None
-    entry_b: Optional[object] = None
+    entry_a: Optional[object] = None                                                
+    entry_b: Optional[object] = None                                             
 
     @property
     def name(self) -> str:
@@ -25,6 +30,11 @@ class DiffRecord:
 
 def diff_slices(entries_a: list, entries_b: list,
                 include_unchanged: bool = False) -> List[DiffRecord]:
+    pass
+
+
+
+
     map_a = {e.path: e for e in entries_a if not e.is_dir and e.flag != "-"}
     map_b = {e.path: e for e in entries_b if not e.is_dir and e.flag != "-"}
 
@@ -47,7 +57,7 @@ def diff_slices(entries_a: list, entries_b: list,
 
 
 def _entries_differ(ea, eb) -> bool:
-
+    pass
     if ea.size != eb.size:
         return True
     if ea.datetime != eb.datetime:
@@ -56,7 +66,7 @@ def _entries_differ(ea, eb) -> bool:
 
 
 def summarize(records: List[DiffRecord]) -> dict:
-
+    pass
     return {
         ADDED:     sum(1 for r in records if r.status == ADDED),
         REMOVED:   sum(1 for r in records if r.status == REMOVED),

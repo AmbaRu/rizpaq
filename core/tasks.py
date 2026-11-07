@@ -1,3 +1,132 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import base64
@@ -9,7 +138,9 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
-
+                                                                  
+                                                                    
+                                                     
 from core.container_lock import ContainerLockBusy, container_lock
 
 __all__ = [
@@ -60,14 +191,24 @@ __all__ = [
     "new_id",
 ]
 
-
+                                                                   
+                                                                  
+                                                  
 CONTAINER_FORMAT = "rizpaq.tasks"
 CONTAINER_VERSION = 1
 
-
+                                                                  
+                                                                     
 CONTAINER_NAME = "tasks.rzp"
 
-
+                                                                 
+                                                                  
+          
+ 
+                                                                    
+                                                                      
+                                                                    
+                                                                    
 WORK_FIELDS = (
     "title",
     "sources",
@@ -76,13 +217,39 @@ WORK_FIELDS = (
     "only_masks",
     "not_masks",
     "comment",
-
-
+                                                                     
+                                                                     
+                              
+     
+                                                                       
+                                                                        
+                                                                       
+                                              
+     
+                                                                    
+                                                                    
+                                                                   
+                                                                 
     "par2_size",
     "par2_created",
 )
 
-
+                                                                      
+                                                            
+ 
+                                                                 
+                                                     
+                                                              
+                                                                    
+                                          
+ 
+                                                            
+                                                                      
+                                                                  
+                                                                 
+                                                              
+                                                                   
+                     
 JOB_FIELDS = (
     "action",
     "test_mode",
@@ -110,24 +277,30 @@ JOB_FIELDS = (
     "copy",
     "schedule",
     "task_log_mode",
-
-
+                                                                  
+                                                                   
+                                                      
     "par2_enabled",
     "par2_options",
 )
 
-
+                                                                    
+                                                                    
 ACTION_BACKUP = "backup"
 ACTION_TEST = "test"
 ACTIONS = (ACTION_BACKUP, ACTION_TEST)
 
-
+                                                                   
+                                                                 
+                                
 TEST_MODE_FULL = "full"
 TEST_MODE_CHECKSUM = "checksum"
 TEST_MODE_VERIFY = "verify"
 TEST_MODE_PARANOID = "paranoid"
-
-
+                                                                     
+                                                                        
+                                                                
+                                                   
 TEST_MODE_PAR2 = "par2"
 TEST_MODES = (
     TEST_MODE_FULL,
@@ -137,18 +310,40 @@ TEST_MODES = (
     TEST_MODE_PAR2,
 )
 
-
+                                                 
+ 
+                                                                
+                                                       
+                                                                   
+                                                                   
+        
+ 
+                                                                    
+                                                              
+                                                            
+                           
 JOB_STATUS_OK = "ok"
 JOB_STATUS_ERROR = "error"
 JOB_STATUS_BUSY = "busy"
 JOB_STATUSES = (JOB_STATUS_OK, JOB_STATUS_ERROR, JOB_STATUS_BUSY)
 
-
-REASON_PAR2_MISSING = "par2_missing"
-REASON_PAR2_BROKEN = "par2_broken"
-REASON_PAR2_DAMAGED = "par2_damaged"
-REASON_PAR2_UNREPAIRABLE = "par2_unrepairable"
-REASON_PAR2_FAILED = "par2_failed"
+                                                           
+ 
+                                                                
+                                                                  
+                                                                 
+                                              
+ 
+                                                                 
+                                                                  
+                                                              
+                                                                
+                       
+REASON_PAR2_MISSING = "par2_missing"                                    
+REASON_PAR2_BROKEN = "par2_broken"                                      
+REASON_PAR2_DAMAGED = "par2_damaged"                                  
+REASON_PAR2_UNREPAIRABLE = "par2_unrepairable"                          
+REASON_PAR2_FAILED = "par2_failed"                                         
 JOB_REASONS = (
     REASON_PAR2_MISSING,
     REASON_PAR2_BROKEN,
@@ -157,7 +352,11 @@ JOB_REASONS = (
     REASON_PAR2_FAILED,
 )
 
-
+                                                                
+                                                                    
+                                                               
+                                                                    
+                                                                 
 PAR2_REASON_BY_STATE = {
     "missing": REASON_PAR2_MISSING,
     "broken": REASON_PAR2_BROKEN,
@@ -167,21 +366,28 @@ PAR2_REASON_BY_STATE = {
 }
 
 
+                                                                  
+                                                         
 _RUNTIME_ONLY_KEYS = frozenset({"params_rows", "password"})
 
-
+                                                                  
+                                                 
 LOG_MODE_SHORT = "short"
 LOG_MODE_FULL = "full"
 LOG_MODE_NONE = "none"
 LOG_MODES = (LOG_MODE_SHORT, LOG_MODE_FULL, LOG_MODE_NONE)
 
 
+                                                                             
+           
+                                                                             
+
 def _now() -> str:
     return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 
 def new_id() -> str:
-
+    pass
     return str(uuid.uuid4())
 
 
@@ -201,39 +407,84 @@ def _decode_password(encoded: Optional[str]) -> Optional[str]:
 
 
 def _norm_action(value) -> str:
+    pass
+
+
+
+
+
+
+
     return value if value in ACTIONS else ACTION_BACKUP
 
 
 def _norm_test_mode(value) -> str:
-
+    pass
     return value if value in TEST_MODES else TEST_MODE_FULL
 
 
 def _norm_par2_size(value) -> Optional[int]:
+    pass
+
+
+
+
+
+
+
     if value is None:
         return None
     try:
         size = int(value)
     except (TypeError, ValueError):
         return None
-
+                                                            
     return size if size >= 0 else None
 
 
 def _norm_status(value) -> Optional[str]:
+    pass
+
+
+
+
+
+
+
+
+
     return value if value in JOB_STATUSES else None
 
 
 def _norm_reason(value) -> Optional[str]:
+    pass
+
+
+
+
+
+
+
     return value if value in JOB_REASONS else None
 
 
 def container_path(tasks_dir) -> Path:
+    pass
+
+
+
+
+
+
     return Path(tasks_dir) / CONTAINER_NAME
 
 
-def empty_container(name: Optional[str] = None) -> dict:
+                                                                             
+                 
+                                                                             
 
+def empty_container(name: Optional[str] = None) -> dict:
+    pass
     now = _now()
     return {
         "format": CONTAINER_FORMAT,
@@ -246,6 +497,13 @@ def empty_container(name: Optional[str] = None) -> dict:
 
 
 def _validate(data: Any) -> Optional[dict]:
+    pass
+
+
+
+
+
+
     if not isinstance(data, dict):
         return None
     if data.get("format") != CONTAINER_FORMAT:
@@ -254,7 +512,10 @@ def _validate(data: Any) -> Optional[dict]:
     if not isinstance(works, list):
         return None
 
-
+                                                                    
+                                                                      
+                                                                       
+               
     out = empty_container(data.get("name"))
     out["created"] = str(data.get("created") or out["created"])
     out["modified"] = str(data.get("modified") or out["modified"])
@@ -272,8 +533,8 @@ def _validate(data: Any) -> Optional[dict]:
 def _normalise_work(w: dict) -> Optional[dict]:
     wid = w.get("id")
     if not isinstance(wid, str) or not wid:
-
-
+                                                                   
+                                                                      
         return None
 
     work = {
@@ -287,8 +548,8 @@ def _normalise_work(w: dict) -> Optional[dict]:
         "only_masks": [str(m) for m in (w.get("only_masks") or [])],
         "not_masks": [str(m) for m in (w.get("not_masks") or [])],
         "comment": str(w.get("comment") or ""),
-
-
+                                                                      
+                                                         
         "par2_size": _norm_par2_size(w.get("par2_size")),
         "par2_created": str(w.get("par2_created") or "") or None,
         "jobs": [],
@@ -315,20 +576,22 @@ def _normalise_job(j: dict) -> Optional[dict]:
         "created": str(j.get("created") or _now()),
         "modified": str(j.get("modified") or _now()),
         "last_run": j.get("last_run"),
-
-
+                                                               
+                                                            
+                                                           
         "last_status": _norm_status(j.get("last_status")),
-
-
+                                                            
+                                                                     
         "last_reason": _norm_reason(j.get("last_reason")),
         "run_count": int(j.get("run_count") or 0),
         "schedule": j.get("schedule") if isinstance(j.get("schedule"), dict) else None,
         "task_log_mode": j.get("task_log_mode") if j.get("task_log_mode") in LOG_MODES else LOG_MODE_SHORT,
-
-
+                                                                      
+                                                                     
         "action": _norm_action(j.get("action")),
-
-
+                                                                 
+                                                                 
+                                                 
         "test_mode": _norm_test_mode(j.get("test_mode")),
     }
     for key in JOB_FIELDS:
@@ -339,6 +602,19 @@ def _normalise_job(j: dict) -> Optional[dict]:
 
 
 def load_container(path) -> dict:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
     p = Path(path)
     if not p.is_file():
         return empty_container()
@@ -357,6 +633,23 @@ def load_container(path) -> dict:
 
 
 def save_container(path, container: dict) -> None:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     p = Path(path)
     container["modified"] = _now()
 
@@ -381,6 +674,48 @@ def update_container(
     path,
     mutate: Callable[[dict], None],
 ) -> dict:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     with container_lock(path):
         container = load_container(path)
         mutate(container)
@@ -388,7 +723,22 @@ def update_container(
         return container
 
 
+                                                                             
+               
+                                                                             
+
 def iter_jobs(container: dict) -> List[Tuple[dict, dict]]:
+    pass
+
+
+
+
+
+
+
+
+
+
     out: List[Tuple[dict, dict]] = []
     for work in container.get("works") or []:
         for job in work.get("jobs") or []:
@@ -404,12 +754,16 @@ def find_work(container: dict, work_id: str) -> Optional[dict]:
 
 
 def find_job(container: dict, job_id: str) -> Optional[Tuple[dict, dict]]:
-
+    pass
     for work, job in iter_jobs(container):
         if job.get("id") == job_id:
             return work, job
     return None
 
+
+                                                                             
+           
+                                                                             
 
 def add_work(
     container: dict,
@@ -421,6 +775,12 @@ def add_work(
     not_masks: Optional[List[str]] = None,
     comment: str = "",
 ) -> dict:
+    pass
+
+
+
+
+
     now = _now()
     work = {
         "id": new_id(),
@@ -440,6 +800,19 @@ def add_work(
 
 
 def update_work(container: dict, work_id: str, **fields) -> Optional[dict]:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
     work = find_work(container, work_id)
     if work is None:
         return None
@@ -468,6 +841,23 @@ def remove_work(container: dict, work_id: str) -> bool:
 
 
 def add_job(container: dict, work_id: str, settings: dict) -> Optional[dict]:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     work = find_work(container, work_id)
     if work is None:
         return None
@@ -494,7 +884,7 @@ def add_job(container: dict, work_id: str, settings: dict) -> Optional[dict]:
     for key in JOB_FIELDS:
         if key in ("schedule", "task_log_mode", "action", "test_mode"):
             continue
-
+                                                             
         if key in _RUNTIME_ONLY_KEYS:
             continue
         job[key] = settings.get(key)
@@ -503,6 +893,21 @@ def add_job(container: dict, work_id: str, settings: dict) -> Optional[dict]:
 
 
 def update_job(container: dict, job_id: str, **fields) -> Optional[dict]:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     found = find_job(container, job_id)
     if found is None:
         return None
@@ -539,6 +944,21 @@ def remove_job(container: dict, job_id: str) -> bool:
 
 def update_job_meta(container: dict, job_id: str, status: str,
                     reason: Optional[str] = None) -> bool:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     found = find_job(container, job_id)
     if found is None:
         return False
@@ -552,7 +972,31 @@ def update_job_meta(container: dict, job_id: str, status: str,
     return True
 
 
+                                                                             
+                                                   
+                                                                             
+
 def job_to_runnable_settings(work: dict, job: dict) -> dict:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     settings: Dict[str, Any] = {
         "sources": list(work.get("sources") or []),
         "dest": work.get("dest") or "",
@@ -561,28 +1005,45 @@ def job_to_runnable_settings(work: dict, job: dict) -> dict:
         "not_masks": list(work.get("not_masks") or []),
         "comment": work.get("comment") or "",
     }
-
-
+                                                                
+                                                                     
+                                          
     settings["title"] = job.get("title") or ""
     settings["work_title"] = work.get("title") or ""
     for key in JOB_FIELDS:
         settings[key] = job.get(key)
-
+                                                
     settings["schedule"] = job.get("schedule")
     settings["task_log_mode"] = job.get("task_log_mode") or LOG_MODE_SHORT
     return settings
 
 
+                                                                             
+                     
+                                                                             
+
 def work_slug(title: str, max_len: int = 20) -> str:
+    pass
+
+
+
+
+
+
+
+
+
+
+
     try:
         from core.archive_naming import transliterate
     except Exception:
-        transliterate = lambda s: s
+        transliterate = lambda s: s              
 
     cleaned = transliterate(str(title or "")).strip("_-.")
     if not cleaned:
         cleaned = "work"
-
+                                                                     
     cleaned = "_".join(p for p in cleaned.replace(" ", "_").split("_") if p)
     if not cleaned:
         cleaned = "work"
@@ -590,6 +1051,22 @@ def work_slug(title: str, max_len: int = 20) -> str:
 
 
 def scheduler_task_name(work: dict, job: dict) -> str:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     import hashlib
 
     slug = work_slug(work.get("title") or "")
@@ -601,7 +1078,24 @@ def scheduler_task_name(work: dict, job: dict) -> str:
     return f"Rizpaq_{prefix}_{slug}_{jid8}_{h8}"
 
 
+                                                                             
+                              
+                                                                             
+
 def iter_container_meta(container: dict) -> List[dict]:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
     out: List[dict] = []
     for work in container.get("works") or []:
         size = _archive_size(work.get("dest") or "")
@@ -612,6 +1106,12 @@ def iter_container_meta(container: dict) -> List[dict]:
 
 
 def _archive_size(dest: str) -> Optional[int]:
+    pass
+
+
+
+
+
     if not dest:
         return None
     try:

@@ -1,3 +1,15 @@
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import unittest
@@ -59,8 +71,8 @@ class TestExtractFileWorkerCmd(unittest.TestCase):
         )
 
     def test_no_only_flag(self):
-
-
+                                                              
+                                                          
         w = ExtractFileWorker("z", "a.zpaq", None, "f.txt", None, "o.txt")
         self.assertNotIn("-only", w.cmd)
 
@@ -93,7 +105,7 @@ class TestExtractFolderBatchWorkerCmd(unittest.TestCase):
             ],
         )
 
-
+                                                                                 
         self.assertNotIn("-find", w.cmd)
         self.assertNotIn("-replace", w.cmd)
 

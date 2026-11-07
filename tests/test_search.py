@@ -1,3 +1,10 @@
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import sys
@@ -41,12 +48,12 @@ class TestMatchQuery(unittest.TestCase):
         self.assertFalse(match_query("*школа*", "d:/Dasha/работа.doc"))
 
     def test_glob_question_mark(self):
-
+                                                                   
         self.assertTrue(match_query("file?.txt", "d:/file1.txt"))
         self.assertFalse(match_query("file?.txt", "d:/file12.txt"))
 
     def test_glob_also_matches_folder_prefix(self):
-
+                                                                           
         self.assertTrue(match_query("d:/tan/*", "d:/tan/x.txt"))
         self.assertTrue(match_query("*/отчеты/*", "d:/Таня/отчеты/x.xlsx"))
 

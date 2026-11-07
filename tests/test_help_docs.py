@@ -1,3 +1,25 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import sys
@@ -9,7 +31,7 @@ from unittest import mock
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from PySide6.QtWidgets import QApplication, QMessageBox
+from PySide6.QtWidgets import QApplication, QMessageBox              
 
 _APP = QApplication.instance() or QApplication([])
 from PySide6.QtGui import QFont
@@ -18,11 +40,11 @@ if _APP is not None:
     _APP.setFont(QFont("Segoe UI", 9))
 
 
-from core import help_docs
+from core import help_docs              
 
 
 class _FakeBox:
-
+    pass
 
     def __init__(self):
         self.calls: list = []
@@ -36,10 +58,22 @@ class _FakeBox:
 
 class TestFindManualRoot(unittest.TestCase):
     def test_finds_project_doc(self):
+        pass
+
+
+
+
+
+
+
         root = help_docs.find_manual_root()
         self.assertTrue(root is None or isinstance(root, Path))
 
     def test_prefers_exe_dir_when_it_has_index(self):
+        pass
+
+
+
         with tempfile.TemporaryDirectory() as td:
             d = Path(td)
             (d / "help" / "ru").mkdir(parents=True)
@@ -50,7 +84,7 @@ class TestFindManualRoot(unittest.TestCase):
             self.assertEqual(Path(found), d / "help")
 
     def test_exe_dir_without_index_is_skipped(self):
-
+        pass
         with tempfile.TemporaryDirectory() as td:
             d = Path(td)
             (d / "help").mkdir()
@@ -77,7 +111,7 @@ class TestPickManual(unittest.TestCase):
             self.assertEqual(Path(path).parent.name, "en")
 
     def test_falls_back_to_available(self):
-
+        pass
         with tempfile.TemporaryDirectory() as td:
             d = Path(td)
             (d / "ru").mkdir()
@@ -91,7 +125,7 @@ class TestPickManual(unittest.TestCase):
             self.assertEqual(Path(path).parent.name, "ru")
 
     def test_flat_layout_is_supported(self):
-
+        pass
         with tempfile.TemporaryDirectory() as td:
             d = Path(td)
             (d / "index.html").write_text("x", encoding="utf-8")
@@ -125,7 +159,7 @@ class TestOnlineUrl(unittest.TestCase):
         self.assertIn("index.html", url)
 
     def test_online_url_for_unknown_lang_still_returns(self):
-
+        pass
         url = help_docs._online_url("xx")
         self.assertTrue(url.startswith(help_docs.ONLINE_BASE))
         self.assertIn("/xx/", url)
@@ -146,7 +180,7 @@ class TestOpenManual(unittest.TestCase):
             self.assertEqual(what, str(html))
 
     def test_falls_back_to_online_when_no_local(self):
-
+        pass
         with mock.patch.object(help_docs, "pick_manual",
                                return_value=(None, "")), \
              mock.patch.object(help_docs.webbrowser, "open") as wb:
@@ -159,11 +193,22 @@ class TestOpenManual(unittest.TestCase):
         self.assertEqual(what, url)
 
     def test_fallback_to_other_language_when_current_fails(self):
+        pass
+
+
+
+
+
+
+
+
+
+
         calls = []
 
         def _webbrowser_open(url):
             calls.append(url)
-
+                                               
             return "/de/" not in url
 
         with mock.patch.object(help_docs, "pick_manual",
@@ -179,16 +224,27 @@ class TestOpenManual(unittest.TestCase):
         self.assertIn("/ru/", what)
 
     def test_returns_failure_when_nothing_opened(self):
+        pass
+
+
         with mock.patch.object(help_docs, "pick_manual",
                                return_value=(None, "")), \
              mock.patch.object(help_docs.webbrowser, "open",
                                side_effect=OSError("нет браузера")):
             ok, what = help_docs.open_manual("ru")
         self.assertFalse(ok)
-
+                                               
         self.assertTrue(what.startswith(help_docs.ONLINE_BASE))
 
     def test_returns_failure_when_open_returns_false(self):
+        pass
+
+
+
+
+
+
+
         with mock.patch.object(help_docs, "pick_manual",
                                return_value=(None, "")), \
              mock.patch.object(help_docs.webbrowser, "open",
@@ -198,6 +254,12 @@ class TestOpenManual(unittest.TestCase):
         self.assertTrue(what.startswith(help_docs.ONLINE_BASE))
 
     def test_returns_failure_when_local_open_returns_false(self):
+        pass
+
+
+
+
+
         with tempfile.TemporaryDirectory() as td:
             html = Path(td) / "index.html"
             html.write_text("<html></html>", encoding="utf-8")
@@ -210,6 +272,13 @@ class TestOpenManual(unittest.TestCase):
 
 
 class TestMenuWiring(unittest.TestCase):
+    pass
+
+
+
+
+
+
 
     def test_handler_exists_on_mixin(self):
         from ui.app_services import AppServicesMixin
@@ -225,6 +294,14 @@ class TestMenuWiring(unittest.TestCase):
                       "пункт меню не подключён к обработчику")
 
     def test_locale_keys_exist_in_target_languages(self):
+        pass
+
+
+
+
+
+
+
         import json
 
         for lang in ("ru", "en"):
@@ -238,6 +315,13 @@ class TestMenuWiring(unittest.TestCase):
 
 
 class TestOpenManualHandler(unittest.TestCase):
+    pass
+
+
+
+
+
+
 
     def setUp(self):
         from PySide6.QtWidgets import QMessageBox
@@ -250,7 +334,8 @@ class TestOpenManualHandler(unittest.TestCase):
 
         from ui.app_services import AppServicesMixin
 
-
+                                                                       
+                                                                
         import ui.app_services as _aas
         self._real_tr = _aas.tr
         _aas.tr = lambda key, **kw: f"[{key}|{kw}]"
@@ -282,7 +367,7 @@ class TestOpenManualHandler(unittest.TestCase):
                       "путь, где искали, обязан быть показан")
 
     def test_found_manual_shows_nothing(self):
-
+        pass
         with mock.patch("core.help_docs.open_manual",
                         return_value=(True, "/где/справка.html")):
             self.stub._on_open_manual()

@@ -1,3 +1,12 @@
+                       
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -62,7 +71,7 @@ class TestDashboardRetranslate(unittest.TestCase):
 
     def test_static_texts_switch(self):
         i18n.set_language("en", notify=False)
-        self.page.retranslate()
+        self.page.retranslate()                                           
         en = (
             self.page._title_lbl.text(),
             self.page._tile_captions["ok"].text(),
@@ -81,7 +90,7 @@ class TestDashboardRetranslate(unittest.TestCase):
         )
         for en_text, ru_text in zip(en, ru):
             self.assertNotEqual(en_text, ru_text)
-
+                                                                         
         self.assertNotIn("dashboard.", ru_text)
 
     def test_legends_switch(self):
@@ -94,15 +103,15 @@ class TestDashboardRetranslate(unittest.TestCase):
         self.assertNotEqual(en_legends, ru_legends)
 
     def test_bridge_calls_retranslate(self):
-
+        pass
         from ui.language_bridge import LanguageBridgeMixin
 
         bridge = LanguageBridgeMixin.__new__(LanguageBridgeMixin)
         dash = mock.Mock()
-
+                                                       
         bridge.dashboard_page = dash
-
-
+                                                                       
+                                                
         bridge._cfg = mock.Mock(latest_only=False)
         bridge.latest_only_action = None
         bridge._create_actions = mock.Mock()

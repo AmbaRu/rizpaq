@@ -1,3 +1,39 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -9,17 +45,19 @@ from typing import Optional
 
 from core.par2_ops import par2_main_name
 
-
+                                     
 _DISK_LOW_BYTES = 10 * 1024 ** 3
 
-
+                                                                
 _PAR2_CHECK_DAYS = 30
 
-
+                                                                     
+                                                                   
 _SILENT_FACTOR = 3
 _SILENT_MIN_SECONDS = 24 * 3600
 
-
+                                                              
+                                           
 _INTERVAL_SECONDS = {
     "minute": 60,
     "hourly": 3600,
@@ -28,23 +66,25 @@ _INTERVAL_SECONDS = {
     "monthly": 30 * 24 * 3600,
 }
 
-
+                                                                 
+                                                              
+                                    
 _LAST_RUN_FORMATS = ("%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M")
 
 
 @dataclass
 class Alert:
+    pass
 
-
-    kind: str
-    work_id: str = ""
-    job_id: str = ""
-    text_key: str = ""
-    params: dict = field(default_factory=dict)
+    kind: str                                                         
+    work_id: str = ""                                            
+    job_id: str = ""                                                  
+    text_key: str = ""                             
+    params: dict = field(default_factory=dict)                         
 
 
 def _format_size(size: Optional[int]) -> str:
-
+    pass
     if size is None:
         return "—"
     if size < 1024:
@@ -57,7 +97,7 @@ def _format_size(size: Optional[int]) -> str:
 
 
 def _parse_dt(value) -> Optional[datetime]:
-
+    pass
     text = str(value or "").strip()
     if not text:
         return None
@@ -70,7 +110,7 @@ def _parse_dt(value) -> Optional[datetime]:
 
 
 def free_bytes(path: str) -> Optional[int]:
-
+    pass
     try:
         return shutil.disk_usage(os.path.dirname(str(path)) or ".").free
     except Exception:
@@ -78,7 +118,7 @@ def free_bytes(path: str) -> Optional[int]:
 
 
 def is_set_outdated(par2_size, current_size) -> bool:
-
+    pass
     try:
         return bool(par2_size) and bool(current_size) \
             and int(current_size) > int(par2_size)
@@ -87,6 +127,13 @@ def is_set_outdated(par2_size, current_size) -> bool:
 
 
 def collect_alerts(container: dict, history: list) -> list:
+    pass
+
+
+
+
+
+
     try:
         works = container.get("works") or []
     except Exception:
@@ -94,7 +141,8 @@ def collect_alerts(container: dict, history: list) -> list:
     now = datetime.now()
     alerts: list = []
 
-
+                                                                     
+                                                            
     last_by_job: dict = {}
     for entry in history or []:
         dt = getattr(entry, "ts_dt", None)
@@ -105,7 +153,7 @@ def collect_alerts(container: dict, history: list) -> list:
         if prev is None or dt > prev:
             last_by_job[jid] = dt
 
-
+                                                               
     by_dest: dict = {}
     for work in works:
         dest = str(work.get("dest") or "")
@@ -116,7 +164,7 @@ def collect_alerts(container: dict, history: list) -> list:
         wid = str(work.get("id") or "")
         jobs = work.get("jobs") or []
 
-
+                                                
         for src in (work.get("sources") or []):
             text = str(src or "")
             if not text:
@@ -132,7 +180,8 @@ def collect_alerts(container: dict, history: list) -> list:
                     params={"path": text},
                 ))
 
-
+                                                                     
+                                                    
         if dest:
             dest_path = Path(dest)
             ran = any(
@@ -140,14 +189,14 @@ def collect_alerts(container: dict, history: list) -> list:
                 for job in jobs
             )
 
-
+                                                         
             if ran and not dest_path.is_file():
                 alerts.append(Alert(
                     "archive_missing", wid,
                     text_key="dashboard.alerts.archive_missing",
                     params={"path": dest},
                 ))
-
+                                                         
                 current_size = None
                 set_exists = False
             else:
@@ -158,7 +207,8 @@ def collect_alerts(container: dict, history: list) -> list:
                     except OSError:
                         current_size = None
 
-
+                                                                  
+                         
                 par2_size = work.get("par2_size")
                 set_exists = Path(par2_main_name(dest)).is_file()
                 if set_exists and is_set_outdated(par2_size, current_size):
@@ -171,7 +221,7 @@ def collect_alerts(container: dict, history: list) -> list:
                         },
                     ))
 
-
+                                                
                 if current_size is not None:
                     free = free_bytes(dest)
                     if free is not None and free < _DISK_LOW_BYTES:
@@ -181,7 +231,10 @@ def collect_alerts(container: dict, history: list) -> list:
                             params={"free": _format_size(free)},
                         ))
 
-
+                                                                
+                                                                 
+                                                                     
+                      
             if set_exists:
                 check_last = None
                 has_check_job = False
@@ -209,7 +262,7 @@ def collect_alerts(container: dict, history: list) -> list:
                         params={"days": (now - check_last).days},
                     ))
 
-
+                                                                 
         for job in jobs:
             schedule = job.get("schedule")
             if not isinstance(schedule, dict) or not schedule.get("enabled"):
@@ -224,7 +277,7 @@ def collect_alerts(container: dict, history: list) -> list:
             jid = str(job.get("id") or "")
             last = last_by_job.get(jid) or _parse_dt(job.get("last_run"))
             if last is None:
-                continue
+                continue                                         
             overdue = (now - last).total_seconds()
             if overdue > step * _SILENT_FACTOR \
                     and overdue > _SILENT_MIN_SECONDS:
@@ -237,7 +290,7 @@ def collect_alerts(container: dict, history: list) -> list:
                     },
                 ))
 
-
+                                                                  
     for group in by_dest.values():
         if len(group) > 1:
             for work in group:
@@ -251,6 +304,13 @@ def collect_alerts(container: dict, history: list) -> list:
 
 
 def job_streaks(history: list) -> dict:
+    pass
+
+
+
+
+
+
     runs: dict = {}
     for entry in history or []:
         status = getattr(entry, "status", "")

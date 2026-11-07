@@ -1,3 +1,42 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import json
@@ -12,7 +51,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from core.container_lock import (
+from core.container_lock import (              
     DEFAULT_TIMEOUT_S,
     LOCK_SUFFIX,
     POLL_INTERVAL_S,
@@ -21,9 +60,9 @@ from core.container_lock import (
     container_lock,
     lock_path_for,
 )
-from core.tasks import (
+from core.tasks import (              
     CONTAINER_NAME,
-    ContainerLockBusy as TasksContainerLockBusy,
+    ContainerLockBusy as TasksContainerLockBusy,             
     add_work,
     container_path,
     empty_container,
@@ -34,11 +73,14 @@ from core.tasks import (
 )
 
 
+                                                                  
+                                                                  
+                                                               
 TEST_TIMEOUT_S = 0.3
 
 
 class _TmpContainer(unittest.TestCase):
-
+    pass
 
     def setUp(self):
         self.dir = Path(tempfile.mkdtemp(prefix="rizpaq_lock_test_"))
@@ -46,9 +88,13 @@ class _TmpContainer(unittest.TestCase):
         self.path = container_path(self.dir)
 
 
+                                                                             
+                                                                
+                                                                             
+
 class TestBasicLock(_TmpContainer):
     def test_lock_created_and_released(self):
-
+        pass
         lp = lock_path_for(self.path)
         self.assertFalse(lp.exists(), "файла-замка нет до первого взятия")
 
@@ -58,18 +104,21 @@ class TestBasicLock(_TmpContainer):
                 "при взятии замка файл .lock должен быть создан",
             )
 
-
+                                                                   
+                                                             
+                                 
         self.assertTrue(
             lp.exists(),
             "файл-замка не должно удаляться: он не мешает и создаёт гонку",
         )
 
     def test_lock_released_after_exit(self):
-
+        pass
         with container_lock(self.path):
             pass
 
-
+                                                                         
+                                                   
         t0 = time.monotonic()
         with container_lock(self.path, timeout_s=TEST_TIMEOUT_S):
             pass
@@ -80,12 +129,25 @@ class TestBasicLock(_TmpContainer):
         )
 
     def test_reentrant_in_same_thread(self):
+        pass
+
+
+
+
+
         with container_lock(self.path, timeout_s=TEST_TIMEOUT_S):
             with container_lock(self.path, timeout_s=TEST_TIMEOUT_S):
                 with container_lock(self.path, timeout_s=TEST_TIMEOUT_S):
                     pass
 
     def test_reentrant_exit_does_not_release_early(self):
+        pass
+
+
+
+
+
+
         acquired_by_other = []
 
         def try_other():
@@ -97,8 +159,8 @@ class TestBasicLock(_TmpContainer):
 
         with container_lock(self.path, timeout_s=TEST_TIMEOUT_S):
             with container_lock(self.path, timeout_s=TEST_TIMEOUT_S):
-
-
+                                                                  
+                                       
                 t = threading.Thread(target=try_other, daemon=True)
                 t.start()
                 t.join(timeout=TEST_TIMEOUT_S * 2)
@@ -110,6 +172,12 @@ class TestBasicLock(_TmpContainer):
         )
 
     def test_other_thread_blocked_while_held(self):
+        pass
+
+
+
+
+
         holder_ready = threading.Event()
         release = threading.Event()
         got_busy = []
@@ -123,7 +191,7 @@ class TestBasicLock(_TmpContainer):
             holder_ready.wait(timeout=2.0)
             try:
                 with container_lock(self.path, timeout_s=TEST_TIMEOUT_S):
-                    got_busy.append(False)
+                    got_busy.append(False)                 
             except ContainerLockBusy:
                 got_busy.append(True)
 
@@ -143,18 +211,22 @@ class TestBasicLock(_TmpContainer):
         )
 
 
+                                                                             
+                                          
+                                                                             
+
 class TestContainerIsLocked(_TmpContainer):
     def test_free_lock(self):
-
+        pass
         self.assertFalse(container_is_locked(self.path))
 
     def test_held_lock(self):
-
+        pass
         with container_lock(self.path, timeout_s=TEST_TIMEOUT_S):
             self.assertTrue(container_is_locked(self.path))
 
     def test_released_after_exit(self):
-
+        pass
         with container_lock(self.path, timeout_s=TEST_TIMEOUT_S):
             pass
         self.assertFalse(
@@ -163,33 +235,48 @@ class TestContainerIsLocked(_TmpContainer):
         )
 
 
+                                                                             
+                        
+                                                                             
+
 class TestUpdateContainer(_TmpContainer):
     def _seed(self):
-
+        pass
         c = empty_container()
         w = add_work(c, "Docs", ["D:/a"], "D:/out.zpaq")
         save_container(self.path, c)
         return w["id"]
 
     def test_read_modify_write(self):
+        pass
+
+
+
+
         self._seed()
 
         def mutate(c):
-
+                                    
             add_work(c, "Photos", ["D:/p"], "D:/p.zpaq")
 
         result = update_container(self.path, mutate)
 
-
+                                                     
         self.assertEqual(len(result.get("works") or []), 2)
 
-
+                                                   
         on_disk = load_container(self.path)
         titles = [w.get("title") for w in on_disk.get("works") or []]
         self.assertIn("Photos", titles)
         self.assertIn("Docs", titles)
 
     def test_updates_metadata(self):
+        pass
+
+
+
+
+
         c = empty_container()
         w = add_work(c, "Docs", ["D:/a"], "D:/out.zpaq")
         from core.tasks import add_job
@@ -210,11 +297,16 @@ class TestUpdateContainer(_TmpContainer):
         self.assertEqual(job["run_count"], 1)
 
     def test_mutation_exception_does_not_write(self):
+        pass
+
+
+
+
         work_id = self._seed()
         before = self.path.read_text(encoding="utf-8")
 
         def boom(c):
-
+                                                              
             add_work(c, "Photos", ["D:/p"], "D:/p.zpaq")
             raise RuntimeError("boom")
 
@@ -226,12 +318,18 @@ class TestUpdateContainer(_TmpContainer):
             after, before,
             "контейнер изменился, хотя мутация бросила исключение",
         )
-
+                                    
         on_disk = load_container(self.path)
         self.assertEqual(len(on_disk.get("works") or []), 1)
         self.assertEqual(on_disk["works"][0]["id"], work_id)
 
     def test_lock_released_after_mutation_exception(self):
+        pass
+
+
+
+
+
         self._seed()
 
         def boom(c):
@@ -240,7 +338,7 @@ class TestUpdateContainer(_TmpContainer):
         with self.assertRaises(RuntimeError):
             update_container(self.path, boom)
 
-
+                                               
         t0 = time.monotonic()
         update_container(self.path, lambda c: None)
         dt = time.monotonic() - t0
@@ -250,6 +348,16 @@ class TestUpdateContainer(_TmpContainer):
         )
 
     def test_busy_when_lock_held_by_other_thread(self):
+        pass
+
+
+
+
+
+
+
+
+
         self._seed()
         holder_ready = threading.Event()
         release = threading.Event()
@@ -278,6 +386,13 @@ class TestUpdateContainer(_TmpContainer):
         )
 
     def test_reentrant_inside_existing_lock(self):
+        pass
+
+
+
+
+
+
         self._seed()
 
         def inner_mutate(c):
@@ -291,20 +406,35 @@ class TestUpdateContainer(_TmpContainer):
         self.assertIn("Inner", titles)
 
 
+                                                                             
+                          
+                                                                             
+
 class TestReExport(unittest.TestCase):
+    pass
+
+
+
+
+
+
 
     def test_same_class(self):
         self.assertIs(ContainerLockBusy, TasksContainerLockBusy)
 
 
+                                                                             
+                  
+                                                                             
+
 class TestLockPath(_TmpContainer):
     def test_suffix(self):
-
+        pass
         lp = lock_path_for(self.path)
         self.assertEqual(lp.name, CONTAINER_NAME + LOCK_SUFFIX)
 
     def test_next_to_container(self):
-
+        pass
         lp = lock_path_for(self.path)
         self.assertEqual(lp.parent, self.path.parent)
 

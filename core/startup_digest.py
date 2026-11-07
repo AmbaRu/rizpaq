@@ -1,3 +1,30 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -6,39 +33,39 @@ from typing import Optional
 
 from core.run_history import RunEntry, load_history
 
-
+                                                            
 DEFAULT_SINCE_DAYS = 7
 
 
 @dataclass
 class Digest:
+    pass
 
-
-    since_dt: Optional[datetime] = None
-    entries: list = field(default_factory=list)
+    since_dt: Optional[datetime] = None                                     
+    entries: list = field(default_factory=list)                                   
     backups_ok: int = 0
     backups_err: int = 0
     backups_busy: int = 0
     tests_ok: int = 0
     tests_err: int = 0
     tests_busy: int = 0
-
+                                                            
     last_error: Optional[RunEntry] = None
 
     @property
     def is_empty(self) -> bool:
-
+        pass
         return not self.entries
 
     @property
     def has_problem(self) -> bool:
-
+        pass
         return bool(self.backups_err + self.tests_err
                     + self.backups_busy + self.tests_busy)
 
 
 def _bucket(entry: RunEntry) -> tuple[str, str]:
-
+    pass
     group = "tests" if entry.action == "test" else "backups"
     return group, entry.status if entry.status in ("ok", "error", "busy") \
         else "error"
@@ -46,6 +73,13 @@ def _bucket(entry: RunEntry) -> tuple[str, str]:
 
 def collect_digest(tasks_dir, since: Optional[int] = None,
                    now: Optional[datetime] = None) -> Optional[Digest]:
+    pass
+
+
+
+
+
+
     if not tasks_dir:
         return None
     try:

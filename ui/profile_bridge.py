@@ -1,3 +1,31 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 from PySide6.QtGui import QActionGroup
@@ -5,23 +33,40 @@ from PySide6.QtGui import QActionGroup
 from ui.config_bridge import _merge_cfg
 from ui.i18n import tr
 
-
+                                                    
 PROFILES = ("archive", "backup")
 
-
+                                                               
+                                                                  
+                                                               
 DEFAULT_PROFILE = "archive"
 
 
 def profile_title(code: str) -> str:
+    pass
+
+
+
+
+
+
+
     key = f"profile.{code}"
     text = tr(key)
     return code if text == key else text
 
 
 class ProfileBridgeMixin:
-
+    pass
 
     def _init_profile(self) -> str:
+        pass
+
+
+
+
+
+
         code = getattr(self._cfg, "profile", None)
         if code not in PROFILES:
             code = DEFAULT_PROFILE
@@ -32,13 +77,22 @@ class ProfileBridgeMixin:
         return code
 
     def current_profile(self) -> str:
-
+        pass
         code = getattr(self, "_profile", None)
         if code not in PROFILES:
             code = DEFAULT_PROFILE
         return code
 
     def _switch_profile(self, code: str) -> str:
+        pass
+
+
+
+
+
+
+
+
         if code not in PROFILES:
             return self.current_profile()
 
@@ -62,8 +116,8 @@ class ProfileBridgeMixin:
             try:
                 apply(code)
             except Exception:
-
-
+                                                                      
+                                                 
                 pass
 
         try:
@@ -81,7 +135,7 @@ class ProfileBridgeMixin:
         return code
 
     def _sync_profile_menu(self) -> None:
-
+        pass
         actions = getattr(self, "_profile_actions", None)
         if actions is None:
             return
@@ -93,6 +147,16 @@ class ProfileBridgeMixin:
                 pass
 
     def _build_profile_menu(self, parent):
+        pass
+
+
+
+
+
+
+
+
+
         menu = parent.addMenu(tr("menu.settings.profile"))
 
         old_group = getattr(self, "_profile_group", None)

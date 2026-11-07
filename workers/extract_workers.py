@@ -1,3 +1,40 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -11,8 +48,10 @@ from PySide6.QtCore import QThread, Signal
 
 from core.paths import find_extracted_path, merge_tree
 from core.proc_health import Liveness, effective_stall_timeout, make_cpu_reader
-
-
+                                                                 
+                                                                  
+                                                           
+                      
 from core.engine_path import (
     EnginePathError,
     discard_staging_if_empty,
@@ -27,24 +66,39 @@ from workers.streaming import (
     popen_kwargs,
 )
 
-
+                                                                   
+                           
 STALL_TIMEOUT = DEFAULT_STALL_TIMEOUT
 
-
+                                                                
 PROC_POLL_INTERVAL = 0.1
 
-
+                                                                       
+                                                                        
+                           
 MAX_ERROR_LOGS = 10
 MAX_ERROR_LOG_CHARS = 4000
 
 
 def _read_until_exit(proc, cancelled):
+    pass
+
+
+
+
+
+
+
+
+
+
+
     fd = proc.stdout.fileno()
     try:
         os.set_blocking(fd, False)
     except Exception:
-
-
+                                                                   
+                                                                   
         pass
 
     stall_used = effective_stall_timeout(DEFAULT_STALL_TIMEOUT, STALL_TIMEOUT)
@@ -57,7 +111,7 @@ def _read_until_exit(proc, cancelled):
     note = ""
 
     def drain():
-
+        pass
         while True:
             try:
                 rest = os.read(fd, 65536)
@@ -113,17 +167,20 @@ def _read_until_exit(proc, cancelled):
 
 
 class ExtractFileWorker(StreamingZpaqThread):
-
-
+                                                                  
+                                                                
+                                                                    
+                                                 
     worker_started = Signal()
     done = Signal(dict)
 
     def __init__(self, zpaq, archive, password, inner, version, dest, parent=None):
-
-
+                                                                      
+                                                                          
         self.real_dest = dest
-
-
+                                                                
+                                                                       
+                                              
         self.staged = ""
         self.staged_path = ""
 
@@ -134,9 +191,9 @@ class ExtractFileWorker(StreamingZpaqThread):
                 target = self.staged_path
                 self.staged = "1"
             except EnginePathError as exc:
-
-
-                cmd = [zpaq, "l", archive]
+                                                                      
+                                                                    
+                cmd = [zpaq, "l", archive]                           
                 super().__init__(cmd, parent)
                 self.dest = dest
                 self._prepare_error = f"ERROR: {exc}\n"
@@ -147,7 +204,8 @@ class ExtractFileWorker(StreamingZpaqThread):
         if password:
             cmd += ["-key", password]
 
-
+                                                                
+                                                                     
         cmd.append(inner)
 
         if isinstance(version, int):
@@ -185,8 +243,9 @@ class ExtractFileWorker(StreamingZpaqThread):
             if moved:
                 self.staged = ""
         elif self.staged_path:
-
-
+                                                                           
+                                                                            
+                                                                          
             if not discard_staging_if_empty(self.staged_path):
                 left = self.staged_path
                 note = (
@@ -207,18 +266,19 @@ class ExtractFileWorker(StreamingZpaqThread):
                 "success": success,
                 "cancelled": bool(self._cancel),
                 "output": text,
-
-
+                                                                         
+                                                
                 "dest": self.real_dest,
-
-
+                                                                          
+                                                                   
                 "staged": left or (self.staged_path if not moved else ""),
             }
         )
 
 class ExtractFolderBatchWorker(StreamingZpaqThread):
-
-
+                                                              
+                                                       
+                                                 
     worker_started = Signal()
     done = Signal(dict)
 
@@ -239,7 +299,8 @@ class ExtractFolderBatchWorker(StreamingZpaqThread):
         self.version = version
         self.dest_folder = dest_folder
 
-
+                                       
+                                                                      
         self.cmd = self._build_cmd(self.dest_folder)
 
         super().__init__(self.cmd, parent)
@@ -295,7 +356,8 @@ class ExtractFolderBatchWorker(StreamingZpaqThread):
 
             dest.mkdir(parents=True, exist_ok=True)
 
-
+                                                                    
+                                                     
             try:
                 staging = Path(
                     tempfile.mkdtemp(
@@ -320,8 +382,8 @@ class ExtractFolderBatchWorker(StreamingZpaqThread):
                     )
 
                     if source is None:
-
-
+                                                                               
+                                                            
                         try:
                             has_any = any(staging.iterdir())
                         except Exception:
@@ -347,7 +409,7 @@ class ExtractFolderBatchWorker(StreamingZpaqThread):
                         merge_tree(source, dest)
                         ok = True
                 else:
-
+                                                                            
                     merge_tree(staging, dest)
                     ok = True
 
@@ -359,8 +421,15 @@ class ExtractFolderBatchWorker(StreamingZpaqThread):
 
         finally:
             if staging is not None:
-
-
+                                                                       
+                                                                        
+                                                                         
+                                                                 
+                 
+                                                                          
+                                                                            
+                                                                       
+                                
                 if ok or cancelled:
                     shutil.rmtree(staging, ignore_errors=True)
                 else:
@@ -377,8 +446,8 @@ class ExtractFolderBatchWorker(StreamingZpaqThread):
                 "ok": ok,
                 "cancelled": cancelled,
                 "dest_folder": str(dest),
-
-
+                                                                        
+                                                                    
                 "staging": (
                     str(staging) if (staging and not (ok or cancelled)) else ""
                 ),
@@ -388,8 +457,13 @@ class ExtractFolderBatchWorker(StreamingZpaqThread):
 
 
 class ExtractFolderWorker(QThread):
+    pass
 
-
+                                                              
+                                                                      
+                                                                    
+                                                                    
+                                                       
     worker_started = Signal(int)
     tick = Signal(int, int, str)
     done = Signal(dict)
@@ -433,7 +507,7 @@ class ExtractFolderWorker(QThread):
             if self.password:
                 cmd += ["-key", self.password]
 
-
+                                                                 
             cmd.append(inner)
 
             if isinstance(version, int):
@@ -453,8 +527,9 @@ class ExtractFolderWorker(QThread):
                 self._proc = p
                 rc, out, note = _read_until_exit(p, lambda: self._cancel)
             except Exception as exc:
-
-
+                                                                         
+                                                                         
+                                                       
                 rc = 1
                 out = f"ERROR: {exc}".encode("utf-8", "replace")
                 note = ""
@@ -485,8 +560,32 @@ class ExtractFolderWorker(QThread):
 
 
 class ExtractSalvageWorker(StreamingZpaqThread):
+    pass
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                              
+                                                   
     worker_started = Signal()
     done = Signal(dict)
 
@@ -505,7 +604,8 @@ class ExtractSalvageWorker(StreamingZpaqThread):
         self.dest_folder = str(dest_folder)
         self.ram_gb = ram_gb
 
-
+                                                                    
+                                                                         
         self.cmd = self._build_cmd(self.dest_folder)
 
         super().__init__(self.cmd, parent)
@@ -516,7 +616,7 @@ class ExtractSalvageWorker(StreamingZpaqThread):
         if self.password:
             cmd += ["-key", self.password]
 
-
+                                                                 
         cmd.append("-force")
 
         if self.ram_gb:
@@ -549,7 +649,9 @@ class ExtractSalvageWorker(StreamingZpaqThread):
         rc, log = self._run_stream()
         cancelled = bool(self._cancel)
 
-
+                                                                   
+                                                                   
+                                      
         ok = rc == 0 and not cancelled
 
         self.done.emit(

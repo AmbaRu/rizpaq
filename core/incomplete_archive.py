@@ -1,9 +1,44 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 from pathlib import Path
 
 
 def incomplete_archive_action(dest: str, existed_before: bool) -> dict:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     p = Path(dest)
     if not p.exists():
         return {"action": "none", "reason": "файла нет"}

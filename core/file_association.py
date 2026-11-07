@@ -1,3 +1,81 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import ctypes
@@ -13,7 +91,7 @@ RZP_EXTENSION = ".rzp"
 RZP_PROG_ID = "Rizpaq.rzp"
 RZP_FRIENDLY_NAME = "Rizpaq Tasks Container"
 
-
+                                      
 UNIVERSAL_EXTENSIONS = {
     ".zip": ("Rizpaq.zip", "Rizpaq ZIP Archive"),
     ".7z":  ("Rizpaq.7z",  "Rizpaq 7Z Archive"),
@@ -22,12 +100,16 @@ UNIVERSAL_EXTENSIONS = {
 
 _HKCU_CLASSES_PREFIX = "Software\\Classes"
 
-
+                                                                          
 _USER_CHOICE_PREFIX = (
     "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts"
 )
 
-
+                                                                       
+                                                            
+                                                                      
+                                                                    
+                         
 _READ_CONTROL = 0x00020000
 _WRITE_DAC = 0x00040000
 _WRITE_OWNER = 0x00080000
@@ -39,6 +121,12 @@ def _ck(subpath: str) -> str:
     return _HKCU_CLASSES_PREFIX
 
 
+                           
+ 
+                                                                      
+                                                                          
+                                                                           
+                                                                         
 _CTX_FLAT = {
     f"SystemFileAssociations\\{EXTENSION}\\shell": {
         "Rizpaq.extract": {"label": "Распаковать сюда", "args": '--extract-here "%1"'},
@@ -49,7 +137,13 @@ _CTX_FLAT = {
     },
 }
 
-
+                                                                       
+                                                                       
+                                            
+ 
+                                                                         
+                                                                      
+                                             
 _LEGACY_CTX_KEYS = [
     f"SystemFileAssociations\\{EXTENSION}\\shell\\Rizpaq",
     f"\\shell\\Rizpaq",
@@ -61,7 +155,8 @@ _LEGACY_CTX_KEYS = [
     "Directory\\Background\\shell\\rz_extract_bg",
 ]
 
-
+                                                                     
+                                                    
 _LEGACY_KEYS_ZPAQ = [
     f"SystemFileAssociations\\{EXTENSION}\\shell\\Rizpaq",
     f"\\shell\\Rizpaq",
@@ -79,6 +174,10 @@ _LEGACY_KEYS_RZP = [
 ]
 
 
+                                                                             
+                          
+                                                                             
+
 def _default_exe_path() -> str:
     return sys.executable
 
@@ -92,6 +191,14 @@ def _open_command(exe_path: str) -> str:
 
 
 def _rzp_open_command(exe_path: str) -> str:
+    pass
+
+
+
+
+
+
+
     if getattr(sys, "frozen", False):
         return f'"{exe_path}" "%1"'
     here = os.path.dirname(os.path.abspath(__file__))
@@ -152,9 +259,42 @@ def _delete_key_tree(root, path: str) -> None:
         pass
 
 
-def _clear_user_choice(ext: str) -> bool:
-    if os.name != "nt":
+                                                                             
+                                                    
+                                                                             
 
+def _clear_user_choice(ext: str) -> bool:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    if os.name != "nt":
+                                                                
         return True
 
     import winreg
@@ -165,7 +305,8 @@ def _clear_user_choice(ext: str) -> bool:
 
     key_path = f"{_USER_CHOICE_PREFIX}\\{ext_norm}\\UserChoice"
 
-
+                                                               
+                                                                    
     try:
         hkey = winreg.OpenKey(
             winreg.HKEY_CURRENT_USER,
@@ -174,30 +315,31 @@ def _clear_user_choice(ext: str) -> bool:
             winreg.KEY_READ | _READ_CONTROL | _WRITE_DAC | _WRITE_OWNER,
         )
     except FileNotFoundError:
-
+                                                      
         return True
     except OSError:
-
+                                                            
         return False
 
     acl_cleared = False
     try:
         advapi = ctypes.windll.advapi32
 
-
+                                                                  
+                                                                
         SE_FILE_OBJECT = 1
         DACL_SECURITY_INFORMATION = 0x00000004
         UNPROTECTED_DACL_SECURITY_INFORMATION = 0x80000000
 
         advapi.SetSecurityInfo.restype = wintypes.DWORD
         advapi.SetSecurityInfo.argtypes = [
-            wintypes.HANDLE,
-            wintypes.DWORD,
-            wintypes.DWORD,
-            wintypes.LPVOID,
-            wintypes.LPVOID,
-            wintypes.LPVOID,
-            wintypes.LPVOID,
+            wintypes.HANDLE,              
+            wintypes.DWORD,                   
+            wintypes.DWORD,                     
+            wintypes.LPVOID,                 
+            wintypes.LPVOID,                 
+            wintypes.LPVOID,             
+            wintypes.LPVOID,             
         ]
 
         res = advapi.SetSecurityInfo(
@@ -206,7 +348,7 @@ def _clear_user_choice(ext: str) -> bool:
             DACL_SECURITY_INFORMATION | UNPROTECTED_DACL_SECURITY_INFORMATION,
             None, None, None, None,
         )
-
+                                                                     
         acl_cleared = (res == 0)
     except Exception:
         acl_cleared = False
@@ -219,21 +361,25 @@ def _clear_user_choice(ext: str) -> bool:
     if not acl_cleared:
         return False
 
-
+                                                        
+                                                                     
+                                                   
     try:
         shlwapi = ctypes.windll.shlwapi
         shlwapi.SHDeleteKeyW.restype = ctypes.c_long
         shlwapi.SHDeleteKeyW.argtypes = [wintypes.HKEY, wintypes.LPCWSTR]
 
-
+                                                            
+                                                
         hkey_cu = wintypes.HKEY(int(winreg.HKEY_CURRENT_USER))
         rc = shlwapi.SHDeleteKeyW(hkey_cu, key_path)
-
-
+                                                                  
+                                 
         if rc in (0, 2):
             return True
-
-
+                                                                    
+                                                                      
+                                                           
     except Exception:
         pass
 
@@ -244,9 +390,13 @@ def _clear_user_choice(ext: str) -> bool:
         return False
 
 
+                                                                             
+                                               
+                                                                             
+
 def _register_ext(ext: str, prog_id: str, friendly_name: str,
                   exe_path: str, icon: str, command: str = None) -> None:
-
+    pass
     if command is None:
         command = _open_command(exe_path)
     _set_default(ext, prog_id)
@@ -256,7 +406,7 @@ def _register_ext(ext: str, prog_id: str, friendly_name: str,
 
 
 def _unregister_ext(ext: str, prog_id: str) -> None:
-
+    pass
     import winreg
     try:
         with winreg.OpenKey(winreg.HKEY_CURRENT_USER, _ck(ext), 0, winreg.KEY_READ) as key:
@@ -275,6 +425,10 @@ def _notify_association_changed() -> None:
     except Exception:
         pass
 
+
+                                                                             
+                  
+                                                                             
 
 def _remove_legacy_context_menus() -> None:
     import winreg
@@ -295,6 +449,13 @@ def _register_context_menus(exe_path: str, icon: str) -> None:
 
 
 def _unregister_context_menus() -> None:
+    pass
+
+
+
+
+
+
     import winreg
     for scope, verbs in _CTX_FLAT.items():
         for verb_id in verbs:
@@ -304,6 +465,21 @@ def _unregister_context_menus() -> None:
 
 
 def _cleanup_hkcr_for_zpaq() -> None:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     import winreg
     for key_path in _LEGACY_KEYS_ZPAQ:
         _delete_key_tree(winreg.HKEY_CLASSES_ROOT, key_path)
@@ -324,7 +500,7 @@ def _cleanup_hkcr_for_zpaq() -> None:
 
 
 def _cleanup_hkcr_for_rzp() -> None:
-
+    pass
     import winreg
     for key_path in _LEGACY_KEYS_RZP:
         _delete_key_tree(winreg.HKEY_CLASSES_ROOT, key_path)
@@ -339,12 +515,24 @@ def _cleanup_hkcr_for_rzp() -> None:
 
 
 def _cleanup_hkcr_best_effort() -> None:
+    pass
+
+
+
+
+
+
+
     _cleanup_hkcr_for_zpaq()
     _cleanup_hkcr_for_rzp()
 
 
-def is_registered() -> bool:
+                                                                             
+                    
+                                                                             
 
+def is_registered() -> bool:
+    pass
     try:
         import winreg
         with winreg.OpenKey(winreg.HKEY_CURRENT_USER, _ck(EXTENSION), 0, winreg.KEY_READ) as key:
@@ -355,7 +543,7 @@ def is_registered() -> bool:
 
 
 def is_rzp_registered() -> bool:
-
+    pass
     try:
         import winreg
         with winreg.OpenKey(winreg.HKEY_CURRENT_USER, _ck(RZP_EXTENSION), 0, winreg.KEY_READ) as key:
@@ -366,7 +554,7 @@ def is_rzp_registered() -> bool:
 
 
 def is_universal_registered(ext: str) -> bool:
-
+    pass
     info = UNIVERSAL_EXTENSIONS.get(ext.lower())
     if not info:
         return False
@@ -380,8 +568,19 @@ def is_universal_registered(ext: str) -> bool:
         return False
 
 
-def register_zpaq(exe_path: str = None) -> None:
+                                                                             
+                                 
+ 
+                                                            
+                                                                        
+                                                                  
+                                                                      
+                                                              
+               
+                                                                             
 
+def register_zpaq(exe_path: str = None) -> None:
+    pass
     if exe_path is None:
         exe_path = _default_exe_path()
     exe_path = os.path.abspath(exe_path)
@@ -393,16 +592,23 @@ def register_zpaq(exe_path: str = None) -> None:
 
 
 def unregister_zpaq() -> bool:
+    pass
+
+
+
+
+
+
     _unregister_ext(EXTENSION, PROG_ID)
     _unregister_context_menus()
-
+                                                          
     _cleanup_hkcr_for_zpaq()
     _notify_association_changed()
     return _clear_user_choice(EXTENSION)
 
 
 def register_rzp(exe_path: str = None) -> None:
-
+    pass
     if exe_path is None:
         exe_path = _default_exe_path()
     exe_path = os.path.abspath(exe_path)
@@ -414,6 +620,14 @@ def register_rzp(exe_path: str = None) -> None:
 
 
 def unregister_rzp() -> bool:
+    pass
+
+
+
+
+
+
+
     _unregister_ext(RZP_EXTENSION, RZP_PROG_ID)
     _cleanup_hkcr_for_rzp()
     _notify_association_changed()
@@ -421,7 +635,7 @@ def unregister_rzp() -> bool:
 
 
 def register_universal(ext: str, exe_path: str = None) -> None:
-
+    pass
     info = UNIVERSAL_EXTENSIONS.get(ext.lower())
     if not info:
         return
@@ -435,6 +649,12 @@ def register_universal(ext: str, exe_path: str = None) -> None:
 
 
 def unregister_universal(ext: str) -> bool:
+    pass
+
+
+
+
+
     info = UNIVERSAL_EXTENSIONS.get(ext.lower())
     if not info:
         return True
@@ -444,17 +664,31 @@ def unregister_universal(ext: str) -> bool:
     return _clear_user_choice(ext)
 
 
-def register(exe_path: str = None) -> None:
+                                                                             
+                                                                        
+                                                                             
 
+def register(exe_path: str = None) -> None:
+    pass
     register_zpaq(exe_path)
     register_rzp(exe_path)
 
 
 def unregister() -> bool:
+    pass
+
+
+
+
+
     ok_zpaq = unregister_zpaq()
     ok_rzp = unregister_rzp()
     return ok_zpaq and ok_rzp
 
+
+                                                                             
+             
+                                                                             
 
 def _read_default(path: str):
     import winreg

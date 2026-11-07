@@ -1,3 +1,32 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -11,8 +40,8 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QApplication, QMessageBox
+from PySide6.QtCore import Qt              
+from PySide6.QtWidgets import QApplication, QMessageBox              
 
 _APP = QApplication.instance() or QApplication([])
 from PySide6.QtGui import QFont
@@ -21,8 +50,10 @@ if _APP is not None:
     _APP.setFont(QFont("Segoe UI", 9))
 
 
-from ui.scheduler_sync_dialog import SchedulerSyncDialog
+from ui.scheduler_sync_dialog import SchedulerSyncDialog              
 
+
+                                                                   
 
 _WORK = {"id": "work-1", "title": "Docs"}
 _JOB_ENABLED = {
@@ -41,7 +72,7 @@ _ORPHAN = {"name": "Rizpaq_ghost_00000000_deadbeef",
 
 
 def _actions(add=None, disable=None, remove=None) -> dict:
-
+    pass
     return {
         "add": list(add or []),
         "disable": list(disable or []),
@@ -50,12 +81,22 @@ def _actions(add=None, disable=None, remove=None) -> dict:
 
 
 def _make_dialog(actions=None) -> SchedulerSyncDialog:
+    pass
+
+
+
+
+
+
+
     actions = actions if actions is not None else _actions()
     with mock.patch("core.scheduler.compute_sync_actions",
                     return_value=actions):
         dlg = SchedulerSyncDialog("D:/tasks.rzp", {})
     return dlg
 
+
+                                                                   
 
 class TestDialogConstruction(unittest.TestCase):
     def test_creates_without_actions(self):
@@ -103,12 +144,14 @@ class TestDialogConstruction(unittest.TestCase):
         dlg.close()
 
     def test_empty_sections_are_not_shown(self):
-
+        pass
         dlg = _make_dialog(_actions(add=[(_WORK, _JOB_ENABLED)]))
         self.assertIsNone(dlg._disable_list)
         self.assertIsNone(dlg._remove_list)
         dlg.close()
 
+
+                                                                            
 
 class TestListItems(unittest.TestCase):
     def test_items_are_checked_by_default(self):
@@ -123,7 +166,7 @@ class TestListItems(unittest.TestCase):
         dlg.close()
 
     def test_item_payload_is_entry(self):
-
+        pass
         dlg = _make_dialog(_actions(
             add=[(_WORK, _JOB_ENABLED)],
             remove=[_ORPHAN],
@@ -148,7 +191,7 @@ class TestListItems(unittest.TestCase):
         dlg.close()
 
     def test_format_entry_handles_missing_titles(self):
-
+        pass
         text = SchedulerSyncDialog._format_entry(
             ({"id": "w", "title": ""}, {"id": "j", "title": ""}),
             kind="add",
@@ -158,6 +201,8 @@ class TestListItems(unittest.TestCase):
         self.assertTrue(dlg_close)
 
 
+                                                                             
+
 class TestCheckedEntries(unittest.TestCase):
     def test_returns_only_checked(self):
         dlg = _make_dialog(_actions(add=[
@@ -166,7 +211,7 @@ class TestCheckedEntries(unittest.TestCase):
                      "schedule": {"enabled": True, "frequency": "monthly",
                                   "time": "03:00", "interval": 1}}),
         ]))
-
+                                     
         dlg._add_list.item(1).setCheckState(Qt.Unchecked)
         checked = dlg._checked_entries(dlg._add_list)
         self.assertEqual(len(checked), 1)
@@ -186,9 +231,25 @@ class TestCheckedEntries(unittest.TestCase):
         dlg.close()
 
 
+                                                                       
+
 class TestApplyAndAccept(unittest.TestCase):
+    pass
+
+
+
+
+
+
 
     def _run_apply(self, dlg):
+        pass
+
+
+
+
+
+
         with mock.patch.object(QMessageBox, "information"), \
              mock.patch.object(QMessageBox, "warning"):
             dlg._apply_and_accept()
@@ -216,7 +277,7 @@ class TestApplyAndAccept(unittest.TestCase):
             self._run_apply(dlg)
         c.assert_called_once()
         args, _kwargs = c.call_args
-
+                                                     
         self.assertEqual(args[0], "D:/tasks.rzp")
         self.assertEqual(args[1], _WORK)
         self.assertEqual(args[2], _JOB_ENABLED)
@@ -247,6 +308,14 @@ class TestApplyAndAccept(unittest.TestCase):
         dlg.close()
 
     def test_order_remove_then_add_then_disable(self):
+        pass
+
+
+
+
+
+
+
         dlg = _make_dialog(_actions(
             add=[(_WORK, _JOB_ENABLED)],
             disable=[(_WORK, _JOB_DISABLED)],
@@ -279,7 +348,7 @@ class TestApplyAndAccept(unittest.TestCase):
         dlg.close()
 
     def test_unchecked_items_are_skipped(self):
-
+        pass
         dlg = _make_dialog(_actions(add=[
             (_WORK, _JOB_ENABLED),
             (_WORK, {"id": "job-3", "title": "Monthly",
@@ -309,6 +378,12 @@ class TestApplyAndAccept(unittest.TestCase):
         dlg.close()
 
     def test_exception_counts_as_failed_but_does_not_break_others(self):
+        pass
+
+
+
+
+
         dlg = _make_dialog(_actions(add=[
             (_WORK, _JOB_ENABLED),
             (_WORK, {"id": "job-3", "title": "Monthly",
@@ -335,6 +410,13 @@ class TestApplyAndAccept(unittest.TestCase):
         dlg.close()
 
     def test_accept_is_called(self):
+        pass
+
+
+
+
+
+
         dlg = _make_dialog()
         with mock.patch.object(dlg, "accept") as acc, \
              mock.patch("core.scheduler.create_scheduled_task"), \
@@ -345,8 +427,15 @@ class TestApplyAndAccept(unittest.TestCase):
         dlg.close()
 
 
+                                                                             
+
 class TestOrphanEntryPayload(unittest.TestCase):
     def test_orphan_entry_payload_is_dict(self):
+        pass
+
+
+
+
         dlg = _make_dialog(_actions(remove=[_ORPHAN]))
         payload = dlg._remove_list.item(0).data(Qt.UserRole)
         self.assertIsInstance(payload, dict)
@@ -354,8 +443,12 @@ class TestOrphanEntryPayload(unittest.TestCase):
         dlg.close()
 
     def test_orphan_without_name_is_counted_failed(self):
+        pass
+
+
+
         dlg = _make_dialog(_actions(remove=[
-            {"status": "", "next_run": ""},
+            {"status": "", "next_run": ""},            
             _ORPHAN,
         ]))
         with mock.patch("core.scheduler.remove_scheduled_task_by_name",
@@ -365,7 +458,7 @@ class TestOrphanEntryPayload(unittest.TestCase):
             with mock.patch.object(QMessageBox, "information"), \
                  mock.patch.object(QMessageBox, "warning"):
                 dlg._apply_and_accept()
-
+                                                  
         rb.assert_called_once_with(_ORPHAN["name"])
         stats = dlg.result_stats()
         self.assertEqual(stats["removed"], 1)

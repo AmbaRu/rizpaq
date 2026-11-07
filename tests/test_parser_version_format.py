@@ -1,3 +1,24 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import sys
@@ -6,7 +27,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from core.parser import (
+from core.parser import (              
     VERSION_LINE_RE,
     parse_info,
     parse_size,
@@ -14,9 +35,12 @@ from core.parser import (
 
 
 class TestVersionLineFormat(unittest.TestCase):
+    pass
+
+
 
     REAL_SMALL = "V1 2026-06-12 20:25:10 +137 -0 -> 42.365.169 probe"
-
+                                         
     REAL_BIG = "V00000001 2026-09-26 11:35:39  +00001201 -00000000 ->               71.985"
     REAL_BIG_2 = "V00000002 2026-09-26 11:35:40  +00001201 -00000000 ->               71.190"
 
@@ -67,12 +91,16 @@ class TestVersionLineFormat(unittest.TestCase):
         self.assertEqual(versions[0].comment, "")
 
     def test_why_dot_separators_absent_here(self):
+        pass
+
+
+
         self.assertIsNotNone(
             VERSION_LINE_RE.match(self.REAL_BIG),
             "формат с ведущими нулями обязан разбираться",
         )
-
-
+                                                                       
+                                                          
         self.assertIsNone(
             VERSION_LINE_RE.match(
                 "V1 2026-06-12 20:25:10 +1.201 -0 -> 42.365.169"
@@ -83,7 +111,7 @@ class TestVersionLineFormat(unittest.TestCase):
 
 
 class TestSummaryFormat(unittest.TestCase):
-
+    pass
 
     def test_dotted_counts(self):
         s, _ = parse_info("1.064 versions, 119.064 files, 42.365.169 bytes")
@@ -97,6 +125,12 @@ class TestSummaryFormat(unittest.TestCase):
         self.assertEqual(s.files, 137)
 
     def test_singular_and_plural(self):
+        pass
+
+
+
+
+
         for text in ("1 version, 1 file, 1 byte",
                      "1 versions, 1 files, 1 bytes",
                      "2 versions, 2 files, 2 bytes"):
@@ -105,7 +139,7 @@ class TestSummaryFormat(unittest.TestCase):
                 self.assertIsNotNone(s, f"не разобрано: {text}")
 
     def test_engine_always_uses_plural(self):
-
+        pass
         s, _ = parse_info("1 versions, 2 files, 894 bytes (894.00  B)")
         self.assertIsNotNone(s)
         self.assertEqual(s.versions, 1)
@@ -113,7 +147,7 @@ class TestSummaryFormat(unittest.TestCase):
         self.assertEqual(s.size, 894)
 
     def test_bytes_with_kb_suffix(self):
-
+        pass
         s, _ = parse_info("2 versions, 2.402 files, 143.175 bytes (139.82 KB)")
         self.assertEqual(s.size, 143175)
 
@@ -134,6 +168,10 @@ class TestParseSize(unittest.TestCase):
 
 
 class TestNoSilentVersionLoss(unittest.TestCase):
+    pass
+
+
+
 
     def test_count_matches_input(self):
         lines = [

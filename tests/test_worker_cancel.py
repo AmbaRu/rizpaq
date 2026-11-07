@@ -1,3 +1,11 @@
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import sys
@@ -6,16 +14,16 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from PySide6.QtWidgets import QApplication
+from PySide6.QtWidgets import QApplication              
 
-from ui.worker_launch import WorkerLaunchMixin
-from workers import (
+from ui.worker_launch import WorkerLaunchMixin              
+from workers import (              
     ExtractFileWorker,
     ExtractFolderBatchWorker,
     ExtractFolderWorker,
     ZpaqWorker,
 )
-from workers.universal_worker import (
+from workers.universal_worker import (              
     UniversalExtractWorker,
     UniversalListWorker,
 )
@@ -27,26 +35,35 @@ if _APP is not None:
     _APP.setFont(QFont("Segoe UI", 9))
 
 
+
 class _FakeStatusBar:
     def __init__(self):
         self.messages: list = []
 
-    def showMessage(self, text, *args, **kwargs):
+    def showMessage(self, text, *args, **kwargs):                         
         self.messages.append(text)
 
 
 class _Harness(WorkerLaunchMixin):
-
+    pass
 
     def __init__(self, workers):
         self._workers = list(workers)
         self._status = _FakeStatusBar()
 
-    def statusBar(self):
+    def statusBar(self):                         
         return self._status
 
 
 class _KeyRecorder:
+    pass
+
+
+
+
+
+
+
 
     def __init__(self):
         self.keys = []
@@ -67,14 +84,18 @@ class _KeyRecorder:
 
 
 def _make(cls, *args, **kwargs):
-
+    pass
     return cls(*args, **kwargs)
 
 
 class TestCancelLongOperations(unittest.TestCase):
+    pass
 
-
+                                                                        
     def test_universal_extract_worker_is_cancelled(self):
+        pass
+
+
         worker = _make(
             UniversalExtractWorker, "7z.exe", "C:/a.zip", "C:/dest"
         )
@@ -101,6 +122,10 @@ class TestCancelLongOperations(unittest.TestCase):
                 self.assertTrue(w._cancel, f"{type(w).__name__} не отменён")
 
     def test_non_cancellable_worker_is_skipped(self):
+        pass
+
+
+
         worker = _make(UniversalListWorker, "7z.exe", "C:/a.zip", None)
         self.assertFalse(
             hasattr(worker, "cancel_request"),
@@ -109,9 +134,9 @@ class TestCancelLongOperations(unittest.TestCase):
 
         harness = _Harness([worker])
         with _KeyRecorder() as rec:
-            harness._cancel_long_operations()
+            harness._cancel_long_operations()                     
 
-
+                                                                                
         self.assertIn("status.cancel_none", rec.keys)
 
     def test_mixed_list_cancels_only_capable(self):
@@ -127,14 +152,18 @@ class TestCancelLongOperations(unittest.TestCase):
 
     def test_empty_list_is_safe(self):
         harness = _Harness([])
-        harness._cancel_long_operations()
+        harness._cancel_long_operations()                     
         self.assertEqual(len(harness._status.messages), 1)
 
     def test_duck_typing_picks_up_new_workers(self):
+        pass
+
+
+
         from PySide6.QtCore import QThread
 
         class BrandNewWorker(QThread):
-
+            pass
 
             def __init__(self):
                 super().__init__()
@@ -150,7 +179,7 @@ class TestCancelLongOperations(unittest.TestCase):
 
 
 class TestCancelDoesNotStartThreads(unittest.TestCase):
-
+    pass
 
     def test_workers_are_not_running(self):
         worker = _make(UniversalExtractWorker, "7z.exe", "C:/a.zip", "C:/d")

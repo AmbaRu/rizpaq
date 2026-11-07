@@ -1,3 +1,53 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 from datetime import datetime, timedelta
@@ -42,6 +92,10 @@ from ui.dashboard_charts import (
 from ui.dashboard_feed import RunFeed
 from ui.i18n import tr
 
+                                                                             
+                                                                   
+                  
+                                                                             
 
 _STATUS_COLOR_TOKEN = {
     "ok": "OK_GREEN",
@@ -50,7 +104,8 @@ _STATUS_COLOR_TOKEN = {
     "never": "TEXT_MUTED",
 }
 
-
+                                                                   
+                                                                
 _TILE_SPECS = (
     ("all", "ACCENT", "dashboard.tile.all"),
     ("ok", "OK_GREEN", "dashboard.tile.ok"),
@@ -61,26 +116,27 @@ _TILE_SPECS = (
     ("issues", "WARN_ORANGE", "dashboard.tile.issues"),
 )
 
-
+                                                             
+                                                  
 _DONUT_FILTER = {"ok": "ok", "error": "error", "busy": "busy",
                  "never": "never"}
 
 
 def _status_color(token: Optional[str]) -> QColor:
-
+    pass
     name = _STATUS_COLOR_TOKEN.get(token or "never", "TEXT_MUTED")
     return QColor(skins.color(name))
 
 
 def _reason_text(reason: Optional[str]) -> str:
-
+    pass
     if not reason:
         return ""
     return tr(f"backup.reason.{reason}")
 
 
 def _status_display(status: Optional[str], reason: Optional[str]) -> str:
-
+    pass
     text = tr(f"dashboard.status.{status}" if status else "dashboard.status.never")
     if status == "error" and reason:
         text = f"{text} — {_reason_text(reason)}"
@@ -88,6 +144,12 @@ def _status_display(status: Optional[str], reason: Optional[str]) -> str:
 
 
 def _job_type_key(row: "_Row") -> str:
+    pass
+
+
+
+
+
     if row.action == "par2" or (
             row.action == "test" and row.test_mode == "par2"):
         return "dashboard.type.par2"
@@ -109,6 +171,12 @@ def _format_size(size: Optional[int]) -> str:
 
 
 def _parse_par2_date(text: str) -> str:
+    pass
+
+
+
+
+
     try:
         return datetime.strptime(
             str(text or "").strip(), "%Y-%m-%d %H:%M:%S"
@@ -117,15 +185,19 @@ def _parse_par2_date(text: str) -> str:
         return ""
 
 
-class _Row:
+                                                                             
+                        
+                                                                             
 
+class _Row:
+    pass
 
     __slots__ = (
         "work_id", "job_id", "work_title", "job_title", "action",
         "test_mode", "archive_path", "archive_size", "archive_files",
         "last_run", "last_status", "last_reason", "run_count",
         "par2_enabled", "has_set",
-
+                                                                     
         "password", "par2_created", "par2_outdated",
         "logical_size", "versions",
     )
@@ -153,24 +225,34 @@ class _Row:
         self.versions: Optional[int] = None
 
 
+                                                                             
+         
+                                                                             
+
 class DashboardPage(QWidget):
+    pass
+
+
+
 
     def __init__(self, host=None, parent=None):
         super().__init__(parent)
-
-
+                                                            
+                                                                      
+                                                                     
+                 
         self._host = host
         self._rows: list[_Row] = []
         self._history: list[RunEntry] = []
         self._tiles: dict = {}
         self._tile_values: dict = {}
-
-
+                                                                    
+                                                                   
         self._alerts: list = []
         self._alert_works: set = set()
         self._streaks: dict = {}
-
-
+                                                                  
+                                                                 
         self._title_lbl: Optional[QLabel] = None
         self._tile_captions: dict = {}
         self._card_caps: dict = {}
@@ -178,12 +260,26 @@ class DashboardPage(QWidget):
         self._trend_legend: list = []
         self._build_ui()
 
+                                                                                     
 
     def refresh(self):
-
+        pass
         self._load_data()
 
     def retranslate(self):
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
         if self._title_lbl is not None:
             self._title_lbl.setText(tr("dashboard.title"))
         self._btn_refresh.setText(tr("dashboard.btn.refresh"))
@@ -207,7 +303,8 @@ class DashboardPage(QWidget):
         self._btn_open.setText(tr("dashboard.btn.open_archive"))
         self._btn_check_all.setText(tr("dashboard.btn.check_all"))
 
-
+                                                                     
+                                                                     
         try:
             self._update_stats()
             self._update_alerts()
@@ -220,7 +317,7 @@ class DashboardPage(QWidget):
         root.setContentsMargins(12, 10, 12, 10)
         root.setSpacing(8)
 
-
+                                                                           
         head = QHBoxLayout()
         title = QLabel(tr("dashboard.title"))
         self._title_lbl = title
@@ -236,10 +333,10 @@ class DashboardPage(QWidget):
         head.addWidget(self._btn_refresh)
         root.addLayout(head)
 
-
+                                                                           
         root.addLayout(self._build_tiles_row())
 
-
+                                                                           
         charts = QHBoxLayout()
         charts.setSpacing(8)
         charts.addWidget(self._make_card(
@@ -253,10 +350,10 @@ class DashboardPage(QWidget):
             cap_key="dashboard.card.trend"))
         root.addLayout(charts)
 
-
+                                                                          
         root.addWidget(self._build_alerts_card())
 
-
+                                                                           
         body = QHBoxLayout()
         body.setSpacing(8)
         body.addWidget(self._build_table(), stretch=3)
@@ -268,12 +365,13 @@ class DashboardPage(QWidget):
         body.addWidget(feed_card)
         root.addLayout(body, stretch=1)
 
-
+                                                                           
         root.addLayout(self._build_footer())
 
+                                                                                   
 
     def _build_tiles_row(self) -> QHBoxLayout:
-
+        pass
         row = QHBoxLayout()
         row.setSpacing(8)
         self._tile_group = QButtonGroup(self)
@@ -286,6 +384,13 @@ class DashboardPage(QWidget):
         return row
 
     def _make_tile(self, kind: str, color_token: str, caption: str) -> QPushButton:
+        pass
+
+
+
+
+
+
         btn = QPushButton()
         btn.setObjectName("dashTile")
         btn.setCheckable(True)
@@ -314,6 +419,10 @@ class DashboardPage(QWidget):
         return btn
 
     def _style_tile(self, btn: QPushButton, color_token: str):
+        pass
+
+
+
         accent_line = skins.color(color_token)
         qss = f"""
         QPushButton#dashTile {{
@@ -343,9 +452,20 @@ class DashboardPage(QWidget):
         """
         btn.setStyleSheet(qss)
 
+                                                                                          
 
     def _make_card(self, title: str, inner: QWidget, stretch: int = 0,
                    cap_key: str = None) -> QFrame:
+        pass
+
+
+
+
+
+
+
+
+
         card = QFrame()
         card.setObjectName("dashCard")
         card.setStyleSheet(f"""
@@ -371,7 +491,7 @@ class DashboardPage(QWidget):
         return card
 
     def _build_donut_card(self) -> QWidget:
-
+        pass
         page = QWidget()
         lay = QVBoxLayout(page)
         lay.setContentsMargins(0, 0, 0, 0)
@@ -396,7 +516,7 @@ class DashboardPage(QWidget):
         return page
 
     def _build_gauge_card(self) -> QWidget:
-
+        pass
         page = QWidget()
         lay = QVBoxLayout(page)
         lay.setContentsMargins(0, 0, 0, 0)
@@ -414,8 +534,8 @@ class DashboardPage(QWidget):
         self._lbl_par2 = QLabel()
         self._lbl_files = QLabel()
         self._lbl_volume = QLabel()
-
-
+                                                                    
+                                                                
         self._lbl_free = QLabel()
         for lbl in (self._lbl_par2, self._lbl_files, self._lbl_volume,
                     self._lbl_free):
@@ -424,7 +544,7 @@ class DashboardPage(QWidget):
         return page
 
     def _build_trend_card(self) -> QWidget:
-
+        pass
         page = QWidget()
         lay = QVBoxLayout(page)
         lay.setContentsMargins(0, 0, 0, 0)
@@ -450,8 +570,18 @@ class DashboardPage(QWidget):
         lay.addLayout(legend)
         return page
 
+                                                                                                
 
     def _build_alerts_card(self) -> QFrame:
+        pass
+
+
+
+
+
+
+
+
         card_inner = QWidget()
         card = self._make_card(tr("dashboard.card.alerts"), card_inner,
                                cap_key="dashboard.card.alerts")
@@ -461,7 +591,7 @@ class DashboardPage(QWidget):
         return card
 
     def _update_alerts(self):
-
+        pass
         while self._alerts_lay.count():
             item = self._alerts_lay.takeAt(0)
             w = item.widget()
@@ -502,12 +632,12 @@ class DashboardPage(QWidget):
             self._alerts_lay.addWidget(more)
 
     def _goto_alert(self, alert):
-
+        pass
         work_id = alert.work_id
         job_id = alert.job_id
         if not job_id:
-
-
+                                                                        
+                                                                    
             for row in self._rows:
                 if row.work_id == work_id:
                     job_id = row.job_id
@@ -516,15 +646,19 @@ class DashboardPage(QWidget):
             self._navigate_row(work_id, job_id)
 
     def _build_feed(self) -> QWidget:
-
+        pass
         self._feed = RunFeed()
         self._feed.jobActivated.connect(self._navigate_row)
         return self._feed
 
+                                                                                
 
     def _build_table(self) -> QTableWidget:
-
-
+                                                                        
+                                                                   
+                                                                   
+                                                                   
+                                             
         self._table = QTableWidget(0, 3)
         self._table.setHorizontalHeaderLabels([
             tr("dashboard.col.job"),
@@ -536,8 +670,10 @@ class DashboardPage(QWidget):
         self._table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self._table.setAlternatingRowColors(True)
         self._table.verticalHeader().hide()
-
-
+                                                                       
+                                                                  
+                                                                    
+                                                    
         self._table.setSortingEnabled(False)
         self._table.doubleClicked.connect(self._on_row_double_clicked)
 
@@ -559,9 +695,10 @@ class DashboardPage(QWidget):
         footer.addWidget(self._btn_check_all)
         return footer
 
+                                                                               
 
     def _load_data(self):
-
+        pass
         self._rows = []
         self._alerts = []
         self._alert_works = set()
@@ -580,14 +717,19 @@ class DashboardPage(QWidget):
         container = None
         if tasks_dir:
             container = load_container(container_path(tasks_dir))
-
-
+                                                                    
+                                                                   
             try:
                 self._history = load_history(tasks_dir)
             except Exception:
                 self._history = []
 
-
+                                                                      
+                                                                     
+                                                                    
+                                                                    
+                                                                       
+                                                 
         index_cache: dict = {}
         if container is not None:
             seen_dests = set()
@@ -609,8 +751,9 @@ class DashboardPage(QWidget):
                         default=None,
                     )
                     if latest is not None:
-
-
+                                                                  
+                                                                
+                                                    
                         rows = [e for e in entries if e.version == latest]
                         files = [e for e in rows if not e.is_dir]
                         summary["files"] = len(files)
@@ -619,7 +762,7 @@ class DashboardPage(QWidget):
                             e.version for e in entries
                             if e.version is not None})
                     else:
-
+                                                                
                         files = [e for e in entries if not e.is_dir]
                         summary["files"] = len(files)
                         summary["logical"] = sum(e.size for e in files)
@@ -630,7 +773,8 @@ class DashboardPage(QWidget):
                 self._rows.append(self._build_row(
                     work, job, index_cache.get(dest) or {}))
 
-
+                                                                    
+                                                                
             try:
                 self._alerts = dashboard_alerts.collect_alerts(
                     container, self._history)
@@ -649,6 +793,13 @@ class DashboardPage(QWidget):
         self._update_alerts()
 
     def _build_row(self, work: dict, job: dict, idx: dict = None) -> _Row:
+        pass
+
+
+
+
+
+
         idx = idx or {}
         row = _Row()
         row.work_id = str(work.get("id", ""))
@@ -660,7 +811,8 @@ class DashboardPage(QWidget):
         row.archive_path = str(work.get("dest") or "")
         row.archive_size = _archive_size(row.archive_path)
 
-
+                                                                   
+                                                                 
         row.archive_files = idx.get("files")
         row.logical_size = idx.get("logical")
         row.versions = idx.get("versions")
@@ -668,7 +820,8 @@ class DashboardPage(QWidget):
         if row.archive_path:
             row.has_set = Path(par2_main_name(row.archive_path)).is_file()
 
-
+                                                                
+                                                                     
         row.password = bool(work.get("password_b64"))
         row.par2_created = str(work.get("par2_created") or "")
         row.par2_outdated = row.has_set and dashboard_alerts.is_set_outdated(
@@ -682,6 +835,24 @@ class DashboardPage(QWidget):
         return row
 
     def _refresh_table(self):
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self._table.setRowCount(0)
 
         for work_id, rows, par2_on, par2_ok in self._grouped_visible_rows():
@@ -689,13 +860,13 @@ class DashboardPage(QWidget):
             r = self._table.rowCount()
             self._table.insertRow(r)
 
-
+                                             
             header_item = self._item(
                 self._work_header_text(first, par2_on, par2_ok))
             header_bg = QColor(skins.color("ROW_HOVER"))
             header_fg = QColor(skins.color("TEXT_MAIN"))
-
-
+                                                                
+                                                               
             hfont = header_item.font()
             hfont.setBold(True)
             header_item.setFont(hfont)
@@ -711,15 +882,17 @@ class DashboardPage(QWidget):
                 filler = self._item("")
                 filler.setBackground(header_bg)
                 self._table.setItem(r, col, filler)
-
+                                                              
             self._table.setSpan(r, 0, 1, self._table.columnCount())
 
-
+                                    
             for row in rows:
                 r = self._table.rowCount()
                 self._table.insertRow(r)
 
-
+                                                                     
+                                                                   
+                                                         
                 self._table.setItem(
                     r, 0,
                     self._item(
@@ -735,14 +908,17 @@ class DashboardPage(QWidget):
                         "dashboard.streak.runs", n=streak[1])
                 status_item = self._item(status_text)
                 status_item.setForeground(_status_color(row.last_status))
-
-
+                                                                      
+                                                                     
+                                                                    
+                                         
                 bold = status_item.font()
                 bold.setBold(True)
                 status_item.setFont(bold)
                 self._table.setItem(r, 2, status_item)
 
-
+                                                                 
+                                       
                 payload = {
                     "work_id": row.work_id,
                     "job_id": row.job_id,
@@ -754,6 +930,18 @@ class DashboardPage(QWidget):
                         item.setData(Qt.UserRole + 100, payload)
 
     def _grouped_visible_rows(self):
+        pass
+
+
+
+
+
+
+
+
+
+
+
         all_by_work: dict = {}
         all_order: list = []
         for row in self._rows:
@@ -782,6 +970,19 @@ class DashboardPage(QWidget):
 
     def _work_header_text(self, row: _Row, par2_on: bool,
                           par2_ok: bool) -> str:
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
         parts = [row.work_title]
         if row.archive_path:
             parts.append(row.archive_path)
@@ -813,16 +1014,19 @@ class DashboardPage(QWidget):
                     label += " ⚠ " + tr("dashboard.header.set_outdated")
                 parts.append(label)
         else:
-
-
+                                                                        
+                                                                
+                                                                  
+                                                                      
             parts.append(tr("dashboard.group.par2_off"))
         if row.password:
             parts.append("🔒")
         return "  ·  ".join(p for p in parts if p)
 
+                                                                                
 
     def _filtered_rows(self):
-
+        pass
         active = self._active_filter()
         if active == "ok":
             return [r for r in self._rows if r.last_status == "ok"]
@@ -836,7 +1040,7 @@ class DashboardPage(QWidget):
         if active == "nopar2":
             return [r for r in self._rows if r.par2_enabled and not r.has_set]
         if active == "issues":
-
+                                                                       
             return [r for r in self._rows
                     if r.work_id in self._alert_works]
         return list(self._rows)
@@ -849,19 +1053,20 @@ class DashboardPage(QWidget):
         return "all"
 
     def _set_filter(self, name: str):
-
+        pass
         tile = self._tiles.get(name)
         if tile is not None:
             tile.setChecked(True)
         self._refresh_table()
 
     def _on_donut_segment(self, key: str):
-
+        pass
         self._set_filter(_DONUT_FILTER.get(key, "all"))
 
+                                                                                             
 
     def _update_stats(self):
-
+        pass
         counts = {
             "all": len(self._rows),
             "ok": 0, "error": 0, "busy": 0, "never": 0, "nopar2": 0,
@@ -869,8 +1074,10 @@ class DashboardPage(QWidget):
         }
         par2_total = 0
         par2_covered = 0
-
-
+                                                                    
+                                                                      
+                                                                       
+                                                                 
         backup_total = 0
         backup_covered = 0
         files_total = 0
@@ -887,8 +1094,8 @@ class DashboardPage(QWidget):
                     par2_covered += 1
                 else:
                     counts["nopar2"] += 1
-
-
+                                                                   
+                                            
             if r.action == "backup":
                 backup_total += 1
                 if r.has_set:
@@ -902,13 +1109,13 @@ class DashboardPage(QWidget):
 
         for kind, value_lbl in self._tile_values.items():
             if kind == "issues":
-
-
+                                                                      
+                                                                        
                 value_lbl.setText(f"{len(self._alert_works):,}".replace(",", " "))
                 continue
             value_lbl.setText(f"{counts[kind]:,}".replace(",", " "))
 
-
+                                                                
         self._donut.set_counts({
             "ok": counts["ok"],
             "error": counts["error"],
@@ -916,7 +1123,10 @@ class DashboardPage(QWidget):
             "never": counts["never"],
         })
 
-
+                                                                        
+                                                                     
+                                                                     
+                                                                  
         self._gauge.set_value(backup_covered, backup_total)
         if backup_total:
             self._lbl_gauge.setText(tr(
@@ -925,7 +1135,8 @@ class DashboardPage(QWidget):
         else:
             self._lbl_gauge.setText(tr("dashboard.gauge.empty"))
 
-
+                                                                         
+                                                               
         self._lbl_par2.setText(f"{tr('dashboard.stats.par2')}: {par2_total}")
         self._lbl_files.setText(
             f"{tr('dashboard.stats.files')}: {files_total:,}".replace(",", " ")
@@ -934,7 +1145,9 @@ class DashboardPage(QWidget):
             f"{tr('dashboard.stats.volume')}: {_format_size(volume)}"
         )
 
-
+                                                                      
+                                                                    
+                                                                   
         dests = sorted({r.archive_path for r in self._rows if r.archive_path})
         frees = []
         for dest in dests:
@@ -947,10 +1160,19 @@ class DashboardPage(QWidget):
         else:
             self._lbl_free.setText("")
 
-
+                                                                        
+                                                               
         self._trend.set_series(self._trend_series())
 
     def _trend_series(self) -> list:
+        pass
+
+
+
+
+
+
+
         today = datetime.now().date()
         buckets: dict = {}
         for e in self._history:
@@ -963,8 +1185,9 @@ class DashboardPage(QWidget):
             if e.status == "error":
                 err_n += 1
             else:
-
-
+                                                                   
+                                                                   
+                                                                          
                 if e.status == "ok":
                     ok_n += 1
             buckets[day] = (ok_n, err_n)
@@ -977,16 +1200,19 @@ class DashboardPage(QWidget):
         return series
 
     def _update_feed(self):
-
-
+        pass
+                                                                    
+                                                                
+                                                             
         self._feed.set_entries(self._history)
 
     def _update_button_states(self):
-
+        pass
         has_rows = len(self._rows) > 0
         self._btn_open.setEnabled(has_rows)
         self._btn_check_all.setEnabled(has_rows)
 
+                                                                                 
 
     def _selected_row(self) -> Optional[_Row]:
         sel = self._table.selectionModel().selectedRows()
@@ -1002,7 +1228,7 @@ class DashboardPage(QWidget):
         return None
 
     def _navigate_row(self, work_id: str, job_id: str):
-
+        pass
         row = next(
             (r for r in self._rows
              if r.work_id == work_id and r.job_id == job_id),
@@ -1030,6 +1256,14 @@ class DashboardPage(QWidget):
                 pass
 
     def _on_row_double_clicked(self, index):
+        pass
+
+
+
+
+
+
+
         payload = index.data(Qt.UserRole + 100)
         if isinstance(payload, dict):
             if payload.get("job_id"):
@@ -1041,14 +1275,14 @@ class DashboardPage(QWidget):
             if archive_path:
                 self._enter_archive(archive_path)
             return
-
+                                                          
         row = self._selected_row()
         if row is None:
             return
         self._navigate_row(row.work_id, row.job_id)
 
     def _enter_archive(self, path: str):
-
+        pass
         host = self._host
         if host is None or not path:
             return
@@ -1063,18 +1297,18 @@ class DashboardPage(QWidget):
                 )
 
     def _on_open_archive(self):
-
+        pass
         row = self._selected_row()
         if row is None or not row.archive_path:
             return
         self._enter_archive(row.archive_path)
 
     def _on_check_all(self):
-
+        pass
         rows = self._rows if not self._table.selectionModel().selectedRows() \
             else [r for r in self._rows if r in self._selected_rows()]
-
-
+                                                                        
+                                         
         host = self._host
         if host is None:
             return
@@ -1091,8 +1325,8 @@ class DashboardPage(QWidget):
         )
         if confirm != QMessageBox.StandardButton.Yes:
             return
-
-
+                                                                        
+                                                                
         started = 0
         for row in par2_jobs:
             try:
@@ -1111,7 +1345,7 @@ class DashboardPage(QWidget):
         self._load_data()
 
     def _selected_rows(self):
-
+        pass
         sel = self._table.selectionModel().selectedRows()
         out = []
         for index in sel:
@@ -1124,6 +1358,7 @@ class DashboardPage(QWidget):
                         break
         return out
 
+                                                                                
 
     @staticmethod
     def _item(text: str) -> QTableWidgetItem:

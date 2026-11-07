@@ -1,3 +1,20 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 from PySide6.QtCore import Qt
@@ -17,7 +34,7 @@ from ui.i18n import tr
 
 
 def _fmt_when(dt) -> str:
-
+    pass
     now = _now_year()
     text = dt.strftime("%d.%m.%Y %H:%M")
     if dt.year == now:
@@ -32,7 +49,7 @@ def _now_year() -> int:
 
 
 class StartupDigestDialog(QDialog):
-
+    pass
 
     def __init__(self, digest: Digest, parent=None):
         super().__init__(parent)
@@ -60,7 +77,7 @@ class StartupDigestDialog(QDialog):
 
         lay.addSpacing(4)
 
-
+                                                                
         for group, ok_n, err_n, busy_n in (
             ("digest.backups", digest.backups_ok, digest.backups_err,
              digest.backups_busy),
@@ -109,7 +126,7 @@ class StartupDigestDialog(QDialog):
         lay.addLayout(buttons)
 
     def _open_history(self):
-
+        pass
         parent = self.parent()
         switch = getattr(parent, "_switch_main_page", None)
         if callable(switch):
@@ -120,7 +137,7 @@ class StartupDigestDialog(QDialog):
         self.accept()
 
     def accept(self):
-
+        pass
         try:
             _merge_cfg(digest_enabled=bool(self._check.isChecked()))
         except Exception:
@@ -129,6 +146,13 @@ class StartupDigestDialog(QDialog):
 
 
 def show_if_needed(host) -> None:
+    pass
+
+
+
+
+
+
     try:
         cfg = _load_cfg()
     except Exception:
@@ -155,8 +179,8 @@ def show_if_needed(host) -> None:
         return
 
     dlg = StartupDigestDialog(digest, parent=host)
-
-
+                                                                   
+                                 
     try:
         dlg.adjustSize()
         geo = host.geometry()
@@ -165,8 +189,8 @@ def show_if_needed(host) -> None:
     except Exception:
         pass
     dlg.show()
-
-
+                                                                    
+                                                               
     try:
         host._digest_dialog = dlg
     except Exception:
