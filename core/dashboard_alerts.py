@@ -69,7 +69,8 @@ _INTERVAL_SECONDS = {
                                                                  
                                                               
                                     
-_LAST_RUN_FORMATS = ("%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M")
+_LAST_RUN_FORMATS = ("%d.%m.%Y %H:%M:%S", "%d.%m.%Y %H:%M",
+                     "%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M")
 
 
 @dataclass

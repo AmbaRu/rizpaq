@@ -34,7 +34,7 @@ SOURCE_SET_VERSION = 1
 
 def build_source_set(name: str, nodes: List[Dict[str, str]]) -> Dict[str, Any]:
     pass
-    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    now = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
     return {
         "format": SOURCE_SET_FORMAT,
         "version": SOURCE_SET_VERSION,
