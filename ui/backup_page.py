@@ -229,7 +229,7 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-from PySide6.QtCore import QFileSystemWatcher, Qt, QThread, QTimer, Signal
+from PySide6.QtCore import QFileSystemWatcher, QSize, Qt, QThread, QTimer, Signal
 from PySide6.QtGui import QColor
 from PySide6.QtWidgets import (
     QFileDialog,
@@ -742,6 +742,10 @@ class BackupPage(QWidget):
 
 
 
+
+
+
+
         self._tree.clear()
         self._tree.setUpdatesEnabled(False)
 
@@ -752,11 +756,17 @@ class BackupPage(QWidget):
 
                                                                 
         work_items: dict = {}
+        work_count = 0
 
         for row in rows:
             kind = row.get("kind")
             if kind == "work":
+                work_count += 1
                 work = row["work"]
+                                                                    
+                if work_count > 1:
+                    sep = self._make_separator_item()
+                    self._tree.addTopLevelItem(sep)
                 item = self._make_work_item(work, row.get("size"))
                 self._tree.addTopLevelItem(item)
                 work_items[work.get("id")] = item
@@ -770,14 +780,48 @@ class BackupPage(QWidget):
                                             work_id=work.get("id"))
                 parent.addChild(child)
 
-                                                                
-                                                             
-        if len(work_items) <= 3:
-            for item in work_items.values():
-                item.setExpanded(True)
+                                                                        
+                                                                    
+                                                                       
+                 
+        expand_all = len(work_items) <= 5
+        for item in work_items.values():
+            item.setExpanded(expand_all)
 
         self._tree.setUpdatesEnabled(True)
         return True
+
+    def _make_separator_item(self) -> QTreeWidgetItem:
+        pass
+
+
+
+
+
+
+        item = QTreeWidgetItem([""] + [""] * (_COL_COUNT - 1))
+        item.setFlags(Qt.ItemFlag.NoItemFlags)
+        item.setData(_COL_NAME, _PAYLOAD_ROLE, {"kind": "separator"})
+                                                                       
+                                                 
+        item.setSizeHint(_COL_NAME, QSize(0, 10))
+        item.setSizeHint(_COL_SCHEDULE, QSize(0, 10))
+        item.setSizeHint(_COL_NEXT_RUN, QSize(0, 10))
+        item.setSizeHint(_COL_LAST_RUN, QSize(0, 10))
+        item.setSizeHint(_COL_STATUS, QSize(0, 10))
+        item.setSizeHint(_COL_SIZE, QSize(0, 10))
+                                                                   
+                                                                      
+                                                          
+        try:
+            from ui.skins import color
+            bg = QColor(color("BORDER"))
+        except Exception:
+            bg = QColor(Qt.GlobalColor.lightGray)
+        for col in range(_COL_COUNT):
+            item.setBackground(col, bg)
+        self._align_cells(item)
+        return item
 
     def _make_work_item(self, work: dict, size) -> QTreeWidgetItem:
         pass
