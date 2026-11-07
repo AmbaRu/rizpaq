@@ -1,3 +1,35 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -23,24 +55,27 @@ from ui.qt_compat import (
     USER_ROLE,
 )
 
-
+                                                                        
 UNI_EXTS = (".zip", ".7z", ".rar")
 
 
 class ArchiveTree(QTreeWidget):
     fs_selected = Signal(str)
-    arc_selected = Signal(str, str)
-    arc_open_requested = Signal(str)
+    arc_selected = Signal(str, str)                               
+    arc_open_requested = Signal(str)                       
 
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setHeaderLabel(tr("tree.header"))
         self.setAlternatingRowColors(True)
 
-
+                                                             
         self._arc_items: dict = {}
-
-
+                                                         
+                                                                 
+                                                                
+                                                              
+                                                                      
         self._arc_subtree_index: dict = {}
         self._block_depth = 0
 
@@ -48,9 +83,14 @@ class ArchiveTree(QTreeWidget):
         self.currentItemChanged.connect(self._on_current)
         self.itemClicked.connect(self._on_clicked)
 
+                                                                          
 
     @contextmanager
     def _blocked(self):
+        pass
+
+
+
         self._block_depth += 1
         if self._block_depth == 1:
             self.blockSignals(True)
@@ -61,13 +101,15 @@ class ArchiveTree(QTreeWidget):
             if self._block_depth == 0:
                 self.blockSignals(False)
 
+                                                                           
 
     def build_fs_roots(self) -> None:
         with self._blocked():
             self.clear()
             self._arc_items.clear()
-
-
+                                                                    
+                                                                 
+                                                          
             self._arc_subtree_index.clear()
             if os.name == "nt":
                 for root in windows_drives():
@@ -91,7 +133,7 @@ class ArchiveTree(QTreeWidget):
         node.addChild(ph)
 
     def _has_expandable(self, path: str) -> bool:
-
+        pass
         try:
             with os.scandir(path) as it:
                 for e in it:
@@ -108,7 +150,7 @@ class ArchiveTree(QTreeWidget):
         return False
 
     def _fill(self, node: QTreeWidgetItem) -> None:
-
+        pass
         path = node.data(TCOL, USER_ROLE)
         dirs, arcs = [], []
         try:
@@ -147,20 +189,28 @@ class ArchiveTree(QTreeWidget):
                 child.setData(TCOL, KIND_ROLE, kind)
                 node.addChild(child)
                 self._arc_items[full] = child
-                self._add_placeholder(child)
+                self._add_placeholder(child)                                    
 
     def _ensure_loaded(self, node: QTreeWidgetItem) -> None:
+        pass
+
+
+
+
         if node.data(TCOL, KIND_ROLE) != K_FS:
             return
         with self._blocked():
-
+                                                                           
             while node.childCount():
                 child = node.child(0)
                 if child.data(TCOL, KIND_ROLE) in (K_FS_ARC, K_FS_UNI_ARC):
                     arc_path = child.data(TCOL, USER_ROLE)
                     self._arc_items.pop(arc_path, None)
-
-
+                                                                  
+                                                                  
+                                                                
+                                                                
+                                                         
                     self._arc_subtree_index.pop(arc_path, None)
                 node.removeChild(child)
         self._fill(node)
@@ -188,6 +238,7 @@ class ArchiveTree(QTreeWidget):
                 return c
         return None
 
+                                                                           
 
     def _fs_root_and_rel(self, path: Path):
         try:
@@ -216,6 +267,9 @@ class ArchiveTree(QTreeWidget):
         return root, rel
 
     def _ensure_fs_path_expanded(self, path: Path):
+        pass
+
+
         root, rel = self._fs_root_and_rel(path)
         if root is None:
             return None
@@ -231,6 +285,7 @@ class ArchiveTree(QTreeWidget):
             self._ensure_loaded(node)
         return node
 
+                                                                          
 
     def select_fs_path(self, path: Path) -> None:
         with self._blocked():
@@ -240,6 +295,10 @@ class ArchiveTree(QTreeWidget):
                 self.scrollToItem(node)
 
     def reveal_archive(self, arc_path: str) -> None:
+        pass
+
+
+
         parent_dir = Path(arc_path).parent
         with self._blocked():
             fs_node = self._ensure_fs_path_expanded(parent_dir)
@@ -270,6 +329,20 @@ class ArchiveTree(QTreeWidget):
             self.scrollToItem(target)
 
     def _arc_find_under(self, arc: QTreeWidgetItem, inner: str):
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
         try:
             arc_path = arc.data(TCOL, USER_ROLE)
         except Exception:
@@ -281,11 +354,24 @@ class ArchiveTree(QTreeWidget):
             return None
         return per_arc.get(inner)
 
+                                                                         
 
     def build_archive_subtree(self, arc_path: str, entries: list) -> None:
+        pass
+
+
+
+
+
+
+
+
+
         arc = self._arc_items.get(arc_path)
 
-
+                                                              
+                                                                     
+                                                       
         self._arc_subtree_index.pop(arc_path, None)
 
         if arc is None:
@@ -325,9 +411,12 @@ class ArchiveTree(QTreeWidget):
 
             self.expandItem(arc)
 
-
+                                                                   
+                                                                    
+                                                              
             self._arc_subtree_index[arc_path] = items
 
+                                                                           
 
     def _on_expanded(self, node: QTreeWidgetItem) -> None:
         kind = node.data(TCOL, KIND_ROLE)

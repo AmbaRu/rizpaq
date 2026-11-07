@@ -1,3 +1,28 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import fnmatch
@@ -10,14 +35,26 @@ def match_query(query: str, path: str) -> bool:
     if "*" in q or "?" in q:
         low_q = q.lower()
         low_path = path.lower()
-
+                                                                                
         name = low_path.rsplit("/", 1)[-1]
-
+                                                           
         return fnmatch.fnmatch(name, low_q) or fnmatch.fnmatch(low_path, low_q)
     return q.lower() in path.lower()
 
 
 def search_all(query: str, archives) -> list:
+    pass
+
+
+
+
+
+
+
+
+
+
+
     q = (query or "").strip()
     results: list = []
     if not q:

@@ -1,3 +1,84 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -6,7 +87,8 @@ import tempfile
 from datetime import datetime
 from pathlib import Path
 
-
+                                                                      
+              
 from core.password_store import get_password, set_password
 from core.incomplete_archive import incomplete_archive_action
 from core.tasks import (
@@ -27,12 +109,26 @@ _HEADLESS_OPS = ("--test", "--extract-here", "--create", "--task")
 
 
 def is_headless_op(args: list) -> bool:
+    pass
+
+
+
+
+
+
+
     if not args:
         return False
     return str(args[0]).strip() in _HEADLESS_OPS
 
 
 def _init_language() -> None:
+    pass
+
+
+
+
+
     try:
         from ui.config_bridge import _load_cfg
         from ui.i18n import detect_language, set_language
@@ -47,6 +143,14 @@ def _init_language() -> None:
 
 
 def _zpaq_bin():
+    pass
+
+
+
+
+
+
+
     zpaq = os.environ.get("ZPAQ_BIN")
     if zpaq:
         return zpaq
@@ -62,6 +166,13 @@ def _zpaq_bin():
 
 
 def _make_progress_window(title: str):
+    pass
+
+
+
+
+
+
     from PySide6.QtWidgets import QDialog, QVBoxLayout
 
     from ui.extract_progress import ExtractProgressBar
@@ -84,7 +195,7 @@ def _make_progress_window(title: str):
 
 
 def run_headless(args: list) -> int:
-
+    pass
     _init_language()
     op = str(args[0]).strip()
     if op == "--test":
@@ -101,12 +212,14 @@ def run_headless(args: list) -> int:
             return 1
         return _headless_create(sources)
     if op == "--task":
-
-
+                                                                   
+                                                                         
+                                             
         return _headless_task(list(args[1:]))
     return 1
 
 
+                                                                   
 def _headless_test(archive: str) -> int:
     from PySide6.QtWidgets import QApplication, QMessageBox
 
@@ -156,6 +269,7 @@ def _headless_test(archive: str) -> int:
     return QApplication.instance().exec()
 
 
+                                                                           
 def _headless_extract_here(archive: str) -> int:
     from PySide6.QtWidgets import QApplication, QMessageBox
 
@@ -207,10 +321,27 @@ def _headless_extract_here(archive: str) -> int:
     return QApplication.instance().exec()
 
 
+                                                                     
 def _build_create_cmd(zpaq_bin, settings, srcs, dest, password):
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     cmd = [zpaq_bin, "a", dest] + list(srcs)
-
-
+                                                                    
+                                                                   
+                                                       
     cmd.append("-open")
     for flag in settings.get("level", []) or []:
         cmd.append(flag)
@@ -260,6 +391,34 @@ def _build_create_cmd(zpaq_bin, settings, srcs, dest, password):
 
 
 def _build_test_cmd(zpaq_bin, dest, password, test_mode, tmp_dir=None):
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     cmd = [zpaq_bin, "t", dest]
     mode = str(test_mode or "full").strip().lower()
     if mode == "checksum":
@@ -270,14 +429,21 @@ def _build_test_cmd(zpaq_bin, dest, password, test_mode, tmp_dir=None):
         cmd += ["-verify", "-paranoid"]
         if tmp_dir:
             cmd += ["-to", str(tmp_dir)]
-
-
+                                                              
+                                               
     if password:
         cmd += ["-key", password]
     return cmd
 
 
 def _headless_create(sources: list) -> int:
+    pass
+
+
+
+
+
+
     from PySide6.QtWidgets import QApplication, QDialog, QMessageBox
 
     from core.archive_naming import default_dest as _default_dest
@@ -330,7 +496,8 @@ def _headless_create(sources: list) -> int:
 
     cmd = _build_create_cmd(zpaq, settings, srcs, dest, password)
 
-
+                                                                        
+                                                              
     existed_before = Path(dest).is_file()
 
     win = _make_progress_window(tr("create.dialog_title"))
@@ -355,8 +522,8 @@ def _headless_create(sources: list) -> int:
                 tr("create.done", name=Path(dest).name),
             )
         elif busy:
-
-
+                                                              
+                                                    
             QMessageBox.information(
                 win,
                 tr("create.busy_title"),
@@ -379,6 +546,16 @@ def _headless_create(sources: list) -> int:
 
 
 def _handle_incomplete_headless(win, dest, existed_before, output):
+    pass
+
+
+
+
+
+
+
+
+
     from PySide6.QtWidgets import QMessageBox
 
     from ui.i18n import tr
@@ -411,7 +588,15 @@ def _handle_incomplete_headless(win, dest, existed_before, output):
     )
 
 
+                                                                                 
 def _write_temp_error(text: str) -> None:
+    pass
+
+
+
+
+
+
     try:
         temp_log = Path(tempfile.gettempdir()) / "rizpaq_task_error.log"
         with open(temp_log, "a", encoding="utf-8") as f:
@@ -425,6 +610,16 @@ def _write_temp_error(text: str) -> None:
 
 
 def _headless_par2_verify(dest: str) -> tuple:
+    pass
+
+
+
+
+
+
+
+
+
     from core import par2_ops
 
     par2_bin = par2_ops.find_par2()
@@ -449,14 +644,18 @@ def _headless_par2_verify(dest: str) -> tuple:
             f"[par2] защищает {res.recorded_size} байт\n"
         ), res.state
     if res.state == par2_ops.STATE_DAMAGED:
-
-
+                                                                  
+                                                                     
+                                                                        
+                                                                        
+                           
         return 0, (
             "[par2] АРХИВ ПОВРЕЖДЁН, восстановление возможно\n" + body + "\n"
         ), res.state
     if res.state == par2_ops.STATE_UNREPAIRABLE:
-
-
+                                                                 
+                                                                   
+                                                             
         return 1, (
             "[par2] АРХИВ ПОВРЕЖДЁН, ИЗБЫТОЧНОСТИ НЕ ХВАТИТ — "
             "ВОССТАНОВЛЕНИЕ НЕВОЗМОЖНО\n" + body + "\n"
@@ -471,6 +670,22 @@ def _headless_par2_verify(dest: str) -> tuple:
 
 def _headless_par2(rzp_path: str, work: dict, job: dict,
                     dest: str, settings: dict) -> str:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     from core import par2_ops
 
     header = "\n[par2] создание набора защиты от повреждений\n"
@@ -501,8 +716,8 @@ def _headless_par2(rzp_path: str, work: dict, job: dict,
         return header + f"ошибка набора: {type(exc).__name__}: {exc}\n"
 
     if not res.ok:
-
-
+                                                                       
+                                                          
         tail = (res.log or "").strip().splitlines()
         return header + "набор НЕ создан: " + (
             tail[-1][:200] if tail else "причина неизвестна"
@@ -534,14 +749,39 @@ def _headless_par2(rzp_path: str, work: dict, job: dict,
 def _write_task_log(rzp_path: str, header: str, log: str,
                     mode: str = "short", rc: int = 0,
                     busy: bool = False, note: str = "") -> None:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     if mode == "none":
         return
     try:
         log_path = Path(str(rzp_path) + ".log")
         with open(log_path, "a", encoding="utf-8") as f:
             f.write(header + "\n")
-
-
+                                                                 
+                                                                          
+                                                                        
+                                                                         
+                                                                       
+                                          
             if note:
                 f.write(note if note.endswith("\n") else note + "\n")
             if mode == "full":
@@ -555,7 +795,7 @@ def _write_task_log(rzp_path: str, header: str, log: str,
                 else:
                     f.write(f"Status: ERROR (rc={rc})\n")
                     if log:
-
+                                                                                
                         clean_log = log.replace("\r", "\n")
                         lines = [ln for ln in clean_log.splitlines() if ln.strip()]
                         tail = "\n".join(lines[-10:])
@@ -567,6 +807,16 @@ def _write_task_log(rzp_path: str, header: str, log: str,
 
 
 def _parse_task_args(rest: list) -> tuple:
+    pass
+
+
+
+
+
+
+
+
+
     if not rest:
         return "", ""
     rzp_path = str(rest[0]).strip()
@@ -582,9 +832,42 @@ def _parse_task_args(rest: list) -> tuple:
 
 
 def _headless_task(rest: list) -> int:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     from core.zpaq_cli import run_zpaq, safe_cmdline
 
-
+                             
     rzp_path, job_id = _parse_task_args(rest)
     if not rzp_path:
         _write_temp_error(
@@ -593,15 +876,21 @@ def _headless_task(rest: list) -> int:
         )
         return 1
     if not job_id:
-
-
+                                                                  
+                                                                
         _write_temp_error(
             f"Rizpaq: --task без --job. Файл: {rzp_path}. "
             f"Аргументы: {rest!r}\n"
         )
         return 1
 
-
+                                                                    
+                                                                   
+                                                    
+     
+                                                                   
+                                                                   
+                                       
     try:
         container = load_container(rzp_path)
     except Exception as exc:
@@ -611,7 +900,7 @@ def _headless_task(rest: list) -> int:
         )
         return 1
 
-
+                             
     found = find_job(container, job_id)
     if found is None:
         _write_temp_error(
@@ -628,8 +917,8 @@ def _headless_task(rest: list) -> int:
 
     srcs = settings.get("sources") or []
     if action != ACTION_TEST and not srcs:
-
-
+                                                               
+                                                            
         header = _build_log_header(rzp_path, work, job, 1)
         _write_task_log(rzp_path, header, "No sources specified in job.",
                         "full", 1)
@@ -647,40 +936,50 @@ def _headless_task(rest: list) -> int:
 
     rename_note = ""
 
-
+                                                                           
+                                                                        
+                                                         
     from core.archive_naming import has_non_latin as _has_non_latin
     from core.archive_naming import make_latin_name as _make_latin_name
 
     if _has_non_latin(Path(dest).stem) and "?" not in dest:
         old_name = Path(dest).name
         dest = _make_latin_name(dest)
-
-
+                                                                        
+                                                                             
+                                
         rename_note = (
             f"\n[rizpaq] destination renamed for engine compatibility: "
             f"'{old_name}' -> '{Path(dest).name}'\n"
         )
 
-
-    tmp_dir = None
+                                                   
+    tmp_dir = None                                              
     cmd = None
     par2_mode = (action == ACTION_TEST
                  and str(settings.get("test_mode") or "").strip().lower()
                  == "par2")
     par2_note = ""
-    par2_reason = None
+    par2_reason = None                                                
     try:
         if par2_mode:
-
-
+                                                                   
+                                                                  
+                                                                      
+                                                             
             cmd = None
             rc, log, par2_state = _headless_par2_verify(dest)
-
-
+                                                                       
+                                                                   
+                                                                     
+                                
             par2_note = log
-
-
-            from core import par2_ops
+                                                                        
+                                                                       
+                                                                  
+                                                                    
+                                         
+            from core import par2_ops                                                      
 
             ok = par2_state == par2_ops.STATE_OK
             if not ok:
@@ -688,21 +987,23 @@ def _headless_task(rest: list) -> int:
         elif action == ACTION_TEST:
             test_mode = settings.get("test_mode") or "full"
             if str(test_mode).strip().lower() == "paranoid":
-
-
+                                                                  
+                                                                   
+                                                                       
+                                                      
                 try:
                     tmp_dir = tempfile.mkdtemp(prefix="rizpaq_task_test_")
                 except OSError:
                     tmp_dir = None
             cmd = _build_test_cmd(zpaq, dest, password, test_mode, tmp_dir)
         else:
-
+                                                                
             if settings.get("chunk") and "?" not in dest:
                 p = Path(dest)
                 dest = str(p.parent / (p.stem + "_????" + (p.suffix or ".zpaq")))
             cmd = _build_create_cmd(zpaq, settings, srcs, dest, password)
 
-
+                                                            
         if not par2_mode:
             rc, log = run_zpaq(cmd)
             ok = rc == 0
@@ -713,10 +1014,25 @@ def _headless_task(rest: list) -> int:
     if rename_note:
         log = rename_note + (log or "")
 
-
+                                                             
+                                                                   
+                                                      
     busy = (not ok) and looks_like_busy_error(log or "")
 
-
+                                                  
+                                                          
+                                                                 
+                                
+     
+                                                            
+                                                                 
+                                                              
+                                                                   
+                                               
+     
+                                                                     
+                                                               
+                                                                  
     try:
         if ok:
             status = "ok"
@@ -726,33 +1042,60 @@ def _headless_task(rest: list) -> int:
             status = "error"
 
         def _mutate(c: dict) -> None:
-
-
+                                                                   
+                                                                 
+                                                                      
+                                         
             update_job_meta(c, job_id, status, reason=par2_reason)
 
         try:
             update_container(rzp_path, _mutate)
         except ContainerLockBusy:
-
-
+                                                                
+                                                                 
+                                                              
+                                              
             pass
     except Exception:
         pass
 
-
+                                               
     if ok and password:
         try:
             set_password(dest, password)
         except Exception:
             pass
 
-
+                                                                     
+                                                        
+     
+                                                                         
+                                                                          
+                                                                     
+                                                                        
+                                                 
     if ok and action != ACTION_TEST and settings.get("par2_enabled"):
-
-
+                                                                   
+                                                                        
+                                                                    
+         
+                                                                      
+                                                                  
+                                                                    
+                    
         par2_note = _headless_par2(rzp_path, work, job, dest, settings)
 
-
+                                                           
+     
+                                                                 
+                                                                    
+                                                                      
+                                                                   
+                                                                      
+                                                                   
+                                                                
+                                                                     
+                                                  
     if ok and action != ACTION_TEST:
         try:
             from core import index_refresh
@@ -760,13 +1103,14 @@ def _headless_task(rest: list) -> int:
         except Exception:
             pass
 
-
+                                                   
     log_header = _build_log_header(rzp_path, work, job, rc,
                                    password, cmd=cmd)
     _write_task_log(rzp_path, log_header, log, log_mode, rc, busy=busy,
                     note=par2_note)
 
-
+                                                                
+                                                             
     if not ok and not busy:
         try:
             temp_log = Path(tempfile.gettempdir()) / "rizpaq_task_error.log"
@@ -780,7 +1124,21 @@ def _headless_task(rest: list) -> int:
 
 def _build_log_header(rzp_path: str, work: dict, job: dict,
                       rc: int, password=None, cmd=None) -> str:
-    from core.tasks import job_to_runnable_settings
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+    from core.tasks import job_to_runnable_settings                                
 
     lines = [
         f"--- Rizpaq task run {datetime.now()} ---",
@@ -797,10 +1155,11 @@ def _build_log_header(rzp_path: str, work: dict, job: dict,
         except Exception:
             pass
     else:
-
-
+                                                                      
+                                                                
+                                                                 
         try:
-            _ = job_to_runnable_settings(work, job)
+            _ = job_to_runnable_settings(work, job)                       
         except Exception:
             pass
     lines.append(f"Return code: {rc}")

@@ -1,3 +1,25 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import sys
@@ -8,7 +30,7 @@ from unittest import mock
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from PySide6.QtWidgets import QApplication, QMessageBox
+from PySide6.QtWidgets import QApplication, QMessageBox              
 
 _APP = QApplication.instance() or QApplication([])
 from PySide6.QtGui import QFont
@@ -17,14 +39,22 @@ if _APP is not None:
     _APP.setFont(QFont("Segoe UI", 9))
 
 
-from ui.i18n import set_language
+from ui.i18n import set_language              
 
 set_language("ru", notify=False)
 
-from ui.navigation import NavigationMixin
+from ui.navigation import NavigationMixin              
 
 
 class _Host(NavigationMixin):
+    pass
+
+
+
+
+
+
+
 
     def __init__(self, zpaq: bool = True, seven_zip: bool = True):
         self.zpaq_available = zpaq
@@ -35,7 +65,7 @@ class _Host(NavigationMixin):
         self._activated = []
         self._loaded = []
 
-
+                                                    
     def _activate_archive(self, key):
         self._activated.append(key)
 
@@ -56,7 +86,7 @@ class _Host(NavigationMixin):
 
 
 class TestCheckArchiveEngine(unittest.TestCase):
-
+    pass
 
     def test_zip_requires_7z(self):
         h = _Host(seven_zip=False)
@@ -91,13 +121,18 @@ class TestCheckArchiveEngine(unittest.TestCase):
         warn.assert_not_called()
 
     def test_unknown_extension_passes(self):
+        pass
+
+
+
+
         h = _Host(zpaq=False, seven_zip=False)
         with mock.patch.object(QMessageBox, "warning") as warn:
             self.assertTrue(h._check_archive_engine("D:/x.tar.gz"))
         warn.assert_not_called()
 
     def test_case_insensitive_extension(self):
-
+        pass
         h = _Host(seven_zip=False)
         with mock.patch.object(QMessageBox, "warning"):
             self.assertFalse(h._check_archive_engine("D:/x.ZIP"))
@@ -108,7 +143,7 @@ class TestCheckArchiveEngine(unittest.TestCase):
 
 
 class TestTreeClickStopsOnMissingEngine(unittest.TestCase):
-
+    pass
 
     def test_zip_click_without_7z_does_not_load(self):
         h = _Host(seven_zip=False)
@@ -143,7 +178,7 @@ class TestTreeClickStopsOnMissingEngine(unittest.TestCase):
 
 
 class TestTreeExpandStopsOnMissingEngine(unittest.TestCase):
-
+    pass
 
     def test_zip_expand_without_7z_does_not_load(self):
         h = _Host(seven_zip=False)

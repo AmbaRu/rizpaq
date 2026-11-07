@@ -1,3 +1,37 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import json
@@ -9,11 +43,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from core import tasks as T
+from core import tasks as T              
 
 
 class _TmpDir(unittest.TestCase):
-
+    pass
 
     def setUp(self):
         import shutil
@@ -38,7 +72,7 @@ class TestContainerBasics(_TmpDir):
         self.assertEqual(c["works"], [])
 
     def test_container_name_constant(self):
-
+        pass
         self.assertEqual(T.CONTAINER_NAME, "tasks.rzp")
 
     def test_container_path_helper(self):
@@ -47,7 +81,7 @@ class TestContainerBasics(_TmpDir):
         self.assertEqual(p.parent, self.dir)
 
     def test_missing_file_yields_empty_container(self):
-        c = T.load_container(self.path)
+        c = T.load_container(self.path)             
         self.assertEqual(c["works"], [])
 
     def test_save_then_load_roundtrip(self):
@@ -94,7 +128,7 @@ class TestContainerRobustness(_TmpDir):
         self.assertEqual(c["works"], [])
 
     def test_unknown_fields_ignored(self):
-
+        pass
         self.write_raw(json.dumps({
             "format": T.CONTAINER_FORMAT,
             "version": 999,
@@ -113,7 +147,7 @@ class TestContainerRobustness(_TmpDir):
         self.assertEqual(c["works"][0]["id"], "w1")
 
     def test_work_without_id_is_dropped(self):
-
+        pass
         self.write_raw(json.dumps({
             "format": T.CONTAINER_FORMAT,
             "version": 1,
@@ -172,7 +206,7 @@ class TestWorks(_TmpDir):
         self.assertEqual(w["title"], "Работа")
 
     def test_work_sources_cleaned(self):
-
+        pass
         c = T.empty_container()
         w = T.add_work(c, "x", ["D:/a", "", "  ", "D:/b"], "D:/c.zpaq")
         self.assertEqual(w["sources"], ["D:/a", "D:/b"])
@@ -185,16 +219,24 @@ class TestWorks(_TmpDir):
         self.assertEqual(w["comment"], "new comment")
 
     def test_update_work_password_via_plain_key(self):
-
+        pass
         c = T.empty_container()
         w = T.add_work(c, "A", ["D:/a"], "D:/b.zpaq")
         self.assertIsNone(w["password_b64"])
         T.update_work(c, w["id"], password="newsecret")
         self.assertIsNotNone(w["password_b64"])
-
+                                                 
         self.assertEqual(T._decode_password(w["password_b64"]), "newsecret")
 
     def test_update_work_password_cleared_with_empty_string(self):
+        pass
+
+
+
+
+
+
+
         c = T.empty_container()
         w = T.add_work(c, "A", ["D:/a"], "D:/b.zpaq", password="secret")
         self.assertIsNotNone(w["password_b64"])
@@ -202,6 +244,13 @@ class TestWorks(_TmpDir):
         self.assertIsNone(w["password_b64"])
 
     def test_update_work_title_empty_keeps_previous(self):
+        pass
+
+
+
+
+
+
         c = T.empty_container()
         w = T.add_work(c, "Original", ["D:/a"], "D:/b.zpaq")
         T.update_work(c, w["id"], title="")
@@ -258,7 +307,7 @@ class TestJobs(_TmpDir):
         self.assertEqual(j["level_key"], "m2")
         self.assertEqual(j["verify"], "full")
         self.assertEqual(j["task_log_mode"], "short")
-
+                             
         self.assertIsNone(j["last_run"])
         self.assertIsNone(j["last_status"])
         self.assertEqual(j["run_count"], 0)
@@ -268,6 +317,10 @@ class TestJobs(_TmpDir):
         self.assertIsNone(T.add_job(c, "no-such", {"title": "x"}))
 
     def test_add_job_ignores_work_fields(self):
+        pass
+
+
+
         c, w = self._container_with_work()
         j = T.add_job(c, w["id"], {
             "title": "j",
@@ -280,7 +333,7 @@ class TestJobs(_TmpDir):
         self.assertNotIn("password", j)
 
     def test_add_job_ignores_runtime_only_keys(self):
-
+        pass
         c, w = self._container_with_work()
         j = T.add_job(c, w["id"], {
             "title": "j",
@@ -314,7 +367,7 @@ class TestJobs(_TmpDir):
         self.assertEqual(j["schedule"], schedule)
 
     def test_update_job_title_empty_keeps_previous(self):
-
+        pass
         c, w = self._container_with_work()
         j = T.add_job(c, w["id"], {"title": "Original"})
         T.update_job(c, j["id"], title="")
@@ -351,6 +404,13 @@ class TestJobs(_TmpDir):
 
 
 class TestJobAction(_TmpDir):
+    pass
+
+
+
+
+
+
 
     def _container_with_work(self):
         c = T.empty_container()
@@ -358,24 +418,31 @@ class TestJobAction(_TmpDir):
         return c, w
 
     def test_action_defaults_to_backup(self):
-
+        pass
         c, w = self._container_with_work()
         j = T.add_job(c, w["id"], {"title": "j"})
         self.assertEqual(j["action"], T.ACTION_BACKUP)
 
     def test_action_test_kept(self):
-
+        pass
         c, w = self._container_with_work()
         j = T.add_job(c, w["id"], {"title": "j", "action": "test"})
         self.assertEqual(j["action"], T.ACTION_TEST)
 
     def test_action_unknown_becomes_backup(self):
+        pass
+
+
+
+
+
+
         c, w = self._container_with_work()
         j = T.add_job(c, w["id"], {"title": "j", "action": "weird"})
         self.assertEqual(j["action"], T.ACTION_BACKUP)
 
     def test_action_survives_save_and_load(self):
-
+        pass
         c = T.empty_container()
         w = T.add_work(c, "Docs", ["D:/a"], "D:/b.zpaq")
         T.add_job(c, w["id"], {"title": "backup job"})
@@ -389,7 +456,7 @@ class TestJobAction(_TmpDir):
         self.assertEqual(jobs[1]["action"], T.ACTION_TEST)
 
     def test_legacy_job_without_action_reads_as_backup(self):
-
+        pass
         self.write_raw(json.dumps({
             "format": T.CONTAINER_FORMAT,
             "version": 1,
@@ -409,6 +476,12 @@ class TestJobAction(_TmpDir):
 
 
 class TestJobTestMode(_TmpDir):
+    pass
+
+
+
+
+
 
     def test_test_mode_defaults_to_full(self):
         c = T.empty_container()
@@ -469,7 +542,7 @@ class TestIteration(_TmpDir):
         self.assertIn((w2["id"], j3["id"]), ids)
 
     def test_iter_jobs_includes_test_jobs(self):
-
+        pass
         c = T.empty_container()
         w = T.add_work(c, "W", ["D:/a"], "D:/b.zpaq")
         T.add_job(c, w["id"], {"title": "backup"})
@@ -477,13 +550,18 @@ class TestIteration(_TmpDir):
         self.assertEqual(len(T.iter_jobs(c)), 2)
 
     def test_iter_container_meta(self):
+        pass
+
+
+
+
         c = T.empty_container()
         w = T.add_work(c, "W", ["D:/a"], "D:/b.zpaq")
         T.add_job(c, w["id"], {"title": "j1"})
         T.add_job(c, w["id"], {"title": "j2"})
 
         rows = T.iter_container_meta(c)
-        self.assertEqual(len(rows), 3)
+        self.assertEqual(len(rows), 3)                        
         self.assertEqual(rows[0]["kind"], "work")
         self.assertEqual(rows[0]["work"]["id"], w["id"])
         self.assertEqual(rows[1]["kind"], "job")
@@ -492,7 +570,7 @@ class TestIteration(_TmpDir):
         self.assertEqual(rows[2]["job"]["title"], "j2")
 
     def test_iter_container_meta_size_for_missing_archive(self):
-
+        pass
         c = T.empty_container()
         T.add_work(c, "W", ["D:/a"], "D:/nonexistent.zpaq")
         rows = T.iter_container_meta(c)
@@ -521,7 +599,7 @@ class TestJobMeta(_TmpDir):
         self.assertEqual(j["last_status"], "ok")
 
     def test_update_job_meta_for_test_job(self):
-
+        pass
         c = T.empty_container()
         w = T.add_work(c, "W", ["D:/a"], "D:/b.zpaq")
         j = T.add_job(c, w["id"], {"title": "j", "action": "test"})
@@ -605,6 +683,11 @@ class TestRunnableSettings(_TmpDir):
         self.assertEqual(s["test_mode"], "paranoid")
 
     def test_work_title_in_settings(self):
+        pass
+
+
+
+
         c = T.empty_container()
         w = T.add_work(c, "Documents", ["D:/a"], "D:/out.zpaq")
         j = T.add_job(c, w["id"], {"title": "j"})
@@ -612,6 +695,10 @@ class TestRunnableSettings(_TmpDir):
         self.assertEqual(s["work_title"], "Documents")
 
     def test_job_title_in_settings(self):
+        pass
+
+
+
         c = T.empty_container()
         w = T.add_work(c, "W", ["D:/a"], "D:/out.zpaq")
         j = T.add_job(c, w["id"], {"title": "Daily check", "action": "test"})
@@ -619,6 +706,10 @@ class TestRunnableSettings(_TmpDir):
         self.assertEqual(s["title"], "Daily check")
 
     def test_work_title_and_job_title_are_independent(self):
+        pass
+
+
+
         c = T.empty_container()
         w = T.add_work(c, "Work A", ["D:/a"], "D:/out.zpaq")
         j = T.add_job(c, w["id"], {"title": "Job B"})
@@ -638,6 +729,12 @@ class TestSchedulerName(unittest.TestCase):
         self.assertTrue(name.startswith("Rizpaq_"))
 
     def test_backup_name_has_b_prefix(self):
+        pass
+
+
+
+
+
         work = {"id": "w1", "title": "Docs"}
         name = T.scheduler_task_name(work, self._job(action="backup"))
         self.assertTrue(name.startswith("Rizpaq_b_"),
@@ -650,15 +747,23 @@ class TestSchedulerName(unittest.TestCase):
                         f"нет префикса t_: {name}")
 
     def test_legacy_job_without_action_gets_b_prefix(self):
+        pass
+
+
+
         work = {"id": "w1", "title": "Docs"}
         job = {"id": "12345678-1234-1234-1234-123456789abc", "title": "j"}
         name = T.scheduler_task_name(work, job)
         self.assertTrue(name.startswith("Rizpaq_b_"))
 
     def test_name_includes_work_slug(self):
+        pass
+
+
+
         work = {"id": "w1", "title": "Мои документы"}
         name = T.scheduler_task_name(work, self._job())
-
+                                                       
         self.assertNotIn("Мои", name)
         self.assertNotIn(" ", name)
         self.assertIn("moi_dokumenty", name.lower())
@@ -681,6 +786,12 @@ class TestSchedulerName(unittest.TestCase):
         )
 
     def test_name_differs_for_different_actions_same_id(self):
+        pass
+
+
+
+
+
         work = {"id": "w1", "title": "Docs"}
         job_id = "aaaaaaaa-1111-1111-1111-111111111111"
         name_b = T.scheduler_task_name(
@@ -692,7 +803,7 @@ class TestSchedulerName(unittest.TestCase):
         self.assertNotEqual(name_b, name_t)
 
     def test_name_differs_for_different_works(self):
-
+        pass
         w1 = {"id": "w1", "title": "Docs"}
         w2 = {"id": "w2", "title": "Docs"}
         job = self._job()
@@ -702,7 +813,7 @@ class TestSchedulerName(unittest.TestCase):
         )
 
     def test_name_differs_for_different_work_titles(self):
-
+        pass
         job = self._job()
         w1 = {"id": "same", "title": "Docs"}
         w2 = {"id": "same", "title": "Backup"}
@@ -712,7 +823,7 @@ class TestSchedulerName(unittest.TestCase):
         )
 
     def test_empty_title_gives_work_slug(self):
-
+        pass
         work = {"id": "w1", "title": ""}
         name = T.scheduler_task_name(work, self._job())
         self.assertIn("work", name)
@@ -720,13 +831,13 @@ class TestSchedulerName(unittest.TestCase):
 
 class TestSaveIsAtomic(_TmpDir):
     def test_failed_write_keeps_old_file(self):
-
+        pass
         c = T.empty_container()
         T.add_work(c, "W1", ["D:/a"], "D:/b.zpaq")
         T.save_container(self.path, c)
         before = self.read_raw()
 
-
+                                               
         import os
 
         real = os.replace
@@ -745,7 +856,7 @@ class TestSaveIsAtomic(_TmpDir):
         self.assertEqual(self.read_raw(), before)
 
     def test_no_leftover_temp_files(self):
-
+        pass
         c = T.empty_container()
         T.add_work(c, "W", ["D:/a"], "D:/b.zpaq")
         T.save_container(self.path, c)
@@ -756,15 +867,20 @@ class TestSaveIsAtomic(_TmpDir):
 
 class TestWorkSlug(unittest.TestCase):
     def test_latin_title_lowercased(self):
+        pass
+
+
+
+
         self.assertEqual(T.work_slug("Docs"), "docs")
 
     def test_spaces_become_underscores(self):
-
+        pass
         slug = T.work_slug("my documents")
         self.assertEqual(slug, "my_documents")
 
     def test_cyrillic_transliterates(self):
-
+        pass
         slug = T.work_slug("Мои документы")
         self.assertEqual(slug, "moi_dokumenty")
 
@@ -779,13 +895,13 @@ class TestWorkSlug(unittest.TestCase):
         self.assertLessEqual(len(T.work_slug(long_title)), 20)
 
     def test_multiple_spaces_collapsed(self):
-
+        pass
         slug = T.work_slug("a   b")
         self.assertEqual(slug, "a_b")
 
 
 class TestConstants(unittest.TestCase):
-
+    pass
 
     def test_actions_constant(self):
         self.assertEqual(T.ACTION_BACKUP, "backup")

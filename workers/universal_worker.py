@@ -1,3 +1,6 @@
+
+
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -9,8 +12,14 @@ from workers.streaming import StreamingZpaqThread
 
 
 class UniversalListWorker(QThread):
+    pass
 
-    listed = Signal(list, str)
+
+
+
+
+
+    listed = Signal(list, str)                    
 
     def __init__(
         self,
@@ -32,8 +41,13 @@ class UniversalListWorker(QThread):
 
 
 class UniversalExtractWorker(StreamingZpaqThread):
+    pass
 
-    done = Signal(dict)
+
+
+
+
+    done = Signal(dict)                                  
 
     def __init__(
         self,
@@ -44,21 +58,34 @@ class UniversalExtractWorker(StreamingZpaqThread):
         files: list | None = None,
         parent=None,
     ):
-
+                                     
         cmd = [bin_path, "x", archive_path, f"-o{dest_dir}", "-sccUTF-8", "-y"]
         if password:
-
-
+                                                                          
+                                                                         
+                                                                           
+                                                                    
+                                                                     
+                                                                        
+                                
             cmd += [f"-p{password}"]
         if files:
             cmd.extend(files)
 
-
+                                               
         super().__init__(cmd, parent)
         self.dest_dir = dest_dir
         self.files = list(files) if files else None
 
     def _destination_filled(self) -> bool:
+        pass
+
+
+
+
+
+
+
         try:
             dest = Path(self.dest_dir)
             if not dest.is_dir():
@@ -74,13 +101,14 @@ class UniversalExtractWorker(StreamingZpaqThread):
             return False
 
     def run(self):
-
-
+                                                               
+                                                     
         rc, text = self._run_stream()
-
+        
         self.done.emit({
-
-
+                                                                     
+                                                                    
+                                                         
             "ok": rc == 0 and not self._cancel and self._destination_filled(),
             "cancelled": bool(self._cancel),
             "log": text,

@@ -1,3 +1,45 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import re
@@ -5,10 +47,12 @@ from typing import Optional
 
 from .models import ArchiveEntry, ArchiveSummary, ArchiveVersion
 
-
+                                                                       
+                                                                
 _REPORT_SAMPLES = 5
 
-
+                                                                       
+                                                   
 _REASONS = {
     "columns": "число колонок не 6 и не 7",
     "version": "номер версии не целое число",
@@ -17,17 +61,24 @@ _REASONS = {
 
 
 class ParseReport:
+    pass
+
+
+
+
+
+
 
     def __init__(self) -> None:
-        self.data_lines = 0
-        self.parsed = 0
-        self.service = 0
-        self.reasons: dict = {}
-        self.samples: list = []
+        self.data_lines = 0                                          
+        self.parsed = 0                                
+        self.service = 0                                        
+        self.reasons: dict = {}                      
+        self.samples: list = []                             
 
     @property
     def dropped(self) -> int:
-
+        pass
         return self.data_lines - self.parsed
 
     @property
@@ -40,7 +91,7 @@ class ParseReport:
             self.samples.append(line)
 
     def reason_lines(self) -> list:
-
+        pass
         out = []
         for reason, count in sorted(
             self.reasons.items(), key=lambda kv: -kv[1]
@@ -50,6 +101,13 @@ class ParseReport:
         return out
 
     def log_text(self) -> str:
+        pass
+
+
+
+
+
+
         parts = [
             f"[rizpaq] список разобран не полностью: не распознано "
             f"{self.dropped} из {self.data_lines} строк данных, "
@@ -62,7 +120,16 @@ class ParseReport:
         return "\n".join(parts)
 
 
+                                                                             
+                    
+                                                                             
 def parse_size(value: Optional[str]) -> int:
+    pass
+
+
+
+
+
     if not value:
         return 0
 
@@ -76,8 +143,11 @@ def parse_size(value: Optional[str]) -> int:
         return 0
 
 
+                                                                             
+                   
+                                                                             
 def clean_csv_line(line: str) -> str:
-
+    pass
     line = line.rstrip("\n")
 
     if line.startswith("#"):
@@ -91,10 +161,27 @@ def clean_csv_line(line: str) -> str:
 def parse_csv_line_reported(
     raw_line: str, report: ParseReport
 ) -> Optional[ArchiveEntry]:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
     if not raw_line.strip():
         return None
 
-
+                                                                       
+                                                                        
+                                                                    
+                                                              
     if raw_line.strip().startswith("<<"):
         report.service += 1
         return None
@@ -111,16 +198,17 @@ def parse_csv_line_reported(
         try:
             version = int(version_s)
         except ValueError:
-
-
+                                                                   
+                                              
             report.note_drop("version", raw_line)
             return None
     elif len(parts) == 6:
         dt, attr, size_s, ratio, flag, path = parts
         version = None
     else:
-
-
+                                                                    
+                                                                      
+                                 
         report.note_drop("columns", raw_line)
         return None
 
@@ -152,6 +240,17 @@ def parse_csv_line_reported(
 
 
 def parse_csv_list_reported(text: str) -> tuple:
+    pass
+
+
+
+
+
+
+
+
+
+
     entries: list = []
     report = ParseReport()
 
@@ -164,10 +263,27 @@ def parse_csv_list_reported(text: str) -> tuple:
 
 
 def parse_csv_list(text: str) -> list:
+    pass
+
+
+
+
+
+
     entries, _report = parse_csv_list_reported(text)
     return entries
 
 
+                                                                             
+                      
+                                                                             
+                                                                   
+                                                                            
+                                                                          
+                                                                 
+                                      
+                                                                        
+                                                              
 SUMMARY_RE = re.compile(
     r"(?P<versions>[\d.]+)\s+versions?,\s+"
     r"(?P<files>[\d.]+)\s+files?,\s+"
@@ -188,6 +304,10 @@ VERSION_LINE_RE = re.compile(
 
 
 def parse_info(text: str) -> tuple:
+    pass
+
+
+
     summary: Optional[ArchiveSummary] = None
     versions: list = []
 
@@ -223,6 +343,12 @@ def parse_info(text: str) -> tuple:
     return summary, versions
 
 
+                                                                             
+                                      
+                                                                             
+                                
+                                                                
+                                                             
 CREATE_STATS_RE = re.compile(
     r"\(\s*(?P<original>[\d.]+)\s*->\s*"
     r"(?P<after_dedup>[\d.]+)\s*->\s*"
@@ -231,6 +357,11 @@ CREATE_STATS_RE = re.compile(
 
 
 def parse_create_stats(text: str) -> Optional[dict]:
+    pass
+
+
+
+
     if not text:
         return None
 

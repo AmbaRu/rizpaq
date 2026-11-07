@@ -1,5 +1,29 @@
 #!/usr/bin/env python3
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import sys
@@ -25,26 +49,31 @@ XLSX_SIZE = "9.396"
 JSON_PATH = "d:/1000/04ee2e9d-eb6e-470c-bfcc-4fe34cde01de.json"
 JSON_SIZE = "4.371"
 
-
+                                                     
+                                
 GENERIC_FILE_COUNT = 134
 
 
 def wrap_csvhf(line: str) -> str:
-
+    pass
     return "#" + line + "#"
 
 
 def build_rows() -> list:
+    pass
+
+
+
     rows = []
 
-
+            
     rows.append(("D", DIR_SIZE, "dir", "#", DIR_PATH))
 
-
+                                
     rows.append(("A", XLSX_SIZE, "0.00", "+", XLSX_PATH))
     rows.append(("A", JSON_SIZE, "0.00", "+", JSON_PATH))
 
-
+                    
     for i in range(1, GENERIC_FILE_COUNT + 1):
         path = f"d:/1000/file_{i:04d}.txt"
         size = str(1000 + i)
@@ -54,12 +83,26 @@ def build_rows() -> list:
 
 
 def make_all_line(row: tuple) -> str:
+    pass
+
+
+
+
+
+
     attr, size, ratio, flag, path = row
     fields = [DT, attr, size, ratio, "1", flag, path]
     return wrap_csvhf("\t".join(fields))
 
 
 def make_last_line(row: tuple) -> str:
+    pass
+
+
+
+
+
+
     attr, size, ratio, flag, path = row
     fields = [DT, attr, size, ratio, flag, path]
     return wrap_csvhf("\t".join(fields))
@@ -87,7 +130,7 @@ def write_info_file(path: Path) -> None:
 
 
 def self_check() -> None:
-
+    pass
     if str(ROOT) not in sys.path:
         sys.path.insert(0, str(ROOT))
 
@@ -100,42 +143,42 @@ def self_check() -> None:
     all_entries = parse_csv_list(all_text)
     last_entries = parse_csv_list(last_text)
 
-
+                                
     assert len(all_entries) == 137
     assert sum(1 for e in all_entries if e.is_dir) == 1
     assert sum(1 for e in all_entries if not e.is_dir) == 136
 
-
+                                
     assert all(e.path.startswith("d:/1000") for e in all_entries)
     assert all(e.version == 1 for e in all_entries)
 
-
+            
     dirs = [e for e in all_entries if e.is_dir]
     assert len(dirs) == 1
     assert dirs[0].path == "d:/1000/Распечатано"
     assert dirs[0].size == 39551238
     assert dirs[0].version == 1
 
-
+                     
     xlsx = [e for e in all_entries if e.path.endswith("ошибки.xlsx")]
     assert len(xlsx) == 1
     assert xlsx[0].size == 9396
 
-
+                     
     js = [e for e in all_entries if e.path == JSON_PATH]
     assert len(js) == 1
     assert js[0].size == 4371
 
-
+                                                 
     assert len(last_entries) == len(all_entries)
     assert all(e.version is None for e in last_entries)
 
-
+                                   
     last_dirs = [e for e in last_entries if e.is_dir]
     assert len(last_dirs) == 1
     assert last_dirs[0].path == "d:/1000/Распечатано"
 
-
+           
     summary, versions = parse_info(info_text)
 
     assert summary is not None

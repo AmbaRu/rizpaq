@@ -1,4 +1,41 @@
 #!/usr/bin/env python3
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import ast
@@ -15,38 +52,51 @@ PLACEHOLDER_RE = re.compile(r"\{([A-Za-z0-9_]+)\}")
 LITERAL_RE = re.compile(r"\btr\(\s*[\"']([^\"']+)[\"']")
 SKIP_DIRS = {"__pycache__", "build", "dist", "locales", "tools", "tests"}
 
-
+                                       
 DYNAMIC_KEYS = {
     f"diff.status.{s}" for s in ("added", "removed", "changed", "unchanged")
 } | {
-
-
+                                                                       
+                                     
+                                                                     
+                                                     
+                                                                  
+                                                  
+                                                                      
     "create.level_method",
     "skin.soft_azure",
     "skin.white_air",
 } | {
-
-
+                                                          
+                                                                     
+                                                          
     "profile.archive",
     "profile.backup",
 } | {
-
-
+                                                           
+                                                                    
+                                              
     "profile_chooser.archive_desc",
     "profile_chooser.backup_desc",
 } | {
-
-
+                                                                 
+                                                               
     "scheduler.sync_add_group",
     "scheduler.sync_disable_group",
     "scheduler.sync_remove_group",
 } | {
-
-
+                                                              
+                                                                     
+                                                                       
+                          
     "par2.verify_stale",
 } | {
-
-
+                                                                     
+                                                   
+                                                                  
+                                                               
+                                                                      
+                            
     f"backup.reason.{r}" for r in (
         "par2_missing", "par2_broken", "par2_damaged",
         "par2_unrepairable", "par2_failed",
@@ -58,33 +108,64 @@ DYNAMIC_KEYS = {
     )
 }
 
-
+                                                                   
+                                                                      
+                                                               
+                                                                     
+                                                            
+ 
+                                       
+                                                                       
+                                        
+                                                               
+                                                                       
+                                               
 LEGACY_KEYS = {
-
-
+                                                                      
+                                                               
     "backup.status.read_error",
-
-
+                                                                 
+                                                       
     "menu.settings.tasks_dir.tip",
-
-
+                                                               
+                                                                   
     "scheduler.save_task_title",
     "scheduler.saved_without_schedule",
-
+                                                              
     "task.load_error",
     "task.saved_ok",
-
-
+                                                                     
+                                                           
+                                                                
+                                      
     "context.add_job",
 }
 
 
+                                                                     
+                                                                 
+                  
+ 
+                                                               
+                                                                   
+                                                                     
+                                                                   
+                                                                 
+                                                                
+                                             
 KEY_TABLES = (
     ROOT / "ui" / "test_modes.py",
 )
 
 
 def _keys_from_tables() -> set:
+    pass
+
+
+
+
+
+
     import ast
 
     out = set()
@@ -107,8 +188,10 @@ def _keys_from_tables() -> set:
                 if not isinstance(sub, ast.Constant):
                     continue
                 value = sub.value
-
-
+                                                                        
+                                                                   
+                                                                    
+                                         
                 if isinstance(value, str) and "." in value:
                     out.add(value)
     return out
@@ -118,6 +201,24 @@ KEY_TABLE_NAMES = {"TEST_MODES_UI"}
 
 
 def _keys_from_tr_calls(text: str) -> set:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     try:
         tree = ast.parse(text)
     except SyntaxError:
@@ -137,6 +238,14 @@ def _keys_from_tr_calls(text: str) -> set:
 
 
 def _strings_in(node) -> set:
+    pass
+
+
+
+
+
+
+
     if isinstance(node, ast.JoinedStr):
         return set()
     if isinstance(node, ast.Constant):
@@ -148,7 +257,7 @@ def _strings_in(node) -> set:
 
 
 def used_keys() -> set:
-
+    pass
     used = set(DYNAMIC_KEYS) | set(LEGACY_KEYS)
     used |= _keys_from_tables()
     for path in ROOT.rglob("*.py"):
@@ -161,7 +270,10 @@ def used_keys() -> set:
         used |= set(LITERAL_RE.findall(text))
         used |= _keys_from_tr_calls(text)
 
-
+                                                              
+                                                                     
+                                                                     
+                                                   
     used = {
         k for k in used
         if k and k.strip() and k != "..." and " " not in k

@@ -1,3 +1,11 @@
+
+
+
+
+
+
+
+
 import sys
 import unittest
 from pathlib import Path
@@ -5,7 +13,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from PySide6.QtWidgets import QApplication
+from PySide6.QtWidgets import QApplication              
 
 _APP = QApplication.instance() or QApplication([])
 from PySide6.QtGui import QFont
@@ -14,16 +22,16 @@ if _APP is not None:
     _APP.setFont(QFont("Segoe UI", 9))
 
 
-from tests.test_par2_launch import _Host, _TmpCase
-from ui.backup_page import BackupPage
-from ui.i18n import set_language, tr
+from tests.test_par2_launch import _Host, _TmpCase              
+from ui.backup_page import BackupPage              
+from ui.i18n import set_language, tr              
 
 set_language("ru", str(ROOT / "locales"))
 
 
 class TestPar2JobStatus(_TmpCase):
     class _MetaHost(_Host):
-
+        pass
 
         def __init__(self, container=None):
             super().__init__(container=container)
@@ -50,14 +58,14 @@ class TestPar2JobStatus(_TmpCase):
         )
 
     def test_ok_records_ok(self):
-
+        pass
         host = self._host_with_meta()
         ctx = {"work_id": "w1", "job_id": "j1"}
         self._done(host, "ok", ctx)
         self.assertEqual(host.meta_calls, [(ctx, "ok", None)])
 
     def test_damaged_records_error(self):
-
+        pass
         host = self._host_with_meta()
         ctx = {"work_id": "w1", "job_id": "j1"}
         self._done(host, "damaged", ctx)
@@ -74,7 +82,7 @@ class TestPar2JobStatus(_TmpCase):
         )
 
     def test_missing_records_error(self):
-
+        pass
         host = self._host_with_meta()
         ctx = {"work_id": "w1", "job_id": "j1"}
         self._done(host, "missing", ctx)
@@ -83,7 +91,7 @@ class TestPar2JobStatus(_TmpCase):
         )
 
     def test_broken_records_error(self):
-
+        pass
         host = self._host_with_meta()
         ctx = {"work_id": "w1", "job_id": "j1"}
         self._done(host, "broken", ctx)
@@ -92,13 +100,13 @@ class TestPar2JobStatus(_TmpCase):
         )
 
     def test_without_job_context_no_meta_call(self):
-
+        pass
         host = self._host_with_meta()
         self._done(host, "ok", None)
         self.assertEqual(host.meta_calls, [])
 
     def test_cancelled_records_nothing(self):
-
+        pass
         host = self._host_with_meta()
         ctx = {"work_id": "w1", "job_id": "j1"}
         host._on_par2_verify_done(
@@ -114,6 +122,14 @@ class TestPar2JobStatus(_TmpCase):
 
 
 class TestPar2ReasonDisplay(_TmpCase):
+    pass
+
+
+
+
+
+
+
 
     def test_error_with_reason_in_column_text(self):
         job = {"last_status": "error", "last_reason": "par2_missing"}
@@ -127,7 +143,7 @@ class TestPar2ReasonDisplay(_TmpCase):
         self.assertEqual(text, tr("backup.status.error"))
 
     def test_unknown_reason_falls_back_to_plain_error(self):
-
+        pass
         job = {"last_status": "error", "last_reason": "quantum_fluctuation"}
         text, _ = BackupPage._status_text_and_token(job)
         self.assertEqual(text, tr("backup.status.error"))
@@ -148,7 +164,7 @@ class TestPar2ReasonDisplay(_TmpCase):
         self.assertIn("2026-10-26 22:07:47", tip)
 
     def test_tooltip_empty_for_plain_error(self):
-
+        pass
         job = {"last_status": "error", "last_reason": None}
         self.assertEqual(BackupPage._status_tooltip(job), "")
 
@@ -162,6 +178,10 @@ class TestPar2ReasonDisplay(_TmpCase):
 
 
 class TestUpdateJobMetaReason(_TmpCase):
+    pass
+
+
+
 
     def _container_with_job(self):
         from core.tasks import add_job, add_work, empty_container
@@ -200,7 +220,7 @@ class TestUpdateJobMetaReason(_TmpCase):
         self.assertIsNone(job["last_reason"])
 
     def test_reason_without_value_is_none(self):
-
+        pass
         from core.tasks import update_job_meta
 
         c, jid = self._container_with_job()
@@ -210,7 +230,7 @@ class TestUpdateJobMetaReason(_TmpCase):
         self.assertIsNone(job["last_reason"])
 
     def test_normalise_job_reads_reason(self):
-
+        pass
         import io, os, tempfile
         from core.tasks import (
             add_job,
@@ -262,9 +282,17 @@ class TestUpdateJobMetaReason(_TmpCase):
 
 
 class TestQuickCheckRefusal(_TmpCase):
+    pass
+
+
+
+
+
+
+
 
     class _RefuseHost(_Host):
-
+        pass
 
         def __init__(self, container=None):
             super().__init__(container=container)
@@ -275,7 +303,7 @@ class TestQuickCheckRefusal(_TmpCase):
             return False
 
     def test_missing_set_shows_dialog(self):
-
+        pass
         host = self._RefuseHost(container=None)
         started = host._start_par2_verify(str(self.arch))
         self.assertFalse(started)
@@ -287,7 +315,7 @@ class TestQuickCheckRefusal(_TmpCase):
         self.assertIsNone(host._par2_verify_dialog)
 
     def test_missing_engine_shows_warning(self):
-
+        pass
         host = self._RefuseHost(container=None)
         import unittest.mock as m
         with m.patch("core.par2_ops.find_par2", return_value=None):
@@ -298,6 +326,10 @@ class TestQuickCheckRefusal(_TmpCase):
         self.assertTrue(warn)
 
     def test_real_refuse_writes_note_and_box(self):
+        pass
+
+
+
         import unittest.mock as m
 
         host = _Host(container=None)

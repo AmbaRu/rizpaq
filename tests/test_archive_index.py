@@ -1,3 +1,27 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import shutil
@@ -10,8 +34,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from core import archive_index as idx
-from core.models import ArchiveEntry
+from core import archive_index as idx              
+from core.models import ArchiveEntry              
 
 
 def _entry(
@@ -22,7 +46,7 @@ def _entry(
     is_dir: bool = False,
     dt: str = "2026-10-09 12:00:00",
 ) -> ArchiveEntry:
-
+    pass
     return ArchiveEntry(
         path=path,
         size=size,
@@ -34,15 +58,15 @@ def _entry(
 
 
 class IndexTestBase(unittest.TestCase):
-
+    pass
 
     def setUp(self):
         self._tmp = Path(tempfile.mkdtemp(prefix="rizpaq_index_test_"))
         self.addCleanup(shutil.rmtree, self._tmp, ignore_errors=True)
         self.path = self._tmp / "archive_index.sqlite"
         idx._set_index_path_for_tests(self.path)
-
-
+                                                                        
+                            
         self.addCleanup(idx.close)
         self.addCleanup(idx._set_index_path_for_tests, None)
 
@@ -56,24 +80,29 @@ class IndexTestBase(unittest.TestCase):
 
 class TestIndexPath(unittest.TestCase):
     def test_in_config_dir_by_default(self):
+        pass
 
+
+
+
+                                                              
         idx._set_index_path_for_tests(None)
         p = idx.index_path()
         self.assertEqual(p.name, idx.INDEX_FILENAME)
-
+                                                         
         try:
             from core.config import default_path
 
             self.assertEqual(p.parent, default_path().parent)
         except Exception:
-
-
+                                                                  
+                                                                     
             self.assertTrue(p.name.endswith(".sqlite"))
 
 
 class TestEmptyIndex(IndexTestBase):
     def test_load_returns_none_when_nothing_stored(self):
-
+        pass
         self.assertIsNone(self._load("C:/arc.zpaq"))
 
     def test_is_fresh_false_when_nothing_stored(self):
@@ -93,7 +122,7 @@ class TestStoreLoad(IndexTestBase):
         self.assertIsNotNone(loaded)
         self.assertEqual(len(loaded), 3)
 
-
+                                                 
         self.assertEqual(loaded[0].path, "d:/a.txt")
         self.assertEqual(loaded[1].path, "d:/b.txt")
         self.assertEqual(loaded[2].path, "d:/folder")
@@ -104,6 +133,10 @@ class TestStoreLoad(IndexTestBase):
         self.assertEqual(loaded[2].version, 1)
 
     def test_version_none_roundtrips(self):
+        pass
+
+
+
         entries = [_entry("d:/a.txt", size=10, version=None)]
         self._store("C:/arc.zpaq", entries)
 
@@ -112,6 +145,10 @@ class TestStoreLoad(IndexTestBase):
         self.assertIsNone(loaded[0].version)
 
     def test_empty_list_stores_and_loads_as_empty(self):
+        pass
+
+
+
         self._store("C:/arc.zpaq", [])
 
         loaded = self._load("C:/arc.zpaq")
@@ -131,7 +168,7 @@ class TestStoreLoad(IndexTestBase):
         )
 
     def test_unicode_paths_survive(self):
-
+        pass
         entries = [
             _entry("d:/Документы/отчёт.xlsx"),
             _entry("d:/Музыка/песня.mp3"),
@@ -147,6 +184,10 @@ class TestStoreLoad(IndexTestBase):
 
 class TestStoreOverwrites(IndexTestBase):
     def test_second_store_replaces_previous(self):
+        pass
+
+
+
         self._store("C:/arc.zpaq", [_entry("d:/old1.txt"), _entry("d:/old2.txt")])
         self._store("C:/arc.zpaq", [_entry("d:/new.txt")])
 
@@ -154,7 +195,7 @@ class TestStoreOverwrites(IndexTestBase):
         self.assertEqual([e.path for e in loaded], ["d:/new.txt"])
 
     def test_store_with_empty_replaces_data(self):
-
+        pass
         self._store("C:/arc.zpaq", [_entry("d:/a.txt")])
         self._store("C:/arc.zpaq", [])
 
@@ -163,6 +204,11 @@ class TestStoreOverwrites(IndexTestBase):
         self.assertEqual(loaded, [])
 
     def test_position_resets_on_overwrite(self):
+        pass
+
+
+
+
         self._store(
             "C:/arc.zpaq",
             [_entry("d:/x.txt"), _entry("d:/y.txt"), _entry("d:/z.txt")],
@@ -177,6 +223,16 @@ class TestStoreOverwrites(IndexTestBase):
 
 
 class TestDuplicatePathInside(IndexTestBase):
+    pass
+
+
+
+
+
+
+
+
+
 
     def test_versions_of_same_file_all_stored(self):
         entries = [
@@ -194,6 +250,11 @@ class TestDuplicatePathInside(IndexTestBase):
         self.assertEqual(versions, [1, 2, 3])
 
     def test_mixed_duplicates_and_unique_paths(self):
+        pass
+
+
+
+
         entries = [
             _entry("d:/a.txt", size=10, version=1),
             _entry("d:/b.txt", size=20, version=1),
@@ -213,6 +274,11 @@ class TestDuplicatePathInside(IndexTestBase):
         self.assertEqual(paths.count("d:/c.txt"), 1)
 
     def test_position_keeps_original_order(self):
+        pass
+
+
+
+
         entries = [
             _entry("d:/a.txt", size=10, version=1),
             _entry("d:/a.txt", size=20, version=2),
@@ -258,11 +324,11 @@ class TestForget(IndexTestBase):
 
         self.assertIsNone(self._load("C:/arc1.zpaq"))
         self.assertFalse(idx.is_fresh("C:/arc1.zpaq", 111, 222))
-
+                                
         self.assertIsNotNone(self._load("C:/arc2.zpaq"))
 
     def test_forget_missing_is_silent(self):
-
+        pass
         idx.forget("C:/no-such.zpaq")
 
     def test_forget_all_clears_everything(self):
@@ -276,29 +342,45 @@ class TestForget(IndexTestBase):
 
 
 class TestMultipartNotIndexed(IndexTestBase):
+    pass
+
+
+
+
+
+
+
 
     def test_store_is_ignored(self):
         idx.store_entries(
             "C:/backup_????.zpaq", 1000, 5000, [_entry("d:/a.txt")]
         )
-
-
+                                                                    
+                                                         
         self.assertIsNone(self._load("C:/backup_????.zpaq"))
         self.assertFalse(idx.is_fresh("C:/backup_????.zpaq", 1000, 5000))
 
     def test_load_and_fresh_skip_multipart(self):
-
+                                                              
         self.assertIsNone(self._load("C:/backup_????.zpaq"))
         self.assertFalse(idx.is_fresh("C:/backup_????.zpaq", 0, 0))
 
     def test_empty_path_is_skipped(self):
-
+        pass
         self.assertIsNone(idx.load_entries(""))
         self.assertFalse(idx.is_fresh("", 0, 0))
-        idx.store_entries("", 0, 0, [_entry("d:/a.txt")])
+        idx.store_entries("", 0, 0, [_entry("d:/a.txt")])                     
 
 
 class TestConcurrentStores(IndexTestBase):
+    pass
+
+
+
+
+
+
+
 
     def test_two_threads_write_different_archives(self):
         a_entries = [_entry(f"d:/a/{i}.txt", size=i) for i in range(50)]
@@ -331,19 +413,29 @@ class TestConcurrentStores(IndexTestBase):
 
 
 class TestReopen(IndexTestBase):
+    pass
+
+
+
+
+
 
     def test_data_survives_close_and_reopen(self):
         entries = [_entry("d:/a.txt", size=10, version=1)]
         self._store("C:/arc.zpaq", entries, mtime_ns=1000, size=5000)
 
         idx.close()
-
+                                                         
         loaded = self._load("C:/arc.zpaq")
         self.assertEqual(len(loaded), 1)
         self.assertEqual(loaded[0].path, "d:/a.txt")
         self.assertTrue(idx.is_fresh("C:/arc.zpaq", 1000, 5000))
 
     def test_schema_is_idempotent(self):
+        pass
+
+
+
         self._store("C:/arc.zpaq", [_entry("d:/a.txt")])
         idx.close()
         self._store("C:/arc.zpaq", [_entry("d:/b.txt")])

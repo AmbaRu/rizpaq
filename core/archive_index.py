@@ -1,3 +1,107 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -9,25 +113,48 @@ from typing import Optional
 
 from core.models import ArchiveEntry
 
-
+                                                               
+                                                 
 INDEX_FILENAME = "archive_index.sqlite"
 
-
+                                                                
+                                                                     
+                                                                      
+                                                                         
+           
+ 
+                                                      
+                                                                      
+                           
 SCHEMA_VERSION = 2
 
-
+                       
+ 
+                                                           
+                                                                    
+                                                               
+                                                                    
+                                                              
+                           
+                                                                     
+                                                               
 _WAL = "WAL"
 _SYNCHRONOUS = "NORMAL"
 _BUSY_TIMEOUT_MS = 3000
 
-
+                                                            
+ 
+                                                                
+                                                                  
+                                              
 _conn: Optional[sqlite3.Connection] = None
 _lock = threading.RLock()
 
-
+                                                                      
+                                                                   
 _override_path: Optional[Path] = None
 
-
+                                                
 _SCHEMA_STATEMENTS = (
     """
     CREATE TABLE IF NOT EXISTS archives (
@@ -55,8 +182,11 @@ _SCHEMA_STATEMENTS = (
     )
     """,
     "CREATE INDEX IF NOT EXISTS idx_entries_archive ON entries(archive_path)",
-
-
+                                                                          
+                                                                         
+                                                                         
+                                                                          
+                                                                  
     """
     CREATE TABLE IF NOT EXISTS catalog (
         path           TEXT PRIMARY KEY,
@@ -68,7 +198,9 @@ _SCHEMA_STATEMENTS = (
     """,
 )
 
-
+                                                         
+                                                                       
+                        
 _DROP_STATEMENTS = (
     "DROP INDEX IF EXISTS idx_entries_archive",
     "DROP TABLE IF EXISTS entries",
@@ -76,7 +208,18 @@ _DROP_STATEMENTS = (
 )
 
 
+                                                                             
+                       
+                                                                             
+
 def index_path() -> Path:
+    pass
+
+
+
+
+
+
     if _override_path is not None:
         return _override_path
 
@@ -86,14 +229,28 @@ def index_path() -> Path:
 
 
 def _set_index_path_for_tests(path: Optional[Path]) -> None:
+    pass
+
+
+
+
+
+
+
+
+
     global _override_path
     with _lock:
         _close_locked()
         _override_path = Path(path) if path else None
 
 
-def _read_user_version(conn: sqlite3.Connection) -> int:
+                                                                             
+                              
+                                                                             
 
+def _read_user_version(conn: sqlite3.Connection) -> int:
+    pass
     try:
         row = conn.execute("PRAGMA user_version").fetchone()
         if row is None:
@@ -104,7 +261,7 @@ def _read_user_version(conn: sqlite3.Connection) -> int:
 
 
 def _write_user_version(conn: sqlite3.Connection, version: int) -> None:
-
+    pass
     try:
         conn.execute(f"PRAGMA user_version = {int(version)}")
     except Exception:
@@ -112,6 +269,22 @@ def _write_user_version(conn: sqlite3.Connection, version: int) -> None:
 
 
 def _migrate_if_needed(conn: sqlite3.Connection) -> None:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     current = _read_user_version(conn)
     if current >= SCHEMA_VERSION:
         return
@@ -129,13 +302,20 @@ def _migrate_if_needed(conn: sqlite3.Connection) -> None:
 
 
 def _open_locked() -> sqlite3.Connection:
+    pass
+
+
+
+
+
+
     global _conn
 
     path = index_path()
     path.parent.mkdir(parents=True, exist_ok=True)
 
     conn = sqlite3.connect(str(path), check_same_thread=False)
-
+                                                           
     conn.execute(f"PRAGMA journal_mode={_WAL}")
     conn.execute(f"PRAGMA synchronous={_SYNCHRONOUS}")
     conn.execute(f"PRAGMA busy_timeout={_BUSY_TIMEOUT_MS}")
@@ -148,6 +328,13 @@ def _open_locked() -> sqlite3.Connection:
 
 
 def _get_connection() -> sqlite3.Connection:
+    pass
+
+
+
+
+
+
     with _lock:
         if _conn is not None:
             return _conn
@@ -155,7 +342,7 @@ def _get_connection() -> sqlite3.Connection:
 
 
 def _close_locked() -> None:
-
+    pass
     global _conn
     if _conn is None:
         return
@@ -167,11 +354,29 @@ def _close_locked() -> None:
 
 
 def close() -> None:
+    pass
+
+
+
+
+
+
     with _lock:
         _close_locked()
 
 
+                                                                             
+                
+                                                                             
+
 def _is_supported(path: str) -> bool:
+    pass
+
+
+
+
+
+
     if not path:
         return False
     if "?" in str(path):
@@ -180,6 +385,14 @@ def _is_supported(path: str) -> bool:
 
 
 def is_fresh(path: str, mtime_ns: int, size: int) -> bool:
+    pass
+
+
+
+
+
+
+
     if not _is_supported(path):
         return False
 
@@ -203,6 +416,21 @@ def is_fresh(path: str, mtime_ns: int, size: int) -> bool:
 
 
 def list_archives() -> list:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     with _lock:
         try:
             conn = _get_connection()
@@ -221,8 +449,9 @@ def list_archives() -> list:
     for row in rows:
         path = str(row[0])
         if not _is_supported(path):
-
-
+                                                                      
+                                                                       
+                                   
             continue
         out.append({
             "path": path,
@@ -235,6 +464,22 @@ def list_archives() -> list:
 
 
 def load_entries(path: str) -> Optional[list]:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     if not _is_supported(path):
         return None
 
@@ -251,8 +496,8 @@ def load_entries(path: str) -> Optional[list]:
                 (p,),
             ).fetchone()
             if head is None:
-
-
+                                                                      
+                                    
                 return None
 
             rows = conn.execute(
@@ -289,6 +534,28 @@ def store_entries(
     size: int,
     entries: list,
 ) -> None:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     if not _is_supported(path):
         return
 
@@ -335,12 +602,29 @@ def store_entries(
                     (p, int(mtime_ns), int(size), len(entries), now),
                 )
         except Exception:
-
+                                                                    
             pass
 
 
-def _norm(path: str) -> str:
+                                                                             
+                          
+                                                                             
+ 
+                                                                  
+                                                                       
+                                                                        
+                                                                    
+                                                                  
+                                                                  
+                                                   
+ 
+                                                               
+                                                                   
+                                                                      
+                                              
 
+def _norm(path: str) -> str:
+    pass
     try:
         return os.path.normcase(os.path.normpath(str(path)))
     except Exception:
@@ -348,7 +632,7 @@ def _norm(path: str) -> str:
 
 
 def _under_root(path: str, root: str) -> bool:
-
+    pass
     p = _norm(path)
     r = _norm(root)
     if not r:
@@ -361,6 +645,12 @@ def _under_root(path: str, root: str) -> bool:
 
 
 def catalog_upsert(path: str, size: int, mtime_ns: int) -> None:
+    pass
+
+
+
+
+
     if not path:
         return
 
@@ -384,6 +674,17 @@ def catalog_upsert(path: str, size: int, mtime_ns: int) -> None:
 
 
 def catalog_list() -> list:
+    pass
+
+
+
+
+
+
+
+
+
+
     with _lock:
         try:
             conn = _get_connection()
@@ -421,6 +722,15 @@ def catalog_list() -> list:
 
 
 def catalog_mark_scanned(roots, found) -> int:
+    pass
+
+
+
+
+
+
+
+
     roots = [str(r) for r in (roots or []) if str(r or "").strip()]
     if not roots:
         return 0
@@ -459,6 +769,13 @@ def catalog_mark_scanned(roots, found) -> int:
 
 
 def catalog_forget(path: str) -> None:
+    pass
+
+
+
+
+
+
     if not path:
         return
 
@@ -476,7 +793,7 @@ def catalog_forget(path: str) -> None:
 
 
 def catalog_forget_all() -> None:
-
+    pass
     with _lock:
         try:
             conn = _get_connection()
@@ -491,6 +808,15 @@ def catalog_forget_all() -> None:
 
 
 def forget(path: str) -> None:
+    pass
+
+
+
+
+
+
+
+
     if not path:
         return
 
@@ -510,6 +836,14 @@ def forget(path: str) -> None:
 
 
 def forget_all() -> None:
+    pass
+
+
+
+
+
+
+
     with _lock:
         try:
             conn = _get_connection()

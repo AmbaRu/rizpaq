@@ -1,3 +1,4 @@
+
 from __future__ import annotations
 
 import os
@@ -8,10 +9,26 @@ import tempfile
 from pathlib import Path
 
 
+                                                                         
+                                                                      
+                                                                       
+                                        
+                         
+                                          
+                         
+                                                                         
+ 
+                                                                     
+                                                                    
+                                                               
 MULTIPART_RE = re.compile(r"(?<=_)\d{4}\.zpaq$", re.IGNORECASE)
 
 
 def multipart_pattern(path) -> str:
+    pass
+
+
+
     if not path:
         return str(path) if path is not None else path
     p = str(path)
@@ -32,6 +49,17 @@ _RESERVED_NAMES = (
 
 
 def sanitize_filename(name: str) -> str:
+    pass
+
+
+
+
+
+
+
+
+
+
     if not name:
         return "extracted"
 
@@ -59,13 +87,13 @@ def sanitize_filename(name: str) -> str:
 
 
 def is_top_level_drive(path: str) -> bool:
-
+    pass
     p = str(path or "").strip().rstrip("/" + _BACKSLASH)
     return len(p) == 2 and p[1] == ":" and p[0].isalpha()
 
 
 def windows_drives() -> list:
-
+    pass
     out = []
 
     for letter in string.ascii_uppercase:
@@ -77,12 +105,12 @@ def windows_drives() -> list:
 
 
 def same_name(a: str, b: str) -> bool:
-
+    pass
     return os.path.normcase(a) == os.path.normcase(b)
 
 
 def is_root(path) -> bool:
-
+    pass
     try:
         p = Path(path)
         return p.parent == p
@@ -91,6 +119,16 @@ def is_root(path) -> bool:
 
 
 def is_inside(child, ancestor) -> bool:
+    pass
+
+
+
+
+
+
+
+
+
     try:
         c = os.path.normcase(os.path.abspath(str(child)))
         a = os.path.normcase(os.path.abspath(str(ancestor)))
@@ -101,7 +139,7 @@ def is_inside(child, ancestor) -> bool:
 
 
 def nearest_existing(path):
-
+    pass
     p = Path(path)
 
     while not p.exists():
@@ -113,7 +151,7 @@ def nearest_existing(path):
 
 
 def is_temp_path(path) -> bool:
-
+    pass
     try:
         t = os.path.normcase(os.path.abspath(tempfile.gettempdir()))
         p = os.path.normcase(os.path.abspath(str(path)))
@@ -123,7 +161,7 @@ def is_temp_path(path) -> bool:
 
 
 def valid_filename(name: str) -> bool:
-
+    pass
     name = (name or "").strip()
 
     if not name or name in (".", ".."):
@@ -132,11 +170,14 @@ def valid_filename(name: str) -> bool:
     if any(ch in _INVALID_FILENAME_CHARS for ch in name):
         return False
 
-
+                                                                       
+                                                              
+                                                                         
+                                    
     if any(ord(ch) < 32 for ch in name):
         return False
 
-
+                                                                           
     if name.rstrip(". ") != name:
         return False
 
@@ -147,6 +188,11 @@ def valid_filename(name: str) -> bool:
 
 
 def retarget_path(p, old, new):
+    pass
+
+
+
+
     try:
         pa = os.path.abspath(str(p))
         oa = os.path.abspath(str(old))
@@ -157,13 +203,19 @@ def retarget_path(p, old, new):
         return str(new)
 
     if is_inside(pa, old):
-
-
+                                                                     
+                                                                      
+                                                                 
+                                                                        
+                                                                     
+                                                              
+                                                                   
+                                           
         try:
             rel = os.path.relpath(pa, oa)
         except ValueError:
-
-
+                                                                        
+                                             
             return None
         return os.path.normpath(os.path.join(str(new), rel))
 
@@ -177,8 +229,24 @@ def directory_not_empty(path: Path) -> bool:
         return False
 
 
-def _split_inner_parts(inner) -> list:
+                                                                            
+                                                             
+ 
+                                           
+            
+            
+            
+ 
+                                                                    
+            
+ 
+                                                                        
+                                                                 
+                                                                            
 
+
+def _split_inner_parts(inner) -> list:
+    pass
     s = str(inner or "").replace(_BACKSLASH, "/").strip().strip("/")
     if not s:
         return []
@@ -193,6 +261,10 @@ def _split_inner_parts(inner) -> list:
 
 
 def _sanitize_fs_part(part: str) -> str:
+    pass
+
+
+
     out_chars = []
 
     for ch in str(part):
@@ -206,6 +278,17 @@ def _sanitize_fs_part(part: str) -> str:
 
 
 def _inner_variant_part_lists(parts: list) -> list:
+    pass
+
+
+
+
+
+
+
+
+
+
     if not parts:
         return []
 
@@ -216,18 +299,18 @@ def _inner_variant_part_lists(parts: list) -> list:
         if cleaned:
             raw_variants.append(cleaned)
 
-
+               
     add(parts)
 
-
+                                              
     add([_sanitize_fs_part(p) for p in parts])
 
-
+                       
     if any(":" in p for p in parts):
         add([p.replace(":", "_") for p in parts])
         add([p.replace(":", "") for p in parts])
 
-
+                                           
     first = parts[0]
     if len(first) == 2 and first[1] == ":" and first[0].isalpha():
         letter = first[0]
@@ -255,6 +338,15 @@ def _inner_variant_part_lists(parts: list) -> list:
 
 
 def find_extracted_path(root, inner, want_dir=None):
+    pass
+
+
+
+
+
+
+
+
     root = Path(root)
     if not root.is_dir():
         return None
@@ -267,7 +359,7 @@ def find_extracted_path(root, inner, want_dir=None):
     if not variants:
         return None
 
-
+                                  
     for variant in variants:
         try:
             p = root.joinpath(*variant)
@@ -276,11 +368,11 @@ def find_extracted_path(root, inner, want_dir=None):
         except Exception:
             continue
 
-
+                                                                     
     targets = [[x.casefold() for x in v] for v in variants]
     targets.sort(key=len, reverse=True)
 
-
+            
     if want_dir is not False:
         for dirpath, _dirnames, _filenames in os.walk(root):
             try:
@@ -298,7 +390,7 @@ def find_extracted_path(root, inner, want_dir=None):
                 if len(low) >= n and low[-n:] == target:
                     return Path(dirpath)
 
-
+            
     if want_dir is not True:
         for dirpath, _dirnames, filenames in os.walk(root):
             try:
@@ -318,16 +410,22 @@ def find_extracted_path(root, inner, want_dir=None):
 
 
 def find_extracted_dir(root, inner):
-
+    pass
     return find_extracted_path(root, inner, want_dir=True)
 
 
 def find_extracted_file(root, inner):
-
+    pass
     return find_extracted_path(root, inner, want_dir=False)
 
 
 def merge_tree(src, dest):
+    pass
+
+
+
+
+
     src = Path(src)
     dest = Path(dest)
 
@@ -339,7 +437,7 @@ def merge_tree(src, dest):
 
     dest.parent.mkdir(parents=True, exist_ok=True)
 
-
+                                                    
     if not dest.exists():
         try:
             os.replace(src, dest)
@@ -347,7 +445,7 @@ def merge_tree(src, dest):
         except OSError:
             pass
 
-
+                                                 
     elif dest.is_dir() and not directory_not_empty(dest):
         try:
             dest.rmdir()
@@ -356,6 +454,6 @@ def merge_tree(src, dest):
         except OSError:
             pass
 
-
+                            
     shutil.copytree(src, dest, dirs_exist_ok=True)
     shutil.rmtree(src, ignore_errors=True)

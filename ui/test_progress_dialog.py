@@ -1,3 +1,8 @@
+
+
+
+
+
 from __future__ import annotations
 
 from ui.i18n import tr
@@ -5,7 +10,7 @@ from ui.operation_progress_dialog import OperationProgressDialog
 
 
 class TestProgressDialog(OperationProgressDialog):
-
+    pass
 
     def __init__(
         self,
@@ -30,7 +35,7 @@ class TestProgressDialog(OperationProgressDialog):
         archive_name: str = "",
         mode_label: str = "",
     ) -> None:
-
+        pass
         title = tr("test.title")
 
         if archive_name:

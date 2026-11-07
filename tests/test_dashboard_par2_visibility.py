@@ -1,3 +1,11 @@
+                       
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -22,7 +30,7 @@ from ui.dashboard_page import DashboardPage
 
 
 def _make_page(works_spec):
-
+    pass
     tmp = Path(tempfile.mkdtemp(prefix="dash_par2off_"))
     container = T.empty_container()
     for title, par2_enabled, make_set in works_spec:
@@ -71,10 +79,11 @@ def _headers(page):
 class TestPar2Disabled(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-
-
+                                                                  
+                                                                 
+                                           
         i18n.set_language("ru", notify=False)
-
+                                               
         cls.page = _make_page([
             ("Есть набор", True, True),
             ("Отключено", False, False),
@@ -102,19 +111,19 @@ class TestPar2Disabled(unittest.TestCase):
         self.assertIn("PAR2: набора нет", text)
 
     def test_gauge_counts_all_backups(self):
-
+                                                                 
         self.assertEqual(
             self.page._lbl_gauge.text(),
             "защищено 1 из 3 бэкапов")
 
     def test_disabled_work_in_gauge_denominator(self):
-
-
+                                                                      
+                                       
         page = _make_page([("Только отключено", False, False)])
         self.assertEqual(page._lbl_gauge.text(), "защищено 0 из 1 бэкапов")
 
     def test_no_backup_jobs_empty(self):
-
+                                                                    
         page = _make_page([])
         self.assertEqual(page._lbl_gauge.text(), "Бэкап-задания отсутствуют")
 

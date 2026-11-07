@@ -1,3 +1,23 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -12,10 +32,13 @@ from unittest import mock
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from core import par2_ops
+from core import par2_ops              
 
-
-from PySide6.QtWidgets import QApplication
+                                                                    
+                                                                   
+                                                                    
+                                                         
+from PySide6.QtWidgets import QApplication              
 
 _APP = QApplication.instance() or QApplication([])
 from PySide6.QtGui import QFont
@@ -23,7 +46,7 @@ _APP = QApplication.instance()
 if _APP is not None:
     _APP.setFont(QFont("Segoe UI", 9))
 
-from core.par2_ops import (
+from core.par2_ops import (              
     STATE_BROKEN,
     STATE_DAMAGED,
     STATE_FAILED,
@@ -47,7 +70,8 @@ from core.par2_ops import (
     verify_parset,
 )
 
-
+                                                                
+                                                        
 _temp_set_files = par2_ops._temp_set_files
 
 PAR2_BIN = find_par2()
@@ -59,14 +83,16 @@ requires_par2 = unittest.skipUnless(
 
 
 class _TempCase(unittest.TestCase):
-
+    pass
 
     def setUp(self):
         self.base = Path(tempfile.mkdtemp(prefix="par2_ops_test_"))
         self.arch = self.base / "backup.zpaq"
         self.arch.write_bytes(b"A" * 30000)
-
-
+                                                                         
+                                                                         
+                                                                        
+                                  
         self.fake_bin = self.base / "par2.exe"
         self.fake_bin.write_bytes(b"not a real binary")
 
@@ -74,24 +100,32 @@ class _TempCase(unittest.TestCase):
         shutil.rmtree(self.base, ignore_errors=True)
 
     def damage(self, count=9000, step=300):
-
+        pass
         data = bytearray(self.arch.read_bytes())
         for off in range(0, count, step):
             data[off] ^= 0xFF
         self.arch.write_bytes(bytes(data))
 
     def _make_temp_set(self):
-
+        pass
         tmp = Path(par2_temp_set_name(str(self.arch)))
         tmp.write_bytes(b"x")
         vol = self.base / tmp.name.replace(".par2", ".vol00+01.par2")
         vol.write_bytes(b"x")
 
 
+                                                                     
+                                            
+                                                                     
+
 class TestSetNaming(unittest.TestCase):
+    pass
+
+
+
 
     def test_main_name_appends_not_replaces(self):
-
+        pass
         self.assertEqual(
             par2_main_name(r"D:\backup.zpaq"), r"D:\backup.zpaq.par2"
         )
@@ -100,6 +134,10 @@ class TestSetNaming(unittest.TestCase):
         )
 
     def test_main_name_of_replacement_would_be_wrong(self):
+        pass
+
+
+
         naive = r"D:\backup.par2"
         self.assertNotEqual(naive, par2_main_name(r"D:\backup.zpaq"))
 
@@ -109,7 +147,7 @@ class TestSetNaming(unittest.TestCase):
 
 
 class TestSetFileListing(_TempCase):
-
+    pass
 
     def test_empty_when_nothing_created(self):
         self.assertEqual(par2_set_files(str(self.arch)), [])
@@ -119,7 +157,7 @@ class TestSetFileListing(_TempCase):
         main.write_bytes(b"x")
         (self.base / "backup.zpaq.vol00+01.par2").write_bytes(b"x")
         (self.base / "backup.zpaq.vol127+35.par2").write_bytes(b"x")
-
+                                   
         (self.base / "чужой.par2").write_bytes(b"x")
 
         found = [Path(p).name for p in par2_set_files(str(self.arch))]
@@ -137,18 +175,26 @@ class TestSetFileListing(_TempCase):
         self.assertEqual(par2_set_files(str(self.arch)), [])
 
     def test_remove_survives_missing_file(self):
-
+        pass
         self.assertEqual(remove_par2_set(str(self.base / "нет.zpaq")), [])
 
 
+                                                                     
+                                             
+                                                                     
+
 class TestRecordedSize(unittest.TestCase):
+    pass
+
+
+
 
     def test_plain_number(self):
         log = "The total size of the data files is 66000 bytes."
         self.assertEqual(read_recorded_size(log), 66000)
 
     def test_thousands_separator(self):
-
+        pass
         log = "The total size of the data files is 1,234,567 bytes."
         self.assertEqual(read_recorded_size(log), 1234567)
 
@@ -157,7 +203,7 @@ class TestRecordedSize(unittest.TestCase):
         self.assertEqual(read_recorded_size(log), 500)
 
     def test_absent_line_returns_none(self):
-
+        pass
         self.assertIsNone(read_recorded_size("Main packet not found."))
         self.assertIsNone(read_recorded_size(""))
 
@@ -167,6 +213,10 @@ class TestRecordedSize(unittest.TestCase):
 
 
 class TestStaleness(unittest.TestCase):
+    pass
+
+
+
 
     def setUp(self):
         self.base = Path(tempfile.mkdtemp(prefix="par2_stale_"))
@@ -184,7 +234,7 @@ class TestStaleness(unittest.TestCase):
         self.assertFalse(set_is_stale(str(self.f), 1000))
 
     def test_unknown_size_is_unknown(self):
-
+        pass
         self.f.write_bytes(b"x" * 1000)
         self.assertIsNone(set_is_stale(str(self.f), None))
 
@@ -193,11 +243,19 @@ class TestStaleness(unittest.TestCase):
 
 
 class TestSubstDecision(unittest.TestCase):
+    pass
+
+
+
 
     def test_short_path_needs_nothing(self):
         self.assertFalse(needs_subst(r"C:\Архивы"))
 
     def test_long_path_needs_letter(self):
+        pass
+
+
+
         deep = "C:\\" + "\\".join(["Папка_с_длинным_именем_XX"] * 10)
         probe = os.path.join(
             deep, "Папка_с_длинным_именем_XX" + ".zpaq.vol127+35.par2"
@@ -206,7 +264,16 @@ class TestSubstDecision(unittest.TestCase):
         self.assertTrue(needs_subst(deep))
 
 
+                                                                     
+                      
+                                                                     
+
 class TestResultStates(unittest.TestCase):
+    pass
+
+
+
+
 
     def test_damaged_flag(self):
         self.assertTrue(Par2Result(False, STATE_DAMAGED).damaged)
@@ -221,6 +288,18 @@ class TestResultStates(unittest.TestCase):
 
 
 class TestUnrepairableIsSeparate(unittest.TestCase):
+    pass
+
+
+
+
+
+
+
+
+
+
+
 
     def test_damaged_but_not_repairable(self):
         self.assertTrue(Par2Result(False, STATE_UNREPAIRABLE).damaged)
@@ -231,7 +310,7 @@ class TestUnrepairableIsSeparate(unittest.TestCase):
         self.assertFalse(Par2Result(False, STATE_OK).repairable)
 
     def test_not_missing(self):
-
+        pass
         r = Par2Result(False, STATE_UNREPAIRABLE)
         self.assertNotEqual(r.state, STATE_MISSING)
         self.assertTrue(r.has_set, "набор-то на месте")
@@ -240,9 +319,24 @@ class TestUnrepairableIsSeparate(unittest.TestCase):
         self.assertTrue(Par2Result(False, STATE_UNREPAIRABLE).has_set)
 
 
+                                                                     
+
 class TestClassifyVerifyLog(unittest.TestCase):
+    pass
 
 
+
+
+
+
+
+
+
+
+
+
+
+                                   
     LOG_OK = (
         'Loading "backup.zpaq.par2".\n'
         'There are 1 recoverable files and 0 other files.\n'
@@ -256,7 +350,7 @@ class TestClassifyVerifyLog(unittest.TestCase):
         'All files are correct, repair is not required.\n'
     )
 
-
+                                       
     LOG_DAMAGED = (
         'There are 1 recoverable files and 0 other files.\n'
         'The total size of the data files is 2,004,054 bytes.\n'
@@ -271,7 +365,7 @@ class TestClassifyVerifyLog(unittest.TestCase):
         'You have an excess of 564 recovery blocks.\n'
     )
 
-
+                                                                    
     LOG_UNREPAIRABLE = (
         'There are 1 recoverable files and 0 other files.\n'
         'The total size of the data files is 2,004,054 bytes.\n'
@@ -286,7 +380,7 @@ class TestClassifyVerifyLog(unittest.TestCase):
         'You need 379 more recovery blocks to be able to repair.\n'
     )
 
-
+                                                                
     LOG_TARGET_MISSING = (
         'There are 1 recoverable files and 0 other files.\n'
         'The total size of the data files is 2,004,054 bytes.\n'
@@ -310,7 +404,7 @@ class TestClassifyVerifyLog(unittest.TestCase):
         )
 
     def test_damaged_unrepairable(self):
-
+        pass
         self.assertEqual(
             classify_verify_log(self.LOG_UNREPAIRABLE), STATE_UNREPAIRABLE
         )
@@ -321,7 +415,13 @@ class TestClassifyVerifyLog(unittest.TestCase):
         )
 
     def test_same_code_two_states(self):
-        v = verify_parset
+        pass
+
+
+
+
+
+        v = verify_parset                                        
         from core.par2_ops import _classify_verify
 
         a = _classify_verify(2, self.LOG_UNREPAIRABLE)
@@ -331,27 +431,33 @@ class TestClassifyVerifyLog(unittest.TestCase):
         self.assertNotEqual(a.state, b.state)
 
     def test_empty_log_returns_none(self):
+        pass
+
+
+
+
+
         self.assertIsNone(classify_verify_log(""))
         self.assertIsNone(classify_verify_log("что-то совсем другое\n"))
 
     def test_fallback_uses_code_when_log_unknown(self):
         from core.par2_ops import _classify_verify
 
-
+                                           
         self.assertEqual(
             _classify_verify(3, "мусор").state, STATE_MISSING
         )
         self.assertEqual(
             _classify_verify(1, "мусор").state, STATE_DAMAGED
         )
-
-
+                                                                     
+                                               
         self.assertEqual(
             _classify_verify(2, "мусор").state, STATE_UNREPAIRABLE
         )
 
     def test_recorded_size_read_from_log(self):
-
+        pass
         from core.par2_ops import _classify_verify
 
         r = _classify_verify(2, self.LOG_UNREPAIRABLE)
@@ -359,23 +465,45 @@ class TestClassifyVerifyLog(unittest.TestCase):
 
 
 class TestVerifyCallContract(unittest.TestCase):
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     def test_verify_parset_accepts_register(self):
         import inspect
 
         sig = inspect.signature(par2_ops.verify_parset)
-
+                                      
         sig.bind("par2.exe", "a.par2", register=lambda proc: None)
 
     def test_verify_parset_timeout_still_positional_ok(self):
-
+        pass
         import inspect
 
         sig = inspect.signature(par2_ops.verify_parset)
         sig.bind("par2.exe", "a.par2", 3600)
 
     def test_repair_parset_accepts_register(self):
-
+        pass
         import inspect
 
         sig = inspect.signature(par2_ops.repair_parset)
@@ -388,6 +516,12 @@ class TestVerifyCallContract(unittest.TestCase):
         sig.bind("par2.exe", "a.zpaq", register=lambda proc: None)
 
     def test_worker_passes_only_accepted_arguments(self):
+        pass
+
+
+
+
+
         import ast
 
         known = {
@@ -428,19 +562,27 @@ class TestVerifyCallContract(unittest.TestCase):
 
 @requires_par2
 class TestVerifyWorkerLive(_TempCase):
+    pass
+
+
+
+
+
 
     def _run_worker(self):
         from workers.par2_worker import Par2VerifyWorker
 
         got = {}
-
-
+                                                                       
+                                                                  
+                                                                  
+                      
         worker = Par2VerifyWorker(PAR2_BIN, str(self.arch))
         worker.done.connect(lambda r: got.update(r))
         worker.start()
         worker.wait(300000)
-
-
+                                                                          
+                                                               
         deadline = time.monotonic() + 30
         while not got and time.monotonic() < deadline:
             QApplication.processEvents()
@@ -449,6 +591,14 @@ class TestVerifyWorkerLive(_TempCase):
         return got
 
     def test_worker_builds_set_name_itself(self):
+        pass
+
+
+
+
+
+
+
         create_parset(PAR2_BIN, str(self.arch))
         got = self._run_worker()
         self.assertEqual(got.get("par2_path"),
@@ -469,6 +619,13 @@ class TestVerifyWorkerLive(_TempCase):
                       got.get("log"))
 
     def test_no_error_in_log(self):
+        pass
+
+
+
+
+
+
         create_parset(PAR2_BIN, str(self.arch))
         got = self._run_worker()
         log = got.get("log") or ""
@@ -477,6 +634,14 @@ class TestVerifyWorkerLive(_TempCase):
 
 
 class TestGuardsWithoutBinary(_TempCase):
+    pass
+
+
+
+
+
+
+
 
     def test_missing_binary_wins_over_missing_set(self):
         r = verify_parset(str(self.base / "нет-бинарника.exe"),
@@ -484,7 +649,7 @@ class TestGuardsWithoutBinary(_TempCase):
         self.assertEqual(r.state, STATE_FAILED)
 
     def test_verify_without_set(self):
-
+        pass
         r = verify_parset(str(self.fake_bin),
                           str(self.base / "нет-такого.par2"))
         self.assertEqual(r.state, STATE_MISSING)
@@ -505,6 +670,10 @@ class TestGuardsWithoutBinary(_TempCase):
 
 
 class TestRepairRefusesWithoutGuard(_TempCase):
+    pass
+
+
+
 
     @requires_par2
     def test_refuses_without_recorded_size(self):
@@ -517,7 +686,7 @@ class TestRepairRefusesWithoutGuard(_TempCase):
         )
         self.assertFalse(r.ok)
         self.assertEqual(r.state, STATE_FAILED)
-
+                                                                   
         self.assertNotEqual(self.arch.read_bytes(), b"A" * 30000)
 
     @requires_par2
@@ -533,16 +702,24 @@ class TestRepairRefusesWithoutGuard(_TempCase):
         self.assertEqual(r.state, STATE_FAILED)
 
 
+                                                                     
+              
+                                                                     
+
 @requires_par2
 class TestLiveEngine(_TempCase):
+    pass
+
+
+
 
     def test_create_makes_full_set(self):
         r = create_parset(PAR2_BIN, str(self.arch))
         self.assertTrue(r.ok, r.log)
 
         files = par2_set_files(str(self.arch))
-
-
+                                                                     
+                                              
         self.assertGreaterEqual(len(files), 2)
         self.assertTrue(Path(par2_main_name(str(self.arch))).is_file())
 
@@ -561,7 +738,7 @@ class TestLiveEngine(_TempCase):
         self.assertTrue(r.has_set)
 
     def test_verify_garbage_set_is_broken_not_damaged(self):
-
+        pass
         bad = self.base / "broken.par2"
         bad.write_bytes(b"PAR2\x00\x00" + "совсем-не-набор".encode("utf-8"))
         r = verify_parset(PAR2_BIN, str(bad))
@@ -579,6 +756,14 @@ class TestLiveEngine(_TempCase):
         self.assertEqual(self.arch.read_bytes(), b"A" * 30000)
 
     def test_rollback_is_refused_and_file_kept(self):
+        pass
+
+
+
+
+
+
+
         create_parset(PAR2_BIN, str(self.arch))
         expected = b"A" * 30000
 
@@ -596,16 +781,24 @@ class TestLiveEngine(_TempCase):
         self.assertFalse(r.ok, "восстановление по устаревшему набору "
                                "не должно было выполниться")
         self.assertEqual(r.state, STATE_FAILED)
-
+                                                      
         self.assertEqual(self.arch.stat().st_size, 60000)
         self.assertEqual(self.arch.read_bytes(), expected + b"B" * 30000)
 
     def test_create_refuses_when_set_already_exists(self):
+        pass
+
+
+
         self.assertTrue(create_parset(PAR2_BIN, str(self.arch)).ok)
         second = create_parset(PAR2_BIN, str(self.arch))
         self.assertFalse(second.ok)
 
     def test_create_with_temp_name_coexists(self):
+        pass
+
+
+
         self.assertTrue(create_parset(PAR2_BIN, str(self.arch)).ok)
         old_files = par2_set_files(str(self.arch))
 
@@ -613,12 +806,12 @@ class TestLiveEngine(_TempCase):
         fresh = create_parset(PAR2_BIN, str(self.arch), set_name=tmp_name)
         self.assertTrue(fresh.ok, fresh.log)
 
-
+                                                 
         all_files = par2_set_files(str(self.arch))
         for f in old_files:
             self.assertIn(f, all_files)
 
-
+                                                                     
         for f in old_files:
             os.remove(f)
         for p in self.base.glob("backup.zpaq.new*"):
@@ -629,6 +822,10 @@ class TestLiveEngine(_TempCase):
 
 
 class TestZeroOptionsNotPassed(_TempCase):
+    pass
+
+
+
 
     def _args(self, **kwargs):
         with mock.patch.object(par2_ops, "_run",
@@ -651,6 +848,10 @@ class TestZeroOptionsNotPassed(_TempCase):
 
 
 class TestOrphanCleanup(_TempCase):
+    pass
+
+
+
 
     def test_nothing_to_clean_initially(self):
         self.assertEqual(cleanup_orphans(str(self.arch)), [])
@@ -663,8 +864,8 @@ class TestOrphanCleanup(_TempCase):
         removed = cleanup_orphans(str(self.arch))
 
         self.assertEqual(len(removed), 2)
-
-
+                                                                     
+                                          
         self.assertTrue(real.exists(), "настоящий набор нельзя трогать")
         self.assertEqual(cleanup_orphans(str(self.arch)), [])
 
@@ -677,6 +878,11 @@ class TestOrphanCleanup(_TempCase):
 
 @requires_par2
 class TestRefreshSet(_TempCase):
+    pass
+
+
+
+
 
     def test_creates_set_on_first_run(self):
         r = refresh_par2_set(PAR2_BIN, str(self.arch))
@@ -685,12 +891,12 @@ class TestRefreshSet(_TempCase):
         self.assertTrue(Path(par2_main_name(str(self.arch))).is_file())
 
     def test_second_run_replaces_set(self):
-
+        pass
         self.assertTrue(refresh_par2_set(PAR2_BIN, str(self.arch)).ok)
         r = refresh_par2_set(PAR2_BIN, str(self.arch))
         self.assertTrue(r.ok, r.log)
 
-
+                                                              
         v = verify_parset(PAR2_BIN, par2_main_name(str(self.arch)))
         self.assertEqual(v.state, STATE_OK, v.log)
 
@@ -700,6 +906,9 @@ class TestRefreshSet(_TempCase):
         self.assertEqual(_temp_set_files(str(self.arch)), [])
 
     def test_unchanged_archive_skips_work(self):
+        pass
+
+
         self.assertTrue(refresh_par2_set(PAR2_BIN, str(self.arch)).ok)
 
         marker = Path(par2_main_name(str(self.arch)))
@@ -714,7 +923,7 @@ class TestRefreshSet(_TempCase):
                          "набор не должен пересоздаваться")
 
     def test_changed_archive_is_recreated(self):
-
+        pass
         refresh_par2_set(PAR2_BIN, str(self.arch))
         self.arch.write_bytes(b"A" * 30000 + b"B" * 10000)
 
@@ -726,6 +935,13 @@ class TestRefreshSet(_TempCase):
         self.assertEqual(v.state, STATE_OK, v.log)
 
     def test_race_during_creation_discards_new_set(self):
+        pass
+
+
+
+
+
+
         self.assertTrue(refresh_par2_set(PAR2_BIN, str(self.arch)).ok)
         old_marker = Path(par2_main_name(str(self.arch)))
         old_size = old_marker.stat().st_size
@@ -733,7 +949,7 @@ class TestRefreshSet(_TempCase):
         real_getsize = os.path.getsize
 
         def grows_on_second_call(path):
-
+            pass
             size = real_getsize(path)
             if str(path) == str(self.arch):
                 counter["n"] += 1
@@ -749,12 +965,16 @@ class TestRefreshSet(_TempCase):
 
         self.assertFalse(r.ok)
         self.assertIn("изменился", r.log)
-
+                                            
         self.assertEqual(_temp_set_files(str(self.arch)), [])
         self.assertTrue(old_marker.is_file())
         self.assertEqual(old_marker.stat().st_size, old_size)
 
     def test_failed_creation_keeps_old_set(self):
+        pass
+
+
+
         self.assertTrue(refresh_par2_set(PAR2_BIN, str(self.arch)).ok)
         before = sorted(Path(p).name for p in par2_set_files(str(self.arch)))
 
@@ -769,7 +989,7 @@ class TestRefreshSet(_TempCase):
         self.assertEqual(before, after)
 
     def test_orphans_removed_before_new_creation(self):
-
+        pass
         self._make_temp_set()
         r = refresh_par2_set(PAR2_BIN, str(self.arch))
         self.assertTrue(r.ok, r.log)
@@ -777,6 +997,11 @@ class TestRefreshSet(_TempCase):
 
 
 def test_failed_creation_removes_partial_temp_set(self):
+        pass
+
+
+
+
         self._make_temp_set()
         with mock.patch.object(
             par2_ops, "create_parset",

@@ -1,3 +1,159 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -32,19 +188,28 @@ from core.tasks import (
     update_work,
 )
 
-
+                                                                    
+                                                                  
+                                                                  
 from core.archive_naming import default_dest as _default_dest
 from core.archive_naming import has_non_latin as _has_non_latin
 from core.archive_naming import make_latin_name as _make_latin_name
 
-
+                                                          
+                                                                     
+                                                                
+                                        
 from core import archive_index
 from core import index_refresh
 
-
+                                                                 
+                                                                 
+                                      
 from core.headless import _build_log_header, _write_task_log
 
-
+                                                                   
+                                                               
+                                           
 from core.zpaq_cli import looks_like_busy_error
 
 from ui.archive_check_dialog import ArchiveCheckDialog
@@ -83,7 +248,8 @@ _TEST_LOG_LIMIT = 20000
 _TEST_TAIL = 2000
 _CREATE_LOG_LIMIT = 20000
 
-
+                                                                   
+                                                              
 _WORK_FIELDS = (
     "sources",
     "dest",
@@ -94,11 +260,25 @@ _WORK_FIELDS = (
 
 
 def offer_latin_rename(path: str, parent):
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
     if not path:
         return path
     if "?" in str(path):
-
-
+                                                                 
+                                               
         return path
     if not _has_non_latin(Path(path).stem):
         return path
@@ -138,9 +318,18 @@ def _esc(value: object) -> str:
 
 
 class ArchiveActionsMixin:
+    pass
 
+                                                                          
 
     def _tasks_dir(self):
+        pass
+
+
+
+
+
+
         page = getattr(self, "backup_page", None)
         if page is not None:
             getter = getattr(page, "tasks_dir", None)
@@ -159,7 +348,7 @@ class ArchiveActionsMixin:
         return str(value) if value else None
 
     def _load_container(self):
-
+        pass
         folder = self._tasks_dir()
         if not folder:
             return None, None
@@ -170,6 +359,14 @@ class ArchiveActionsMixin:
             return None, None
 
     def _show_container_busy(self, path) -> None:
+        pass
+
+
+
+
+
+
+
         try:
             QMessageBox.information(
                 self,
@@ -180,6 +377,12 @@ class ArchiveActionsMixin:
             pass
 
     def _show_container_save_error(self, path, exc) -> None:
+        pass
+
+
+
+
+
         try:
             QMessageBox.warning(
                 self,
@@ -189,6 +392,7 @@ class ArchiveActionsMixin:
         except Exception:
             pass
 
+                                                                        
 
     def _offer_nonlatin_rename(self, path: str):
         return offer_latin_rename(path, self)
@@ -240,6 +444,7 @@ class ArchiveActionsMixin:
             self.archive_path, make_active=True, inner=self.archive_inner
         )
 
+                                                                             
 
     def _open_info_dialog(self, path: str) -> None:
         c = self._cache(path)
@@ -266,6 +471,7 @@ class ArchiveActionsMixin:
         self.statusBar().showMessage(tr("status.archive_info_requested"))
         self._load_info(self.archive_path)
 
+                                                                    
 
     def _on_test_archive(
         self,
@@ -275,13 +481,39 @@ class ArchiveActionsMixin:
         job_context=None,
         password=None,
     ):
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         arc = multipart_pattern(path or self.archive_path)
         if not arc:
             self.statusBar().showMessage(tr("status.test_only_archive"))
             return
         arc = str(arc)
 
-
+                                                                       
+                                                                      
+                                                                         
+                                                                         
+                                                                         
+                      
         if str(mode) == "par2":
             self._start_par2_verify(arc, job_context=job_context)
             return
@@ -300,7 +532,10 @@ class ArchiveActionsMixin:
 
         arc = str(arc)
 
-
+                                                                     
+                                                                     
+                                                                     
+                                                  
         if password:
             pw = password
             try:
@@ -345,8 +580,8 @@ class ArchiveActionsMixin:
                 "path": arc,
                 "tmp": tmp,
                 "from_create": from_create,
-
-
+                                                                    
+                                                                
                 "job_context": dict(job_context) if job_context else None,
             },
         )
@@ -390,7 +625,13 @@ class ArchiveActionsMixin:
             except Exception:
                 pass
 
-
+                                                                       
+                                                                   
+                                                                   
+         
+                                                                      
+                                                                     
+                                                    
         if job_context and not cancelled:
             status = "ok" if rc == 0 else "error"
             self._update_job_meta_after_run(
@@ -433,6 +674,7 @@ class ArchiveActionsMixin:
                 self, tr("test.title"), tr("test.fail", name=name) + "\n\n" + tail
             )
 
+                                                               
 
     def _compute_changed_counts(self):
         pv = defaultdict(set)
@@ -469,8 +711,8 @@ class ArchiveActionsMixin:
             and self.archive_path is not None
             and bool(self.versions)
         )
-
-
+                                                                   
+                                                                    
         has_salvage = (
             self.mode == "archive" and self.archive_path is not None
         )
@@ -554,8 +796,10 @@ class ArchiveActionsMixin:
         worker = ExtractFolderBatchWorker(
             self.zpaq_bin, self.archive_path, self.password, "", n, dest
         )
-
-
+                                                                      
+                                                                       
+                                                                   
+                                                  
         worker.worker_started.connect(self._ui_folder_batch_started)
         worker.percent.connect(self._ui_folder_percent)
         try:
@@ -595,6 +839,7 @@ class ArchiveActionsMixin:
             self, tr("menu.unpack"), tr("status.unpack_all_done", dest=base)
         )
 
+                                                                  
 
     def _selected_table_sources(self) -> list:
         tbl = getattr(self, "table", None)
@@ -618,6 +863,14 @@ class ArchiveActionsMixin:
         return paths
 
     def _selected_tree_sources(self) -> list:
+        pass
+
+
+
+
+
+
+
         tree = getattr(self, "tree", None)
         if tree is None:
             return []
@@ -637,6 +890,14 @@ class ArchiveActionsMixin:
         return []
 
     def _on_create_archive_current(self):
+        pass
+
+
+
+
+
+
+
         if self.mode == "fs":
             sel = self._selected_table_sources()
             if sel:
@@ -664,6 +925,7 @@ class ArchiveActionsMixin:
             return
         self._start_create_archive([str(p) for p in paths])
 
+                                                                     
 
     def _copy_archive_to_folder(self, dest: str, copy_dir: str) -> str:
         try:
@@ -689,8 +951,30 @@ class ArchiveActionsMixin:
                 errors.append(f"{f.name}: {exc}")
         return "; ".join(errors)
 
+                                                                       
 
     def _run_job(self, work_id: str, job_id: str):
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if not self.zpaq_available:
             QMessageBox.warning(
                 self, tr("zpaq.not_found_title"), tr("zpaq.not_found_text")
@@ -724,8 +1008,11 @@ class ArchiveActionsMixin:
         job_context = {"work_id": str(work_id), "job_id": str(job_id)}
 
         if action == ACTION_TEST:
-
-
+                                                                    
+                                                                  
+                                                                 
+                                                               
+                             
             self._on_test_archive(
                 path=settings.get("dest"),
                 mode=str(settings.get("test_mode") or "full"),
@@ -735,7 +1022,7 @@ class ArchiveActionsMixin:
             )
             return
 
-
+                                       
         if not settings.get("sources"):
             QMessageBox.warning(
                 self, tr("create.dialog_title"), tr("create.no_source")
@@ -744,8 +1031,35 @@ class ArchiveActionsMixin:
 
         self._run_create_from_settings(settings, job_context=job_context)
 
+                                                                               
 
     def _edit_job(self, work_id: str, job_id: str):
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         container, path = self._load_container()
         if container is None:
             QMessageBox.warning(
@@ -774,11 +1088,11 @@ class ArchiveActionsMixin:
             )
             if dlg.exec() != QDialog.Accepted:
                 return
-
-
+                                                                 
+                                                              
             return
 
-
+                                    
         sources = settings.get("sources") or []
         if not sources:
             QMessageBox.warning(
@@ -805,7 +1119,8 @@ class ArchiveActionsMixin:
         if not new_settings or not new_settings.get("dest"):
             return
 
-
+                                                                   
+                 
         work_fields, job_fields = self._split_settings_work_job(new_settings)
 
         result = {"error": None}
@@ -845,8 +1160,21 @@ class ArchiveActionsMixin:
             job_context={"work_id": str(work_id), "job_id": str(job_id)},
         )
 
+                                                                              
 
     def _edit_work(self, work_id: str):
+        pass
+
+
+
+
+
+
+
+
+
+
+
         container, path = self._load_container()
         if container is None:
             QMessageBox.warning(
@@ -872,6 +1200,35 @@ class ArchiveActionsMixin:
         self._save_edited_work(settings, str(work_id))
 
     def _save_edited_work(self, settings: dict, work_id: str) -> bool:
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         container, path = self._load_container()
         if container is None or path is None:
             QMessageBox.warning(
@@ -886,13 +1243,15 @@ class ArchiveActionsMixin:
             )
             return False
 
-
+                                                                    
+                                                                      
+                            
         old_names = []
         for job in work.get("jobs") or []:
             nm = self._task_name_for(container, work_id, str(job.get("id") or ""))
             old_names.append((str(job.get("id") or ""), nm))
 
-
+                                  
         fields = {
             "sources": list(settings.get("sources") or []),
             "dest": str(settings.get("dest") or ""),
@@ -904,12 +1263,12 @@ class ArchiveActionsMixin:
         if wt:
             fields["title"] = wt
 
-
+                                                                      
         password_action = str(settings.get("password_action") or "keep").lower()
         if password_action == "set":
             fields["password"] = str(settings.get("password") or "")
         elif password_action == "clear":
-            fields["password"] = ""
+            fields["password"] = ""                                       
 
         result = {"error": None, "new_names": {}}
 
@@ -917,8 +1276,9 @@ class ArchiveActionsMixin:
             if update_work(c, str(work_id), **fields) is None:
                 result["error"] = "work_not_found"
                 return
-
-
+                                                               
+                                                                  
+                                    
             for job_id, _old in old_names:
                 nm = self._task_name_for(c, work_id, job_id)
                 result["new_names"][job_id] = nm
@@ -938,7 +1298,9 @@ class ArchiveActionsMixin:
             )
             return False
 
-
+                                                                    
+                                                                    
+                                              
         for job_id, old_name in old_names:
             if not old_name:
                 continue
@@ -959,8 +1321,24 @@ class ArchiveActionsMixin:
 
         return True
 
+                                                                                    
 
     def _on_add_job_to_work(self, work_id: str):
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         container, path = self._load_container()
         if container is None:
             QMessageBox.warning(
@@ -993,8 +1371,8 @@ class ArchiveActionsMixin:
             "not_masks": list(work.get("not_masks") or []),
             "level_key": "m2",
             "task_log_mode": "short",
-
-
+                                                                  
+                                               
             "work_title": work.get("title") or "",
         }
 
@@ -1035,6 +1413,25 @@ class ArchiveActionsMixin:
                 pass
 
     def _on_add_check_to_work(self, work_id: str):
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         container, path = self._load_container()
         if container is None:
             QMessageBox.warning(
@@ -1063,10 +1460,22 @@ class ArchiveActionsMixin:
         if dlg.exec() != QDialog.Accepted:
             return
 
-
-        _ = path
+                                                          
+                                                                       
+                                                                
+                                                           
+        _ = path                                                 
 
     def _on_add_check_par2_to_work(self, work_id: str):
+        pass
+
+
+
+
+
+
+
+
         container, path = self._load_container()
         if container is None:
             QMessageBox.warning(
@@ -1098,8 +1507,40 @@ class ArchiveActionsMixin:
 
         _ = path
 
+                                                                            
 
     def _split_settings_work_job(self, settings: dict) -> tuple:
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         password = settings.get("password")
         work_fields = {
             "sources": list(settings.get("sources") or []),
@@ -1111,27 +1552,73 @@ class ArchiveActionsMixin:
         if password:
             work_fields["password"] = password
 
-
+                                                                    
+                                                            
+                                                                
+                                     
         if "work_title" in settings:
             wt = str(settings.get("work_title") or "").strip()
             if wt:
                 work_fields["title"] = wt
 
         job_fields = {}
-
-
+                                                                   
+                                                                  
+                                                                  
+                                                                      
+                                                                     
+                           
+         
+                                                                     
+                                                                      
+                                                                
         for key in JOB_FIELDS:
             if key in settings:
                 job_fields[key] = settings.get(key)
 
-
+                                                                  
+                                                                   
+                                                   
         if "title" in settings:
             job_fields["title"] = settings.get("title")
 
         return work_fields, job_fields
 
+                                                                               
 
     def _save_new_job(self, settings: dict, work_id=None) -> bool:
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         folder = self._tasks_dir()
         if not folder:
             QMessageBox.warning(
@@ -1143,7 +1630,8 @@ class ArchiveActionsMixin:
 
         work_fields, job_fields = self._split_settings_work_job(settings)
 
-
+                                                               
+                                                               
         result = {"work": None, "job": None, "error": None}
 
         def mutate(c):
@@ -1152,22 +1640,29 @@ class ArchiveActionsMixin:
                 if work is None:
                     result["error"] = "work_not_found"
                     return
-
-
+                                                                 
+                                                                   
                 update_work(c, str(work_id), **work_fields)
                 job = add_job(c, str(work_id), job_fields)
                 if job is None:
                     result["error"] = "add_job_failed"
                     return
-
+                                                                       
                 result["work"] = find_work(c, str(work_id)) or work
                 result["job"] = job
             else:
-
-
+                                                                  
+                                           
                 wf = dict(work_fields)
 
-
+                                                                    
+                                                                  
+                                                                    
+                                                                      
+                         
+                 
+                                                                         
+                                                                         
                 work_title = str(wf.pop("title", "") or "").strip()
                 if not work_title:
                     dest = str(wf.get("dest") or "")
@@ -1221,7 +1716,9 @@ class ArchiveActionsMixin:
         if work is None or job is None:
             return False
 
-
+                                                                    
+                                                              
+                                      
         self._apply_schedule(work, job, settings.get("schedule"))
 
         page = getattr(self, "backup_page", None)
@@ -1234,6 +1731,38 @@ class ArchiveActionsMixin:
         return True
 
     def _save_edited_job(self, settings: dict, work_id: str, job_id: str) -> bool:
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         container, path = self._load_container()
         if container is None or path is None:
             QMessageBox.warning(
@@ -1241,7 +1770,9 @@ class ArchiveActionsMixin:
             )
             return False
 
-
+                                                                        
+                                                                      
+                                
         old_task_name = self._task_name_for(container, work_id, job_id)
 
         work_fields, job_fields = self._split_settings_work_job(settings)
@@ -1255,8 +1786,8 @@ class ArchiveActionsMixin:
             if update_job(c, str(job_id), **job_fields) is None:
                 result["error"] = "job_not_found"
                 return
-
-
+                                                                    
+                                            
             result["new_task_name"] = self._task_name_for(c, work_id, job_id)
 
         try:
@@ -1274,7 +1805,9 @@ class ArchiveActionsMixin:
             )
             return False
 
-
+                                                                      
+                                                                   
+                                                
         new_task_name = result["new_task_name"]
         if old_task_name and new_task_name and old_task_name != new_task_name:
             try:
@@ -1283,11 +1816,13 @@ class ArchiveActionsMixin:
             except Exception:
                 pass
 
-
+                                                                     
+                                                                       
+                                                             
         schedule = settings.get("schedule")
         if schedule is not None:
-
-
+                                                                        
+                                                                
             container_now, _ = self._load_container()
             if container_now is not None:
                 work = find_work(container_now, str(work_id))
@@ -1306,6 +1841,14 @@ class ArchiveActionsMixin:
 
     @staticmethod
     def _task_name_for(container: dict, work_id: str, job_id: str) -> str:
+        pass
+
+
+
+
+
+
+
         try:
             work = find_work(container, str(work_id))
             found = find_job(container, str(job_id))
@@ -1316,6 +1859,29 @@ class ArchiveActionsMixin:
             return ""
 
     def _apply_schedule(self, work: dict, job: dict, schedule) -> None:
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if schedule is None:
             return
 
@@ -1337,8 +1903,25 @@ class ArchiveActionsMixin:
         worker.start()
 
     def _on_schedule_apply_done(self, ok: bool, error_text: str, schedule) -> None:
+        pass
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                 
+                                                                     
         if not schedule or not schedule.get("enabled"):
             return
 
@@ -1359,8 +1942,14 @@ class ArchiveActionsMixin:
         except Exception:
             pass
 
+                                                                              
 
     def _selected_backup_job(self):
+        pass
+
+
+
+
         page = getattr(self, "backup_page", None)
         if page is None:
             return None
@@ -1373,6 +1962,13 @@ class ArchiveActionsMixin:
             return None
 
     def _on_run_task(self, *_args):
+        pass
+
+
+
+
+
+
         selected = self._selected_backup_job()
         if selected is None:
             QMessageBox.information(
@@ -1382,6 +1978,11 @@ class ArchiveActionsMixin:
         self._run_job(selected["work_id"], selected["job_id"])
 
     def _on_edit_task(self, *_args):
+        pass
+
+
+
+
         selected = self._selected_backup_job()
         if selected is None:
             QMessageBox.information(
@@ -1390,8 +1991,24 @@ class ArchiveActionsMixin:
             return
         self._edit_job(selected["work_id"], selected["job_id"])
 
+                                                                                 
 
     def _run_create_from_settings(self, settings: dict, job_context=None):
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         srcs = settings.get("sources") or []
         if not srcs:
             QMessageBox.warning(
@@ -1431,8 +2048,10 @@ class ArchiveActionsMixin:
             srcs = ["*"]
 
         cmd = [self.zpaq_bin, "a", dest] + srcs
-
-
+                                                                 
+                                                                 
+                                                                     
+                                        
         cmd.append("-open")
         for flag in settings.get("level", []) or []:
             cmd.append(flag)
@@ -1499,8 +2118,11 @@ class ArchiveActionsMixin:
                 "copy": settings.get("copy") or "",
                 "params_rows": settings.get("params_rows") or [],
                 "job_context": dict(job_context) if job_context else None,
-
-
+                                                                    
+                                                                     
+                                                              
+                                                                   
+                                                                       
                 "par2": {
                     "enabled": bool(settings.get("par2_enabled")),
                     "options": dict(settings.get("par2_options") or {}),
@@ -1536,8 +2158,10 @@ class ArchiveActionsMixin:
                 worker.cancel_request()
             except Exception:
                 pass
-
-
+                                                                     
+                                                                     
+                                                                 
+                          
         par2_worker = getattr(self, "_par2_worker", None)
         if par2_worker is not None:
             try:
@@ -1550,7 +2174,7 @@ class ArchiveActionsMixin:
             pass
 
     def _start_create_archive(self, sources):
-
+        pass
         if not self.zpaq_available:
             QMessageBox.warning(
                 self, tr("zpaq.not_found_title"), tr("zpaq.not_found_text")
@@ -1570,8 +2194,13 @@ class ArchiveActionsMixin:
             return
         self._run_create_from_settings(settings)
 
+                                                                           
 
     def _request_create_report(self):
+        pass
+
+
+
         rep = getattr(self, "_create_report", None)
         if not rep:
             return
@@ -1591,7 +2220,7 @@ class ArchiveActionsMixin:
         self._load_info(dest, quiet=True)
 
     def _show_create_report(self):
-
+        pass
         rep = getattr(self, "_create_report", None) or getattr(
             self, "_pending_create_report", None
         )
@@ -1611,6 +2240,18 @@ class ArchiveActionsMixin:
         dlg.exec()
 
     def _on_create_result(self, result):
+        pass
+
+
+
+
+
+
+
+
+
+
+
         try:
             self._stop_busy()
         except Exception:
@@ -1626,7 +2267,10 @@ class ArchiveActionsMixin:
         name = Path(dest).name if dest else ""
         job_context = ctx.get("job_context")
 
-
+                                                                   
+                                                                    
+                                                                  
+                           
         if cancelled:
             job_status = ""
         elif rc == 0:
@@ -1640,7 +2284,13 @@ class ArchiveActionsMixin:
             self._update_job_meta_after_run(
                 job_context, job_status, rc=rc, output=output)
 
-
+                                                                    
+                                                                 
+                                                             
+                                                                  
+                                                      
+                                                                    
+                                                       
         if job_status == "ok" and dest and "?" not in dest:
             self._refresh_index_after_create(dest, password)
 
@@ -1660,7 +2310,10 @@ class ArchiveActionsMixin:
                 progress_dlg.accept()
             elif rc != 0:
                 progress_dlg.finish(rc == 0, name)
-
+                                                                      
+                                                                      
+                                                                
+                                                                       
 
         if cancelled:
             self.statusBar().showMessage(tr("status.cancel_requested"))
@@ -1671,8 +2324,18 @@ class ArchiveActionsMixin:
 
         if rc == 0:
             self.statusBar().showMessage(tr("create.done", name=name))
-
-
+                                                                   
+                                                                    
+                                                                   
+                                                                     
+                                                                  
+                                                                   
+                                                                    
+                                                     
+             
+                                                                    
+                                                                      
+                                                                      
             started_par2 = False
             try:
                 started_par2 = self._start_par2_worker(
@@ -1721,8 +2384,11 @@ class ArchiveActionsMixin:
                     self.statusBar().showMessage(tr("create.copy_done", dir=copy_dir))
 
             if test_after:
-
-
+                                                                     
+                                                                      
+                                                                    
+                                                                      
+                                                            
                 self._cleanup_transcode_temp_dir()
                 self._on_test_archive(
                     dest, ctx.get("test_mode") or "full", from_create=True
@@ -1733,10 +2399,12 @@ class ArchiveActionsMixin:
             self._cleanup_transcode_temp_dir()
             return
 
-
+                         
         if job_status == "busy":
-
-
+                                                                   
+                                                                
+                                                                 
+                                                        
             self._create_report = None
             self.statusBar().showMessage(tr("create.busy_status", name=name))
             QMessageBox.information(
@@ -1747,7 +2415,7 @@ class ArchiveActionsMixin:
             self._cleanup_transcode_temp_dir()
             return
 
-
+                                         
         self._create_report = None
         tail = output.strip()[-_TEST_TAIL:]
         self.statusBar().showMessage(tr("create.error_title"))
@@ -1760,6 +2428,34 @@ class ArchiveActionsMixin:
 
     def _update_job_meta_after_run(self, job_context: dict, status: str,
                                    reason: str = None, rc=None, output=None):
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         try:
             container, path = self._load_container()
             if container is None or path is None:
@@ -1774,10 +2470,13 @@ class ArchiveActionsMixin:
             try:
                 update_container(path, mutate)
             except ContainerLockBusy:
-
+                                                        
                 pass
 
-
+                                                                  
+                                                                 
+                                                                    
+                                                                     
             self._write_run_log_record(
                 str(path), job_id, status, rc, output)
         except Exception:
@@ -1792,6 +2491,17 @@ class ArchiveActionsMixin:
 
     def _write_run_log_record(self, rzp_path: str, job_id: str, status: str,
                               rc, output):
+        pass
+
+
+
+
+
+
+
+
+
+
         try:
             container = load_container(rzp_path)
             if container is None:
@@ -1813,8 +2523,19 @@ class ArchiveActionsMixin:
         except Exception:
             pass
 
+                                                                        
 
     def _refresh_index_after_create(self, dest: str, password=None):
+        pass
+
+
+
+
+
+
+
+
+
         zpaq = getattr(self, "zpaq_bin", None)
         if not zpaq:
             return
@@ -1835,6 +2556,13 @@ class ArchiveActionsMixin:
         worker.start()
 
     def _on_index_refresh_result(self, result: dict):
+        pass
+
+
+
+
+
+
         try:
             ctx = result.get("context") or {}
             if not ctx.get("index_refresh"):
@@ -1854,10 +2582,17 @@ class ArchiveActionsMixin:
             archive_index.store_entries(
                 str(path), stamp[0], stamp[1], entries)
         except Exception:
-
+                                                          
             pass
 
     def _handle_incomplete_archive(self, dest, is_update, output):
+        pass
+
+
+
+
+
+
         p = Path(dest)
         action = incomplete_archive_action(str(p), bool(is_update))
         if action["action"] == "none":
@@ -1882,6 +2617,7 @@ class ArchiveActionsMixin:
             tr("create.incomplete_text") + ("\n\n" + tail if tail else ""),
         )
 
+                                                                             
 
     def _extract_universal_dialog(self, path):
         dest = QFileDialog.getExistingDirectory(
@@ -1937,6 +2673,9 @@ class ArchiveActionsMixin:
         worker.start()
 
     def _convert_universal_to_zpaq(self, path):
+        pass
+
+
         default_dest = _default_dest(path)
         if _has_non_latin(Path(default_dest).stem):
             default_dest = _make_latin_name(default_dest, avoid_existing=False)

@@ -1,3 +1,66 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -22,7 +85,7 @@ from ui.qt_compat import PASSWORD_ECHO
 
 
 class ArchiveWorkDialog(QDialog):
-
+    pass
 
     def __init__(self, work: dict, parent=None):
         super().__init__(parent)
@@ -32,7 +95,9 @@ class ArchiveWorkDialog(QDialog):
         self._work = dict(work or {})
         self._result = None
 
-
+                                                     
+                                                                 
+                                                                    
         self._password_action = "keep"
         self._password_value = ""
 
@@ -44,12 +109,12 @@ class ArchiveWorkDialog(QDialog):
         form.setContentsMargins(0, 0, 0, 0)
         form.setSpacing(8)
 
-
+                            
         self._title_edit = QLineEdit(str(self._work.get("title") or ""))
         self._title_edit.setPlaceholderText(tr("create.work_title_placeholder"))
         form.addRow(tr("create.work_title"), self._title_edit)
 
-
+                           
         self._source_list = QListWidget()
         self._source_list.setSelectionMode(QListWidget.ExtendedSelection)
         self._source_list.setMinimumHeight(80)
@@ -68,7 +133,7 @@ class ArchiveWorkDialog(QDialog):
         src_btn_row.addStretch(1)
         form.addRow("", src_btn_row)
 
-
+                             
         dest_row = QHBoxLayout()
         self._dest_edit = QLineEdit(str(self._work.get("dest") or ""))
         br_btn = QPushButton("…")
@@ -78,11 +143,11 @@ class ArchiveWorkDialog(QDialog):
         dest_row.addWidget(br_btn)
         form.addRow(tr("create.destination"), dest_row)
 
-
+                             
         self._comment_edit = QLineEdit(str(self._work.get("comment") or ""))
         form.addRow(tr("create.comment"), self._comment_edit)
 
-
+                                    
         self._only_edit = QLineEdit(
             "; ".join(self._work.get("only_masks") or [])
         )
@@ -95,7 +160,11 @@ class ArchiveWorkDialog(QDialog):
         self._not_edit.setPlaceholderText("*.tmp; *.bak; Thumbs.db")
         form.addRow(tr("create.not"), self._not_edit)
 
-
+                                          
+         
+                                                                      
+                                                                        
+                                                 
         pw_row = QHBoxLayout()
         pw_row.setSpacing(8)
 
@@ -118,7 +187,7 @@ class ArchiveWorkDialog(QDialog):
         layout.addLayout(form)
         layout.addStretch(1)
 
-
+                                    
         buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
         for std in (QDialogButtonBox.Ok, QDialogButtonBox.Cancel):
             b = buttons.button(std)
@@ -131,8 +200,16 @@ class ArchiveWorkDialog(QDialog):
 
         self._sync_password_widgets()
 
+                                                                              
 
     def _password_is_set(self) -> bool:
+        pass
+
+
+
+
+
+
         if self._password_action == "clear":
             return False
         if self._password_action == "set":
@@ -147,14 +224,15 @@ class ArchiveWorkDialog(QDialog):
         )
 
     def _sync_password_widgets(self) -> None:
-
+        pass
         self._pwd_status.setText(self._password_status_text())
-
+                                                                   
         self._pwd_clear_btn.setEnabled(self._password_is_set())
-
-
+                                                                   
+                                                  
         self._pwd_set_btn.setEnabled(True)
 
+                                                                           
 
     def _on_select_sources(self):
         from ui.source_select_window import SourceSelectWindow
@@ -188,8 +266,15 @@ class ArchiveWorkDialog(QDialog):
                 p += ".zpaq"
             self._dest_edit.setText(p)
 
+                                                                            
 
     def _on_set_password(self):
+        pass
+
+
+
+
+
         text, ok = QInputDialog.getText(
             self,
             tr("dialog.password.set_title"),
@@ -218,11 +303,12 @@ class ArchiveWorkDialog(QDialog):
         self._sync_password_widgets()
 
     def _on_clear_password(self):
-
+        pass
         self._password_action = "clear"
         self._password_value = ""
         self._sync_password_widgets()
 
+                                                                             
 
     def _validate(self) -> bool:
         if not self._collect_sources():
@@ -274,5 +360,5 @@ class ArchiveWorkDialog(QDialog):
         self.accept()
 
     def result_settings(self):
-
+        pass
         return self._result

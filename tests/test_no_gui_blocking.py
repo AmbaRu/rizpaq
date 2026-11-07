@@ -1,3 +1,18 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import re
@@ -14,7 +29,7 @@ TABLE = (ROOT / "ui" / "archive_table.py").read_text(encoding="utf-8")
 
 
 def method_body(src: str, name: str) -> str:
-
+    pass
     start = src.index(f"def {name}(")
     rest = src[start + 1:]
     nxt = re.search(r"\n    def ", rest)
@@ -22,9 +37,16 @@ def method_body(src: str, name: str) -> str:
 
 
 class TestSchedulerOffGuiThread(unittest.TestCase):
-
+    pass
 
     def test_list_runs_in_thread(self):
+        pass
+
+
+
+
+
+
         body = method_body(SCHED, "_load_tasks")
         self.assertNotIn(
             "tasks = list_rizpaq_tasks()", body,
@@ -44,18 +66,40 @@ class TestSchedulerOffGuiThread(unittest.TestCase):
         self.assertIn("_TaskRemoveWorker", body)
 
     def test_remove_blocked_while_working(self):
+        pass
+
+
+
+
+
+
         body = method_body(SCHED, "_remove_selected")
-
-
+                                                                          
+                                                                            
+                                                                            
+                                                                  
         self.assertIn(
             'if getattr(self, "_remove_worker", None) is not None:',
             body,
             "повторный клик по удалению не блокируется: нет защитного выхода")
 
     def test_queued_connection(self):
+        pass
+
+
+
+
+
         self.assertIn("Qt.QueuedConnection", SCHED)
 
     def test_closed_dialog_is_safe(self):
+        pass
+
+
+
+
+
+
         for name in ("_apply_tasks", "_apply_remove"):
             body = method_body(SCHED, name)
             self.assertIn(
@@ -63,6 +107,12 @@ class TestSchedulerOffGuiThread(unittest.TestCase):
                 f"{name}: результат применяется и к закрытому окну")
 
     def test_button_reenabled_after_work(self):
+        pass
+
+
+
+
+
         for name in ("_on_list_finished", "_on_remove_finished"):
             body = method_body(SCHED, name)
             self.assertIn("setEnabled(True)", body,
@@ -70,7 +120,7 @@ class TestSchedulerOffGuiThread(unittest.TestCase):
 
 
 class TestDragNoSilentCancel(unittest.TestCase):
-
+    pass
 
     def test_notes_reported(self):
         body = method_body(TABLE, "_extract_for_drag")
@@ -79,6 +129,13 @@ class TestDragNoSilentCancel(unittest.TestCase):
         self.assertIn("notes", body, "сведения о ходе не возвращаются")
 
     def test_timeout_sets_flag_before_break(self):
+        pass
+
+
+
+
+
+
         body = method_body(TABLE, "_extract_for_drag")
         for pattern in ("except subprocess.TimeoutExpired",
                         "if left <= 0"):
@@ -95,6 +152,13 @@ class TestDragNoSilentCancel(unittest.TestCase):
                       "вызывающий не показывает сообщение о прерывании")
 
     def test_pump_between_chunks(self):
+        pass
+
+
+
+
+
+
         body = method_body(TABLE, "_extract_for_drag")
         self.assertIn("pump", body, "оживление окна между пачками не вызывается")
 
@@ -104,9 +168,15 @@ class TestDragNoSilentCancel(unittest.TestCase):
 
 
 class TestNoSyncEngineCallInDialogMethods(unittest.TestCase):
+    pass
+
+
+
+
+
 
     def test_scheduler_methods_have_no_sync_calls(self):
-        from core.scheduler import (
+        from core.scheduler import (              
             list_rizpaq_tasks,
             remove_scheduled_task_by_name,
         )
@@ -122,14 +192,35 @@ class TestNoSyncEngineCallInDialogMethods(unittest.TestCase):
 
 
 class TestMeasuredCeilingIsHonest(unittest.TestCase):
+    pass
+
+
+
+
+
 
     def test_timeout_value_unchanged(self):
+        pass
+
+
+
+
+
+
         m = re.search(r"_DRAG_EXTRACT_TIMEOUT\s*=\s*(\d+)", TABLE)
         self.assertIsNotNone(m, "предел ожидания переноса не найден")
         self.assertEqual(int(m.group(1)), 120,
                          "предел ожидания переноса изменён без замеров")
 
     def test_message_names_the_limit(self):
+        pass
+
+
+
+
+
+
+
         import json
 
         for code in ("en", "ru", "it", "de", "fr", "es", "zh", "pt", "ja", "pl"):
@@ -146,6 +237,15 @@ class TestMeasuredCeilingIsHonest(unittest.TestCase):
                 f"{code}: нет заголовка диалога")
 
     def test_limit_taken_from_notes_not_from_outer_scope(self):
+        pass
+
+
+
+
+
+
+
+
         body = method_body(TABLE, "startDrag")
         self.assertIn("notes.get(\"timeout\")", body,
                       "предел ожидания берётся не из notes")
@@ -159,6 +259,13 @@ class TestMeasuredCeilingIsHonest(unittest.TestCase):
                       "разбор не сообщает, какой предел применялся")
 
     def test_dialog_title_is_its_own(self):
+        pass
+
+
+
+
+
+
         body = method_body(TABLE, "startDrag")
         self.assertIn("drag.error_title", body,
                       "у диалога переноса нет своего заголовка")

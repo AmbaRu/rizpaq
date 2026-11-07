@@ -1,3 +1,15 @@
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -10,9 +22,11 @@ from PySide6.QtGui import QColor, QPalette, QImage, QPainter, QPolygon
 from ui import skins
 from ui.skins import color
 
-
+                                                                        
+           
+                                                                        
 def build_palette(colors: dict) -> QPalette:
-
+    pass
     P = QPalette
     pal = QPalette()
 
@@ -51,7 +65,9 @@ def build_palette(colors: dict) -> QPalette:
 
     return pal
 
-
+                                                                        
+      
+                                                                        
 _STYLE_TEMPLATE = Template("""
 /* ============================================================
    Rizpaq: Soft Azure — единый QSS приложения
@@ -666,17 +682,36 @@ QLabel#schedHint {
 """)
 
 def build_style(colors: dict) -> str:
+    pass
+
+
+
+
+
+
     tokens = {k.lower(): v for k, v in colors.items()}
     return _STYLE_TEMPLATE.safe_substitute(**tokens)
 
 
+                                                                         
+                                                                
 STYLE = build_style(skins.skin())
 
-
+                                                                        
+                                 
+                                                                        
+                                                                       
+                                                                     
 _ARROW_PATHS: dict = {}
 
 
 def _ensure_combo_arrow() -> str:
+    pass
+
+
+
+
+
     skin_name = skins.current_name()
     cached = _ARROW_PATHS.get(skin_name)
     if cached and os.path.isfile(cached):
@@ -705,7 +740,7 @@ def _ensure_combo_arrow() -> str:
 
 
 def _combo_arrow_qss() -> str:
-
+    pass
     arrow = _ensure_combo_arrow()
     if not arrow:
         return ""
@@ -722,9 +757,10 @@ QComboBox::down-arrow:disabled {{
 }}
 """
 
-
+                                                                        
+                  
 def _paint(app, colors: dict) -> None:
-
+    pass
     try:
         app.setStyle("Fusion")
     except Exception:
@@ -734,6 +770,13 @@ def _paint(app, colors: dict) -> None:
 
 
 def apply_theme(app, skin_name: str = None) -> str:
+    pass
+
+
+
+
+
+
     if skin_name:
         skins.set_current(skin_name)
     colors = skins.skin(skins.current_name())
@@ -742,4 +785,11 @@ def apply_theme(app, skin_name: str = None) -> str:
 
 
 def refresh_theme(app) -> str:
+    pass
+
+
+
+
+
+
     return apply_theme(app, skins.current_name())

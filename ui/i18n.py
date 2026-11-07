@@ -1,3 +1,24 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import json
@@ -6,17 +27,20 @@ import os
 import sys
 from pathlib import Path
 
-
+                                                             
+                                                                   
+                               
 load_errors: dict = {}
 
-
+                                                                 
+                                                       
 _ISO639_2 = {
     "eng": "en", "rus": "ru", "ita": "it", "deu": "de", "ger": "de",
     "fra": "fr", "fre": "fr", "spa": "es", "zho": "zh", "chi": "zh",
     "por": "pt", "jpn": "ja", "pol": "pl",
 }
 
-
+                                                            
 LANGUAGES = {
     "en": "English",
     "ru": "Русский",
@@ -30,16 +54,19 @@ LANGUAGES = {
     "pl": "Polski",
 }
 
-
+                                                     
 _current_strings: dict = {}
 _current_lang: str = "en"
 _locales_dir: Path | None = None
 
-
+                            
 _language_callbacks: list = []
 
 
 def _find_locales_dir() -> Path:
+    pass
+
+
     if getattr(sys, "frozen", False):
         base = Path(sys.executable).parent
         candidates = [
@@ -63,6 +90,10 @@ def _find_locales_dir() -> Path:
 
 
 def available_languages() -> dict:
+    pass
+
+
+
     langs = dict(LANGUAGES)
     d = _locales_dir or _find_locales_dir()
     try:
@@ -81,11 +112,28 @@ def available_languages() -> dict:
 
 
 def _match_language(tag, available) -> str | None:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     if not tag:
         return None
 
     for candidate in str(tag).split(":"):
-
+                                                            
         head = candidate.split(".")[0].split("@")[0]
         head = head.replace("_", "-").strip().lower()
 
@@ -97,7 +145,8 @@ def _match_language(tag, available) -> str | None:
         if primary in available:
             return primary
 
-
+                                                                      
+                               
         three = _ISO639_2.get(primary)
         if three and three in available:
             return three
@@ -106,6 +155,14 @@ def _match_language(tag, available) -> str | None:
 
 
 def _language_probes() -> list:
+    pass
+
+
+
+
+
+
+
     probes: list = []
 
     try:
@@ -133,6 +190,10 @@ def _language_probes() -> list:
 
 
 def detect_language() -> str:
+    pass
+
+
+
     try:
         available = available_languages()
     except Exception:
@@ -147,6 +208,9 @@ def detect_language() -> str:
 
 
 def load_locales(locales_dir=None, lang: str | None = None) -> None:
+    pass
+
+
     global _locales_dir
 
     if locales_dir is not None:
@@ -161,6 +225,13 @@ def load_locales(locales_dir=None, lang: str | None = None) -> None:
 
 
 def _read_language_file(lang: str):
+    pass
+
+
+
+
+
+
     path = (_locales_dir or _find_locales_dir()) / (lang + ".json")
 
     try:
@@ -169,8 +240,8 @@ def _read_language_file(lang: str):
         load_errors[lang] = "file not found: " + str(path)
         return None
     except Exception as exc:
-
-
+                                                               
+                                                           
         load_errors[lang] = "cannot parse " + path.name + ": " + str(exc)
         return None
 
@@ -184,6 +255,19 @@ def _read_language_file(lang: str):
 
 
 def set_language(lang: str, locales_dir=None, notify: bool = True) -> None:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
     global _current_strings, _current_lang, _locales_dir
 
     if locales_dir is not None:
@@ -200,7 +284,7 @@ def set_language(lang: str, locales_dir=None, notify: bool = True) -> None:
     strings = _read_language_file(lang)
 
     if strings is None and lang != "en":
-
+                                                                           
         fallback = _read_language_file("en")
         if fallback is not None:
             sys.stderr.write(
@@ -212,14 +296,14 @@ def set_language(lang: str, locales_dir=None, notify: bool = True) -> None:
             lang = "en"
 
     if strings is None:
-
-
+                                                                     
+                                                   
         _current_strings = {}
         _current_lang = "en"
         return
 
     if lang != "en":
-
+                                                                      
         en_strings = _read_language_file("en")
         if en_strings:
             for k, v in en_strings.items():
@@ -237,11 +321,20 @@ def set_language(lang: str, locales_dir=None, notify: bool = True) -> None:
 
 
 def on_language_changed(callback) -> None:
+    pass
+
+
+
     if callback not in _language_callbacks:
         _language_callbacks.append(callback)
 
 
 def tr(key: str, **kwargs) -> str:
+    pass
+
+
+
+
     text = _current_strings.get(key, key)
     if kwargs:
         try:
@@ -252,5 +345,5 @@ def tr(key: str, **kwargs) -> str:
 
 
 def current_language() -> str:
-
+    pass
     return _current_lang

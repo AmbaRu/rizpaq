@@ -1,3 +1,21 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import re
@@ -20,6 +38,10 @@ from ui.i18n import tr
 from ui.presentation import format_size
 
 
+                                                                      
+                                           
+                                                               
+
 PROGRESS_WINDOW_MIN_WIDTH = 620
 PROGRESS_WINDOW_MIN_HEIGHT = 280
 
@@ -31,7 +53,7 @@ _PROGRESS_LINE_RE = re.compile(r"\d{1,3}(?:[.,]\d+)?\s*%")
 
 
 def _elide_mid(text: str, n: int) -> str:
-
+    pass
     if not text:
         return ""
 
@@ -45,7 +67,7 @@ def _elide_mid(text: str, n: int) -> str:
 
 
 def _fmt_time(seconds: int) -> str:
-
+    pass
     if seconds < 0:
         return "—"
 
@@ -62,7 +84,7 @@ def _fmt_time(seconds: int) -> str:
 
 
 def _fmt_eta(seconds: int) -> str:
-
+    pass
     if seconds < 0:
         return "—"
 
@@ -70,6 +92,21 @@ def _fmt_eta(seconds: int) -> str:
 
 
 class OperationProgressDialog(QDialog):
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     cancelRequested = Signal()
 
@@ -84,7 +121,7 @@ class OperationProgressDialog(QDialog):
         self._last_pct = 0
         self._engine_eta = ""
 
-
+                                                                  
         self._auto_close_on_ok = False
 
         self.setWindowTitle(self._base_title)
@@ -97,7 +134,7 @@ class OperationProgressDialog(QDialog):
         except Exception:
             pass
 
-
+                                                   
         self.setMinimumSize(
             PROGRESS_WINDOW_MIN_WIDTH,
             PROGRESS_WINDOW_MIN_HEIGHT,
@@ -117,19 +154,19 @@ class OperationProgressDialog(QDialog):
         self._close_timer.setSingleShot(True)
         self._close_timer.timeout.connect(self.accept)
 
-
+                                                                     
     def _create_ui(self):
         layout = QVBoxLayout(self)
         layout.setContentsMargins(12, 12, 12, 12)
         layout.setSpacing(8)
 
-
+                    
         self._title = QLabel(self._base_title)
         self._title.setObjectName("opTitle")
         self._title.setWordWrap(True)
         layout.addWidget(self._title)
 
-
+                                 
         bar_row = QHBoxLayout()
         bar_row.setSpacing(8)
 
@@ -148,7 +185,7 @@ class OperationProgressDialog(QDialog):
 
         layout.addLayout(bar_row)
 
-
+                               
         grid = QGridLayout()
         grid.setContentsMargins(0, 2, 0, 2)
         grid.setSpacing(5)
@@ -177,19 +214,21 @@ class OperationProgressDialog(QDialog):
             lbl.setObjectName("opFieldLabel")
             grid.addWidget(lbl, row, col, Qt.AlignRight)
             grid.addWidget(value_widget, row, col + 1)
-
-
+                                                                     
+                                                                        
+                                                                      
+                                                         
             self._info_pairs.append((lbl, value_widget))
 
-
+                       
         add_pair(0, 0, tr("create.progress_files"), self._files_label)
         add_pair(0, 2, tr("create.progress_dirs"), self._dirs_label)
 
-
+                           
         add_pair(1, 0, tr("table.header.size"), self._size_label)
         add_pair(1, 2, tr("create.progress_speed"), self._speed_label)
 
-
+                           
         add_pair(2, 0, tr("create.progress_elapsed"), self._elapsed_label)
         add_pair(2, 2, tr("create.progress_eta"), self._eta_label)
 
@@ -198,13 +237,13 @@ class OperationProgressDialog(QDialog):
 
         layout.addLayout(grid)
 
-
+                                
         self._current = QLabel("")
         self._current.setObjectName("opCurrent")
         self._current.setWordWrap(False)
         layout.addWidget(self._current)
 
-
+                                     
         self._log = QPlainTextEdit()
         self._log.setObjectName("opLog")
         self._log.setReadOnly(True)
@@ -213,7 +252,7 @@ class OperationProgressDialog(QDialog):
         self._log.setVisible(False)
         layout.addWidget(self._log)
 
-
+                                                      
         bottom = QHBoxLayout()
         bottom.setSpacing(6)
 
@@ -236,15 +275,22 @@ class OperationProgressDialog(QDialog):
 
     @staticmethod
     def _repolish(w) -> None:
+        pass
+
+
+
+
+
+
         try:
             w.style().unpolish(w)
             w.style().polish(w)
         except Exception:
             pass
 
-
+                                                                         
     def begin(self, title: str = "", status: str = "") -> None:
-
+        pass
         self._close_timer.stop()
 
         if title:
@@ -254,7 +300,7 @@ class OperationProgressDialog(QDialog):
         self._title.setText(self._base_title)
 
         self._finished = False
-
+                                                                       
         self._title.setProperty("state", "")
         self._repolish(self._title)
         self._start_time = time.monotonic()
@@ -292,6 +338,17 @@ class OperationProgressDialog(QDialog):
         self.activateWindow()
 
     def next_stage(self, title: str = "", status: str = "") -> None:
+        pass
+
+
+
+
+
+
+
+
+
+
         self._close_timer.stop()
 
         if title:
@@ -323,11 +380,11 @@ class OperationProgressDialog(QDialog):
         self.raise_()
 
     def set_percent(self, pct: int) -> None:
-
+        pass
         if self._finished:
             return
 
-
+                                                           
         if self._mode == "files":
             return
 
@@ -347,7 +404,7 @@ class OperationProgressDialog(QDialog):
             self._update_eta()
 
     def update_info(self, info: dict) -> None:
-
+        pass
         if self._finished or not isinstance(info, dict):
             return
 
@@ -386,6 +443,17 @@ class OperationProgressDialog(QDialog):
                 self._size_label.setText(str(bytes_total))
 
     def hide_info_fields(self, keep=()) -> None:
+        pass
+
+
+
+
+
+
+
+
+
+
         names = {
             "files": self._files_label,
             "dirs": self._dirs_label,
@@ -395,8 +463,8 @@ class OperationProgressDialog(QDialog):
             "eta": self._eta_label,
         }
         keep = set(keep) & set(names)
-
-
+                                                                      
+                                  
         for lbl, val in self._info_pairs:
             field = next((k for k, v in names.items() if v is val), None)
             if field is None or field in keep:
@@ -405,7 +473,7 @@ class OperationProgressDialog(QDialog):
             val.setVisible(False)
 
     def append_output(self, text: str) -> None:
-
+        pass
         if self._finished or not text:
             return
 
@@ -413,7 +481,8 @@ class OperationProgressDialog(QDialog):
         if not text:
             return
 
-
+                                                              
+                                              
         if _PROGRESS_LINE_RE.search(text) and len(text) <= 220:
             self._current.setText(_elide_mid(text, 160))
             return
@@ -422,7 +491,7 @@ class OperationProgressDialog(QDialog):
         self._log.appendPlainText(text)
 
     def tick(self, i: int, total: int, path: str) -> None:
-
+        pass
         if self._finished or self._mode != "files":
             return
 
@@ -443,7 +512,7 @@ class OperationProgressDialog(QDialog):
         self._current.setText(_elide_mid(path or "", 160))
 
     def finish(self, ok: bool, message: str = "") -> None:
-
+        pass
         if self._finished:
             return
 
@@ -463,7 +532,7 @@ class OperationProgressDialog(QDialog):
             self._title.setText(tr("progress.errors"))
             self._title.setProperty("state", "err")
             self._repolish(self._title)
-
+                                              
             self._log_btn.setChecked(True)
             self._log.setVisible(True)
             self._log_btn.setText("▾")
@@ -476,7 +545,7 @@ class OperationProgressDialog(QDialog):
         if ok and self._auto_close_on_ok:
             self._close_timer.start(900)
 
-
+                                                                           
     def _on_timer(self) -> None:
         if self._finished:
             return
@@ -522,7 +591,7 @@ class OperationProgressDialog(QDialog):
         self.cancelRequested.emit()
 
     def closeEvent(self, ev) -> None:
-
+                                                        
         if not self._finished:
             self.cancelRequested.emit()
 

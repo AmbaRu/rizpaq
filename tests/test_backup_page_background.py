@@ -1,3 +1,48 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import shutil
@@ -10,7 +55,7 @@ from unittest import mock
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from PySide6.QtWidgets import QApplication, QWidget
+from PySide6.QtWidgets import QApplication, QWidget              
 
 _APP = QApplication.instance() or QApplication([])
 from PySide6.QtGui import QFont
@@ -19,22 +64,29 @@ if _APP is not None:
     _APP.setFont(QFont("Segoe UI", 9))
 
 
-from ui.i18n import set_language
+from ui.i18n import set_language              
 
 set_language("ru", notify=False)
 
-from core.tasks import (
+from core.tasks import (              
     add_job,
     add_work,
     container_path,
     empty_container,
     save_container,
 )
-from ui.backup_page import BackupPage
-from ui.qt_compat import YES_BUTTON
+from ui.backup_page import BackupPage              
+from ui.qt_compat import YES_BUTTON              
 
 
 class _QHost(QWidget):
+    pass
+
+
+
+
+
+
 
     def __init__(self, tasks_dir):
         QWidget.__init__(self)
@@ -56,6 +108,19 @@ class _QHost(QWidget):
 
 
 class _PlainHost:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
 
     def __init__(self, tasks_dir):
         self._cfg = type(
@@ -115,6 +180,20 @@ class _TmpMixin(unittest.TestCase):
             host.deleteLater()
 
     def _make_page(self, host, works):
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.write_container(works)
         with mock.patch(
             "core.scheduler.schedule_info_for_container", return_value={}
@@ -125,7 +204,7 @@ class _TmpMixin(unittest.TestCase):
 
 
 class TestLaunchBackgroundWorker(_TmpMixin):
-
+    pass
 
     def _fake_worker(self):
         from PySide6.QtCore import QObject, Signal
@@ -156,13 +235,21 @@ class TestLaunchBackgroundWorker(_TmpMixin):
                       "closeEvent его не остановит")
 
     def test_returns_false_for_plain_object(self):
+        pass
+
+
+
+
+
+
+
         host = _PlainHost(self.dir)
         page, _container = self._make_page(host, works=[{
             "title": "Docs",
             "jobs": [{"title": "Daily"}],
         }])
-
-
+                                                                  
+                                 
         self.assertEqual(host._workers, [],
                          "_load_schedule добавил воркер в host._workers "
                          "при не-QWidget-хосте — там ему не место")
@@ -182,9 +269,19 @@ class TestLaunchBackgroundWorker(_TmpMixin):
 
 
 class TestPlainHostSyncSchedule(_TmpMixin):
+    pass
+
+
+
+
+
+
+
+
+
 
     def test_no_worker_created_for_plain_host(self):
-
+        pass
         host = _PlainHost(self.dir)
         page, _container = self._make_page(host, works=[{
             "title": "Docs",
@@ -199,6 +296,13 @@ class TestPlainHostSyncSchedule(_TmpMixin):
                          "воркер не должен попадать в host._workers")
 
     def test_schedule_read_synchronously(self):
+        pass
+
+
+
+
+
+
         self.write_container([{
             "title": "Docs",
             "jobs": [{"title": "Daily"}],
@@ -219,7 +323,7 @@ class TestPlainHostSyncSchedule(_TmpMixin):
 
 
 class TestDeleteWorkInBackground(_TmpMixin):
-
+    pass
 
     def test_qwidget_host_uses_worker(self):
         host = _QHost(self.dir)
@@ -252,6 +356,11 @@ class TestDeleteWorkInBackground(_TmpMixin):
         sync_remove.assert_not_called()
 
     def test_plain_host_uses_sync_fallback(self):
+        pass
+
+
+
+
         host = _PlainHost(self.dir)
         page, container = self._make_page(host, works=[{
             "title": "Docs",
@@ -279,7 +388,7 @@ class TestDeleteWorkInBackground(_TmpMixin):
         )
 
     def test_worker_receives_all_job_names(self):
-
+        pass
         host = _QHost(self.dir)
         page, container = self._make_page(host, works=[{
             "title": "Docs",
@@ -349,7 +458,7 @@ class TestScheduleJobInBackground(_TmpMixin):
         job_id = container["works"][0]["jobs"][0]["id"]
 
         fake_dlg = mock.MagicMock()
-        fake_dlg.exec.return_value = 1
+        fake_dlg.exec.return_value = 1                    
         fake_dlg.result_schedule.return_value = {
             "enabled": True, "frequency": "daily",
             "time": "03:00", "interval": 1,

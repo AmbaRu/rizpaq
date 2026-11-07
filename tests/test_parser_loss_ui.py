@@ -1,3 +1,29 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import sys
@@ -7,8 +33,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from core.parser import ParseReport
-from ui.archive_loader import ArchiveLoaderMixin
+from core.parser import ParseReport              
+from ui.archive_loader import ArchiveLoaderMixin              
 
 GOOD7 = "#2026-09-26 18:35:48\tA....\t30\t720%\t0001\t+\tфайл.txt#"
 BAD5 = "#2026-09-26 18:35:48\tA....\t30\tплохая.txt#"
@@ -23,7 +49,7 @@ class FakeStatusBar:
 
 
 class FakeLoader:
-
+    pass
 
     def __init__(self):
         self.logged = []
@@ -35,14 +61,18 @@ class FakeLoader:
     def statusBar(self):
         return self._status
 
-
+                                                                      
+                                                    
     _report_list_loss = ArchiveLoaderMixin._report_list_loss
 
 
 class TestLossIsShown(unittest.TestCase):
     def setUp(self):
-
-
+                                                                            
+                                                                       
+                                                                      
+                                                                          
+                                       
         from ui import i18n
 
         i18n.set_language("ru", notify=False)
@@ -69,6 +99,14 @@ class TestLossIsShown(unittest.TestCase):
         self.assertIn("2", loader._status.messages[0])
 
     def test_status_bar_text_is_human(self):
+        pass
+
+
+
+
+
+
+
         loader = FakeLoader()
         loader._report_list_loss(self._report_with_loss())
         shown = loader._status.messages[0]
@@ -80,6 +118,13 @@ class TestLossIsShown(unittest.TestCase):
                       f"текст не похож на сообщение о неполном списке: {shown!r}")
 
     def test_status_bar_text_is_not_a_raw_key(self):
+        pass
+
+
+
+
+
+
         import json
 
         key = "status.list_partially_parsed"
@@ -91,6 +136,13 @@ class TestLossIsShown(unittest.TestCase):
                           f"{code}: нет плейсхолдера {{count}}")
 
     def test_silence_when_nothing_lost(self):
+        pass
+
+
+
+
+
+
         from core.parser import parse_csv_list_reported
 
         _entries, report = parse_csv_list_reported("\n".join([GOOD7, GOOD7]))
@@ -109,6 +161,10 @@ class TestLossIsShown(unittest.TestCase):
         self.assertEqual(loader._status.messages, [])
 
     def test_broken_sink_does_not_crash(self):
+        pass
+
+
+
 
         class Broken(FakeLoader):
             def log_output(self, text):
@@ -118,12 +174,32 @@ class TestLossIsShown(unittest.TestCase):
                 raise RuntimeError("нет строки состояния")
 
         loader = Broken()
-        loader._report_list_loss(self._report_with_loss())
+        loader._report_list_loss(self._report_with_loss())                      
 
 
 class TestReportReachable(unittest.TestCase):
+    pass
+
+
+
+
+
+
+
+
 
     def test_streaming_worker_uses_reported_parser(self):
+        pass
+
+
+
+
+
+
+
+
+
+
         worker_src = (
             ROOT / "workers" / "list_worker.py"
         ).read_text(encoding="utf-8")
@@ -133,6 +209,14 @@ class TestReportReachable(unittest.TestCase):
             "станет молчаливой")
 
     def test_loader_does_not_parse_listing_itself(self):
+        pass
+
+
+
+
+
+
+
         loader_src = (
             ROOT / "ui" / "archive_loader.py"
         ).read_text(encoding="utf-8")
@@ -143,9 +227,21 @@ class TestReportReachable(unittest.TestCase):
                 f"должен жить в workers/list_worker.py")
 
     def test_warning_is_placed_after_navigation(self):
+        pass
+
+
+
+
+
+
+
+
+
+
+
         src = (ROOT / "ui" / "archive_loader.py").read_text(encoding="utf-8")
         start = src.index("def _apply_list_entries")
-
+                                                                           
         nxt = src.find("    def ", start + 1)
         body = src[start:nxt] if nxt > 0 else src[start:]
         self.assertIn(

@@ -1,3 +1,21 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import time
@@ -15,22 +33,23 @@ from PySide6.QtWidgets import (
 
 from ui.i18n import tr
 
-
+                                                               
+                                                                         
 NOTICE_DELAY_MS = 400
 
-
+                                                 
 NOTICE_TICK_MS = 1000
 
-
+                                                                           
 NOTICE_WIDTH = 400
 NOTICE_HEIGHT = 132
 
-
+                                                                    
 NOTICE_HINT_AFTER_MS = NOTICE_DELAY_MS * 3
 
 
 def _fmt_elapsed(seconds: int) -> str:
-
+    pass
     if seconds < 60:
         return f"{seconds}s"
     m, s = divmod(seconds, 60)
@@ -41,6 +60,15 @@ def _fmt_elapsed(seconds: int) -> str:
 
 
 class OperationNotice(QWidget):
+    pass
+
+
+
+
+
+
+
+
 
     cancelRequested = Signal()
 
@@ -52,8 +80,9 @@ class OperationNotice(QWidget):
         self._elapsed_base = time.monotonic()
 
         self.setWindowTitle(tr("notice.title"))
-
-
+                                                                             
+                                                                              
+                                                                      
         self.setAttribute(Qt.WA_TranslucentBackground, True)
         self.setWindowFlags(
             self.windowFlags()
@@ -66,24 +95,25 @@ class OperationNotice(QWidget):
 
         self._build_ui(cancel_enabled)
 
-
+                                                             
         self._delay_timer = QTimer(self)
         self._delay_timer.setSingleShot(True)
         self._delay_timer.timeout.connect(self._do_show)
 
-
+                                     
         self._tick_timer = QTimer(self)
         self._tick_timer.setInterval(NOTICE_TICK_MS)
         self._tick_timer.timeout.connect(self._on_tick)
 
         self.hide()
 
+                                                                        
 
     def _build_ui(self, cancel_enabled: bool) -> None:
         outer = QVBoxLayout(self)
         outer.setContentsMargins(0, 0, 0, 0)
 
-
+                                                         
         card = QWidget(self)
         card.setObjectName("noticeCard")
         outer.addWidget(card)
@@ -92,13 +122,13 @@ class OperationNotice(QWidget):
         lay.setContentsMargins(18, 14, 18, 14)
         lay.setSpacing(8)
 
-
+                             
         self._title = QLabel(card)
         self._title.setWordWrap(True)
         self._title.setObjectName("noticeTitle")
         lay.addWidget(self._title)
 
-
+                                                                     
         self._bar = QProgressBar(card)
         self._bar.setObjectName("noticeBar")
         self._bar.setRange(0, 0)
@@ -106,7 +136,7 @@ class OperationNotice(QWidget):
         self._bar.setFixedHeight(10)
         lay.addWidget(self._bar)
 
-
+                                                        
         row = QHBoxLayout()
         row.setSpacing(8)
 
@@ -123,7 +153,7 @@ class OperationNotice(QWidget):
 
         lay.addLayout(row)
 
-
+                                                                            
         self._hint = QLabel(card)
         self._hint.setObjectName("noticeHint")
         self._hint.setText(tr("notice.long"))
@@ -132,16 +162,17 @@ class OperationNotice(QWidget):
         lay.addWidget(self._hint)
 
     def retranslate(self) -> None:
-
+        pass
         self.setWindowTitle(tr("notice.title"))
         self._cancel_btn.setText(tr("progress.cancel"))
         self._hint.setText(tr("notice.long"))
         self._title.setText(self._step_text)
         self._on_tick()
 
+                                                                         
 
     def show_notice(self, step_text: str = "") -> None:
-
+        pass
         if step_text:
             self.set_step(step_text)
 
@@ -154,7 +185,7 @@ class OperationNotice(QWidget):
             self._delay_timer.start(NOTICE_DELAY_MS)
 
     def update_step(self, text: str) -> None:
-
+        pass
         self.set_step(text)
 
     def set_step(self, text: str) -> None:
@@ -165,17 +196,18 @@ class OperationNotice(QWidget):
         self._cancel_btn.setVisible(bool(enabled))
 
     def is_visible_notice(self) -> bool:
-
+        pass
         return self._shown
 
     def hide_notice(self) -> None:
-
+        pass
         self._delay_timer.stop()
         self._tick_timer.stop()
         if self._shown:
             self._shown = False
             self.hide()
 
+                                                                          
 
     def _do_show(self) -> None:
         if self._shown:
@@ -186,7 +218,7 @@ class OperationNotice(QWidget):
         self.raise_()
 
     def _center_on_screen(self) -> None:
-
+        pass
         try:
             screen = QGuiApplication.primaryScreen()
             if screen is None:

@@ -1,3 +1,23 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -6,7 +26,7 @@ import sys
 import unittest
 from pathlib import Path
 
-
+                                                                              
 _HERE = Path(__file__).resolve().parent
 _ROOT = _HERE.parent
 if str(_ROOT) not in sys.path:
@@ -14,9 +34,12 @@ if str(_ROOT) not in sys.path:
 
 from core.parser import clean_csv_line, parse_csv_list, parse_info, parse_size
 
+                                                                             
+                     
+                                                                             
 
-LIST_ALL = "07_list_all_terse_csv_tab_csvhf_utf.txt"
-LIST_LAST = "08_list_last_terse_csv_tab_csvhf_utf.txt"
+LIST_ALL = "07_list_all_terse_csv_tab_csvhf_utf.txt"                          
+LIST_LAST = "08_list_last_terse_csv_tab_csvhf_utf.txt"                   
 INFO = "01_info_comment.txt"
 
 
@@ -63,10 +86,21 @@ def _read(name: str) -> str:
     return PROBE[name].read_text(encoding="utf-8", errors="replace")
 
 
+                                                                             
+                                                                             
+                                                          
+                                                                             
+
 _DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}")
 
 
 def _raw_data_lines(text: str) -> list:
+    pass
+
+
+
+
+
     out = []
     for line in text.splitlines():
         if not line.strip():
@@ -78,6 +112,11 @@ def _raw_data_lines(text: str) -> list:
 
 
 def _analyze_skips(text: str) -> list:
+    pass
+
+
+
+
     skipped = []
     for raw, cleaned in _raw_data_lines(text):
         parts = cleaned.split("\t")
@@ -91,24 +130,28 @@ def _analyze_skips(text: str) -> list:
             except ValueError:
                 skipped.append((raw, cleaned, "bad_version"))
                 continue
-
+                                      
         elif len(parts) == 6:
             path = parts[5].strip()
             if not path:
                 skipped.append((raw, cleaned, "empty_path"))
                 continue
-
+                               
         else:
             skipped.append((raw, cleaned, f"bad_col_count={len(parts)}"))
     return skipped
 
 
 def _expected_parsed_count(text: str) -> tuple:
-
+    pass
     raw = _raw_data_lines(text)
     skipped = _analyze_skips(text)
     return len(raw) - len(skipped), len(raw), skipped
 
+
+                                                                             
+                                              
+                                                                             
 
 class TestParseSize(unittest.TestCase):
     def test_thousand_separators(self):
@@ -140,6 +183,10 @@ class TestCleanCsvLine(unittest.TestCase):
         self.assertEqual(clean_csv_line("x"), "x")
 
 
+                                                                             
+                    
+                                                                             
+
 @unittest.skipUnless(HAVE_ALL, f"фикстура не найдена: {LIST_ALL}")
 class TestParseCsvListAll(unittest.TestCase):
     @classmethod
@@ -149,7 +196,7 @@ class TestParseCsvListAll(unittest.TestCase):
         cls.expected, cls.raw_n, cls.skipped = _expected_parsed_count(text)
 
     def test_no_silent_drops(self):
-
+                                                                                     
         self.assertEqual(len(self.entries), self.expected)
 
     def test_counts_sanity(self):
@@ -226,7 +273,7 @@ class TestParseCsvListLast(unittest.TestCase):
 @unittest.skipUnless(HAVE_ALL and HAVE_LAST, "нужны обе list-фикстуры")
 class TestCrossList(unittest.TestCase):
     def test_all_and_last_same_row_count(self):
-
+                                                                             
         a = parse_csv_list(_read(LIST_ALL))
         b = parse_csv_list(_read(LIST_LAST))
         self.assertEqual(len(a), len(b))
@@ -259,6 +306,10 @@ class TestParseInfo(unittest.TestCase):
         self.assertEqual(v.bytes_added, 42365169)
 
 
+                                                                             
+                                
+                                                                             
+
 def _print_skip_diagnostics() -> None:
     print()
     print("=== skip diagnostics (why raw data lines did not become entries) ===")
@@ -277,11 +328,11 @@ def _print_skip_diagnostics() -> None:
         for _r, _c, reason in skipped:
             by_reason[reason] = by_reason.get(reason, 0) + 1
         print(f"  skipped        : {len(skipped)}  by reason: {by_reason or 'none'}")
-
+                                                             
         empty = [s for s in skipped if s[2] == "empty_path"]
         for raw, cleaned, reason in empty:
             print(f"    [expected/-utf empty path] {raw.strip()[:140]}")
-
+                                                                    
         bugs = [s for s in skipped if s[2] != "empty_path"]
         if bugs:
             print("  !! SKIPPED WITH NON-EMPTY PATH (possible PARSER BUG):")
@@ -293,6 +344,10 @@ def _print_skip_diagnostics() -> None:
         print("  (no list fixtures found)")
     print()
 
+
+                                                                             
+                   
+                                                                             
 
 if __name__ == "__main__":
     print("Probe fixtures:")

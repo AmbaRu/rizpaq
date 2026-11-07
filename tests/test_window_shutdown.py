@@ -1,3 +1,20 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import sys
@@ -7,11 +24,11 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from PySide6.QtCore import QThread
-from PySide6.QtGui import QCloseEvent
-from PySide6.QtWidgets import QApplication, QMessageBox, QWidget
+from PySide6.QtCore import QThread              
+from PySide6.QtGui import QCloseEvent              
+from PySide6.QtWidgets import QApplication, QMessageBox, QWidget              
 
-from ui.window_shell import WindowShellMixin
+from ui.window_shell import WindowShellMixin              
 
 _APP = QApplication.instance() or QApplication([])
 from PySide6.QtGui import QFont
@@ -20,15 +37,16 @@ if _APP is not None:
     _APP.setFont(QFont("Segoe UI", 9))
 
 
-def _close_event() -> QCloseEvent:
 
+def _close_event() -> QCloseEvent:
+    pass
     ev = QCloseEvent()
     ev.accept()
     return ev
 
 
 def _wait_until_stopped(worker, timeout: float = 10.0) -> bool:
-
+    pass
     deadline = time.monotonic() + timeout
     while worker.isRunning() and time.monotonic() < deadline:
         _APP.processEvents()
@@ -37,6 +55,14 @@ def _wait_until_stopped(worker, timeout: float = 10.0) -> bool:
 
 
 class _Worker(QThread):
+    pass
+
+
+
+
+
+
+
 
     def __init__(self, lifetime_ms: int = 5000, honour_cancel: bool = True):
         super().__init__(None)
@@ -49,7 +75,7 @@ class _Worker(QThread):
         self.cancel_called = True
 
     def run(self):
-
+                                                             
         deadline = time.monotonic() + self._lifetime / 1000.0
         while time.monotonic() < deadline:
             if self.isInterruptionRequested():
@@ -61,15 +87,22 @@ class _Worker(QThread):
 
 
 class _PlainBase(QWidget):
-
+    pass
 
     def closeEvent(self, ev):
         pass
 
 
 class _Window(WindowShellMixin, _PlainBase):
+    pass
 
 
+
+
+
+
+
+                                                        
     zpaq_bin = ""
     latest_only_action = None
     mode = "fs"
@@ -82,7 +115,7 @@ class _Window(WindowShellMixin, _PlainBase):
 
 
 class _Dialogs:
-
+    pass
 
     def __init__(self, answer):
         self.answer = answer
@@ -118,7 +151,7 @@ class TestShutdownWorkers(unittest.TestCase):
         self.assertTrue(w.stopped_by_cancel, "воркер должен выйти по отмене")
 
     def test_stubborn_worker_is_reported_stuck(self):
-
+        pass
         w = _Worker(lifetime_ms=60000, honour_cancel=False)
         w.start()
         time.sleep(0.1)
@@ -168,7 +201,7 @@ class TestShutdownWorkers(unittest.TestCase):
 
 
 class _DummyCfg:
-
+    pass
 
     zpaq_path = ""
     latest_only = False
@@ -181,7 +214,7 @@ class _DummyCfg:
 
 
 class _ConfigGuard:
-
+    pass
 
     def __init__(self):
         self.saved = []
@@ -206,6 +239,10 @@ class _ConfigGuard:
 
 
 class TestCloseEventDecision(unittest.TestCase):
+    pass
+
+
+
 
     def setUp(self):
         self._cfg = _ConfigGuard()
@@ -232,7 +269,7 @@ class TestCloseEventDecision(unittest.TestCase):
         _wait_until_stopped(w)
 
     def test_close_is_ignored_when_worker_stuck(self):
-
+        pass
         w = _Worker(lifetime_ms=60000, honour_cancel=False)
         w.start()
         time.sleep(0.1)

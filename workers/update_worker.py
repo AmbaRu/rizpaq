@@ -1,3 +1,18 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 from PySide6.QtCore import QThread, Signal
@@ -6,7 +21,7 @@ from core import updater
 
 
 class UpdateCheckWorker(QThread):
-
+    pass
 
     done = Signal(dict)
 
@@ -40,7 +55,7 @@ class UpdateCheckWorker(QThread):
 
 
 class UpdateDownloadWorker(QThread):
-
+    pass
 
     progress = Signal(dict)
     done = Signal(dict)
@@ -52,7 +67,7 @@ class UpdateDownloadWorker(QThread):
         self._cancel = False
 
     def cancel_request(self):
-
+        pass
         self._cancel = True
 
     def _cancelled(self) -> bool:

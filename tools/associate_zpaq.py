@@ -1,4 +1,35 @@
 #!/usr/bin/env python3
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -11,6 +42,13 @@ if _ROOT not in sys.path:
 
 
 def _pause_if_console() -> None:
+    pass
+
+
+
+
+
+
     try:
         if sys.stdin is not None and sys.stdin.isatty():
             input("\nНажми Enter для выхода...")
@@ -21,7 +59,7 @@ def _pause_if_console() -> None:
 def main() -> int:
     args = sys.argv[1:]
 
-
+                                                    
     if "--status" in args:
         from core.file_association import diagnose
 

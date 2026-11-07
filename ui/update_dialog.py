@@ -1,3 +1,25 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import shutil
@@ -23,7 +45,7 @@ from workers.update_worker import UpdateDownloadWorker
 
 
 class UpdateDialog(QDialog):
-
+    pass
 
     ready_to_install = Signal(dict, str)
     skip_requested = Signal(str)
@@ -102,6 +124,7 @@ class UpdateDialog(QDialog):
 
         self._fill()
 
+                                                                            
 
     def _fill(self) -> None:
         version = str(self._info.get("version") or "")
@@ -120,6 +143,7 @@ class UpdateDialog(QDialog):
             self.warning.setText(tr("update.install_only_built"))
             self.install_btn.setText(tr("update.download"))
 
+                                                                           
 
     def _open_site(self) -> None:
         url = str(self._info.get("notes_url")
@@ -197,8 +221,17 @@ class UpdateDialog(QDialog):
         self.status.setText(tr("update.ready"))
         self.ready_to_install.emit(self._info, str(result.get("path") or ""))
 
+                                                                            
 
     def discard_download(self) -> None:
+        pass
+
+
+
+
+
+
+
         if self._download_dir:
             shutil.rmtree(self._download_dir, ignore_errors=True)
             self._download_dir = None
@@ -216,5 +249,5 @@ class UpdateDialog(QDialog):
         super().closeEvent(event)
 
     def download_dir(self) -> str:
-
+        pass
         return str(self._download_dir or "")

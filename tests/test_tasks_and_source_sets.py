@@ -1,3 +1,27 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import sys
@@ -8,7 +32,7 @@ from unittest import mock
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from PySide6.QtWidgets import QApplication, QMessageBox
+from PySide6.QtWidgets import QApplication, QMessageBox              
 
 _APP = QApplication.instance() or QApplication([])
 from PySide6.QtGui import QFont
@@ -17,10 +41,16 @@ if _APP is not None:
     _APP.setFont(QFont("Segoe UI", 9))
 
 
-from ui.archive_actions import ArchiveActionsMixin
+from ui.archive_actions import ArchiveActionsMixin              
 
 
 class _Host(ArchiveActionsMixin):
+    pass
+
+
+
+
+
 
     zpaq_available = True
     zpaq_bin = "zpaqfranz"
@@ -28,7 +58,7 @@ class _Host(ArchiveActionsMixin):
     def __init__(self, backup_page=None):
         self.backup_page = backup_page
         self.status_messages = []
-
+                                                                      
         self.calls = []
 
     def statusBar(self):
@@ -37,6 +67,7 @@ class _Host(ArchiveActionsMixin):
     def showMessage(self, text):
         self.status_messages.append(text)
 
+                                       
 
     def _run_job(self, work_id, job_id):
         self.calls.append(("run", work_id, job_id))
@@ -46,6 +77,11 @@ class _Host(ArchiveActionsMixin):
 
 
 class _FakeBackupPage:
+    pass
+
+
+
+
 
     def __init__(self, selected=None, raises=False):
         self._selected = selected
@@ -58,12 +94,23 @@ class _FakeBackupPage:
 
 
 class _FakeBackupPageNoMethod:
+    pass
+
+
+
+
+
+
+
+
+
+
 
     pass
 
 
 class TestSelectedBackupJob(unittest.TestCase):
-
+    pass
 
     def test_none_when_page_missing(self):
         host = _Host(backup_page=None)
@@ -91,7 +138,7 @@ class TestSelectedBackupJob(unittest.TestCase):
 
 
 class TestRunTask(unittest.TestCase):
-
+    pass
 
     def test_runs_selected_job(self):
         page = _FakeBackupPage(selected={"work_id": "w1", "job_id": "j1"})
@@ -123,6 +170,10 @@ class TestRunTask(unittest.TestCase):
         info.assert_called_once()
 
     def test_absorbs_clicked_bool(self):
+        pass
+
+
+
         page = _FakeBackupPage(selected={"work_id": "w1", "job_id": "j1"})
         host = _Host(backup_page=page)
 
@@ -132,7 +183,7 @@ class TestRunTask(unittest.TestCase):
         self.assertEqual(host.calls, [("run", "w1", "j1")])
 
     def test_no_warning_if_page_raises(self):
-
+        pass
         page = _FakeBackupPage(raises=True)
         host = _Host(backup_page=page)
 
@@ -144,7 +195,7 @@ class TestRunTask(unittest.TestCase):
 
 
 class TestEditTask(unittest.TestCase):
-
+    pass
 
     def test_edits_selected_job(self):
         page = _FakeBackupPage(selected={"work_id": "w1", "job_id": "j1"})
@@ -177,6 +228,13 @@ class TestEditTask(unittest.TestCase):
 
 
 class TestSplitSettingsWorkJob(unittest.TestCase):
+    pass
+
+
+
+
+
+
 
     def _host(self):
         return _Host(backup_page=None)
@@ -216,7 +274,7 @@ class TestSplitSettingsWorkJob(unittest.TestCase):
         self.assertEqual(job["task_log_mode"], "full")
 
     def test_password_absent_when_not_set(self):
-
+        pass
         host = self._host()
         work_fields, _ = host._split_settings_work_job({
             "sources": ["D:/a"],

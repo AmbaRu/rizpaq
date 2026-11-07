@@ -1,3 +1,17 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -24,6 +38,10 @@ from ui.qt_compat import (
 
 
 def open_file_external(path: str) -> bool:
+    pass
+
+
+
     try:
         return bool(QDesktopServices.openUrl(QUrl.fromLocalFile(str(path))))
     except Exception:
@@ -31,6 +49,8 @@ def open_file_external(path: str) -> bool:
 
 
 def _move_to_trash(path: str) -> bool:
+    pass
+
     try:
         res = QFile.moveToTrash(path)
     except Exception:
@@ -41,10 +61,11 @@ def _move_to_trash(path: str) -> bool:
 
 
 class FsActionsMixin:
+    pass
 
-
+                                                                       
     def _open_fs_path(self, path: str):
-
+        pass
         if not path:
             return
         p = Path(path)
@@ -56,7 +77,7 @@ class FsActionsMixin:
             )
 
     def _delete_fs_path(self, path: str):
-
+        pass
         if not path:
             return
         p = Path(path)
@@ -84,16 +105,16 @@ class FsActionsMixin:
         self._after_fs_delete(p)
 
     def _delete_table_current(self):
-
+        pass
         kind, payload = self._row_payload()
         if kind not in (K_FS_DIR, K_FS_FILE, K_FS_ARC):
             return
         if payload:
             self._delete_fs_path(str(payload))
 
-
+                                                                       
     def _rename_fs_path(self, path: str):
-
+        pass
         if not path:
             return
         p = Path(path)
@@ -116,7 +137,7 @@ class FsActionsMixin:
             return
 
         new_full = p.parent / new_name
-
+                                                                          
         if new_full.exists() and not same_name(str(new_full), str(p)):
             QMessageBox.warning(
                 self, tr("rename.title"), tr("rename.exists", name=new_name)
@@ -133,18 +154,19 @@ class FsActionsMixin:
         self._after_fs_rename(p, new_full)
 
     def _rename_table_current(self):
-
+        pass
         kind, payload = self._row_payload()
         if kind not in (K_FS_DIR, K_FS_FILE, K_FS_ARC):
             return
         if payload:
             self._rename_fs_path(str(payload))
 
-
+                                                                           
     def _after_fs_rename(self, old: Path, new: Path):
         parent = new.parent
 
-
+                                                                           
+                                                                        
         if self.archive_path:
             retargeted = _retarget_path(self.archive_path, old, new)
             if retargeted:
@@ -153,7 +175,7 @@ class FsActionsMixin:
         if self.mode == "fs" and self.fs_path is not None:
             new_fs = _retarget_path(self.fs_path, old, new)
             if new_fs and Path(new_fs).is_dir():
-
+                                                              
                 self.navigate_fs(Path(new_fs))
                 return
             if same_name(str(parent), str(self.fs_path)):
@@ -165,8 +187,8 @@ class FsActionsMixin:
             pass
 
     def _retarget_archive_state(self, old_arc: str, new_arc: str):
-
-
+        pass
+                                                        
         try:
             stored = get_password(old_arc)
             if stored:
@@ -184,7 +206,7 @@ class FsActionsMixin:
             self.password = cached.get("password") if cached else None
             self._nav_key = (new_arc, self.archive_inner or "")
 
-
+                                                                           
         try:
             self.tree._arc_items.pop(old_arc, None)
         except Exception:
@@ -192,7 +214,7 @@ class FsActionsMixin:
 
         self._update_chrome()
 
-
+                                                                           
     def _after_fs_delete(self, p: Path):
         parent = p.parent if p.parent != p else None
 
@@ -204,7 +226,8 @@ class FsActionsMixin:
             or _is_inside(str(self.fs_path), p)
         )
 
-
+                                                                         
+                   
         if arc_gone:
             for k in [
                 k
@@ -218,7 +241,7 @@ class FsActionsMixin:
             self._show_fs(target or Path.home())
             return
 
-
+                                                                       
         if (
             self.mode == "fs"
             and self.fs_path is not None

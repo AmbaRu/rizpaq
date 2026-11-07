@@ -1,3 +1,60 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import shutil
@@ -11,7 +68,7 @@ from unittest import mock
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from PySide6.QtWidgets import QApplication, QMessageBox
+from PySide6.QtWidgets import QApplication, QMessageBox              
 
 _APP = QApplication.instance() or QApplication([])
 from PySide6.QtGui import QFont
@@ -20,7 +77,7 @@ if _APP is not None:
     _APP.setFont(QFont("Segoe UI", 9))
 
 
-from core.tasks import (
+from core.tasks import (              
     ACTION_TEST,
     JOB_FIELDS,
     add_job,
@@ -31,11 +88,11 @@ from core.tasks import (
     save_container,
     scheduler_task_name,
 )
-from ui.archive_actions import ArchiveActionsMixin
+from ui.archive_actions import ArchiveActionsMixin              
 
 
 class _FakeBackupPage:
-
+    pass
 
     def __init__(self, tasks_dir):
         self._dir = tasks_dir
@@ -45,6 +102,17 @@ class _FakeBackupPage:
 
 
 class _Host(ArchiveActionsMixin):
+    pass
+
+
+
+
+
+
+
+
+
+
 
     zpaq_available = True
     zpaq_bin = "zpaqfranz"
@@ -62,25 +130,38 @@ class _Host(ArchiveActionsMixin):
         self._status.append(text)
 
     def _cleanup_worker(self, worker):
-
+        pass
         if worker in self._workers:
             self._workers.remove(worker)
 
     def wait_for_workers(self, timeout_ms: int = 5000) -> None:
+        pass
 
+
+
+
+
+
+
+
+
+
+
+
+                               
         for w in list(self._workers):
             try:
                 w.wait(timeout_ms)
             except Exception:
                 pass
 
-
+                                                             
         deadline = time.monotonic() + timeout_ms / 1000.0
         while self._workers and time.monotonic() < deadline:
             QApplication.processEvents()
             time.sleep(0.005)
-
-
+                                                                         
+                                             
         QApplication.processEvents()
 
 
@@ -111,8 +192,10 @@ class _TmpMixin(unittest.TestCase):
         return c
 
 
-class TestSaveNewJobCreatesWork(_TmpMixin):
+                                                                          
 
+class TestSaveNewJobCreatesWork(_TmpMixin):
+    pass
 
     def test_new_work_and_job_saved(self):
         host = _Host(self.dir)
@@ -140,10 +223,16 @@ class TestSaveNewJobCreatesWork(_TmpMixin):
         self.assertEqual(len(work["jobs"]), 1)
         self.assertEqual(work["jobs"][0]["level_key"], "m2")
         self.assertEqual(work["jobs"][0]["task_log_mode"], "short")
-
+                                       
         self.assertEqual(work["jobs"][0]["action"], "backup")
 
     def test_work_title_from_dest_stem(self):
+        pass
+
+
+
+
+
         host = _Host(self.dir)
         with mock.patch.object(QMessageBox, "warning"), \
              mock.patch.object(QMessageBox, "information"):
@@ -156,6 +245,10 @@ class TestSaveNewJobCreatesWork(_TmpMixin):
         self.assertEqual(c["works"][0]["title"], "my backup")
 
     def test_work_title_from_settings_overrides_dest(self):
+        pass
+
+
+
         host = _Host(self.dir)
         with mock.patch.object(QMessageBox, "warning"), \
              mock.patch.object(QMessageBox, "information"):
@@ -169,7 +262,7 @@ class TestSaveNewJobCreatesWork(_TmpMixin):
         self.assertEqual(c["works"][0]["title"], "Документы")
 
     def test_job_title_from_settings(self):
-
+        pass
         host = _Host(self.dir)
         with mock.patch.object(QMessageBox, "warning"), \
              mock.patch.object(QMessageBox, "information"):
@@ -183,7 +276,7 @@ class TestSaveNewJobCreatesWork(_TmpMixin):
         self.assertEqual(c["works"][0]["jobs"][0]["title"], "Ежедневный бэкап")
 
     def test_empty_job_title_becomes_default(self):
-
+        pass
         host = _Host(self.dir)
         with mock.patch.object(QMessageBox, "warning"), \
              mock.patch.object(QMessageBox, "information"):
@@ -217,6 +310,12 @@ class TestSaveNewJobCreatesWork(_TmpMixin):
         warn.assert_called_once()
 
     def test_save_test_job_as_new_work(self):
+        pass
+
+
+
+
+
         host = _Host(self.dir)
         with mock.patch.object(QMessageBox, "warning"), \
              mock.patch.object(QMessageBox, "information"):
@@ -235,6 +334,29 @@ class TestSaveNewJobCreatesWork(_TmpMixin):
 
 
 class TestEveryJobFieldReachesContainer(_TmpMixin):
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     def _settings_with_par2(self):
         return {
@@ -253,7 +375,7 @@ class TestEveryJobFieldReachesContainer(_TmpMixin):
         }
 
     def test_par2_reaches_container(self):
-
+        pass
         host = _Host(self.dir)
         with mock.patch.object(QMessageBox, "warning"), \
              mock.patch.object(QMessageBox, "information"):
@@ -265,10 +387,11 @@ class TestEveryJobFieldReachesContainer(_TmpMixin):
                          {"redundancy": 5, "block_size": None})
 
     def test_par2_edited_job_keeps_flag(self):
-
+        pass
         host = _Host(self.dir)
-
-
+                                                               
+                                                                   
+                       
         c = self.write_container([{
             "title": "Работа 1",
             "sources": ["D:/docs"],
@@ -282,8 +405,8 @@ class TestEveryJobFieldReachesContainer(_TmpMixin):
         }])
         work_id = c["works"][0]["id"]
         job_id = c["works"][0]["jobs"][0]["id"]
-
-
+                                                                  
+                                                           
         self.assertIs(
             load_container(self.container_path())["works"][0]["jobs"][0]
             ["par2_enabled"],
@@ -303,6 +426,14 @@ class TestEveryJobFieldReachesContainer(_TmpMixin):
                          {"redundancy": 5, "block_size": None})
 
     def test_schedule_and_job_title_survive(self):
+        pass
+
+
+
+
+
+
+
         host = _Host(self.dir)
         with mock.patch("core.scheduler.create_scheduled_task"), \
              mock.patch.object(QMessageBox, "warning"), \
@@ -317,6 +448,14 @@ class TestEveryJobFieldReachesContainer(_TmpMixin):
         self.assertEqual(job.get("task_log_mode"), "short")
 
     def test_every_job_field_is_copied(self):
+        pass
+
+
+
+
+
+
+
         host = _Host(self.dir)
         sentinel = {
             "level": ["-m2"],
@@ -346,14 +485,14 @@ class TestEveryJobFieldReachesContainer(_TmpMixin):
             missing, [],
             f"поля задания потеряны при разрезании настроек: {missing}",
         )
-
+                                                           
         self.assertEqual(job_fields["level"], ["-m2"])
         self.assertEqual(job_fields["par2_options"], {"redundancy": 5})
         self.assertEqual(job_fields["chunk"], None)
 
 
 class TestSaveNewJobToExistingWork(_TmpMixin):
-
+    pass
 
     def test_job_added_not_new_work_created(self):
         c = self.write_container([{"title": "Docs", "jobs": []}])
@@ -403,6 +542,12 @@ class TestSaveNewJobToExistingWork(_TmpMixin):
         self.assertEqual(len(c2["works"][0]["jobs"]), 2)
 
     def test_add_test_job_to_existing_work(self):
+        pass
+
+
+
+
+
         c = self.write_container([{"title": "Docs", "jobs": []}])
         work_id = c["works"][0]["id"]
         host = _Host(self.dir)
@@ -431,6 +576,11 @@ class TestSaveNewJobToExistingWork(_TmpMixin):
         self.assertEqual(job["title"], "Месячная проверка")
 
     def test_renaming_work_through_add_job(self):
+        pass
+
+
+
+
         c = self.write_container([{"title": "Old name", "jobs": []}])
         work_id = c["works"][0]["id"]
         host = _Host(self.dir)
@@ -464,8 +614,10 @@ class TestSaveNewJobToExistingWork(_TmpMixin):
         warn.assert_called_once()
 
 
-class TestSaveEditedJob(_TmpMixin):
+                                                                             
 
+class TestSaveEditedJob(_TmpMixin):
+    pass
 
     def _setup(self):
         c = self.write_container([{
@@ -529,7 +681,7 @@ class TestSaveEditedJob(_TmpMixin):
         self.assertEqual(work["comment"], "obnovleno")
 
     def test_job_title_updated(self):
-
+        pass
         work_id, job_id = self._setup()
         host = _Host(self.dir)
 
@@ -551,6 +703,11 @@ class TestSaveEditedJob(_TmpMixin):
         self.assertEqual(c["works"][0]["jobs"][0]["title"], "Renamed job")
 
     def test_work_title_updated(self):
+        pass
+
+
+
+
         work_id, job_id = self._setup()
         host = _Host(self.dir)
 
@@ -596,6 +753,14 @@ class TestSaveEditedJob(_TmpMixin):
         warn.assert_called_once()
 
     def test_no_schedule_does_not_touch_scheduler(self):
+        pass
+
+
+
+
+
+
+
         work_id, job_id = self._setup()
         host = _Host(self.dir)
 
@@ -616,10 +781,15 @@ class TestSaveEditedJob(_TmpMixin):
         rem.assert_not_called()
 
     def test_renaming_work_removes_old_scheduler_task(self):
+        pass
+
+
+
+
         work_id, job_id = self._setup()
         host = _Host(self.dir)
 
-
+                                                                          
         c_before = load_container(self.container_path())
         work_before = c_before["works"][0]
         job_before = work_before["jobs"][0]
@@ -639,7 +809,8 @@ class TestSaveEditedJob(_TmpMixin):
                 work_id, job_id,
             )
 
-
+                                                                   
+                                    
         calls = [str(a) for a in rem.call_args_list]
         self.assertTrue(
             any(old_task_name in c for c in calls),
@@ -647,6 +818,10 @@ class TestSaveEditedJob(_TmpMixin):
         )
 
     def test_renaming_test_job_does_not_change_scheduler_name(self):
+        pass
+
+
+
         c = self.write_container([{
             "title": "Docs",
             "jobs": [{"title": "Old check", "action": "test"}],
@@ -668,11 +843,18 @@ class TestSaveEditedJob(_TmpMixin):
                 },
                 work_id, job_id,
             )
-
+                                                       
         rem.assert_not_called()
 
 
 class TestTaskNameHelper(_TmpMixin):
+    pass
+
+
+
+
+
+
 
     def test_name_changes_with_work_title(self):
         c = self.write_container([{
@@ -692,6 +874,10 @@ class TestTaskNameHelper(_TmpMixin):
         self.assertNotEqual(name_before, name_after)
 
     def test_name_for_test_job_has_t_prefix(self):
+        pass
+
+
+
         c = self.write_container([{
             "title": "Docs",
             "jobs": [{"title": "Check", "action": "test"}],
@@ -732,7 +918,18 @@ class TestTaskNameHelper(_TmpMixin):
         )
 
 
+                                                                            
+
 class TestApplySchedule(_TmpMixin):
+    pass
+
+
+
+
+
+
+
+
 
     def _work_job(self):
         c = self.write_container([{
@@ -768,6 +965,12 @@ class TestApplySchedule(_TmpMixin):
         self.assertEqual(args[3], sched)
 
     def test_disabled_schedule_still_calls_create_for_delegation(self):
+        pass
+
+
+
+
+
         host = _Host(self.dir)
         work, job = self._work_job()
         sched = {"enabled": False}
@@ -790,7 +993,7 @@ class TestApplySchedule(_TmpMixin):
         warn.assert_called_once()
 
     def test_failed_disabled_does_not_warn(self):
-
+        pass
         host = _Host(self.dir)
         work, job = self._work_job()
         with mock.patch("core.scheduler.create_scheduled_task",

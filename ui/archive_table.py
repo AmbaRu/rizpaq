@@ -1,3 +1,19 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -18,23 +34,30 @@ from core.paths import find_extracted_path
 from ui.i18n import tr
 from ui.qt_compat import K_ARC_DIR, K_ARC_FILE, KIND_ROLE, USER_ROLE
 
-
+                                                                       
 _DRAG_CLEANUP_MS = 3000
 
-
+                                               
 _DRAG_EXTRACT_TIMEOUT = 120
 
-
+                                                                     
+                                                                      
 _CMDLINE_LIMIT = 24000
 
 
 def _chunk_patterns(patterns: list) -> list:
+    pass
+
+
+
+
+
     chunks: list = []
     current: list = []
     size = 0
 
     for pat in patterns:
-
+                                   
         cost = len(pat) + 8
         if current and size + cost > _CMDLINE_LIMIT:
             chunks.append(current)
@@ -51,8 +74,26 @@ def _chunk_patterns(patterns: list) -> list:
 
 def _extract_for_drag(zpaq_bin, archive_path, password, targets,
                       timeout=None, pump=None):
+    pass
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                            
+                                                                          
+                                                                         
+                                                                      
+                                                     
     notes = {"timed_out": False, "chunks": 0, "chunks_done": 0,
              "timeout": 0}
 
@@ -92,16 +133,17 @@ def _extract_for_drag(zpaq_bin, archive_path, password, targets,
 
         left = deadline - time.monotonic()
         if left <= 0:
-
-
+                                                                           
+                                                                     
             notes["timed_out"] = True
             break
 
         try:
             subprocess.run(cmd, capture_output=True, timeout=max(1.0, left))
         except subprocess.TimeoutExpired:
-
-
+                                                                             
+                                                                      
+                                                               
             notes["timed_out"] = True
             break
         except Exception:
@@ -109,7 +151,9 @@ def _extract_for_drag(zpaq_bin, archive_path, password, targets,
 
         notes["chunks_done"] += 1
 
-
+                                                                            
+                                                                          
+                                                
         if pump is not None:
             try:
                 pump()
@@ -131,7 +175,7 @@ def _extract_for_drag(zpaq_bin, archive_path, password, targets,
         if found:
             urls.append(str(found))
 
-
+                                                                          
     if not urls:
         try:
             names = os.listdir(temp_dir)
@@ -144,7 +188,7 @@ def _extract_for_drag(zpaq_bin, archive_path, password, targets,
 
 
 class ArchiveTable(QTableWidget):
-
+    pass
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -156,7 +200,7 @@ class ArchiveTable(QTableWidget):
         if mw is None or getattr(mw, "mode", "fs") != "archive":
             return
 
-
+                                                                
         targets = []
         seen_rows = set()
 
@@ -190,7 +234,13 @@ class ArchiveTable(QTableWidget):
         if not targets:
             return
 
-
+                                                                      
+         
+                                                                          
+                                                                            
+                                                                     
+                                                                    
+                        
         QApplication.setOverrideCursor(Qt.WaitCursor)
         try:
             self.statusBar().showMessage(tr("status.preparing_drag"))
@@ -225,8 +275,10 @@ class ArchiveTable(QTableWidget):
                 except Exception:
                     pass
             if notes.get("timed_out"):
-
-
+                                                                       
+                                                                          
+                                                                     
+                                                                         
                 QMessageBox.warning(
                     self,
                     tr("drag.error_title"),

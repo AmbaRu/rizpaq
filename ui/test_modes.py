@@ -1,8 +1,37 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 from ui.i18n import tr
 
-
+                                                                  
+ 
+                                                                  
+                                                                   
+                                                                       
+                                                                
+                          
 TEST_MODES_UI = (
     ("full", "menu.test.full", "check.mode_full"),
     ("checksum", "menu.test.checksum", "check.mode_checksum"),
@@ -13,28 +42,46 @@ TEST_MODES_UI = (
 
 
 def menu_entries():
-
+    pass
     return tuple((mode, tr(menu_key)) for mode, menu_key, _ in TEST_MODES_UI)
 
 
 def combo_entries():
-
+    pass
     return tuple(
         (mode, tr(combo_key)) for mode, _menu, combo_key in TEST_MODES_UI
     )
 
 
 def mode_label(mode: str, default_key: str = "test.title") -> str:
+    pass
+
+
+
+
+
+
+
     wanted = str(mode or "")
     for candidate, menu_key, combo_key in TEST_MODES_UI:
         if candidate == wanted:
-
-
+                                                                   
+                                         
             return tr(menu_key)
     return tr(default_key)
 
 
 def has_par2_for(archive_path: str) -> bool:
+    pass
+
+
+
+
+
+
+
+
+
     if not archive_path:
         return False
     import os

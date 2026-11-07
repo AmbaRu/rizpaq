@@ -1,3 +1,9 @@
+                       
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -13,22 +19,22 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from PySide6.QtWidgets import QApplication, QMainWindow, QWidget
+from PySide6.QtWidgets import QApplication, QMainWindow, QWidget              
 
 _APP = QApplication.instance() or QApplication(sys.argv)
 
-from ui import i18n
+from ui import i18n              
 
 i18n.set_language("ru", notify=False)
 
-from ui.i18n import tr
-from ui.global_search_dialog import GlobalSearchDialog
-from ui.menu_actions import MenuActionsMixin
-from ui.version_menu import VersionMenuMixin
+from ui.i18n import tr              
+from ui.global_search_dialog import GlobalSearchDialog              
+from ui.menu_actions import MenuActionsMixin              
+from ui.version_menu import VersionMenuMixin              
 
-from core import archive_index as idx
-from core import search as core_search
-from core.models import ArchiveEntry
+from core import archive_index as idx              
+from core import search as core_search              
+from core.models import ArchiveEntry              
 
 
 def _entry(
@@ -49,8 +55,11 @@ def _entry(
     )
 
 
-class TestSearchAll(unittest.TestCase):
+                                                                        
 
+
+class TestSearchAll(unittest.TestCase):
+    pass
 
     def test_empty_query_returns_no_results(self):
         archives = [
@@ -92,6 +101,9 @@ class TestSearchAll(unittest.TestCase):
         self.assertEqual(res[0]["archive"], "C:/arc2.zpaq")
 
 
+                                                                         
+
+
 class TestListArchives(unittest.TestCase):
     def setUp(self):
         self._tmp = Path(tempfile.mkdtemp(prefix="rizpaq_glob_idx_"))
@@ -107,7 +119,7 @@ class TestListArchives(unittest.TestCase):
     def test_stored_archives_listed(self):
         idx.store_entries("C:/arc1.zpaq", 111, 222, [_entry("d:/a.txt")])
         idx.store_entries("C:/arc2.zpaq", 111, 222, [_entry("d:/b.txt")])
-
+                                                                       
         idx.store_entries("C:/backup_????.zpaq", 111, 222, [_entry("d:/c.txt")])
         got = idx.list_archives()
         paths = sorted(a["path"] for a in got)
@@ -115,8 +127,11 @@ class TestListArchives(unittest.TestCase):
         self.assertEqual(got[0]["entries_count"], 1)
 
 
-class _Host(QWidget, MenuActionsMixin):
+                                                                          
 
+
+class _Host(QWidget, MenuActionsMixin):
+    pass
 
     def __init__(self):
         QWidget.__init__(self)
@@ -196,6 +211,13 @@ class GlobalSearchDialogTests(unittest.TestCase):
 
 
 class GlobalSearchResultLimitTests(unittest.TestCase):
+    pass
+
+
+
+
+
+
 
     @classmethod
     def setUpClass(cls):
@@ -239,11 +261,16 @@ class GlobalSearchResultLimitTests(unittest.TestCase):
                 self.dlg._apply_search()
         self.assertEqual(collect.call_count, 1)
 
-
+                                                                 
         self.dlg.reset_search()
         self.assertIsNone(self.dlg._archives)
 
 
+                                                                         
+
+
+                                                                   
+                                                                
 _MENU_STUBS = (
     "_build_profile_menu",
     "_build_skin_menu",
@@ -284,6 +311,15 @@ for _name in _MENU_STUBS:
 
 
 class GlobalSearchMenuTests(unittest.TestCase):
+    pass
+
+
+
+
+
+
+
+
 
     @classmethod
     def setUpClass(cls):
@@ -299,7 +335,7 @@ class GlobalSearchMenuTests(unittest.TestCase):
 
     def test_action_stays_enabled_when_archive_dependent_actions_off(self):
         self.host._create_actions()
-
+                                                                         
         self.host._set_archive_dependent_actions(False)
         self.assertTrue(self.host.global_search_action.isEnabled())
 

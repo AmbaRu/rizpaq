@@ -1,3 +1,11 @@
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 from PySide6.QtCore import (
@@ -36,6 +44,7 @@ _SCAN_MS = 60
 _SEC_MS = 1000
 
 
+
 def _elide_mid(text: str, n: int) -> str:
     if not text:
         return ""
@@ -55,19 +64,21 @@ def _fmt_seconds(s: int) -> str:
 
 
 class ExtractProgressBar(QFrame):
-
+    pass
 
     cancelRequested = Signal()
 
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setObjectName("extractbar")
-
-
+                                                                            
+                                                                    
+                                                                    
+                                 
         self.setFixedHeight(0)
         self.setVisible(False)
 
-        self._mode = "idle"
+        self._mode = "idle"                                 
         self._percent_mode = False
         self._seconds = 0
         self._scan = 0
@@ -143,7 +154,7 @@ class ExtractProgressBar(QFrame):
         self._scan_timer.setInterval(_SCAN_MS)
         self._scan_timer.timeout.connect(self._on_scan)
 
-
+                                                                             
     def begin_folder(self, total: int) -> None:
         self._reset_for_run()
         self._mode = "files"
@@ -207,7 +218,7 @@ class ExtractProgressBar(QFrame):
         self._scan_timer.start()
 
     def set_percent(self, pct: int) -> None:
-
+        pass
         if self._mode == "idle":
             return
 
@@ -255,11 +266,11 @@ class ExtractProgressBar(QFrame):
         self._cancel.setVisible(False)
         self._dismiss_timer.start(_HOLD_MS)
 
-
+                                                                             
     def _on_sec(self) -> None:
         self._seconds += 1
 
-
+                                                                      
         if self._mode == "files":
             return
 

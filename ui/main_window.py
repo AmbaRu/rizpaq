@@ -1,3 +1,37 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -64,18 +98,20 @@ class MainWindow(
         self.resize(1320, 820)
 
         self._cfg = _load_cfg()
-
-
+                                                                  
+                                                                      
+                              
         self._init_language()
-
-
+                                                               
+                                                            
+                                                                 
         self._init_skin()
-
-
+                                                                  
+                                                                     
         if getattr(self._cfg, "profile", None) is None:
             self._choose_profile_on_first_run()
-
-
+                                                                  
+                                                     
         self._init_profile()
 
         self.zpaq_bin = os.environ.get("ZPAQ_BIN", "zpaqfranz")
@@ -83,7 +119,7 @@ class MainWindow(
             self.zpaq_bin = self._cfg.zpaq_path
         self.zpaq_available = False
 
-
+                                      
         self.seven_zip_bin = os.environ.get("SEVEN_ZIP_BIN", "")
         if not self.seven_zip_bin:
             try:
@@ -118,38 +154,51 @@ class MainWindow(
         self._load_req: Optional[dict] = None
         self._busy_base = ""
         self._busy_n = 0
-
-
+                                                                        
+                                              
         self._busy_depth = 0
         self._notice = None
-
-
+                                                                    
+                                                                     
+                                                                      
+                                                                  
+                                                                        
+                                                                         
         self._bold_font = self.font()
         self._bold_font.setBold(True)
 
-
+                                                           
         self._right_sort_column = getattr(self._cfg, "right_sort_column", None)
         self._right_sort_desc = getattr(self._cfg, "right_sort_desc", False)
 
-
+                                                                      
+                                                                     
+                                                                       
+                                                                 
+                                                                 
         self._pending_info_path: Optional[str] = None
         self._pending_create_report: Optional[dict] = None
 
-
+                                                                
+                                                                 
         self._profile = getattr(self, "_profile", "archive")
         self._profile_group = None
         self._profile_actions = None
 
-
+                                                                         
+                                                  
         self.profile_bar = None
 
-
+                                                                   
+                                                                   
+                               
         self._main_stack = None
         self._archive_page = None
         self.backup_page = None
         self.dashboard_page = None
 
-
+                                                                    
+                                                                     
         self._versions_menu = None
         self._ver_group = None
         self.compare_action = None
@@ -164,12 +213,15 @@ class MainWindow(
         self._setup_drag_drop()
         self._setup_tree_context_menu()
 
-
+                                                           
         self._retranslate_ui()
-
+                                                                          
         self._setup_language_listener()
 
-
+                                                                
+                                                                  
+                                                                      
+                                                        
         if self.profile_bar is not None:
             try:
                 self.profile_bar.profile_changed.connect(self._switch_profile)
@@ -182,7 +234,10 @@ class MainWindow(
             except Exception:
                 pass
 
-
+                                                                 
+                                                                
+                                                                       
+                                                        
         self._apply_profile_to_ui(self.current_profile())
 
         try:
@@ -247,8 +302,25 @@ class MainWindow(
             pass
         self._show_fs(start)
 
+                                                                     
 
     def _choose_profile_on_first_run(self) -> None:
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         try:
             from PySide6.QtWidgets import QDialog
 
@@ -268,8 +340,20 @@ class MainWindow(
         except Exception:
             pass
 
+                                                               
 
     def _apply_profile_to_ui(self, profile: str):
+        pass
+
+
+
+
+
+
+
+
+
+
         bar = getattr(self, "profile_bar", None)
         if bar is not None:
             try:
@@ -279,9 +363,24 @@ class MainWindow(
         self._switch_main_page(profile)
 
     def _on_dashboard_requested(self):
+        pass
+
+
+
+
+
+
+
         self._switch_main_page("dashboard")
 
     def show_startup_digest(self):
+        pass
+
+
+
+
+
+
         from ui.startup_digest_panel import show_if_needed
 
         try:
@@ -290,6 +389,31 @@ class MainWindow(
             pass
 
     def _switch_main_page(self, page_name: str):
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         stack = getattr(self, "_main_stack", None)
         if stack is None:
             return
@@ -321,7 +445,8 @@ class MainWindow(
         except Exception:
             pass
 
-
+                                                                      
+                                                                  
         bar = getattr(self, "profile_bar", None)
         if bar is not None and hasattr(bar, "sync_mode"):
             try:
@@ -330,14 +455,46 @@ class MainWindow(
             except Exception:
                 pass
 
-
+                                                                          
     def _load_archive_list(self, path, make_active=False, inner=""):
+        pass
+
+
+
+
+
         return super()._load_archive_list(
             multipart_pattern(path), make_active=make_active, inner=inner
         )
 
+                                                                     
 
     def _open_rzp(self, path: str) -> None:
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if not path:
             return
         p = Path(path)
@@ -346,7 +503,7 @@ class MainWindow(
         if not p.is_file():
             return
 
-
+                                   
         folder = str(p.parent)
         try:
             if getattr(self, "_cfg", None) is not None:
@@ -358,7 +515,7 @@ class MainWindow(
         except Exception:
             pass
 
-
+                                                                
         self._switch_main_page("backup")
         if getattr(self, "profile_bar", None) is not None:
             try:
@@ -366,7 +523,9 @@ class MainWindow(
             except Exception:
                 pass
 
-
+                                                                    
+                                                                   
+                                                 
         page = getattr(self, "backup_page", None)
         if page is not None:
             try:

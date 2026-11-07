@@ -1,3 +1,39 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -6,16 +42,20 @@ from typing import Callable, Optional
 
 from core.paths import multipart_pattern
 
-
+                                                                   
+                                                                   
+                     
 ARCHIVE_EXTS = (".zpaq",)
 
-
+                                                                  
 SKIP_DIR_NAMES = {
     "$recycle.bin",
     "system volume information",
 }
 
-
+                                                                      
+                                                                      
+                                                           
 PROGRESS_EVERY_DIRS = 25
 PROGRESS_EVERY_SECONDS = 0.2
 
@@ -30,7 +70,7 @@ def _should_stop(should_stop: Optional[Callable[[], bool]]) -> bool:
 
 
 def _call(callback, *args) -> None:
-
+    pass
     if callback is None:
         return
     try:
@@ -51,9 +91,18 @@ def scan_roots(
     on_progress: Optional[Callable[[dict], None]] = None,
     on_error: Optional[Callable[[str, Exception], None]] = None,
 ) -> list:
+    pass
+
+
+
+
+
+
+
     roots = [str(r) for r in (roots or []) if str(r or "").strip()]
 
-
+                                                                      
+                                                                    
     raw: dict = {}
 
     directories = 0
@@ -97,7 +146,7 @@ def scan_roots(
 
         root_abs = os.path.abspath(root)
         if os.path.isfile(root_abs):
-
+                                                                
             if _is_archive_name(os.path.basename(root_abs)):
                 remember(root_abs)
             continue
@@ -121,8 +170,8 @@ def scan_roots(
                         if _should_stop(should_stop):
                             break
                         try:
-
-
+                                                                       
+                                                      
                             if entry.is_symlink():
                                 continue
                             if entry.is_dir(follow_symlinks=False):
@@ -139,7 +188,8 @@ def scan_roots(
 
     report(force=True)
 
-
+                                                                     
+                                                         
     grouped: dict = {}
     for key, (original, size, mtime_ns, parts) in raw.items():
         mask = multipart_pattern(original)

@@ -1,3 +1,25 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 from PySide6.QtWidgets import (
@@ -10,7 +32,8 @@ from PySide6.QtWidgets import (
 from ui.i18n import tr
 from ui.par2_options import Par2OptionsWidget
 
-
+                                                                    
+                            
 _LAST_OPTIONS: dict = {}
 
 
@@ -24,7 +47,7 @@ def remember_options(options: dict) -> None:
 
 
 class Par2SetDialog(QDialog):
-
+    pass
 
     def __init__(self, archive_name: str = "", options: dict = None,
                  parent=None):
@@ -40,11 +63,12 @@ class Par2SetDialog(QDialog):
 
         self.widget = Par2OptionsWidget(show_master=False)
         self.widget.apply(options or {})
-
-
+                                                                        
+                                                                    
+                                                        
         self.widget.intro.setVisible(True)
 
-
+                                                                        
         scroll = QScrollArea()
         scroll.setWidget(self.widget)
         scroll.setWidgetResizable(True)
@@ -61,5 +85,5 @@ class Par2SetDialog(QDialog):
         lay.addWidget(buttons)
 
     def options(self) -> dict:
-
+        pass
         return self.widget.collect()

@@ -1,3 +1,18 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 from ui.i18n import tr
@@ -8,7 +23,7 @@ from ui.operation_progress_dialog import (
 
 
 class ExtractProgressDialog(OperationProgressDialog):
-
+    pass
 
     def __init__(self, parent=None):
         super().__init__(tr("progress.title"), parent)
@@ -16,14 +31,14 @@ class ExtractProgressDialog(OperationProgressDialog):
         self._mode = "extract"
         self._auto_close_on_ok = True
 
-
+                                                                         
     def begin_file(self, name: str = "") -> None:
-
+        pass
         self._mode = "single"
         self.begin(tr("progress.title_file"), _elide_mid(name or "", 140))
 
     def begin_folder(self, total: int) -> None:
-
+        pass
         self._mode = "files"
 
         self.begin(tr("progress.title_folder"), tr("progress.preparing"))
@@ -38,10 +53,10 @@ class ExtractProgressDialog(OperationProgressDialog):
         self._files_label.setText(f"0 / {total}")
 
     def begin_batch(self) -> None:
-
+        pass
         self._mode = "batch"
         self.begin(tr("progress.title_folder"), tr("progress.batch_pass"))
 
     def finish(self, ok: bool, msg: str = "") -> None:
-
+        pass
         super().finish(ok, msg or "")

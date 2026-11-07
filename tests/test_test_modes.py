@@ -1,3 +1,28 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import sys
@@ -9,7 +34,7 @@ from unittest import mock
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from PySide6.QtWidgets import QApplication, QMenu, QWidget
+from PySide6.QtWidgets import QApplication, QMenu, QWidget              
 
 _APP = QApplication.instance() or QApplication([])
 from PySide6.QtGui import QFont
@@ -18,13 +43,13 @@ if _APP is not None:
     _APP.setFont(QFont("Segoe UI", 9))
 
 
-from core.tasks import TEST_MODES
-from ui.i18n import set_language, tr
+from core.tasks import TEST_MODES              
+from ui.i18n import set_language, tr              
 
 set_language("ru", str(ROOT / "locales"))
 
-from ui.qt_compat import KIND_ROLE, TCOL, USER_ROLE
-from ui.test_modes import (
+from ui.qt_compat import KIND_ROLE, TCOL, USER_ROLE              
+from ui.test_modes import (              
     combo_entries,
     has_par2_for,
     menu_entries,
@@ -33,7 +58,7 @@ from ui.test_modes import (
 
 
 class _Item:
-
+    pass
 
     def __init__(self, path, kind):
         self._path = path
@@ -50,6 +75,13 @@ class _Item:
 
 
 class _MenuHost(QWidget):
+    pass
+
+
+
+
+
+
 
     def __init__(self):
         QWidget.__init__(self)
@@ -57,7 +89,7 @@ class _MenuHost(QWidget):
         self.calls = []
         self.captured = None
 
-
+                           
     def _enter_archive(self, path):
         self.calls.append(("open", path))
 
@@ -82,7 +114,7 @@ class _MenuHost(QWidget):
     def _exec_menu(self, menu, pos):
         self.captured = menu
 
-
+                     
     def build(self, path, from_table=False):
         self.archive_path = path
         item = _Item(path, "fs_arc")
@@ -100,7 +132,7 @@ class _FakeViewport:
 
 
 class _FakeTable:
-
+    pass
 
     def __init__(self):
         self._viewport = _FakeViewport()
@@ -128,6 +160,12 @@ class _Pos:
 
 
 class _TableHost(_MenuHost):
+    pass
+
+
+
+
+
 
     def __init__(self):
         QWidget.__init__(self)
@@ -145,13 +183,21 @@ class _TableHost(_MenuHost):
 
         self.archive_path = path
         self._payload = (K_FS_ARC, path)
-
-
+                                                                      
+                                                                 
+                                                                 
+                                        
         TableEventsMixin._on_table_context_menu(self, _Pos())
         return self.captured
 
 
 class TestModeListIsSingleSource(unittest.TestCase):
+    pass
+
+
+
+
+
 
     def test_menu_modes_match_core(self):
         self.assertEqual([m for m, _ in menu_entries()], list(TEST_MODES))
@@ -160,10 +206,16 @@ class TestModeListIsSingleSource(unittest.TestCase):
         self.assertEqual([m for m, _ in combo_entries()], list(TEST_MODES))
 
     def test_par2_is_present(self):
-
+        pass
         self.assertIn("par2", [m for m, _ in menu_entries()])
 
     def test_verify_is_present(self):
+        pass
+
+
+
+
+
         self.assertIn("verify", [m for m, _ in menu_entries()])
 
     def test_labels_are_not_empty(self):
@@ -172,12 +224,19 @@ class TestModeListIsSingleSource(unittest.TestCase):
                 self.assertTrue(label.strip())
 
     def test_menu_and_combo_labels_differ(self):
+        pass
+
+
+
+
+
+
         menu = dict(menu_entries())
         combo = dict(combo_entries())
         self.assertNotEqual(menu["full"], combo["full"])
 
     def test_mode_label_falls_back(self):
-
+        pass
         label = mode_label("что-то_неизвестное")
         self.assertEqual(label, tr("test.title"))
 
@@ -186,7 +245,7 @@ class TestModeListIsSingleSource(unittest.TestCase):
 
 
 class TestHasPar2For(unittest.TestCase):
-
+    pass
 
     def setUp(self):
         self.dir = Path(tempfile.mkdtemp(prefix="rizpaq_haspar2_"))
@@ -209,12 +268,12 @@ class TestHasPar2For(unittest.TestCase):
         self.assertFalse(has_par2_for(""))
 
     def test_false_for_missing_archive(self):
-
+        pass
         self.assertFalse(has_par2_for(str(self.dir / "нет.zpaq")))
 
 
 class TestArchiveContextMenu(unittest.TestCase):
-
+    pass
 
     def setUp(self):
         import shutil
@@ -242,7 +301,7 @@ class TestArchiveContextMenu(unittest.TestCase):
         return [a for a in menu.actions()
                 if a.text() == tr("par2.repair")]
 
-
+                                                                    
     def test_tree_has_five_modes(self):
         _host, menu = self._menu()
         sub = self._test_menu(menu)
@@ -265,6 +324,13 @@ class TestArchiveContextMenu(unittest.TestCase):
         self.assertIn(("test", str(self.arch), "par2"), self.host.calls)
 
     def test_each_mode_passes_own_code(self):
+        pass
+
+
+
+
+
+
         _host, menu = self._menu()
         sub = self._test_menu(menu)
         for act in sub.actions():
@@ -273,7 +339,7 @@ class TestArchiveContextMenu(unittest.TestCase):
                 act.trigger()
                 self.assertEqual(self.host.calls[-1][2], act.data())
 
-
+                                                                            
     def test_restore_hidden_without_set(self):
         _host, menu = self._menu()
         self.assertEqual(self._restore(menu), [])
@@ -284,7 +350,7 @@ class TestArchiveContextMenu(unittest.TestCase):
         self.assertEqual(len(self._restore(menu)), 1)
 
     def test_table_restore_shown_with_set(self):
-
+        pass
         (self.dir / "backup.zpaq.par2").write_bytes(b"P")
         host = _TableHost()
         menu = host.build(str(self.arch), from_table=True)
@@ -298,7 +364,7 @@ class TestArchiveContextMenu(unittest.TestCase):
 
 
 class TestCheckDialogUsesSharedList(unittest.TestCase):
-
+    pass
 
     def test_combo_matches_list(self):
         from ui.archive_check_dialog import ArchiveCheckDialog
@@ -312,6 +378,14 @@ class TestCheckDialogUsesSharedList(unittest.TestCase):
 
 
 class TestNoHardcodedModeLists(unittest.TestCase):
+    pass
+
+
+
+
+
+
+
 
     FILES = (
         "ui/tree_events.py",
@@ -332,6 +406,11 @@ class TestNoHardcodedModeLists(unittest.TestCase):
                     )
 
     def test_archive_actions_has_no_labels_dict(self):
+        pass
+
+
+
+
         text = (ROOT / "ui" / "archive_actions.py").read_text(
             encoding="utf-8"
         )

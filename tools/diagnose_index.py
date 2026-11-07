@@ -1,4 +1,34 @@
 #!/usr/bin/env python3
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import sqlite3
@@ -12,7 +42,7 @@ if str(ROOT) not in sys.path:
 
 
 def _fmt_ts(ns: int) -> str:
-
+    pass
     try:
         return datetime.fromtimestamp(ns / 1_000_000_000).strftime(
             "%Y-%m-%d %H:%M:%S"
@@ -22,7 +52,7 @@ def _fmt_ts(ns: int) -> str:
 
 
 def _print_header() -> Path:
-
+    pass
     from core import archive_index
 
     path = archive_index.index_path()
@@ -41,7 +71,7 @@ def _print_header() -> Path:
         except OSError as exc:
             print(f"Не удалось прочитать размер: {exc}")
 
-
+                   
     for suffix in ("-wal", "-shm"):
         p = Path(str(path) + suffix)
         if p.is_file():
@@ -55,7 +85,7 @@ def _print_header() -> Path:
 
 
 def _print_archives(path: Path) -> None:
-
+    pass
     if not path.is_file():
         print("(таблица archives не показана: файла индекса нет)")
         return
@@ -91,7 +121,7 @@ def _print_archives(path: Path) -> None:
 
 
 def _check_one(path_str: str, show_entries: bool) -> None:
-
+    pass
     from core import archive_index
 
     print("=== Проверка конкретного архива ===")
@@ -147,7 +177,7 @@ def main() -> int:
     path = _print_header()
     _print_archives(path)
 
-
+                                                                    
     args = sys.argv[1:]
     show_entries = "--entries" in args
     paths = [a for a in args if a != "--entries"]

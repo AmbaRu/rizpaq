@@ -1,3 +1,44 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -18,14 +59,26 @@ from ui.qt_compat import (
 )
 from workers import StreamingListWorker, ZpaqWorker
 
-
+                                                              
+                                                             
 _MIN_ZPAQ_SIZE = 13
 
 
 class ArchiveLoaderMixin:
+    pass
 
+                                                                         
 
     def _cache(self, path: str) -> dict:
+        pass
+
+
+
+
+
+
+
+
         key = multipart_pattern(path)
         return self._arc_cache.setdefault(
             key,
@@ -40,6 +93,20 @@ class ArchiveLoaderMixin:
         )
 
     def _activate_archive(self, path: str) -> None:
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.archive_path = path
         c = self._cache(path)
         self.entries = c["entries"]
@@ -49,7 +116,9 @@ class ArchiveLoaderMixin:
         self.version_slice = None
         self._rebuild_versions_menu()
 
-
+                                                                   
+                                                                   
+                                               
         switcher = getattr(self, "_switch_main_page", None)
         if callable(switcher):
             try:
@@ -57,21 +126,32 @@ class ArchiveLoaderMixin:
             except Exception:
                 pass
 
+                                                                          
 
     def _check_zpaq_file_sane(self, path: str) -> bool:
-        if "?" in str(path):
+        pass
 
+
+
+
+
+
+
+
+
+        if "?" in str(path):
+                                                       
             return True
 
         try:
             size = os.path.getsize(path)
         except OSError:
-            return True
+            return True                                                       
 
         if size >= _MIN_ZPAQ_SIZE:
             return True
 
-
+                                                       
         name = Path(path).name
         if size == 0:
             msg = tr("archive.error.empty_file", name=name)
@@ -100,9 +180,20 @@ class ArchiveLoaderMixin:
                 )
         return False
 
+                                                                      
 
     @staticmethod
     def _file_stamp(path) -> tuple | None:
+        pass
+
+
+
+
+
+
+
+
+
         try:
             st = os.stat(str(path))
             return (st.st_mtime_ns, st.st_size)
@@ -110,9 +201,19 @@ class ArchiveLoaderMixin:
             return None
 
     def _try_index_load(self, path: str, make_active: bool, inner: str) -> bool:
+        pass
+
+
+
+
+
+
+
+
+
         stamp = self._file_stamp(path)
         if stamp is None:
-
+                                                                        
             try:
                 archive_index.forget(str(path))
             except Exception:
@@ -126,12 +227,12 @@ class ArchiveLoaderMixin:
                 return False
             entries = archive_index.load_entries(str(path))
         except Exception:
-
+                                                                   
             return False
 
         if entries is None:
-
-
+                                                                  
+                                                   
             return False
 
         ctx = {"path": path, "make_active": make_active, "inner": inner}
@@ -139,6 +240,20 @@ class ArchiveLoaderMixin:
         return True
 
     def _index_store_if_unchanged(self, ctx: dict, entries: list) -> None:
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
         path = ctx.get("path")
         if not path:
             return
@@ -157,27 +272,35 @@ class ArchiveLoaderMixin:
                 str(path), current[0], current[1], entries
             )
         except Exception:
-
+                                                          
             pass
 
+                                                                      
 
     def _load_archive_list(self, path: str, make_active: bool, inner: str):
-
+                                                           
         if str(path).lower().endswith((".zip", ".7z", ".rar")):
             self._load_universal_archive_list(path, make_active, inner)
             return
 
-
+                                                  
         if not self._check_zpaq_file_sane(path):
             if make_active:
                 self.navigate_fs(Path(path).parent)
             return
 
-
+                                                                      
+         
+                                                                        
+                                                                        
+                                                                   
+                                                                          
+                                        
         if self._try_index_load(path, make_active, inner):
             return
 
-
+                                                                      
+                                                               
         ctx = {
             "path": path,
             "make_active": make_active,
@@ -206,7 +329,7 @@ class ArchiveLoaderMixin:
         worker.start()
 
     def _load_universal_archive_list(self, path: str, make_active: bool, inner: str):
-
+        pass
         self._load_req = {"path": path, "make_active": make_active, "inner": inner, "is_universal": True}
         pw = self._cache(path).get("password")
 
@@ -218,8 +341,8 @@ class ArchiveLoaderMixin:
                 entries, log, path, make_active, inner
             )
         )
-
-
+                                                                      
+                                                                           
         worker.finished.connect(lambda w=worker: self._cleanup_worker(w))
         self._workers.append(worker)
 
@@ -231,6 +354,18 @@ class ArchiveLoaderMixin:
         worker.start()
 
     def _load_info(self, path: str, quiet: bool = False):
+        pass
+
+
+
+
+
+
+
+
+
+
+
         pw = self._cache(path).get("password")
         cmd = [self.zpaq_bin, "i", path, "-comment"]
         if pw:
@@ -240,15 +375,16 @@ class ArchiveLoaderMixin:
         info_text = tr("status.archive_info_requested")
 
         if quiet:
-
+                                                                             
             try:
                 self.statusBar().showMessage(info_text)
             except Exception:
                 pass
         else:
             try:
-
-
+                                                                     
+                                                                           
+                                                               
                 self._start_busy(info_text)
             except Exception:
                 pass
@@ -259,8 +395,15 @@ class ArchiveLoaderMixin:
         self._workers.append(worker)
         worker.start()
 
+                                                                       
 
     def _on_worker_result(self, result):
+        pass
+
+
+
+
+
         kind = result.get("kind")
         if kind != "info":
             return
@@ -273,12 +416,35 @@ class ArchiveLoaderMixin:
 
         path = ctx.get("path")
         self._handle_info_result(path, rc, output)
-
-
+                                                                   
+                                                                     
+                                                                      
+                                                               
+                                                           
         self._stop_busy()
         self._open_pending_dialogs(path)
 
     def _on_streaming_list_result(self, result: dict):
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         try:
             rc = int(result.get("rc", 1))
             cancelled = bool(result.get("cancelled"))
@@ -294,7 +460,9 @@ class ArchiveLoaderMixin:
             make_active = bool(result.get("make_active"))
             inner = result.get("inner", "")
 
-
+                                                                      
+                                                                         
+                                         
             if rc != 0 or cancelled:
                 if tail:
                     self.log_output(tail)
@@ -327,8 +495,10 @@ class ArchiveLoaderMixin:
                 return
 
             if not entries:
-
-
+                                                                        
+                                                                       
+                                                                              
+                                                                      
                 if report is not None and not report.ok:
                     self._report_list_loss(report)
                 if make_active and path == self.archive_path:
@@ -341,7 +511,9 @@ class ArchiveLoaderMixin:
                 )
                 return
 
-
+                                                                        
+                                                                       
+                                                   
             self._index_store_if_unchanged(result, entries)
 
             self._apply_list_entries(result, entries, report)
@@ -349,7 +521,7 @@ class ArchiveLoaderMixin:
             self._stop_busy()
 
     def _on_universal_list_result(self, entries, log, path, make_active, inner):
-
+        pass
         self._stop_busy()
         self.log_output(log)
 
@@ -397,6 +569,20 @@ class ArchiveLoaderMixin:
             self._refresh_status_for_current_mode()
 
     def _apply_list_entries(self, ctx: dict, entries: list, report) -> None:
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
         path = ctx.get("path")
         if not path:
             return
@@ -428,6 +614,16 @@ class ArchiveLoaderMixin:
             self._report_list_loss(report)
 
     def _report_list_loss(self, report) -> None:
+        pass
+
+
+
+
+
+
+
+
+
         if report is None or report.ok:
             return
         try:
@@ -442,6 +638,13 @@ class ArchiveLoaderMixin:
             pass
 
     def _handle_info_result(self, path, rc: int, output: str):
+        pass
+
+
+
+
+
+
         if not path:
             return
 
@@ -482,6 +685,22 @@ class ArchiveLoaderMixin:
             self._refresh_status_for_current_mode()
 
     def _open_pending_dialogs(self, path: str) -> None:
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if not path:
             return
 
@@ -502,7 +721,7 @@ class ArchiveLoaderMixin:
             dest = pending_rep.get("dest") or ""
             if multipart_pattern(dest) == key:
                 self._pending_create_report = None
-
+                                                                              
                 self._create_report = pending_rep
                 shower = getattr(self, "_show_create_report", None)
                 if callable(shower):

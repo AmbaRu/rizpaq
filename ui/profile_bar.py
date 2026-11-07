@@ -1,3 +1,66 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 from PySide6.QtCore import Qt, Signal
@@ -12,27 +75,45 @@ from ui.i18n import tr
 from ui.profile_bridge import PROFILES, profile_title
 
 
+                            
+ 
+                
+                                                  
+                                                                   
+                                     
+ 
+                                                                    
+                                                                   
+                                                                      
+                                                                      
+                                                                  
+                                                                  
+                                           
+ 
+                                                             
+                                                                     
+                                                                      
 _ACTION_SPECS = (
-
+                                                           
     ("menu.file.create_archive", None,
      "_on_create_archive_current", ("archive",)),
     ("menu.file.open_archive", None,
      "_on_open_archive_dialog", ("archive",)),
-
+                                             
     ("task.run_menu", "task.run_menu.tip",
      "_on_run_task", ("backup",)),
     ("task.edit_menu", "task.edit_menu.tip",
      "_on_edit_task", ("backup",)),
     ("scheduler.manager_menu", "scheduler.manager_menu_tip",
      "_on_open_scheduler", ("backup",)),
-
+                                  
     ("menu.go.refresh", None,
      "_on_refresh", "*"),
 )
 
 
 class ProfileBar(QWidget):
-
+    pass
 
     profile_changed = Signal(str)
     dashboard_requested = Signal()
@@ -47,7 +128,13 @@ class ProfileBar(QWidget):
         outer.setContentsMargins(6, 4, 6, 4)
         outer.setSpacing(6)
 
-
+                                                                       
+                                                                       
+                                                                       
+                                                                     
+                                                                      
+                                                                       
+                                                            
         self._switch_row = QWidget(self)
         self._switch_row.setObjectName("profileSwitchRow")
         switch_layout = QHBoxLayout(self._switch_row)
@@ -57,8 +144,9 @@ class ProfileBar(QWidget):
         self._profile_buttons: dict = {}
         for index, code in enumerate(PROFILES):
             btn = QPushButton(profile_title(code), self._switch_row)
-
-
+                                                                    
+                                                                    
+                                                             
             if index == 0:
                 btn.setObjectName("profileSwitchLeft")
             else:
@@ -87,7 +175,12 @@ class ProfileBar(QWidget):
         switch_layout.addStretch(1)
         outer.addWidget(self._switch_row)
 
-
+                             
+         
+                                                                         
+                                                                       
+                                                                      
+                                                                  
         self._actions_row = QWidget(self)
         self._actions_row.setObjectName("profileActionsRow")
         actions_layout = QHBoxLayout(self._actions_row)
@@ -100,8 +193,9 @@ class ProfileBar(QWidget):
             btn.setObjectName("profileActionButton")
             btn.setAutoDefault(False)
             btn.setDefault(False)
-
-
+                                                                        
+                                                                      
+                                
             btn.setProperty("active", "true")
 
             handler = getattr(self._host, handler_name, None)
@@ -120,6 +214,7 @@ class ProfileBar(QWidget):
 
         self.rebuild()
 
+                                                                           
 
     def _current_profile(self) -> str:
         getter = getattr(self._host, "current_profile", None)
@@ -131,12 +226,40 @@ class ProfileBar(QWidget):
         return PROFILES[0]
 
     def _on_profile_clicked(self, code: str):
+        pass
+
+
+
+
+
+
+
+
+
+
         self.profile_changed.emit(code)
 
     def _on_dashboard_clicked(self):
+        pass
+
+
+
         self.dashboard_requested.emit()
 
     def sync_mode(self, mode: str = None):
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
         dash = self._dashboard_button
         try:
             if mode == "dashboard":
@@ -151,6 +274,29 @@ class ProfileBar(QWidget):
             pass
 
     def _sync_profile_checked(self, current: str = None):
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if current is None:
             current = self._current_profile()
         for code, btn in self._profile_buttons.items():
@@ -159,8 +305,17 @@ class ProfileBar(QWidget):
             except Exception:
                 pass
 
+                                                                            
 
     def _on_action_clicked(self, btn, handler):
+        pass
+
+
+
+
+
+
+
         try:
             if btn.property("active") == "false":
                 return
@@ -172,40 +327,56 @@ class ProfileBar(QWidget):
             pass
 
     def rebuild(self, profile: str = None):
+        pass
+
+
+
+
+
+
+
+
         current = profile if profile in PROFILES else self._current_profile()
 
-
+                                                  
         for code, btn in self._profile_buttons.items():
             try:
                 btn.setText(profile_title(code))
             except Exception:
                 pass
 
-
+                                                             
         try:
             self._dashboard_button.setText(tr("profile.dashboard"))
         except Exception:
             pass
 
-
+                                 
         for btn, label_key, _tip_key, _applies in self._action_buttons:
             try:
                 btn.setText(tr(label_key))
             except Exception:
                 pass
 
-
+                                                              
+                                                                      
+                                                                        
+                                                                      
+                                                                  
+                                    
         self._sync_profile_checked(current)
         try:
             self._dashboard_button.setChecked(False)
         except Exception:
             pass
 
-
+                                     
         for btn, _label, tip_key, applies_to in self._action_buttons:
             active = (applies_to == "*") or (current in applies_to)
 
-
+                                                                          
+                                                                     
+                                                
             new_value = "true" if active else "false"
             try:
                 if btn.property("active") != new_value:
@@ -215,13 +386,18 @@ class ProfileBar(QWidget):
             except Exception:
                 pass
 
-
+                                                                    
+                                                                     
+                                                 
             try:
                 btn.setCursor(Qt.PointingHandCursor if active else Qt.ArrowCursor)
             except Exception:
                 pass
 
-
+                                                                        
+                                                                   
+                                                                     
+                          
             base_tip = tr(tip_key) if tip_key else ""
             if active:
                 btn.setToolTip(base_tip)
@@ -242,7 +418,15 @@ class ProfileBar(QWidget):
                 except Exception:
                     pass
 
-
+                            
+         
+                                                                     
+                                                                    
+                                                                 
+         
+                                                                    
+                                                                 
+                             
         try:
             for btn, *_ in self._action_buttons:
                 btn.setMinimumWidth(0)

@@ -1,10 +1,27 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 from ui.extract_progress_dialog import ExtractProgressDialog
 
 
 class ProgressBridgeMixin:
-
+    pass
 
     def _ensure_extract_dialog(self) -> ExtractProgressDialog:
         dlg = getattr(self, "_extract_progress_dialog", None)
@@ -21,7 +38,7 @@ class ProgressBridgeMixin:
 
         return dlg
 
-
+                                                                       
     def _ui_file_started(self, name: str = "") -> None:
         try:
             self._ensure_extract_dialog().begin_file(name)
@@ -40,7 +57,7 @@ class ProgressBridgeMixin:
         except Exception:
             pass
 
-
+                                                                          
     def _ui_folder_tick(self, i: int, total: int, path: str) -> None:
         try:
             dlg = getattr(self, "_extract_progress_dialog", None)
@@ -73,7 +90,7 @@ class ProgressBridgeMixin:
         except Exception:
             pass
 
-
+                                                                        
     def _ui_extract_finished(self, ok: bool, total: int, msg: str) -> None:
         try:
             dlg = getattr(self, "_extract_progress_dialog", None)

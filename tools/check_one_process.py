@@ -1,3 +1,27 @@
+                       
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import argparse
@@ -9,7 +33,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 TESTS = ROOT / "tests"
 
-
+                                                                   
+                                                                        
 CRASH_CODES = {
     -1073741819: "0xC0000005 ACCESS_VIOLATION",
     -1073741825: "0xC000001D ILLEGAL_INSTRUCTION",
@@ -20,6 +45,15 @@ CRASH_CODES = {
 
 
 def signed(rc: int) -> int:
+    pass
+
+
+
+
+
+
+
+
     if rc is None:
         return 0
     if 0 < rc > 0x7FFFFFFF:
@@ -70,7 +104,7 @@ def main():
         print("Это тоже поломка: тесты зависли намертво.")
         return 1
 
-
+                                            
     tail = out.rstrip().split("\n")[-25:]
     for ln in tail:
         print("   ", ln[:160])

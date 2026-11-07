@@ -1,3 +1,30 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -7,12 +34,15 @@ from core.archive_index import store_entries
 from core.parser import ParseReport, parse_csv_line_reported
 from core.zpaq_cli import run_zpaq
 
-
+                                                              
+                                                             
 _LIST_FLAGS = ("-all", "-terse", "-csv", "\t", "-csvhf", "#",
                "-utf", "-noeta")
 
 
 def build_list_cmd(zpaq_bin: str, path: str, password: str = None) -> list:
+    pass
+
     cmd = [zpaq_bin, "l", str(path), *(_LIST_FLAGS)]
     if password:
         cmd += ["-key", password]
@@ -20,7 +50,7 @@ def build_list_cmd(zpaq_bin: str, path: str, password: str = None) -> list:
 
 
 def file_stamp(path: str):
-
+    pass
     try:
         st = os.stat(str(path))
     except OSError:
@@ -29,6 +59,15 @@ def file_stamp(path: str):
 
 
 def store_fresh_listing(path: str, entries: list) -> int:
+    pass
+
+
+
+
+
+
+
+
     stamp = file_stamp(path)
     if stamp is None or "?" in str(path):
         return 0
@@ -42,6 +81,23 @@ def store_fresh_listing(path: str, entries: list) -> int:
 def refresh_index_sync(zpaq_bin: str, path: str,
                        password: str = None,
                        is_cancelled=None) -> int:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     if not path or "?" in str(path):
         return 0
     if not Path(path).is_file():
@@ -68,7 +124,7 @@ def refresh_index_sync(zpaq_bin: str, path: str,
     if rc != 0 or not output:
         return 0
 
-
+                                                                      
     if file_stamp(path) != stamp:
         return 0
 

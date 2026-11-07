@@ -1,3 +1,22 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -25,8 +44,9 @@ from ui.qt_compat import YES_BUTTON, YES_NO_BUTTONS
 
 
 class ExtractionMixin:
+    pass
 
-
+                                                                              
     def _ui_folder_started(self, total: int) -> None:
         pass
 
@@ -45,7 +65,7 @@ class ExtractionMixin:
     def _ui_extract_finished(self, ok: bool, total: int, msg: str) -> None:
         pass
 
-
+                                                                          
     def _latest_entry_for_path(self, path: str):
         c = [
             e
@@ -113,6 +133,8 @@ class ExtractionMixin:
         self._start_extract_file_worker(entry, str(dest_path))
 
     def _open_arc_file_entry(self, entry):
+        pass
+
         if not self.archive_path or not entry:
             return
 
@@ -124,14 +146,18 @@ class ExtractionMixin:
             )
             return
 
-
+                                                                
+                                                                   
         dest = str(Path(tmp_dir) / sanitize_filename(Path(entry.path).name))
         self.statusBar().showMessage(tr("status.opening", name=entry.name))
         self._start_extract_file_worker(entry, dest, open_after=True)
 
     def _open_extracted_if_ok(self, result, dest: str):
-
-
+        pass
+                                                                        
+                                                                         
+                                                                     
+                                                                 
         if result.get("cancelled"):
             remove_temp_dir(Path(dest).parent)
             return
@@ -144,7 +170,7 @@ class ExtractionMixin:
                 tr("open.title"),
                 tr("open.failed", name=Path(dest).name),
             )
-
+                                                                 
             remove_temp_dir(Path(dest).parent)
 
     def _extract_folder_ask_version(self, folder_path: str):
@@ -270,7 +296,7 @@ class ExtractionMixin:
             )
             return
 
-
+                                                                     
         version: Optional[object] = None
 
         if version_text:
@@ -286,7 +312,7 @@ class ExtractionMixin:
                         s += " 23:59:59"
                     version = s
 
-
+                                                                          
         if version is None:
             self.statusBar().showMessage(
                 tr(
@@ -299,7 +325,7 @@ class ExtractionMixin:
             )
             return
 
-
+                                                                         
         entries = self._collect_folder_entries(folder_path, version)
 
         if not entries:
@@ -383,7 +409,7 @@ class ExtractionMixin:
     def _on_extract_done(self, result):
         kind = result.get("kind")
 
-
+                                                                          
         if result.get("cancelled"):
             if kind == "extract_file":
                 output = result.get("output", "")
@@ -408,7 +434,7 @@ class ExtractionMixin:
             self._ui_extract_finished(False, int(total), cancelled_text)
             return
 
-
+                                                                               
         if kind == "extract_file":
             output = result.get("output", "")
             if output:
@@ -521,8 +547,15 @@ class ExtractionMixin:
                     msg[:5000],
                 )
 
-
+                                                                            
     def _on_salvage_archive(self):
+        pass
+
+
+
+
+
+
         if self.mode != "archive" or self.archive_path is None:
             self.statusBar().showMessage(tr("status.test_only_archive"))
             return
@@ -546,6 +579,11 @@ class ExtractionMixin:
         self._start_salvage_worker(dest, dlg.ram_gb())
 
     def _on_salvage_done(self, result):
+        pass
+
+
+
+
         log = result.get("log", "")
         if log:
             self.log_output(log)

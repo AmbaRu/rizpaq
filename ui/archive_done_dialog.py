@@ -1,3 +1,11 @@
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 from PySide6.QtCore import Qt
@@ -11,12 +19,12 @@ from PySide6.QtWidgets import (
 )
 
 from ui.i18n import tr
-from ui.skins import color
+from ui.skins import color                                        
 from ui.presentation import format_size
 
 
 class ArchiveDoneDialog(QDialog):
-
+    pass
 
     def __init__(self, report, summary, versions, parent=None):
         super().__init__(parent)
@@ -30,20 +38,22 @@ class ArchiveDoneDialog(QDialog):
 
         layout = QVBoxLayout(self)
 
-
+                        
         status_text = tr("create.done.ok") if ok else tr("create.done.error")
         icon = "✓" if ok else "!"
         status_label = QLabel(f"{icon}  {title} — {status_text}")
         status_label.setWordWrap(True)
-
-
+                                                                       
+                                                                          
+                                                                           
+                                             
         status_color = color("OK_GREEN") if ok else color("WARN_ORANGE")
         status_label.setStyleSheet(
             f"color: {status_color}; font-weight: 700; font-size: 13px;"
         )
         layout.addWidget(status_label)
 
-
+                                     
         grid = QFormLayout()
 
         dest = report.get("dest", "")
@@ -52,7 +62,7 @@ class ArchiveDoneDialog(QDialog):
         dest_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
         grid.addRow(tr("create.done.archive"), dest_label)
 
-
+                                           
         if versions:
             try:
                 vobj = max(versions, key=lambda v: v.number)
@@ -63,7 +73,7 @@ class ArchiveDoneDialog(QDialog):
             except Exception:
                 pass
 
-
+                                                      
         stats = report.get("stats")
         if stats:
             original = stats.get("original", 0)
@@ -85,19 +95,19 @@ class ArchiveDoneDialog(QDialog):
                     QLabel(f"{ratio_pct:.1f}%"),
                 )
 
-
+                                             
         if summary:
             grid.addRow(tr("create.done.versions"), QLabel(str(summary.versions)))
             grid.addRow(tr("create.done.files"), QLabel(str(summary.files)))
             grid.addRow(tr("create.done.size"), QLabel(format_size(summary.size)))
 
-
+                                        
         test_rc = report.get("test_rc")
         if test_rc is not None:
             if test_rc == 0:
                 test_label = QLabel(tr("create.done.test_ok"))
-
-
+                                                                    
+                                                 
                 test_label.setStyleSheet(f"color: {color('OK_GREEN')};")
             else:
                 test_label = QLabel(tr("create.done.test_fail"))
@@ -106,7 +116,7 @@ class ArchiveDoneDialog(QDialog):
 
         layout.addLayout(grid)
 
-
+                           
         params_rows = report.get("params_rows") or []
         if params_rows:
             grp = QGroupBox(tr("create.done.params"))
@@ -118,7 +128,7 @@ class ArchiveDoneDialog(QDialog):
                 pg.addRow(label, v)
             layout.addWidget(grp)
 
-
+                           
         buttons = QDialogButtonBox(QDialogButtonBox.Ok)
         buttons.accepted.connect(self.accept)
         layout.addWidget(buttons)

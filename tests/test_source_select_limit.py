@@ -1,3 +1,37 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -11,8 +45,8 @@ from unittest import mock
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QApplication, QTreeWidgetItem
+from PySide6.QtCore import Qt              
+from PySide6.QtWidgets import QApplication, QTreeWidgetItem              
 
 _APP = QApplication.instance() or QApplication([])
 from PySide6.QtGui import QFont
@@ -21,12 +55,12 @@ if _APP is not None:
     _APP.setFont(QFont("Segoe UI", 9))
 
 
-from ui.i18n import set_language, tr
+from ui.i18n import set_language, tr              
 
 set_language("ru", notify=False)
 
-import ui.source_select_window as ssw
-from ui.source_select_window import _PATH_ROLE
+import ui.source_select_window as ssw              
+from ui.source_select_window import _PATH_ROLE              
 
 
 class _Case(unittest.TestCase):
@@ -62,7 +96,7 @@ class TestNoTruncation(_Case):
         w = self._window()
         with mock.patch.object(ssw, "MAX_CHILDREN", 100):
             w._load_children(item)
-
+                                    
         self.assertEqual(item.childCount(), 5)
 
     def test_exactly_at_limit_no_note(self):
@@ -71,7 +105,7 @@ class TestNoTruncation(_Case):
         w = self._window()
         with mock.patch.object(ssw, "MAX_CHILDREN", 10):
             w._load_children(item)
-
+                                                           
         self.assertEqual(item.childCount(), 10)
         for i in range(item.childCount()):
             self.assertIsNotNone(item.child(i).data(0, _PATH_ROLE))
@@ -84,10 +118,14 @@ class TestTruncation(_Case):
         w = self._window()
         with mock.patch.object(ssw, "MAX_CHILDREN", 10):
             w._load_children(item)
-
+                               
         self.assertEqual(item.childCount(), 11)
 
     def test_note_is_not_an_entry(self):
+        pass
+
+
+
         self._make_files(15)
         item = self._root_item()
         w = self._window()
@@ -100,6 +138,13 @@ class TestTruncation(_Case):
                          "заглушка не должна быть интерактивной")
 
     def test_note_text_names_hidden_count(self):
+        pass
+
+
+
+
+
+
         self._make_files(15)
         item = self._root_item()
         w = self._window()
@@ -110,12 +155,12 @@ class TestTruncation(_Case):
         self.assertTrue(text.strip(), "текст заглушки пуст")
         self.assertNotIn("table.truncated", text,
                          "в заглушке сырой ключ локали вместо перевода")
-
+                                                                            
         self.assertIn("10", text, "в заглушке нет числа показанных")
         self.assertIn("15", text, "в заглушке нет числа скрытых")
 
     def test_dirs_come_before_files(self):
-
+        pass
         self._make_dirs(3)
         self._make_files(15)
         item = self._root_item()
@@ -135,6 +180,19 @@ class TestTruncation(_Case):
 
 class TestScandirCalledOnce(_Case):
     def test_no_list_materialization(self):
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
         self._make_files(5)
         item = self._root_item()
         w = self._window()
@@ -166,6 +224,11 @@ class TestBlockChangedReset(_Case):
         self.assertFalse(w._block_changed)
 
     def test_block_changed_false_after_oserror(self):
+        pass
+
+
+
+
         item = self._root_item()
 
         def boom(path):

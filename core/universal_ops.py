@@ -1,3 +1,34 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -10,11 +41,19 @@ from core.models import ArchiveEntry
 
 
 def find_7z() -> Optional[str]:
+    pass
+
+
+
+
+
+
+
     env_bin = os.environ.get("SEVEN_ZIP_BIN")
     if env_bin and os.path.isfile(env_bin):
         return env_bin
 
-
+                                                               
     if not getattr(sys, "frozen", False):
         try:
             here = Path(__file__).resolve().parent.parent
@@ -24,7 +63,7 @@ def find_7z() -> Optional[str]:
         except Exception:
             pass
 
-
+                                       
     if os.name == "nt":
         candidates = [
             Path(os.environ.get("ProgramFiles", r"C:\Program Files")) / "7-Zip" / "7z.exe",
@@ -37,7 +76,7 @@ def find_7z() -> Optional[str]:
 
 
 def check_7z(bin_path: str) -> bool:
-
+    pass
     if not bin_path or not os.path.isfile(bin_path):
         return False
     try:
@@ -55,7 +94,7 @@ def check_7z(bin_path: str) -> bool:
 
 
 def _popen_kwargs() -> dict:
-
+    pass
     kw = {}
     if os.name == "nt":
         kw["creationflags"] = getattr(subprocess, "CREATE_NO_WINDOW", 0)
@@ -63,7 +102,7 @@ def _popen_kwargs() -> dict:
 
 
 def _decode(data: bytes) -> str:
-
+    pass
     if not data:
         return ""
     for enc in ("utf-8", "cp1251", "cp866", "latin-1"):
@@ -75,16 +114,31 @@ def _decode(data: bytes) -> str:
 
 
 def mask_password(text: str, password: Optional[str]) -> str:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
     if not text:
         return text
     if not password:
         return text
 
-
+                                                                      
+                                                                         
+                                                                 
     needle = "-p" + password
     masked = text.replace(needle, "-p***")
-
-
+                                                                
+                                                                  
     if password in masked:
         masked = masked.replace(password, "***")
     return masked
@@ -95,11 +149,18 @@ def list_universal(
     archive_path: str,
     password: Optional[str] = None
 ) -> Tuple[List[ArchiveEntry], str]:
+    pass
 
+
+
+                                                                
     cmd = [bin_path, "l", "-slt", "-ba", "-sccUTF-8", archive_path]
     if password:
-
-
+                                                                     
+                                                                       
+                                                                        
+                                                                       
+                               
         cmd += [f"-p{password}"]
 
     try:
@@ -107,16 +168,18 @@ def list_universal(
             cmd,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
-
-
+                                                                         
+                                                                          
+                                                                       
+                                                                       
             stdin=subprocess.DEVNULL,
             timeout=300,
             **_popen_kwargs(),
         )
         raw_text = _decode(proc.stdout)
     except Exception as e:
-
-
+                                                                     
+                                                 
         return [], f"Error running 7z: {mask_password(str(e), password)}"
 
     entries = []

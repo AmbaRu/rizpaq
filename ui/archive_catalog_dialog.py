@@ -1,3 +1,38 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import time
@@ -23,7 +58,7 @@ from ui.presentation import format_size
 from ui.qt_compat import HEADER_STRETCH, USER_ROLE
 from workers.catalog_worker import CatalogWorker
 
-
+                                                                        
 COL_PATH = 0
 COL_SIZE = 1
 COL_DATE = 2
@@ -43,7 +78,7 @@ def _format_time(timestamp: int) -> str:
 
 
 class ArchiveCatalogDialog(QDialog):
-
+    pass
 
     def __init__(self, roots=None, index_on_scan: bool = True,
                  zpaq_bin: str = "", parent=None):
@@ -60,7 +95,7 @@ class ArchiveCatalogDialog(QDialog):
         layout.setContentsMargins(12, 12, 12, 12)
         layout.setSpacing(8)
 
-
+                                                                         
         roots_header = QHBoxLayout()
         roots_header.addWidget(QLabel(tr("catalog.roots")))
         roots_header.addStretch(1)
@@ -82,14 +117,14 @@ class ArchiveCatalogDialog(QDialog):
         layout.addWidget(self.roots_list)
         self._fill_roots()
 
-
+                                                                         
         self.index_check = QCheckBox(tr("catalog.index_on_scan"))
         self.index_check.setChecked(bool(index_on_scan))
         self.index_check.setToolTip(tr("catalog.index_on_scan.tip"))
         self.index_check.toggled.connect(self._on_index_toggled)
         layout.addWidget(self.index_check)
 
-
+                                                                          
         self.table = QTableWidget()
         self.table.setColumnCount(COLUMN_COUNT)
         self.table.setHorizontalHeaderLabels([
@@ -114,7 +149,7 @@ class ArchiveCatalogDialog(QDialog):
         self.status_label.setWordWrap(True)
         layout.addWidget(self.status_label)
 
-
+                                                                          
         buttons = QHBoxLayout()
 
         self.scan_btn = QPushButton(tr("catalog.scan"))
@@ -144,9 +179,10 @@ class ArchiveCatalogDialog(QDialog):
 
         self._reload()
 
+                                                                            
 
     def chosen_path(self) -> str:
-
+        pass
         return self._chosen
 
     def roots(self) -> list:
@@ -155,6 +191,7 @@ class ArchiveCatalogDialog(QDialog):
     def index_on_scan(self) -> bool:
         return self.index_check.isChecked()
 
+                                                                             
 
     @staticmethod
     def _dedup_roots(roots) -> list:
@@ -206,7 +243,7 @@ class ArchiveCatalogDialog(QDialog):
         self._persist()
 
     def _on_index_toggled(self, _checked: bool) -> None:
-
+        pass
         self._persist()
 
     def _persist(self) -> None:
@@ -218,6 +255,7 @@ class ArchiveCatalogDialog(QDialog):
         except Exception:
             pass
 
+                                                                            
 
     def _reload(self) -> None:
         try:
@@ -260,6 +298,7 @@ class ArchiveCatalogDialog(QDialog):
             self.status_label.setText(
                 tr("catalog.count", count=len(rows)))
 
+                                                                             
 
     def _on_scan(self) -> None:
         if self._worker is not None:
@@ -319,8 +358,8 @@ class ArchiveCatalogDialog(QDialog):
             self.status_label.setText(text)
 
     def _on_found(self, _found: list) -> None:
-
-
+                                                                       
+                                                               
         self._reload()
 
     def _on_done(self, result: dict) -> None:
@@ -328,8 +367,10 @@ class ArchiveCatalogDialog(QDialog):
         try:
             self._apply_done(result)
         finally:
-
-
+                                                                     
+                                                                     
+                                                                     
+                                          
             if worker is not None:
                 try:
                     worker.wait(3000)
@@ -411,13 +452,14 @@ class ArchiveCatalogDialog(QDialog):
                 archive_index.catalog_forget(path)
         self._reload()
 
+                                                                             
 
     def closeEvent(self, event) -> None:
         worker = self._worker
         if worker is not None:
             worker.cancel_request()
-
-
+                                                                   
+                                                                 
             try:
                 worker.wait(5000)
             except Exception:

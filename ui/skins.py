@@ -1,17 +1,43 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 from collections import OrderedDict
 
-
+                                                                        
+                                                        
+                                                                        
 SOFT_AZURE = {
-
+                 
     "WINDOW_BG":          "#eef3fa",
     "BASE_BG":            "#ffffff",
     "ALT_BASE_BG":        "#eef3fa",
     "BUTTON_BG":          "#e7eef7",
     "TOOLTIP_BG":         "#fffdf2",
 
-
+           
     "TEXT_WINDOW":        "#1f3a5c",
     "TEXT_MAIN":          "#26405e",
     "TEXT_HEADER":        "#244a78",
@@ -23,26 +49,27 @@ SOFT_AZURE = {
     "PLACEHOLDER":        "#8a9bb3",
     "TEXT_SELECTED":      "#f5f8fc",
     "TEXT_ON_ACCENT":     "#f4f8fc",
-
-
+                                                                         
+                                                                         
+                                 
     "HEADER_TEXT":        "#f4f8fc",
     "STATUS_TEXT":        "#eaf1fa",
     "LOG_TEXT":           "#3a4d66",
     "HINT_TEXT":          "#718096",
 
-
+            
     "ACCENT":             "#2f6db5",
     "ACCENT_LIGHT":       "#86b4e6",
     "LINK":               "#2e63a6",
     "LINK_VISITED":       "#5b7bb0",
     "HIGHLIGHT_TEXT":     "#ffffff",
 
-
+             
     "BORDER":             "#c3d2e6",
     "BORDER_SOFT":        "#d3deec",
     "BORDER_GRID":        "#e3e6ec",
 
-
+                     
     "STEEL":              "#5d83b1",
     "STEEL_HOVER":        "#7ba0cb",
     "STEEL_DARK":         "#4f74a3",
@@ -50,7 +77,7 @@ SOFT_AZURE = {
     "ROW_ALT_TREE":       "#f0f2f6",
     "ROW_ALT_TABLE":      "#f6f7fa",
 
-
+                    
     "HEADER_BG":          "#5680b0",
     "STATUS_BG":          "#5680b0",
     "TOOLBAR_BG":         "#6e94c1",
@@ -58,24 +85,34 @@ SOFT_AZURE = {
     "TOOLBAR_BORDER":     "#88a8cf",
     "TOOLBAR_TEXT":       "#f4f8fc",
 
-
+                    
+     
+                                                               
+                                                                    
+                                                                   
+                                                                      
+                                                                    
+                                                                     
+                 
     "BREADCRUMB_BG":      "#eef3fa",
     "BREADCRUMB_BORDER":  "#d3deec",
     "CRUMB_LABEL":        "#333333",
     "CRUMB_LINK":         "#2a6db5",
     "CRUMB_LINK_HOVER":   "#1a4d85",
     "CRUMB_TEXT":         "#dce8f7",
-
-
+                                                                         
+                                                                 
     "CRUMB_SEP":          "#999999",
     "CRUMB_ICON":         "#9fb9da",
     "CRUMB_LAST":         "#a9cdf2",
 
-
+                     
     "OK_GREEN":           "#2f9e6f",
     "WARN_ORANGE":        "#c47a1e",
-
-
+                                                                    
+                                                                        
+                                                                      
+                                       
     "BUSY_STEEL":         "#5a7a9c",
     "ARC_BLUE":           "#2e63a6",
     "DIFF_ADDED":         "#1e7a3c",
@@ -83,23 +120,24 @@ SOFT_AZURE = {
     "DIFF_CHANGED":       "#b07d1a",
     "DIFF_UNCHANGED":     "#5a6b82",
 
-
+                 
     "DISABLED_BG":        "#e9eef5",
     "DISABLED_BASE":      "#eef2f8",
     "DISABLED_BUTTON":    "#e1e8f1",
     "DISABLED_HIGHLIGHT": "#9bb6d6",
 
-
+                        
     "LIGHT":              "#ffffff",
     "MIDLIGHT":           "#dde7f3",
     "MID":                "#c3d2e6",
     "DARK":               "#9fb2cb",
     "SHADOW":             "#7d92ad",
 
-
+            
     "EXTRACT_BAR_BOTTOM": "#e4ecf7",
-
-
+                                                                  
+                                                                 
+                                
     "EXBAR_PATH":          "#6a7c95",
     "PROGRESS_TRACK":     "#d7e0ee",
     "PROGRESS_GRAD_END":  "#6f9bd0",
@@ -109,7 +147,17 @@ SOFT_AZURE = {
     "NOTICE_HINT":        "#a8761e",
 }
 
-
+                                                                        
+                                                                  
+ 
+                                                   
+                                                     
+                                           
+                                                                  
+                    
+                                         
+                                      
+                                                                        
 WHITE_AIR = {
     "WINDOW_BG":          "#f4f6f8",
     "BASE_BG":            "#ffffff",
@@ -123,12 +171,13 @@ WHITE_AIR = {
     "TEXT_BUTTON":        "#22262b",
     "TEXT_TOOLTIP":       "#22262b",
     "TEXT_MUTED":         "#6b7480",
-
-
+                                                              
+                                                                    
+                     
     "TEXT_MUTED_LIGHT":   "#7c858e",
     "TEXT_DISABLED":      "#b3bac2",
     "PLACEHOLDER":        "#9aa3ad",
-
+                                                                       
     "TEXT_SELECTED":      "#1c2024",
     "TEXT_ON_ACCENT":     "#ffffff",
     "HEADER_TEXT":        "#2a2f35",
@@ -146,7 +195,9 @@ WHITE_AIR = {
     "BORDER_SOFT":        "#eaedf0",
     "BORDER_GRID":        "#f0f2f4",
 
-
+                                                                            
+                                                                   
+                                                                 
     "STEEL":              "#dde7ee",
     "STEEL_HOVER":        "#cfdde8",
     "STEEL_DARK":         "#5b7d96",
@@ -173,8 +224,9 @@ WHITE_AIR = {
 
     "OK_GREEN":           "#2f8f63",
     "WARN_ORANGE":        "#b8791f",
-
-
+                                                                 
+                                                             
+                                      
     "BUSY_STEEL":         "#5f7c92",
     "ARC_BLUE":           "#2f6f96",
     "DIFF_ADDED":         "#1e7a3c",
@@ -203,7 +255,9 @@ WHITE_AIR = {
     "NOTICE_HINT":        "#9a6f1e",
 }
 
-
+                                                                        
+         
+                                                                        
 SKINS: "OrderedDict[str, dict]" = OrderedDict(
     [
         ("soft_azure", SOFT_AZURE),
@@ -217,7 +271,7 @@ _current = DEFAULT_SKIN
 
 
 def skin_names() -> list:
-
+    pass
     return list(SKINS.keys())
 
 
@@ -226,17 +280,31 @@ def has_skin(name: str) -> bool:
 
 
 def skin(name: str = None) -> dict:
+    pass
+
+
+
+
+
+
+
     if name and name in SKINS:
         return SKINS[name]
     return SKINS[_current if _current in SKINS else DEFAULT_SKIN]
 
 
 def current_name() -> str:
-
+    pass
     return _current
 
 
 def set_current(name: str) -> str:
+    pass
+
+
+
+
+
     global _current
     if name in SKINS:
         _current = name
@@ -244,16 +312,24 @@ def set_current(name: str) -> str:
 
 
 def color(token: str) -> str:
+    pass
+
+
+
+
+
+
+
     return skin().get(token, "#ff00ff")
 
 
 def missing_tokens(name: str) -> list:
-
+    pass
     ref = SKINS[DEFAULT_SKIN]
     return sorted(t for t in ref if t not in SKINS[name])
 
 
 def extra_tokens(name: str) -> list:
-
+    pass
     ref = SKINS[DEFAULT_SKIN]
     return sorted(t for t in SKINS[name] if t not in ref)

@@ -1,3 +1,19 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import sys
@@ -7,9 +23,9 @@ from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from PySide6.QtWidgets import QApplication
+from PySide6.QtWidgets import QApplication              
 
-import ui.i18n as i18n
+import ui.i18n as i18n              
 
 _APP = QApplication.instance() or QApplication([])
 from PySide6.QtGui import QFont
@@ -18,14 +34,15 @@ if _APP is not None:
     _APP.setFont(QFont("Segoe UI", 9))
 
 
-def _detect_with(*probes: str) -> str:
 
+def _detect_with(*probes: str) -> str:
+    pass
     with mock.patch.object(i18n, "_language_probes", return_value=list(probes)):
         return i18n.detect_language()
 
 
 class TestMatchLanguage(unittest.TestCase):
-
+    pass
 
     A = i18n.LANGUAGES
 
@@ -52,7 +69,7 @@ class TestMatchLanguage(unittest.TestCase):
         self.assertEqual(i18n._match_language("zh_Hant_TW", self.A), "zh")
 
     def test_priority_list(self):
-
+        pass
         self.assertEqual(i18n._match_language("sv:da:pl:en", self.A), "pl")
 
     def test_list_falls_through_to_second(self):
@@ -70,6 +87,10 @@ class TestMatchLanguage(unittest.TestCase):
         self.assertEqual(i18n._match_language("DE_de", self.A), "de")
 
     def test_windows_native_names_do_not_match(self):
+        pass
+
+
+
         for tag in ("German_Germany", "French_France", "Russian_Russia",
                     "Spanish_Spain", "Italian_Italy", "Portuguese_Brazil",
                     "Japanese_Japan", "Polish_Poland", "Chinese_China"):
@@ -85,28 +106,33 @@ class TestMatchLanguage(unittest.TestCase):
                 self.assertIsNone(i18n._match_language(tag, self.A))
 
     def test_unsupported_language_returns_none(self):
-
+        pass
         self.assertIsNone(i18n._match_language("nl_NL", self.A))
 
     def test_no_prefix_confusion(self):
+        pass
+
+
+
+
         self.assertIsNone(i18n._match_language("zzzz", i18n.LANGUAGES))
         self.assertIsNone(i18n._match_language("xyzzy_QQ", i18n.LANGUAGES))
-
+                                                                        
         self.assertIsNone(i18n._match_language("p", i18n.LANGUAGES))
         self.assertEqual(i18n._match_language("pl", i18n.LANGUAGES), "pl")
 
     def test_drop_in_language_is_matched(self):
-
+        pass
         avail = dict(i18n.LANGUAGES)
         avail["nl"] = "Nederlands"
         self.assertEqual(i18n._match_language("nl_NL", avail), "nl")
 
 
 class TestDetectLanguage(unittest.TestCase):
-
+    pass
 
     def test_all_ten_languages_detected(self):
-
+        pass
         cases = {
             "de_DE": "de", "fr_FR": "fr", "es_ES": "es", "it_IT": "it",
             "pt_BR": "pt", "ja_JP": "ja", "pl_PL": "pl", "zh_CN": "zh",
@@ -117,6 +143,10 @@ class TestDetectLanguage(unittest.TestCase):
                 self.assertEqual(_detect_with(tag), want)
 
     def test_falls_back_to_next_probe(self):
+        pass
+
+
+
         self.assertEqual(_detect_with("German_Germany", "de_DE"), "de")
 
     def test_unsupported_locale_gives_english(self):
@@ -129,21 +159,29 @@ class TestDetectLanguage(unittest.TestCase):
         self.assertEqual(_detect_with("", None), "en")
 
     def test_real_system_detection_works(self):
-
+        pass
         result = i18n.detect_language()
         self.assertIn(result, i18n.LANGUAGES, f"получен неизвестный код {result!r}")
 
 
 class TestProbesSources(unittest.TestCase):
-
+    pass
 
     def test_qt_locale_is_probed(self):
         probes = i18n._language_probes()
         self.assertTrue(probes, "ни один источник не опробован")
-
+                                                                   
         self.assertRegex(probes[0], r"^[a-z]{2}([_-][A-Za-z]+)?$")
 
     def test_deprecated_getdefaultlocale_not_used(self):
+        pass
+
+
+
+
+
+
+
         import ast
 
         tree = ast.parse(Path(i18n.__file__).read_text(encoding="utf-8"))
@@ -175,7 +213,7 @@ class TestProbesSources(unittest.TestCase):
 
     def test_getlocale_failure_is_survived(self):
         with mock.patch("ui.i18n.locale.getlocale", side_effect=ValueError("boom")):
-            probes = i18n._language_probes()
+            probes = i18n._language_probes()                     
         self.assertTrue(probes)
 
 

@@ -1,3 +1,30 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 from PySide6.QtCore import Qt
@@ -13,6 +40,13 @@ from ui.profile_bridge import DEFAULT_PROFILE, PROFILES, profile_title
 
 
 class ProfileChooserDialog(QDialog):
+    pass
+
+
+
+
+
+
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -29,13 +63,24 @@ class ProfileChooserDialog(QDialog):
         intro.setObjectName("profileChooserIntro")
         layout.addWidget(intro)
 
-
+                                                                       
+                                   
         for code in PROFILES:
             layout.addWidget(self._make_choice_button(code))
 
         layout.addStretch(1)
 
     def _make_choice_button(self, code: str) -> QPushButton:
+        pass
+
+
+
+
+
+
+
+
+
         title = profile_title(code)
         desc_key = f"profile_chooser.{code}_desc"
         desc = tr(desc_key)
@@ -54,4 +99,12 @@ class ProfileChooserDialog(QDialog):
         self.accept()
 
     def chosen_profile(self) -> str:
+        pass
+
+
+
+
+
+
+
         return self._chosen

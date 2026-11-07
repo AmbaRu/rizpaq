@@ -1,3 +1,19 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import tempfile
 import unittest
 from pathlib import Path
@@ -8,7 +24,7 @@ from ui.archive_actions import ArchiveActionsMixin
 
 
 class _FakeHost:
-
+    pass
 
     def __init__(self, container, path):
         self._c = container
@@ -57,7 +73,7 @@ class TestGuiRunLog(unittest.TestCase):
         self.assertEqual(e.job_title, "Еженедельный бэкап")
         self.assertEqual(e.action, "backup")
         self.assertIn("строка два", e.tail)
-
+                                                      
         self.assertIsNotNone(e.ts_dt)
 
     def test_ok_written(self):
@@ -68,8 +84,8 @@ class TestGuiRunLog(unittest.TestCase):
         self.assertEqual(entries[0].rc, 0)
 
     def test_busy_written_as_busy(self):
-
-
+                                                                 
+                                                   
         self._write("busy", rc=1)
         entries = self._entries()
         self.assertEqual(len(entries), 1)
@@ -78,13 +94,13 @@ class TestGuiRunLog(unittest.TestCase):
     def test_mode_none_skipped(self):
         found = T.find_job(self.container, self.job_id)
         found[1]["task_log_mode"] = "none"
-
+                                                                
         T.save_container(self.path, self.container)
         self._write("error", rc=2, output="не должно попасть в лог")
         self.assertFalse(self.log_file.is_file())
 
     def test_unknown_job_and_bad_path_swallowed(self):
-
+                                                                    
         self._write("ok", rc=0, job_id="нет-такого")
         host = _FakeHost(self.container, self.path)
         ArchiveActionsMixin._write_run_log_record(
@@ -92,8 +108,8 @@ class TestGuiRunLog(unittest.TestCase):
         self.assertEqual(self._entries(), [])
 
     def test_gui_and_headless_records_coexist(self):
-
-
+                                                                
+                                                     
         self._write("ok", rc=0)
         from core.headless import _build_log_header, _write_task_log
         found = T.find_job(self.container, self.job_id)

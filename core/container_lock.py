@@ -1,3 +1,95 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -6,30 +98,57 @@ import time
 from pathlib import Path
 
 
+                                              
 DEFAULT_TIMEOUT_S = 2.0
 
-
+                                       
 POLL_INTERVAL_S = 0.05
 
-
+                                                                    
+                                                                      
+                                                                       
 LOCK_SUFFIX = ".lock"
 
 
 class ContainerLockBusy(Exception):
-        pass
+    pass
+
+
+
+
+
+
 
 
 def lock_path_for(container_path) -> Path:
+    pass
+
+
+
+
+
     return Path(str(container_path) + LOCK_SUFFIX)
 
 
+                                                                             
+                                            
+                                                                             
+                                                               
+                                                                  
+                                                               
+                                                     
+ 
+                                                              
+                                                                
+                                                                 
+
 _locks: dict = {}
-_os_owner: dict = {}
+_os_owner: dict = {}                                            
 _locks_guard = threading.Lock()
 
 
 def _reentrant_key(path: Path) -> str:
-
+    pass
     try:
         return os.path.normcase(os.path.abspath(str(path)))
     except Exception:
@@ -37,7 +156,7 @@ def _reentrant_key(path: Path) -> str:
 
 
 def _get_lock(key: str) -> threading.RLock:
-
+    pass
     with _locks_guard:
         lk = _locks.get(key)
         if lk is None:
@@ -47,13 +166,13 @@ def _get_lock(key: str) -> threading.RLock:
 
 
 def _get_os_owner(key: str):
-
+    pass
     with _locks_guard:
         return _os_owner.get(key)
 
 
 def _set_os_owner(key: str, ident) -> None:
-
+    pass
     with _locks_guard:
         if ident is None:
             _os_owner.pop(key, None)
@@ -61,12 +180,21 @@ def _set_os_owner(key: str, ident) -> None:
             _os_owner[key] = ident
 
 
+                                                                             
+                                        
+                                                                             
+                                                                     
+                                                                  
+                                                                   
+                                                                
+                                                             
+
 _k32 = None
 _k32_guard = threading.Lock()
 
 
 def _get_kernel32():
-
+    pass
     global _k32
     if _k32 is not None:
         return _k32
@@ -79,13 +207,13 @@ def _get_kernel32():
         k = ctypes.WinDLL("kernel32", use_last_error=True)
         k.CreateFileW.restype = wintypes.HANDLE
         k.CreateFileW.argtypes = [
-            wintypes.LPCWSTR,
-            wintypes.DWORD,
-            wintypes.DWORD,
-            wintypes.LPVOID,
-            wintypes.DWORD,
-            wintypes.DWORD,
-            wintypes.HANDLE,
+            wintypes.LPCWSTR,               
+            wintypes.DWORD,                      
+            wintypes.DWORD,                  
+            wintypes.LPVOID,                          
+            wintypes.DWORD,                            
+            wintypes.DWORD,                           
+            wintypes.HANDLE,                   
         ]
         k.CloseHandle.restype = wintypes.BOOL
         k.CloseHandle.argtypes = [wintypes.HANDLE]
@@ -94,6 +222,17 @@ def _get_kernel32():
 
 
 def _open_exclusive_windows(path: Path):
+    pass
+
+
+
+
+
+
+
+
+
+
     import ctypes
 
     GENERIC_READ = 0x80000000
@@ -106,17 +245,17 @@ def _open_exclusive_windows(path: Path):
     handle = k.CreateFileW(
         str(path),
         GENERIC_READ | GENERIC_WRITE,
-        0,
+        0,                                                   
         None,
-        OPEN_ALWAYS,
+        OPEN_ALWAYS,                           
         FILE_ATTRIBUTE_NORMAL,
         None,
     )
-
-
+                                                            
+                                                        
     if not handle or handle == INVALID_HANDLE_VALUE:
-
-
+                                                                  
+                                                         
         err = ctypes.get_last_error()
         if err in (32, 33):
             return None
@@ -125,7 +264,7 @@ def _open_exclusive_windows(path: Path):
 
 
 def _close_windows(handle) -> None:
-
+    pass
     try:
         k = _get_kernel32()
         k.CloseHandle(handle)
@@ -134,6 +273,19 @@ def _close_windows(handle) -> None:
 
 
 def _acquire_posix(path: Path):
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
     import fcntl
 
     f = open(path, "a+b")
@@ -145,7 +297,30 @@ def _acquire_posix(path: Path):
         return None
 
 
+                                                                             
+                      
+                                                                             
+
 class container_lock:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     def __init__(self, container_path, timeout_s: float = DEFAULT_TIMEOUT_S):
         self._path = lock_path_for(container_path)
@@ -157,8 +332,8 @@ class container_lock:
         self._reentrant = False
 
     def __enter__(self) -> "container_lock":
-
-
+                                                                     
+                                                         
         rlock = _get_lock(self._key)
         if not rlock.acquire(timeout=self._timeout_s):
             raise ContainerLockBusy(
@@ -166,12 +341,15 @@ class container_lock:
             )
         self._rlock = rlock
 
-
+                                                                    
+                                                           
         if _get_os_owner(self._key) == threading.get_ident():
             self._reentrant = True
             return self
 
-
+                                                                    
+                                                                    
+                      
         try:
             self._path.parent.mkdir(parents=True, exist_ok=True)
         except OSError:
@@ -196,8 +374,8 @@ class container_lock:
                         _set_os_owner(self._key, threading.get_ident())
                         return self
             except OSError as exc:
-
-
+                                                                  
+                                                                       
                 last_err = exc
                 break
 
@@ -205,7 +383,7 @@ class container_lock:
                 break
             time.sleep(POLL_INTERVAL_S)
 
-
+                                                  
         rlock.release()
         self._rlock = None
         if last_err is not None:
@@ -219,11 +397,13 @@ class container_lock:
     def __exit__(self, exc_type, exc, tb):
         try:
             if self._reentrant:
-
-
+                                                            
+                                                                 
+                                                           
                 return False
 
-
+                                                                    
+                                                          
             if self._handle is not None:
                 _close_windows(self._handle)
                 self._handle = None
@@ -245,13 +425,31 @@ class container_lock:
 
 
 def container_is_locked(container_path) -> bool:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     p = lock_path_for(container_path)
     if not p.parent.is_dir():
         return False
 
     key = _reentrant_key(p)
 
-
+                                                                        
     if _get_os_owner(key) is not None:
         return True
 
@@ -269,6 +467,7 @@ def container_is_locked(container_path) -> bool:
             f.close()
             return False
     except OSError:
-
-
+                                                                    
+                                                                
+                         
         return True

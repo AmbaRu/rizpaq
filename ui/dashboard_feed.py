@@ -1,3 +1,16 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 from PySide6.QtCore import Qt, Signal
@@ -15,14 +28,16 @@ from core.run_history import RunEntry
 from ui import skins
 from ui.i18n import tr
 
-
+                                                                    
+                                                       
 _STATUS_TOKEN = {
     "ok": "OK_GREEN",
     "error": "DIFF_REMOVED",
     "busy": "BUSY_STEEL",
 }
 
-
+                                                                     
+                                                                     
 MAX_ITEMS = 40
 
 
@@ -31,11 +46,11 @@ def _status_color(status: str) -> QColor:
 
 
 def _status_caption(entry: RunEntry) -> str:
-
+    pass
     caption = tr(f"dashboard.status.{entry.status}")
     if entry.status == "error" and entry.tail:
-
-
+                                                                   
+                                                    
         first = (entry.tail[0] or "").strip()
         if first:
             caption = f"{caption} · {first}"
@@ -43,9 +58,9 @@ def _status_caption(entry: RunEntry) -> str:
 
 
 class _RunItem(QFrame):
+    pass
 
-
-    clicked = Signal(str, str)
+    clicked = Signal(str, str)                                         
 
     def __init__(self, entry: RunEntry, parent=None):
         super().__init__(parent)
@@ -75,8 +90,8 @@ class _RunItem(QFrame):
 
         top = QHBoxLayout()
         top.setSpacing(6)
-
-
+                                                                 
+                                                                    
         if entry.ts_dt is not None:
             time_text = entry.ts_dt.strftime("%d.%m %H:%M")
         else:
@@ -104,6 +119,14 @@ class _RunItem(QFrame):
 
 
 class RunFeed(QScrollArea):
+    pass
+
+
+
+
+
+
+
 
     jobActivated = Signal(str, str)
 
@@ -121,8 +144,8 @@ class RunFeed(QScrollArea):
         self.setWidget(body)
 
     def set_entries(self, entries: list) -> None:
-
-
+        pass
+                                                                   
         while self._lay.count() > 1:
             item = self._lay.takeAt(0)
             w = item.widget()

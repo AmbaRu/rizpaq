@@ -1,3 +1,32 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import json
@@ -11,19 +40,21 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-import core.config as config
-import core.password_store as ps
+import core.config as config              
+import core.password_store as ps              
 
 
 class StoreTestBase(unittest.TestCase):
-
+    pass
 
     def setUp(self):
         self.dir = Path(tempfile.mkdtemp(prefix="rizpaq_pw_"))
         self.addCleanup(shutil.rmtree, self.dir, ignore_errors=True)
         self.path = self.dir / "archive_passwords.json"
 
-
+                                                                     
+                                                                      
+                                    
         self.reports: list = []
 
         def spy(message, name="password_store.log"):
@@ -38,12 +69,13 @@ class StoreTestBase(unittest.TestCase):
         ps._store_path = lambda: self.path
         self.addCleanup(setattr, ps, "_store_path", self._old_path)
 
+                                                                      
 
     def read_raw(self) -> str:
         return self.path.read_text(encoding="utf-8")
 
     def store_files(self) -> list:
-
+        pass
         return sorted(
             p for p in self.dir.iterdir()
             if p.is_file() and p != self.path
@@ -54,14 +86,14 @@ class StoreTestBase(unittest.TestCase):
 
 
 class TestBasics(StoreTestBase):
-
+    pass
 
     def test_set_then_get(self):
         ps.set_password("C:\\a\\arc.zpaq", "секрет")
         self.assertEqual(ps.get_password("C:\\a\\arc.zpaq"), "секрет")
 
     def test_key_is_normalised(self):
-
+        pass
         ps.set_password("C:\\Docs\\Arc.ZPAQ", "секрет")
         self.assertEqual(ps.get_password("c:\\docs\\arc.zpaq"), "секрет")
         self.assertEqual(ps.get_password("C:\\Docs\\Arc.ZPAQ"), "секрет")
@@ -95,9 +127,15 @@ class TestBasics(StoreTestBase):
 
 
 class TestAtomicWrite(StoreTestBase):
-
+    pass
 
     def test_no_leftover_files(self):
+        pass
+
+
+
+
+
         ps.set_password("C:\\a.zpaq", "секрет")
         ps.set_password("C:\\b.zpaq", "ещё")
         self.assertEqual(
@@ -106,6 +144,13 @@ class TestAtomicWrite(StoreTestBase):
             f"{[p.name for p in self.store_files()]}")
 
     def test_target_not_truncated_before_swap(self):
+        pass
+
+
+
+
+
+
         ps.set_password("C:\\a.zpaq", "первый")
         self.assertTrue(self.path.is_file())
 
@@ -136,7 +181,7 @@ class TestAtomicWrite(StoreTestBase):
         self.assertEqual(ps.get_password("C:\\a.zpaq"), "второй")
 
     def test_failed_write_keeps_previous_data(self):
-
+        pass
         ps.set_password("C:\\a.zpaq", "первый")
         ps.set_password("C:\\b.zpaq", "второй")
         before = self.read_raw()
@@ -159,7 +204,7 @@ class TestAtomicWrite(StoreTestBase):
         self.assertEqual(ps.get_password("C:\\b.zpaq"), "второй")
 
     def test_failed_write_is_reported(self):
-
+        pass
         ps.set_password("C:\\a.zpaq", "первый")
         self.reports.clear()
 
@@ -177,7 +222,7 @@ class TestAtomicWrite(StoreTestBase):
             "а пароль не записался бы")
 
     def test_failed_write_leaves_no_leftovers(self):
-
+        pass
         ps.set_password("C:\\a.zpaq", "первый")
         self.reports.clear()
 
@@ -196,7 +241,7 @@ class TestAtomicWrite(StoreTestBase):
 
 
 class TestCorruptFile(StoreTestBase):
-
+    pass
 
     def test_read_reports_corruption(self):
         self.make_corrupt()
@@ -206,7 +251,7 @@ class TestCorruptFile(StoreTestBase):
             "повреждение файла не сообщено — это и есть молчаливая потеря")
 
     def test_read_does_not_touch_the_file(self):
-
+        pass
         self.make_corrupt()
         before = self.read_raw()
         ps.get_password("C:\\a.zpaq")
@@ -216,7 +261,7 @@ class TestCorruptFile(StoreTestBase):
             "чтение что-то переместило — это не его дело")
 
     def test_write_heals_the_store(self):
-
+        pass
         self.make_corrupt()
         ps.set_password("C:\\новый.zpaq", "пароль")
 
@@ -228,7 +273,7 @@ class TestCorruptFile(StoreTestBase):
             "файл остался в нечитаемом виде после сохранения")
 
     def test_previous_file_not_destroyed(self):
-
+        pass
         self.make_corrupt()
         ps.set_password("C:\\новый.zpaq", "пароль")
 
@@ -252,20 +297,26 @@ class TestCorruptFile(StoreTestBase):
             "незамеченной")
 
     def test_empty_file_is_not_corruption(self):
-
+        pass
         self.path.write_text("", encoding="utf-8")
         self.assertIsNone(ps.get_password("C:\\a.zpaq"))
         self.assertEqual(self.reports, [],
                          "пустой файл принят за повреждённый")
 
     def test_wrong_shape_is_reported(self):
-
+        pass
         self.path.write_text("[1, 2, 3]", encoding="utf-8")
         self.assertIsNone(ps.get_password("C:\\a.zpaq"))
         self.assertTrue(self.reports,
                         "неожиданный вид файла не сообщён")
 
     def test_undecodable_entry_is_reported(self):
+        pass
+
+
+
+
+
         data = {ps._norm_key("C:\\a.zpaq"): "не-base64-вовсе"}
         self.path.write_text(
             json.dumps(data, ensure_ascii=False), encoding="utf-8")
@@ -276,7 +327,7 @@ class TestCorruptFile(StoreTestBase):
             "битая запись не сообщена — пароль молча не подставится")
 
     def test_good_entries_survive_alongside_broken_one(self):
-
+        pass
         key_a = ps._norm_key("C:\\a.zpaq")
         key_b = ps._norm_key("C:\\b.zpaq")
         import base64

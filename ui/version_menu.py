@@ -1,3 +1,8 @@
+
+
+
+
+
 from __future__ import annotations
 
 from PySide6.QtGui import QAction, QActionGroup
@@ -6,10 +11,10 @@ from ui.i18n import tr
 
 
 class VersionMenuMixin:
-
+    pass
 
     def _set_archive_dependent_actions(self, enabled: bool) -> None:
-
+        pass
         for attr in (
             "compare_action",
             "archive_info_action",
@@ -27,12 +32,16 @@ class VersionMenuMixin:
 
     def _rebuild_versions_menu(self) -> None:
         menu = self._versions_menu
-
+                                                     
         if menu is None:
             return
         menu.clear()
 
-
+                                                                  
+                                                                    
+                                                                          
+                                                                     
+                                                    
         old_group = getattr(self, "_ver_group", None)
         if old_group is not None:
             try:
@@ -40,14 +49,14 @@ class VersionMenuMixin:
             except Exception:
                 pass
         self._ver_group = None
-
+        
         has_zpaq_archive = self.mode == "archive" and self.archive_path is not None
         is_universal = self.mode == "universal" and self.archive_path is not None
-
-
+        
+                                                               
         self._set_archive_dependent_actions(has_zpaq_archive)
-
-
+        
+                                                               
         try:
             if hasattr(self, "convert_action") and self.convert_action is not None:
                 self.convert_action.setEnabled(is_universal)

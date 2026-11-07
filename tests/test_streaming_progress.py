@@ -1,3 +1,16 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import sys
@@ -6,9 +19,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from PySide6.QtCore import QCoreApplication
+from PySide6.QtCore import QCoreApplication              
 
-from workers.streaming import StreamingZpaqThread
+from workers.streaming import StreamingZpaqThread              
 
 _APP = QCoreApplication.instance() or QCoreApplication([])
 
@@ -30,8 +43,8 @@ class TestProgressInfoEmission(unittest.TestCase):
         try:
             rc, _text = worker._run_stream()
         finally:
-
-
+                                                                       
+                                                                     
             proc = getattr(worker, "_proc", None)
             stream = getattr(proc, "stdout", None) if proc is not None else None
             try:
@@ -44,6 +57,9 @@ class TestProgressInfoEmission(unittest.TestCase):
         return rc, infos
 
     def test_extraction_emits_dirs_total(self):
+        pass
+
+
         rc, infos = self._collect(EXTRACT_LINE)
 
         self.assertEqual(rc, 0)
@@ -51,7 +67,7 @@ class TestProgressInfoEmission(unittest.TestCase):
         self.assertIn(2, dirs, f"dirs_total не эмитился: {infos}")
 
     def test_extraction_emits_files_and_dirs_together(self):
-
+        pass
         rc, infos = self._collect(EXTRACT_LINE)
 
         self.assertEqual(rc, 0)
@@ -64,7 +80,7 @@ class TestProgressInfoEmission(unittest.TestCase):
         )
 
     def test_add_still_emits_dirs_total(self):
-
+        pass
         rc, infos = self._collect(ADD_LINE)
 
         self.assertEqual(rc, 0)

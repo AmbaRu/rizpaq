@@ -1,3 +1,35 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 from ui.i18n import tr
@@ -5,6 +37,13 @@ from ui.operation_progress_dialog import OperationProgressDialog
 
 
 class Par2OperationDialog(OperationProgressDialog):
+    pass
+
+
+
+
+
+
 
     def __init__(self, title: str, status: str, archive_name: str,
                  parent=None):
@@ -14,13 +53,21 @@ class Par2OperationDialog(OperationProgressDialog):
         super().__init__(window_title, parent)
 
         self._mode = "par2"
-
+                                          
         self._auto_close_on_ok = False
 
         self.hide_info_fields(keep=("elapsed",))
         self.begin(window_title, status)
 
     def append_log(self, log: str) -> None:
+        pass
+
+
+
+
+
+
+
         if not log:
             return
         for line in str(log).splitlines():
@@ -28,6 +75,14 @@ class Par2OperationDialog(OperationProgressDialog):
 
     def finish_verdict(self, ok: bool, verdict: str, log: str = "",
                        detail: str = "") -> None:
+        pass
+
+
+
+
+
+
+
         self.append_log(log)
         super().finish(ok, detail)
         self._title.setText(verdict)
@@ -38,7 +93,7 @@ class Par2OperationDialog(OperationProgressDialog):
 
 
 class Par2VerifyDialog(Par2OperationDialog):
-
+    pass
 
     def __init__(self, archive_name: str = "", parent=None):
         super().__init__(
@@ -48,7 +103,7 @@ class Par2VerifyDialog(Par2OperationDialog):
 
 
 class Par2CreateDialog(Par2OperationDialog):
-
+    pass
 
     def __init__(self, archive_name: str = "", parent=None):
         super().__init__(
@@ -58,6 +113,22 @@ class Par2CreateDialog(Par2OperationDialog):
 
 
 class Par2RepairDialog(Par2OperationDialog):
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     def __init__(self, archive_name: str = "", parent=None):
         super().__init__(
@@ -66,5 +137,5 @@ class Par2RepairDialog(Par2OperationDialog):
         )
 
     def begin_repair(self) -> None:
-
+        pass
         self._current.setText(tr("par2.repair_running"))

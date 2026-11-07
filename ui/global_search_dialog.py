@@ -1,3 +1,24 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 from PySide6.QtCore import QTimer, Signal
@@ -17,15 +38,29 @@ from core.search import search_all
 from ui.i18n import tr
 from ui.presentation import format_size
 
-
+                                                                       
+                                                                      
+                                                                   
+                                                                  
+                                              
 _MAX_RESULT_ROWS = 2000
 
 
 class GlobalSearchDialog(QDialog):
+    pass
+
+
+
+
+
+
+
 
     archive_requested = Signal(str)
-
-
+                                                                    
+                                                                        
+                                                                        
+                                          
     catalog_requested = Signal()
 
     def __init__(self, parent=None):
@@ -75,11 +110,24 @@ class GlobalSearchDialog(QDialog):
         self._timer.setInterval(180)
         self._timer.timeout.connect(self._apply_search)
 
-
+                                                                     
+                                                                     
+                                                                    
+                                                                    
+                                       
         self._archives = None
 
+                                                                          
 
     def reset_search(self) -> None:
+        pass
+
+
+
+
+
+
+
         self._archives = None
         self.results.clearContents()
         self.results.setRowCount(0)
@@ -89,10 +137,11 @@ class GlobalSearchDialog(QDialog):
         self.search_edit.selectAll()
 
     def open(self) -> None:
-
+        pass
         self.reset_search()
         super().open()
 
+                                                                            
 
     def _on_text_changed(self, _text: str) -> None:
         self._timer.start()
@@ -139,6 +188,12 @@ class GlobalSearchDialog(QDialog):
             )
 
     def _collect_archives(self) -> list:
+        pass
+
+
+
+
+
         out: list = []
         for arc in list_archives():
             path = str(arc.get("path") or "")

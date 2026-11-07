@@ -1,3 +1,34 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import sys
@@ -8,8 +39,8 @@ from unittest import mock
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from core import scheduler as S
-from core.tasks import (
+from core import scheduler as S              
+from core.tasks import (              
     ACTION_TEST,
     add_job,
     add_work,
@@ -19,6 +50,13 @@ from core.tasks import (
 
 
 def _make_container(works_spec) -> dict:
+    pass
+
+
+
+
+
+
     c = empty_container()
     for w_spec in works_spec:
         w = add_work(
@@ -34,7 +72,7 @@ def _make_container(works_spec) -> dict:
 
 def _scheduler_entry(work: dict, job: dict, status="Ready",
                      next_run="2026-10-05 02:00") -> dict:
-
+    pass
     return {
         "name": scheduler_task_name(work, job),
         "status": status,
@@ -43,9 +81,11 @@ def _scheduler_entry(work: dict, job: dict, status="Ready",
 
 
 def _patch_tasks(tasks):
-
+    pass
     return mock.patch.object(S, "list_rizpaq_tasks", return_value=list(tasks))
 
+
+                                                                               
 
 class TestContainerTaskMap(unittest.TestCase):
     def test_empty_container_gives_empty_map(self):
@@ -66,7 +106,7 @@ class TestContainerTaskMap(unittest.TestCase):
         work, job = pair
         self.assertEqual(work["title"], "Docs")
         self.assertEqual(job["title"], "Daily")
-
+                                                             
         self.assertEqual(name, scheduler_task_name(work, job))
 
     def test_several_jobs_one_work(self):
@@ -84,6 +124,10 @@ class TestContainerTaskMap(unittest.TestCase):
         self.assertEqual(len(S.container_task_map(c)), 2)
 
     def test_mixed_actions_in_one_work(self):
+        pass
+
+
+
         c = _make_container([{
             "title": "Docs",
             "jobs": [
@@ -100,6 +144,11 @@ class TestContainerTaskMap(unittest.TestCase):
                         f"нет имени с префиксом t_: {names}")
 
     def test_test_job_name_matches_scheduler_task_name(self):
+        pass
+
+
+
+
         c = _make_container([{
             "title": "Docs",
             "jobs": [{"title": "Check", "action": ACTION_TEST}],
@@ -123,6 +172,8 @@ class TestContainerTaskMap(unittest.TestCase):
             S.os.name = real_name
 
 
+                                                                              
+
 class TestFindOrphanTasks(unittest.TestCase):
     def test_no_orphans_when_all_match(self):
         c = _make_container([{
@@ -135,6 +186,11 @@ class TestFindOrphanTasks(unittest.TestCase):
             self.assertEqual(S.find_orphan_tasks(c), [])
 
     def test_test_job_in_scheduler_is_not_orphan(self):
+        pass
+
+
+
+
         c = _make_container([{
             "title": "Docs",
             "jobs": [{"title": "Check", "action": ACTION_TEST}],
@@ -169,8 +225,14 @@ class TestFindOrphanTasks(unittest.TestCase):
             self.assertEqual(result[0]["name"], orphan["name"])
 
     def test_orphan_ignores_non_rizpaq_prefix(self):
-        c = empty_container()
+        pass
 
+
+
+
+
+        c = empty_container()
+                                                                         
         with _patch_tasks([]):
             self.assertEqual(S.find_orphan_tasks(c), [])
 
@@ -186,6 +248,8 @@ class TestFindOrphanTasks(unittest.TestCase):
         finally:
             S.os.name = real_name
 
+
+                                                                                 
 
 class TestComputeSyncActions(unittest.TestCase):
     def _empty_actions(self):
@@ -237,6 +301,11 @@ class TestComputeSyncActions(unittest.TestCase):
             self.assertEqual(actions["disable"], [])
 
     def test_add_test_job_with_enabled_schedule(self):
+        pass
+
+
+
+
         c = _make_container([{
             "title": "Docs",
             "jobs": [{
@@ -253,6 +322,11 @@ class TestComputeSyncActions(unittest.TestCase):
             self.assertEqual(job["action"], ACTION_TEST)
 
     def test_disable_when_schedule_off_but_still_in_scheduler(self):
+        pass
+
+
+
+
         c = _make_container([{
             "title": "Docs",
             "jobs": [{
@@ -275,7 +349,7 @@ class TestComputeSyncActions(unittest.TestCase):
             "title": "Docs",
             "jobs": [{"title": "Daily"}],
         }])
-
+                                                       
         orphan_entry = {
             "name": "Rizpaq_b_ghost_00000000_deadbeef",
             "status": "", "next_run": "",
@@ -285,12 +359,17 @@ class TestComputeSyncActions(unittest.TestCase):
             self.assertEqual(len(actions["remove"]), 1)
             self.assertEqual(actions["remove"][0]["name"],
                              orphan_entry["name"])
-
-
+                                                                        
+                                                                       
+                                        
             self.assertEqual(actions["add"], [])
             self.assertEqual(actions["disable"], [])
 
     def test_all_three_categories_at_once(self):
+        pass
+
+
+
         c = _make_container([
             {"title": "Docs", "jobs": [{
                 "title": "Daily",
@@ -302,21 +381,24 @@ class TestComputeSyncActions(unittest.TestCase):
                 "schedule": {"enabled": False},
             }]},
         ])
-
+                                                                        
         docs_work = c["works"][0]
         docs_job = docs_work["jobs"][0]
         daily_entry = _scheduler_entry(docs_work, docs_job)
 
-
+                                                                  
+                    
         photos_work = c["works"][1]
         photos_job = photos_work["jobs"][0]
         photos_entry = _scheduler_entry(photos_work, photos_job)
 
-
+                               
         ghost = {"name": "Rizpaq_b_ghost_00000000_deadbeef",
                  "status": "", "next_run": ""}
 
-
+                                                                     
+                                    
+                                                         
         extra = add_work(c, "Videos", ["D:/video"], "D:/video.zpaq")
         add_job(c, extra["id"], {
             "title": "Hourly",
@@ -334,6 +416,10 @@ class TestComputeSyncActions(unittest.TestCase):
             self.assertEqual(actions["remove"][0]["name"], ghost["name"])
 
     def test_remove_uses_name_not_tuple(self):
+        pass
+
+
+
         c = empty_container()
         ghost = {"name": "Rizpaq_b_x_00000000_00000000",
                  "status": "Ready", "next_run": "2026-10-05 02:00"}
@@ -344,6 +430,10 @@ class TestComputeSyncActions(unittest.TestCase):
             self.assertIn("name", actions["remove"][0])
 
     def test_two_jobs_same_work_do_not_cross(self):
+        pass
+
+
+
         c = _make_container([{
             "title": "Docs",
             "jobs": [
@@ -356,7 +446,7 @@ class TestComputeSyncActions(unittest.TestCase):
         }])
         work = c["works"][0]
         disabled_job = work["jobs"][1]
-
+                                                                 
         with _patch_tasks([_scheduler_entry(work, disabled_job)]):
             actions = S.compute_sync_actions(c, "D:/tasks.rzp")
             self.assertEqual(len(actions["add"]), 1)
@@ -366,6 +456,11 @@ class TestComputeSyncActions(unittest.TestCase):
             self.assertEqual(actions["remove"], [])
 
     def test_two_jobs_one_work_different_actions(self):
+        pass
+
+
+
+
         c = _make_container([{
             "title": "Docs",
             "jobs": [
@@ -384,6 +479,10 @@ class TestComputeSyncActions(unittest.TestCase):
             self.assertEqual(titles, {"Backup", "Check"})
 
     def test_test_job_in_scheduler_is_matched(self):
+        pass
+
+
+
         c = _make_container([{
             "title": "Docs",
             "jobs": [{

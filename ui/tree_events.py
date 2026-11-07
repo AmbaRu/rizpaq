@@ -1,3 +1,7 @@
+
+
+
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -21,10 +25,10 @@ from ui.qt_compat import (
 
 
 class TreeEventsMixin:
-
+    pass
 
     def _setup_tree_context_menu(self):
-
+        pass
         try:
             self.tree.setContextMenuPolicy(CUSTOM_CONTEXT)
             self.tree.customContextMenuRequested.connect(
@@ -33,6 +37,7 @@ class TreeEventsMixin:
         except Exception:
             pass
 
+                                                                        
 
     def _on_tree_context_menu(self, pos):
         item = self.tree.itemAt(pos)
@@ -46,6 +51,7 @@ class TreeEventsMixin:
         elif kind == K_ARC:
             self._archive_inner_context_menu(item, pos)
 
+                                                                         
 
     def _fs_context_menu(self, item, pos):
         path = item.data(TCOL, USER_ROLE)
@@ -58,7 +64,7 @@ class TreeEventsMixin:
         act_create.triggered.connect(
             lambda: self._on_create_archive_paths([path])
         )
-
+                                                                           
         p = Path(path)
         if p.parent != p:
             menu.addSeparator()
@@ -72,7 +78,7 @@ class TreeEventsMixin:
         arc_path = item.data(TCOL, USER_ROLE)
         if not arc_path:
             return
-
+            
         is_uni = item.data(TCOL, KIND_ROLE) == K_FS_UNI_ARC
 
         menu = QMenu(self)
@@ -94,34 +100,48 @@ class TreeEventsMixin:
                 lambda: self._on_create_archive_paths([arc_path])
             )
             menu.addSeparator()
-
-
+                                                                   
+                                                                      
+                                                                   
+                                                                     
             test_menu = menu.addMenu(tr("menu.test"))
             for mode, label in test_mode_entries():
                 act = test_menu.addAction(label)
-
-
+                                                                       
+                                                                       
+                                                               
                 act.setData(mode)
                 act.triggered.connect(
                     lambda _c=False, m=mode: self._on_test_archive(arc_path, m)
                 )
 
-
+                                                                     
+                                            
+             
+                                                                         
+                                                                     
+                                                                      
+                                                                    
+                                                                 
             if par2_set_exists(arc_path):
                 menu.addSeparator()
                 act_restore = menu.addAction(tr("par2.repair"))
                 act_restore.triggered.connect(
                     lambda: self._start_par2_repair(arc_path)
                 )
-
-
+                                                              
+                                                                       
+                                                                       
+                                                                     
+                                                             
                 act_recreate = menu.addAction(tr("par2.recreate_now"))
                 act_recreate.triggered.connect(
                     lambda: self._start_par2_create(arc_path, recreate=True)
                 )
             else:
-
-
+                                                                  
+                                                                          
+                                                                   
                 menu.addSeparator()
                 act_create = menu.addAction(tr("par2.create_now"))
                 act_create.triggered.connect(
@@ -147,8 +167,8 @@ class TreeEventsMixin:
         if not inner:
             return
         menu = QMenu(self)
-
-
+                                                                               
+                                                  
         if owner and owner != self.archive_path:
             act_open = menu.addAction(tr("context.open_archive_and_folder"))
             act_open.triggered.connect(
@@ -173,7 +193,7 @@ class TreeEventsMixin:
         self._exec_menu(menu, pos)
 
     def _tree_open_archive_inner(self, arc_path: str, inner: str):
-
+        pass
         if not arc_path:
             return
         c = self._cache(arc_path)

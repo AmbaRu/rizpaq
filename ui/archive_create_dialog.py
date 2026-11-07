@@ -1,3 +1,70 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -127,14 +194,20 @@ class ArchiveCreateDialog(QDialog):
         self._size_worker = None
         self._schedule = None
 
-
+                                                               
+                                                                    
+                                                                 
+                                                                 
+                                                           
         self._already_saved = False
 
-
+                                                                         
+                                                                   
         self._edit_work_id = edit_work_id
         self._edit_job_id = edit_job_id
-
-
+                                                                         
+                                                                   
+                                                                        
         self._add_to_work_id = add_to_work_id
 
         layout = QVBoxLayout(self)
@@ -142,7 +215,7 @@ class ArchiveCreateDialog(QDialog):
         layout.setSpacing(0)
         self._tabs = QTabWidget()
 
-
+                                           
         page_general = QWidget()
         cl = QVBoxLayout(page_general)
         cl.setContentsMargins(12, 12, 12, 12)
@@ -150,7 +223,16 @@ class ArchiveCreateDialog(QDialog):
         form = QFormLayout()
         form.setContentsMargins(0, 0, 0, 0)
 
-
+                                        
+         
+                                                                        
+                                                                        
+                                               
+         
+                                                                         
+                                                                        
+                                                                       
+                                                              
         self._work_title_edit = QLineEdit()
         self._work_title_edit.setPlaceholderText(tr("create.work_title_placeholder"))
         form.addRow(tr("create.work_title"), self._work_title_edit)
@@ -159,7 +241,7 @@ class ArchiveCreateDialog(QDialog):
         self._job_title_edit.setPlaceholderText(tr("create.job_title_placeholder"))
         form.addRow(tr("create.job_title"), self._job_title_edit)
 
-
+                           
         self._source_list = QListWidget()
         self._source_list.setSelectionMode(QListWidget.ExtendedSelection)
         self._source_list.setMinimumHeight(72)
@@ -212,7 +294,7 @@ class ArchiveCreateDialog(QDialog):
         cl.addLayout(form)
         cl.addStretch(1)
 
-
+                                            
         page_comp = QWidget()
         gl = QFormLayout(page_comp)
         gl.setContentsMargins(12, 12, 12, 12)
@@ -322,7 +404,7 @@ class ArchiveCreateDialog(QDialog):
         vr.addWidget(self._verify_combo, 1)
         gl.addRow(vr)
 
-
+                                                   
         page_adv = QWidget()
         av = QVBoxLayout(page_adv)
         av.setContentsMargins(12, 12, 12, 12)
@@ -420,14 +502,15 @@ class ArchiveCreateDialog(QDialog):
 
         self._tabs.addTab(page_general, tr("create.tab_general"))
         self._tabs.addTab(page_comp, tr("create.tab_compression"))
-
-
+                                                               
+                                                                       
+                                                                 
         self._tabs.addTab(self._build_par2_page(),
                            tr("create.tab_protection"))
         self._tabs.addTab(page_adv, tr("create.tab_advanced"))
         layout.addWidget(self._tabs, 1)
 
-
+                                  
         buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
         for std in (QDialogButtonBox.Ok, QDialogButtonBox.Cancel):
             b = buttons.button(std)
@@ -435,7 +518,12 @@ class ArchiveCreateDialog(QDialog):
                 b.setAutoDefault(False)
                 b.setDefault(False)
 
-
+                                        
+         
+                     
+                                                                  
+                                                                         
+                                                              
         btn_save = QPushButton()
         btn_save.setAutoDefault(False)
         if self._edit_work_id or self._add_to_work_id:
@@ -463,6 +551,7 @@ class ArchiveCreateDialog(QDialog):
         if initial_settings:
             self._apply_settings(initial_settings)
 
+                         
 
     def _on_level_changed(self, _i):
         self._method_group.setVisible(self._level_combo.currentData() == "method")
@@ -511,6 +600,7 @@ class ArchiveCreateDialog(QDialog):
             cb.setChecked(p.get(k, True))
         self._update_method_preview()
 
+                       
 
     def _get_sources(self):
         return [self._source_list.item(i).text() for i in range(self._source_list.count())]
@@ -536,6 +626,7 @@ class ArchiveCreateDialog(QDialog):
         self._start_size_worker()
         self._update_longpath_state()
 
+                       
 
     def _start_size_worker(self):
         if self._size_worker:
@@ -550,6 +641,7 @@ class ArchiveCreateDialog(QDialog):
         self._size_worker = w
         w.start()
 
+                       
 
     def _update_longpath_state(self):
         hd = any(Path(str(s)).is_dir() for s in self._get_sources() if s)
@@ -597,14 +689,49 @@ class ArchiveCreateDialog(QDialog):
         self._auto_checkspace = _auto_checksize(total)
         self._set_checkspace(self._auto_checkspace)
 
+                                                                          
 
     def _build_par2_page(self) -> QWidget:
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         page = QWidget()
         outer = QVBoxLayout(page)
         outer.setContentsMargins(14, 12, 14, 12)
         outer.setSpacing(10)
 
-
+                                                                        
+                                                                  
+                                                                        
+                                                               
+                   
+         
+                                                                     
+                                                                        
+                                                         
         self._par2_widget = Par2OptionsWidget(show_master=True)
         self._opt_par2 = self._par2_widget.master
         self._par2_box = self._par2_widget.box
@@ -624,7 +751,9 @@ class ArchiveCreateDialog(QDialog):
 
         outer.addStretch(1)
 
-
+                                                                        
+                                                                       
+                                
         scroll = QScrollArea()
         scroll.setWidget(page)
         scroll.setWidgetResizable(True)
@@ -637,18 +766,25 @@ class ArchiveCreateDialog(QDialog):
         return host
 
     def _on_par2_master(self, checked: bool):
-
+        pass
         self._par2_widget._on_master(checked)
 
     def _on_par2_blocks(self, _checked=None):
-
+        pass
         self._par2_widget._on_blocks()
 
     def _par2_collect(self) -> dict:
+        pass
+
+
+
+
+
+
         return self._par2_widget.collect()
 
     def _par2_apply(self, options: dict):
-
+        pass
         self._par2_widget.apply(options)
 
     def _on_chunk_index_changed(self, idx):
@@ -734,6 +870,7 @@ class ArchiveCreateDialog(QDialog):
                 p += ".exe"
             self._sfx_edit.setText(p)
 
+                      
 
     def _build_params_rows(self, s):
         rows = []
@@ -803,8 +940,10 @@ class ArchiveCreateDialog(QDialog):
         not_ = _split_masks(self._not_edit.text())
         verify = self._verify_combo.currentData() or ""
         copy = self._copy_edit.text().strip() if self._opt_copy.isChecked() else ""
-
-
+                                                                       
+                                                                     
+                                                                       
+                          
         par2_enabled = self._opt_par2.isChecked()
         cs = self._checkspace_edit.text().strip() if self._opt_checkspace.isChecked() else ""
         chunk = ""
@@ -820,14 +959,19 @@ class ArchiveCreateDialog(QDialog):
         else:
             la = LEVEL_ARGS.get(lk, ["-m2"])
 
-
+                                                                  
+                                                                      
+                                                                  
+                                                                
+                                                                 
+                                             
         work_title = self._work_title_edit.text().strip()
         job_title = self._job_title_edit.text().strip()
 
         s = {
             "sources": sources, "dest": dest, "password": p1 or None,
-
-
+                                                                   
+                                      
             "work_title": work_title,
             "title": job_title,
             "level": la, "level_key": lk, "hash": HASH_ARGS.get(hk, ""),
@@ -849,8 +993,11 @@ class ArchiveCreateDialog(QDialog):
             "par2_enabled": par2_enabled,
         }
         if par2_enabled:
-
-
+                                                                     
+                                                                       
+                                                                       
+                                                                        
+                                                      
             s["par2_options"] = self._par2_collect()
         if mp:
             s["method_params"] = mp
@@ -859,8 +1006,15 @@ class ArchiveCreateDialog(QDialog):
         return s
 
     def _apply_settings(self, s):
-
-
+                                                                    
+                                                                     
+                                                    
+         
+                                                                  
+                                                                  
+                                                                   
+                                                                 
+                                                  
         self._work_title_edit.setText(str(s.get("work_title") or ""))
         self._job_title_edit.setText(str(s.get("title") or ""))
 
@@ -931,11 +1085,16 @@ class ArchiveCreateDialog(QDialog):
             self._opt_chunk.setChecked(True)
         else:
             self._opt_chunk.setChecked(False)
-
-
+                                                                       
+                                                                        
+                                                                     
+                                                                        
+                                                                
         raw_par2 = s.get("par2_options")
-
-
+                                                                       
+                                                                    
+                                                                        
+                                                                       
         self._par2_options = dict(raw_par2) if isinstance(raw_par2, dict) else {}
         self._par2_apply(self._par2_options)
         self._opt_par2.setChecked(bool(s.get("par2_enabled", False)))
@@ -947,9 +1106,10 @@ class ArchiveCreateDialog(QDialog):
         self._update_longpath_state()
         self._update_method_preview()
 
+                               
 
     def _validate_settings(self, settings: dict) -> bool:
-
+        pass
         if not settings.get("sources"):
             QMessageBox.warning(self, tr("create.dialog_title"), tr("create.no_source"))
             return False
@@ -959,6 +1119,27 @@ class ArchiveCreateDialog(QDialog):
         return True
 
     def _on_save_only(self):
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         settings = self._collect_settings()
         if not self._validate_settings(settings):
             return
@@ -1000,6 +1181,16 @@ class ArchiveCreateDialog(QDialog):
             )
 
     def _on_save_task(self):
+        pass
+
+
+
+
+
+
+
+
+
         settings = self._collect_settings()
         if not self._validate_settings(settings):
             return
@@ -1017,6 +1208,25 @@ class ArchiveCreateDialog(QDialog):
             )
 
     def _on_schedule_task(self):
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         settings = self._collect_settings()
         if not self._validate_settings(settings):
             return
@@ -1030,7 +1240,13 @@ class ArchiveCreateDialog(QDialog):
         if not schedule:
             return
 
-
+                                                                   
+                                                                   
+                                                         
+         
+                                                                     
+                                                                     
+                                               
         settings["schedule"] = schedule
         self._schedule = schedule
 
@@ -1066,14 +1282,22 @@ class ArchiveCreateDialog(QDialog):
             return
 
         if ok:
-
-
+                                                                     
+                                                               
+                                                                  
+                                                              
+                                                                
             self._already_saved = True
 
+                        
 
     def _validate_and_accept(self):
-
-
+                                                               
+                                                                    
+                                                                      
+                                                                  
+                                                                   
+                                                            
         if self._already_saved:
             self.reject()
             return

@@ -1,3 +1,22 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -10,16 +29,18 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from core.engine_path import (
+from core.engine_path import (              
     has_non_latin,
     rewrite_cmd,
 )
 
-
+                                                                   
+                                                            
 ZPAQ_NAME = "zpaqfranz.exe"
-from workers.streaming import StreamingZpaqThread
+from workers.streaming import StreamingZpaqThread              
 
-
+                                                                            
+                                                                          
 ECHO_ARGV = (
     "import os, sys, time\n"
     "sys.stdout.write('|ARGV|' + ' ;; '.join(sys.argv[1:]) + chr(10))\n"
@@ -28,10 +49,16 @@ ECHO_ARGV = (
     "time.sleep(120)\n"
 )
 
-
+                                       
 SILENT = "import time\ntime.sleep(120)\n"
 
-
+                                                                            
+                                                                               
+                                                                              
+                                                                             
+                                                                           
+                                                                           
+                                                                             
 ECHO_QUICK = (
     "import os, sys\n"
     "sys.stdout.write('|ARGV|' + ' ;; '.join(sys.argv[1:]) + chr(10))\n"
@@ -39,7 +66,8 @@ ECHO_QUICK = (
     "sys.stdout.flush()\n"
 )
 
-
+                                                                            
+                                   
 PROMPTING = (
     "import sys, time\n"
     "sys.stdout.write('zpaqfranz v64.7g' + chr(10))\n"
@@ -53,8 +81,9 @@ PROMPTING = (
 class StreamingBase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-
-
+                                                                      
+                                                                      
+                                                 
         try:
             from PySide6.QtCore import QCoreApplication
 
@@ -75,6 +104,12 @@ class StreamingBase(unittest.TestCase):
         return p
 
     def run_worker(self, cmd, timeout=30, stall_timeout=1):
+        pass
+
+
+
+
+
         import threading
 
         import workers.streaming as st
@@ -99,8 +134,24 @@ class StreamingBase(unittest.TestCase):
 
 
 class TestPathPreparation(StreamingBase):
+    pass
+
+
+
+
+
+
 
     def test_russian_folder_makes_argument_latin(self):
+        pass
+
+
+
+
+
+
+
+
         folder = self.dir / "Резерв"
         folder.mkdir()
         arc = folder / "backup.zpaq"
@@ -114,6 +165,14 @@ class TestPathPreparation(StreamingBase):
             f"зависает")
 
     def test_worker_passes_command_through_rewrite(self):
+        pass
+
+
+
+
+
+
+
         import workers.streaming as st
 
         seen = {}
@@ -142,7 +201,7 @@ class TestPathPreparation(StreamingBase):
             "воркер не вызвал rewrite_cmd — подготовка пути не работает")
 
     def test_latin_path_left_alone(self):
-
+        pass
         arc = self.dir / "archive.zpaq"
         arc.write_bytes(b"x" * 32)
 
@@ -155,6 +214,22 @@ class TestPathPreparation(StreamingBase):
         self.assertIn(str(arc), box.get("text", ""))
 
     def zpaq_stub(self, source: str) -> Path:
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         import sys as _sys
 
         body = self.child("stub_body.py", source)
@@ -166,6 +241,24 @@ class TestPathPreparation(StreamingBase):
         return stub
 
     def test_explicit_cwd_wins(self):
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         import core.engine_path as ep
         import workers.streaming as st
 
@@ -176,14 +269,18 @@ class TestPathPreparation(StreamingBase):
         arc.write_bytes(b"x" * 32)
 
         stub = self.zpaq_stub(ECHO_QUICK)
-
-
+                                                                           
+                                                
         real_short = ep.short_path
         ep.short_path = lambda p: ""
         real_stall = st.STALL_TIMEOUT
         st.STALL_TIMEOUT = 1
-
-
+                                                                          
+                                                                           
+                                                                         
+                                                                         
+                                                                      
+                            
         cmd = [str(stub), "l", str(arc)]
         try:
             _prepared, hint, _subs = rewrite_cmd(list(cmd))
@@ -212,9 +309,16 @@ class TestPathPreparation(StreamingBase):
 
 
 class TestStallGuard(StreamingBase):
-
+    pass
 
     def test_silent_process_does_not_hang(self):
+        pass
+
+
+
+
+
+
         box, dt, alive = self.run_worker(
             [sys.executable, "-u", str(self.child("silent.py", SILENT))],
             timeout=20,
@@ -227,6 +331,12 @@ class TestStallGuard(StreamingBase):
         self.assertNotEqual(box.get("rc"), 0, "ненулевой код ожидаем")
 
     def test_password_prompt_is_explained(self):
+        pass
+
+
+
+
+
         box, dt, alive = self.run_worker(
             [sys.executable, "-u", str(self.child("prompt.py", PROMPTING))],
             timeout=20,
@@ -240,6 +350,14 @@ class TestStallGuard(StreamingBase):
                       f"в результате нет указания на причину: {text[-200:]}")
 
     def test_no_busy_spin_while_waiting(self):
+        pass
+
+
+
+
+
+
+
         import workers.streaming as st
 
         real = st.STALL_TIMEOUT
@@ -257,19 +375,36 @@ class TestStallGuard(StreamingBase):
 
         self.assertFalse(alive, "воркер завис")
 
-
+                                                                        
+                                                       
+                                                                       
+                           
+                                                                           
+                                                                      
+                                                                        
+                                                                    
+                                                                  
+                                                        
         self.assertLess(
             cpu, 0.4,
             f"процессор был занят {cpu:.2f} с при ожидании {dt:.2f} с — "
             f"цикл крутится впустую")
 
     def test_cancelled_run_is_not_mistaken_for_a_stall(self):
+        pass
+
+
+
+
+
+
+
         import threading
 
         import workers.streaming as st
 
         real = st.STALL_TIMEOUT
-        st.STALL_TIMEOUT = 30
+        st.STALL_TIMEOUT = 30                                         
         box = {}
         worker = StreamingZpaqThread(
             [sys.executable, "-u", str(self.child("prompt2.py", PROMPTING))]

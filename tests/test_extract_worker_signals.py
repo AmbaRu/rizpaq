@@ -1,3 +1,37 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import sys
@@ -6,8 +40,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from PySide6.QtCore import QMetaMethod, QThread
-from PySide6.QtWidgets import QApplication
+from PySide6.QtCore import QMetaMethod, QThread              
+from PySide6.QtWidgets import QApplication              
 
 _APP = QApplication.instance() or QApplication([])
 from PySide6.QtGui import QFont
@@ -16,23 +50,36 @@ if _APP is not None:
     _APP.setFont(QFont("Segoe UI", 9))
 
 
+
+                                                                     
+                                                               
+                       
 def _make_workers():
+    pass
+
+
+
+
+
+
     from workers.extract_workers import (
         ExtractFileWorker,
         ExtractFolderBatchWorker,
         ExtractFolderWorker,
     )
 
-
+                                                                       
+                                                                      
+                                                                
     fw = ExtractFileWorker(
         "zpaqfranz", "C:/a.zpaq", None, "inner/file.txt", None, "C:/out.txt"
     )
-
-
+                                                                      
+                           
     bw = ExtractFolderBatchWorker(
         "zpaqfranz", "C:/a.zpaq", None, "", None, "C:/out"
     )
-
+                                                                       
     fow = ExtractFolderWorker(
         "zpaqfranz", "C:/a.zpaq", None, [], Path("C:/out")
     )
@@ -40,7 +87,7 @@ def _make_workers():
 
 
 def _own_signals(worker) -> list:
-
+    pass
     mo = worker.metaObject()
     return [
         mo.method(i).methodSignature().data().decode()
@@ -50,7 +97,7 @@ def _own_signals(worker) -> list:
 
 
 def _all_signals_including_inherited(worker) -> list:
-
+    pass
     mo = worker.metaObject()
     own = [
         mo.method(i).methodSignature().data().decode()
@@ -65,7 +112,7 @@ def _all_signals_including_inherited(worker) -> list:
 
 
 class TestExtractWorkerSignals(unittest.TestCase):
-
+    pass
 
     @classmethod
     def setUpClass(cls):
@@ -82,6 +129,10 @@ class TestExtractWorkerSignals(unittest.TestCase):
         self.assertIsInstance(self.folder_worker, QThread)
 
     def test_worker_started_signal_declared(self):
+        pass
+
+
+
         for name, worker in self.workers:
             with self.subTest(worker=name):
                 own = _own_signals(worker)
@@ -92,6 +143,13 @@ class TestExtractWorkerSignals(unittest.TestCase):
                 )
 
     def test_worker_started_signatures(self):
+        pass
+
+
+
+
+
+
         cases = [
             ("ExtractFileWorker", self.file_worker, "worker_started()"),
             ("ExtractFolderBatchWorker", self.batch_worker, "worker_started()"),
@@ -107,6 +165,13 @@ class TestExtractWorkerSignals(unittest.TestCase):
                 )
 
     def test_does_not_define_started_signal(self):
+        pass
+
+
+
+
+
+
         for name, worker in self.workers:
             with self.subTest(worker=name):
                 own = _own_signals(worker)
@@ -117,6 +182,13 @@ class TestExtractWorkerSignals(unittest.TestCase):
                 )
 
     def test_started_is_inherited_qthread_signal(self):
+        pass
+
+
+
+
+
+
         for name, worker in self.workers:
             with self.subTest(worker=name):
                 all_sig = _all_signals_including_inherited(worker)
@@ -127,6 +199,11 @@ class TestExtractWorkerSignals(unittest.TestCase):
                 )
 
     def test_does_not_define_finished_signal(self):
+        pass
+
+
+
+
         for name, worker in self.workers:
             with self.subTest(worker=name):
                 own = _own_signals(worker)
@@ -137,7 +214,7 @@ class TestExtractWorkerSignals(unittest.TestCase):
                 )
 
     def test_finished_is_inherited_qthread_signal(self):
-
+        pass
         for name, worker in self.workers:
             with self.subTest(worker=name):
                 all_sig = _all_signals_including_inherited(worker)
@@ -148,6 +225,16 @@ class TestExtractWorkerSignals(unittest.TestCase):
                 )
 
     def test_two_subscribers_different_arity_dont_collide(self):
+        pass
+
+
+
+
+
+
+
+
+
         got = {}
 
         def on_started():
@@ -156,12 +243,16 @@ class TestExtractWorkerSignals(unittest.TestCase):
         def on_worker_started(total):
             got["worker_started"] = total
 
-
+                                                                       
         w = self.folder_worker
         w.started.connect(on_started)
         w.worker_started.connect(on_worker_started)
 
-
+                                                                   
+                                                                  
+                                                                     
+                                                              
+                             
         w.started.emit()
         w.worker_started.emit(42)
 

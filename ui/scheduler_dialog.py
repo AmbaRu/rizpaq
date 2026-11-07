@@ -1,3 +1,31 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 from PySide6.QtCore import QThread, QTime, QTimer, Qt, Signal
 from PySide6.QtWidgets import (
@@ -20,7 +48,7 @@ from ui.i18n import tr
 
 
 class ScheduleDialog(QDialog):
-
+    pass
 
     def __init__(self, parent=None, initial_schedule=None):
         super().__init__(parent)
@@ -30,16 +58,16 @@ class ScheduleDialog(QDialog):
 
         layout = QVBoxLayout(self)
 
-
+                              
         self._enabled_cb = QCheckBox(tr("scheduler.enable"))
         self._enabled_cb.setChecked(True)
         layout.addWidget(self._enabled_cb)
 
-
+                          
         group = QGroupBox(tr("scheduler.settings"))
         group_layout = QVBoxLayout()
 
-
+                           
         row_min = QHBoxLayout()
         self._rb_minute = QRadioButton(tr("scheduler.rb_minute"))
         self._spin_minute = QSpinBox()
@@ -53,7 +81,7 @@ class ScheduleDialog(QDialog):
         row_min.addStretch(1)
         group_layout.addLayout(row_min)
 
-
+                         
         row_hour = QHBoxLayout()
         self._rb_hour = QRadioButton(tr("scheduler.rb_hour"))
         self._spin_hour = QSpinBox()
@@ -67,7 +95,7 @@ class ScheduleDialog(QDialog):
         row_hour.addStretch(1)
         group_layout.addLayout(row_hour)
 
-
+                        
         row_day = QHBoxLayout()
         self._rb_daily = QRadioButton(tr("scheduler.rb_daily"))
         self._spin_daily = QSpinBox()
@@ -86,7 +114,7 @@ class ScheduleDialog(QDialog):
         row_day.addStretch(1)
         group_layout.addLayout(row_day)
 
-
+                           
         self._rb_weekly = QRadioButton(tr("scheduler.rb_weekly"))
         self._spin_weekly = QSpinBox()
         self._spin_weekly.setRange(1, 52)
@@ -105,7 +133,7 @@ class ScheduleDialog(QDialog):
         row_week_top.addWidget(self._time_weekly)
         row_week_top.addStretch(1)
 
-
+                                             
         self._days_group = QGroupBox(tr("scheduler.days"))
         days_layout = QHBoxLayout()
         self._day_cbs = {}
@@ -119,7 +147,7 @@ class ScheduleDialog(QDialog):
             ("SUN", tr("scheduler.sun")),
         ]):
             cb = QCheckBox(label)
-            if i < 5:
+            if i < 5:                       
                 cb.setChecked(True)
             self._day_cbs[code] = cb
             days_layout.addWidget(cb)
@@ -130,7 +158,7 @@ class ScheduleDialog(QDialog):
         week_vbox.addWidget(self._days_group)
         group_layout.addLayout(week_vbox)
 
-
+                           
         row_month = QHBoxLayout()
         self._rb_monthly = QRadioButton(tr("scheduler.rb_monthly"))
         self._spin_monthly = QSpinBox()
@@ -158,35 +186,35 @@ class ScheduleDialog(QDialog):
         group.setLayout(group_layout)
         layout.addWidget(group)
 
-
+                                             
         hint_label = QLabel(tr("scheduler.time_hint"))
         hint_label.setWordWrap(True)
         hint_label.setObjectName("schedHint")
         layout.addWidget(hint_label)
 
-
+                 
         buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
         buttons.accepted.connect(self._validate_and_accept)
         buttons.rejected.connect(self.reject)
         layout.addWidget(buttons)
 
-
+                                                    
         self._rb_minute.toggled.connect(self._update_ui_state)
         self._rb_hour.toggled.connect(self._update_ui_state)
         self._rb_daily.toggled.connect(self._update_ui_state)
         self._rb_weekly.toggled.connect(self._update_ui_state)
         self._rb_monthly.toggled.connect(self._update_ui_state)
 
-
+                                                    
         if initial_schedule:
             self._apply_schedule(initial_schedule)
         else:
-            self._rb_daily.setChecked(True)
+            self._rb_daily.setChecked(True)                
 
         self._update_ui_state()
 
     def _update_ui_state(self):
-
+        pass
         is_min = self._rb_minute.isChecked()
         is_hour = self._rb_hour.isChecked()
         is_day = self._rb_daily.isChecked()
@@ -299,8 +327,14 @@ class ScheduleDialog(QDialog):
         return self._result
 
 
+                                                                             
+                         
+                                                                             
+                                                                         
+                                                                              
+                                   
 class _TaskListWorker(QThread):
-
+    pass
 
     done = Signal(list)
 
@@ -315,7 +349,7 @@ class _TaskListWorker(QThread):
 
 
 class _TaskRemoveWorker(QThread):
-
+    pass
 
     done = Signal(str, bool)
 
@@ -334,6 +368,23 @@ class _TaskRemoveWorker(QThread):
 
 
 class SchedulerManagerDialog(QDialog):
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     def __init__(self, parent=None, container_provider=None):
         super().__init__(parent)
@@ -344,7 +395,7 @@ class SchedulerManagerDialog(QDialog):
 
         layout = QVBoxLayout(self)
 
-
+                                        
         self._table = QTableWidget()
         self._table.setColumnCount(4)
         self._table.setHorizontalHeaderLabels([
@@ -358,7 +409,7 @@ class SchedulerManagerDialog(QDialog):
         self._table.setEditTriggers(QTableWidget.NoEditTriggers)
         layout.addWidget(self._table, 1)
 
-
+                 
         btn_layout = QHBoxLayout()
         self._refresh_btn = QPushButton(tr("scheduler.refresh"))
         self._refresh_btn.clicked.connect(self._load_tasks)
@@ -384,7 +435,7 @@ class SchedulerManagerDialog(QDialog):
 
         layout.addLayout(btn_layout)
 
-
+                                                                       
         self._list_worker = None
         self._remove_worker = None
         try:
@@ -393,8 +444,16 @@ class SchedulerManagerDialog(QDialog):
             pass
         QTimer.singleShot(0, self._load_tasks)
 
+                                                                             
 
     def _current_container(self) -> dict:
+        pass
+
+
+
+
+
+
         if self._container_provider is None:
             return {}
         try:
@@ -404,6 +463,14 @@ class SchedulerManagerDialog(QDialog):
             return {}
 
     def _current_rzp_path(self):
+        pass
+
+
+
+
+
+
+
         try:
             from core.tasks import container_path
 
@@ -421,11 +488,18 @@ class SchedulerManagerDialog(QDialog):
             pass
         return None
 
+                                                                          
 
     def _load_tasks(self):
+        pass
+
+
+
+
+
         if getattr(self, "_list_worker", None) is not None:
-
-
+                                                                           
+                                           
             return
         worker = _TaskListWorker(self)
         self._list_worker = worker
@@ -434,6 +508,12 @@ class SchedulerManagerDialog(QDialog):
         worker.start()
 
     def _apply_tasks(self, tasks: list):
+        pass
+
+
+
+
+
         if not self.isVisible():
             return
 
@@ -453,7 +533,9 @@ class SchedulerManagerDialog(QDialog):
             self._table.setItem(row, 1, QTableWidgetItem(t.get("status", "")))
             self._table.setItem(row, 2, QTableWidgetItem(t.get("next_run", "")))
 
-
+                                                                 
+                                                                     
+                                             
             entry = task_map.get(name)
             if entry is None:
                 link_text = tr("scheduler.link.orphan")
@@ -475,6 +557,7 @@ class SchedulerManagerDialog(QDialog):
         except Exception:
             pass
 
+                                                                                       
 
     def _remove_selected(self):
         row = self._table.currentRow()
@@ -490,7 +573,12 @@ class SchedulerManagerDialog(QDialog):
         if ans != QMessageBox.Yes:
             return
 
-
+                                                                      
+                                                         
+         
+                                                                           
+                                                                      
+                                    
         if getattr(self, "_remove_worker", None) is not None:
             return
         try:
@@ -524,8 +612,16 @@ class SchedulerManagerDialog(QDialog):
         except Exception:
             pass
 
+                                                                                         
 
     def _remove_orphans(self):
+        pass
+
+
+
+
+
+
         container = self._current_container()
         try:
             from core.scheduler import find_orphan_tasks
@@ -541,7 +637,7 @@ class SchedulerManagerDialog(QDialog):
             )
             return
 
-
+                                                                    
         names_text = "\n".join("• " + (o.get("name") or "") for o in orphans)
         ans = QMessageBox.question(
             self,
@@ -553,7 +649,8 @@ class SchedulerManagerDialog(QDialog):
         if ans != QMessageBox.Yes:
             return
 
-
+                                                                         
+                                                              
         try:
             from core.scheduler import remove_scheduled_task_by_name
         except Exception:
@@ -590,11 +687,19 @@ class SchedulerManagerDialog(QDialog):
                 tr("scheduler.orphans_deleted", count=removed),
             )
 
-
+                                                           
         self._load_tasks()
 
+                                                                                               
 
     def _open_sync_dialog(self):
+        pass
+
+
+
+
+
+
         from ui.scheduler_sync_dialog import SchedulerSyncDialog
 
         container = self._current_container()
@@ -609,7 +714,8 @@ class SchedulerManagerDialog(QDialog):
 
         dlg = SchedulerSyncDialog(rzp_path, container, parent=self)
         result = dlg.exec()
-
-
+                                                                     
+                                                                  
+                                                                
         _ = result
         self._load_tasks()

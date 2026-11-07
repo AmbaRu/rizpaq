@@ -1,3 +1,24 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -13,12 +34,14 @@ from ui.qt_compat import YES_BUTTON
 from ui.update_dialog import UpdateDialog
 from workers.update_worker import UpdateCheckWorker
 
-
+                                         
 CHECK_INTERVAL_SECONDS = 24 * 60 * 60
 
 
 class UpdateActionsMixin:
+    pass
 
+                                                                          
 
     def _update_cfg(self):
         try:
@@ -41,15 +64,23 @@ class UpdateActionsMixin:
                     workers.remove(worker)
             except Exception:
                 pass
-
-
+                                                                    
+                                                                    
+                               
         try:
             worker.deleteLater()
         except Exception:
             pass
 
+                                                                          
 
     def start_update_check(self, manual: bool = False) -> bool:
+        pass
+
+
+
+
+
         running = getattr(self, "_update_worker", None)
         try:
             if running is not None and running.isRunning():
@@ -92,12 +123,12 @@ class UpdateActionsMixin:
         return True
 
     def _on_update_check_done(self, result: dict, manual: bool) -> None:
-
-
+                                                                       
+                                                          
         if getattr(self, "_closing", False):
             return
-
-
+                                                                       
+                                                          
         try:
             _merge_cfg(last_update_check=int(time.time()))
         except Exception:
@@ -134,6 +165,7 @@ class UpdateActionsMixin:
 
         self._show_update_dialog(info, manual)
 
+                                                                          
 
     def _show_update_dialog(self, info: dict, manual: bool) -> None:
         if getattr(self, "_closing", False):
@@ -200,6 +232,7 @@ class UpdateActionsMixin:
             except Exception:
                 pass
 
+                                                                            
 
     def _install_update(self, dialog, info: dict, zip_path: str) -> None:
         discard = getattr(dialog, "discard_download", None)
@@ -217,8 +250,8 @@ class UpdateActionsMixin:
             tr("update.confirm_install", version=info.get("version") or ""),
         )
         if answer != YES_BUTTON:
-
-
+                                                                        
+                                                                         
             if callable(discard):
                 discard()
             return
@@ -239,7 +272,8 @@ class UpdateActionsMixin:
                 discard()
             return
 
-
+                                                                    
+                                                                    
         if callable(discard):
             discard()
 

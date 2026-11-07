@@ -1,3 +1,16 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import json
@@ -8,11 +21,11 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from PySide6.QtCore import Qt, QTimer
-from PySide6.QtWidgets import QApplication, QMainWindow
+from PySide6.QtCore import Qt, QTimer              
+from PySide6.QtWidgets import QApplication, QMainWindow              
 
-import ui.i18n as i18n
-from ui.operation_notice import (
+import ui.i18n as i18n              
+from ui.operation_notice import (              
     NOTICE_DELAY_MS,
     OperationNotice,
     _fmt_elapsed,
@@ -28,14 +41,21 @@ i18n.set_language("ru", notify=False)
 
 
 def _pump(ms: int) -> None:
-
+    pass
     end = time.monotonic() + ms / 1000.0
     while time.monotonic() < end:
         _APP.processEvents()
         time.sleep(0.005)
 
 
-from ui.app_services import AppServicesMixin
+                                                                        
+                                                                       
+                                                                 
+                                                                  
+                                          
+                                                                        
+
+from ui.app_services import AppServicesMixin              
 
 
 class _BusyHost(AppServicesMixin, QMainWindow):
@@ -85,6 +105,9 @@ class TestNoticeBasics(unittest.TestCase):
         self.assertFalse(self.n.isVisible())
 
     def test_does_not_show_before_delay(self):
+        pass
+
+
         self.n.show_notice("Чтение архива")
         _pump(NOTICE_DELAY_MS // 2)
         self.assertFalse(
@@ -97,7 +120,7 @@ class TestNoticeBasics(unittest.TestCase):
         )
 
     def test_hide_before_delay_prevents_show(self):
-
+        pass
         self.n.show_notice("Быстрая операция")
         _pump(NOTICE_DELAY_MS // 3)
         self.n.hide_notice()
@@ -108,6 +131,10 @@ class TestNoticeBasics(unittest.TestCase):
         )
 
     def test_is_not_modal(self):
+        pass
+
+
+
         self.assertFalse(self.n.isModal(), "окно не должно быть модальным")
 
     def test_does_not_accept_focus(self):
@@ -123,7 +150,7 @@ class TestNoticeBasics(unittest.TestCase):
         )
 
     def test_frameless_and_small(self):
-
+        pass
         self.assertTrue(bool(self.n.windowFlags() & Qt.FramelessWindowHint))
         self.assertLessEqual(self.n.width(), 460)
         self.assertLessEqual(self.n.height(), 160)
@@ -146,7 +173,7 @@ class TestNoticeBasics(unittest.TestCase):
 
     def test_hide_notice_is_idempotent(self):
         self.n.hide_notice()
-        self.n.hide_notice()
+        self.n.hide_notice()                     
 
     def test_repeated_show_updates_text(self):
         self.n.show_notice("Первая операция")
@@ -178,6 +205,10 @@ class TestNoticeCancel(unittest.TestCase):
 
 
 class TestBusyCounter(unittest.TestCase):
+    pass
+
+
+
 
     def setUp(self):
         self.w = _BusyHost()
@@ -201,13 +232,17 @@ class TestBusyCounter(unittest.TestCase):
         self.assertEqual(self.w._busy_depth, 0)
 
     def test_notice_survives_the_gap_between_phases(self):
+        pass
+
+
+
         self.w._start_busy("Чтение списка файлов")
         _pump(NOTICE_DELAY_MS + 80)
         self.assertTrue(self.w._notice.is_visible_notice())
 
-
+                                      
         self.w._start_busy("Информация об архиве")
-        self.w._stop_busy()
+        self.w._stop_busy()                      
 
         self.assertEqual(self.w._busy_depth, 1, "запрос информации ещё идёт")
         self.assertTrue(
@@ -244,6 +279,10 @@ class TestBusyCounter(unittest.TestCase):
         self.assertGreaterEqual(self.w._busy_depth, 0, "счётчик ушёл в минус")
 
     def test_second_operation_replaces_phase_text(self):
+        pass
+
+
+
         self.w._start_busy("Чтение списка файлов")
         _pump(NOTICE_DELAY_MS + 50)
         self.assertEqual(self.w._notice._step_text, "Чтение списка файлов")
@@ -263,7 +302,8 @@ class TestBusyCounter(unittest.TestCase):
         self.w._ensure_notice()
         self.assertIsNotNone(self.w._notice)
 
-
+                                                                       
+                                                                       
         self.assertFalse(
             self.w._notice._cancel_btn.isHidden(),
             "кнопка «Отмена» скрыта — отменить долгую операцию нечем",

@@ -1,3 +1,20 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -8,7 +25,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from core.engine_path import (
+from core.engine_path import (              
     EnginePathError,
     archive_index,
     create_target,
@@ -45,7 +62,7 @@ class Temp(unittest.TestCase):
         return p
 
     def no_short(self):
-
+        pass
         import core.engine_path as ep
 
         real = ep.short_path
@@ -64,12 +81,19 @@ class TestLatinDetection(unittest.TestCase):
         self.assertTrue(has_non_latin("bäckup.zpaq"))
 
     def test_umlaut_counts(self):
-
+        pass
         self.assertTrue(has_non_latin("sicherung\u00e4.rzt"))
         self.assertFalse(has_non_latin("sicherung.rzt"))
 
 
 class TestEngineDetection(unittest.TestCase):
+    pass
+
+
+
+
+
+
 
     def test_zpaq_recognised(self):
         self.assertTrue(is_zpaq_cmd([ZPAQ, "l", "a.zpaq"]))
@@ -85,6 +109,10 @@ class TestEngineDetection(unittest.TestCase):
         self.assertFalse(is_zpaq_cmd([None]))
 
     def test_seven_zip_command_untouched(self):
+        pass
+
+
+
         cmd = [SEVENZIP, "x", str(self_dir() / "Резерв" / "архив.zip"),
                f"-o{self_dir() / 'Итог'}", "-sccUTF-8", "-y"]
         out, cwd, subs = rewrite_cmd(cmd)
@@ -93,6 +121,11 @@ class TestEngineDetection(unittest.TestCase):
         self.assertEqual(subs, [])
 
     def test_python_stand_in_not_recognised(self):
+        pass
+
+
+
+
         cmd = [sys.executable, "-u", "child.py", str(self_dir() / "Резерв"
                                                     / "a.zpaq")]
         out, cwd, subs = rewrite_cmd(cmd)
@@ -108,7 +141,7 @@ def self_dir():
 
 
 class TestCommandShape(unittest.TestCase):
-
+    pass
 
     def test_subcommand(self):
         self.assertEqual(subcommand_of([ZPAQ, "l", "a.zpaq"]), "l")
@@ -122,7 +155,7 @@ class TestCommandShape(unittest.TestCase):
             archive_index([ZPAQ, "a", "out.zpaq", "f1", "f2"]), 2)
 
     def test_global_flag_before_subcommand(self):
-
+        pass
         self.assertEqual(archive_index([ZPAQ, "-quiet", "l", "a.zpaq"]), 3)
 
     def test_no_archive(self):
@@ -131,6 +164,10 @@ class TestCommandShape(unittest.TestCase):
 
 
 class TestReadExistingArchive(Temp):
+    pass
+
+
+
 
     def test_latin_path_untouched(self):
         arc = self.archive("lat")
@@ -140,6 +177,14 @@ class TestReadExistingArchive(Temp):
         self.assertEqual(subs, [])
 
     def test_existing_latin_path_untouched(self):
+        pass
+
+
+
+
+
+
+
         arc = self.archive("lat")
         arg, cwd, _subs = read_target(str(arc))
         self.assertEqual(arg, str(arc))
@@ -163,6 +208,12 @@ class TestReadExistingArchive(Temp):
         self.assertFalse(has_non_latin(out[2]), f"нелатинское: {out[2]}")
 
     def test_substitute_when_name_cannot_be_shortened(self):
+        pass
+
+
+
+
+
         self.no_short()
         arc = self.archive("Резерв", name="бэкап.zpaq")
         out, cwd, subs = rewrite_cmd([ZPAQ, "l", str(arc)])
@@ -174,7 +225,8 @@ class TestReadExistingArchive(Temp):
             os.path.getsize(subs[0]), arc.stat().st_size,
             "подмена другого размера — это не тот же файл")
 
-
+                                                                          
+                    
         with open(subs[0], "rb") as fh:
             self.assertEqual(fh.read(4), arc.read_bytes()[:4])
 
@@ -182,6 +234,10 @@ class TestReadExistingArchive(Temp):
         self.assertFalse(os.path.exists(subs[0]), "подмена не убрана")
 
     def test_substitute_uses_hardlink_not_copy(self):
+        pass
+
+
+
         self.no_short()
         arc = self.archive("Резерв", name="бэкап.zpaq")
         _out, _cwd, subs = rewrite_cmd([ZPAQ, "t", str(arc)])
@@ -193,7 +249,7 @@ class TestReadExistingArchive(Temp):
         drop_substitutes(subs)
 
     def test_no_substitute_left_after_drop(self):
-
+        pass
         self.no_short()
         arc = self.archive("Резерв", name="бэкап.zpaq")
         _out, _cwd, subs = rewrite_cmd([ZPAQ, "l", str(arc)])
@@ -204,12 +260,20 @@ class TestReadExistingArchive(Temp):
                          "временная папка подмены осталась на диске")
 
     def test_drop_substitutes_tolerates_misses(self):
-
+        pass
         drop_substitutes([str(self.dir / "нет" / "такого.zpaq")])
         drop_substitutes([])
         drop_substitutes(None)
 
     def test_write_command_never_substitutes(self):
+        pass
+
+
+
+
+
+
+
         self.no_short()
         arc = self.archive("Резерв", name="бэкап.zpaq")
         with self.assertRaises(EnginePathError) as ctx:
@@ -219,7 +283,7 @@ class TestReadExistingArchive(Temp):
         self.assertIn("добавленное", msg)
 
     def test_write_command_with_latin_name_still_works(self):
-
+        pass
         self.no_short()
         arc = self.archive("Резерв", name="backup.zpaq")
         out, cwd, subs = rewrite_cmd([ZPAQ, "a", str(arc), "readme.txt"])
@@ -229,6 +293,17 @@ class TestReadExistingArchive(Temp):
 
 
 class TestSubstituteIsNeverTheRealArchive(Temp):
+    pass
+
+
+
+
+
+
+
+
+
+
 
     def test_short_path_is_not_reported_as_substitute(self):
         arc = self.archive("Резерв")
@@ -248,6 +323,10 @@ class TestSubstituteIsNeverTheRealArchive(Temp):
             "приём с рабочим каталогом принят за подмену")
 
     def test_real_archive_survives_cleanup(self):
+        pass
+
+
+
         self.no_short()
         arc = self.archive("Резерв", name="бэкап.zpaq")
         original = arc.read_bytes()
@@ -259,13 +338,17 @@ class TestSubstituteIsNeverTheRealArchive(Temp):
         self.assertEqual(arc.read_bytes(), original, "архив изменился")
 
     def test_nothing_reported_for_latin_archive(self):
-
+        pass
         arc = self.archive("lat")
         _out, _cwd, subs = rewrite_cmd([ZPAQ, "l", str(arc)])
         self.assertEqual(subs, [])
 
 
 class TestCreateArchive(Temp):
+    pass
+
+
+
 
     def test_russian_folder_latin_name(self):
         dest = self.dir / "Новый" / "backup.zpaq"
@@ -275,6 +358,10 @@ class TestCreateArchive(Temp):
         self.assertEqual(subs, [])
 
     def test_russian_folder_russian_name(self):
+        pass
+
+
+
         dest = self.dir / "Новый" / "архив.zpaq"
         out, cwd, subs = rewrite_cmd([ZPAQ, "a", str(dest), "readme.txt"])
         self.assertEqual(out[2], "архив.zpaq")
@@ -282,6 +369,12 @@ class TestCreateArchive(Temp):
         self.assertEqual(subs, [])
 
     def test_latin_folder_russian_name(self):
+        pass
+
+
+
+
+
         dest = self.dir / "lat" / "архив.zpaq"
         out, cwd, subs = rewrite_cmd([ZPAQ, "a", str(dest), "readme.txt"])
         self.assertEqual(out[2], str(dest))
@@ -296,6 +389,13 @@ class TestCreateArchive(Temp):
 
 
 class TestStagingIsNotPreexisting(Temp):
+    pass
+
+
+
+
+
+
 
     def test_staging_path_does_not_exist(self):
         dest = self.dir / "Итоги" / "итог.txt"
@@ -314,7 +414,7 @@ class TestStagingIsNotPreexisting(Temp):
             f"путь черновика нелатинский, движок его не примет: {staged}")
 
     def test_staging_names_differ(self):
-
+        pass
         dest = self.dir / "Итоги" / "итог.txt"
         made = [make_staging(str(dest)) for _ in range(3)]
         for p in made:
@@ -322,6 +422,10 @@ class TestStagingIsNotPreexisting(Temp):
         self.assertEqual(len(set(made)), 3, f"имена повторились: {made}")
 
     def test_needs_staging_only_for_nonlatin_folder(self):
+        pass
+
+
+
         self.assertFalse(needs_staging(str(self.dir / "lat" / "итог.txt")))
         self.assertFalse(needs_staging(str(self.dir / "lat" / "out.txt")))
         self.assertTrue(needs_staging(str(self.dir / "Итоги" / "out.txt")))
@@ -329,6 +433,13 @@ class TestStagingIsNotPreexisting(Temp):
 
 
 class TestEmptyStagingCleanup(Temp):
+    pass
+
+
+
+
+
+
 
     def test_empty_file_removed(self):
         p = self.dir / "черновик.tmp"
@@ -345,6 +456,10 @@ class TestEmptyStagingCleanup(Temp):
         self.assertTrue(p.exists(), "непустой черновик исчез с диска")
 
     def test_empty_folder_removed(self):
+        pass
+
+
+
         d = self.dir / "каталог_черновика"
         d.mkdir()
         self.assertTrue(discard_staging_if_empty(str(d)))
@@ -364,12 +479,25 @@ class TestEmptyStagingCleanup(Temp):
 
 
 class TestOtherArgumentsUntouched(Temp):
+    pass
+
+
+
+
+
 
     def setUp(self):
         super().setUp()
         self.arc = self.archive("Резерв")
 
     def test_destination_folder_not_rewritten(self):
+        pass
+
+
+
+
+
+
         for dest in (self.dir / "Документы", self.dir / "Новая папка"):
             out, _cwd, _subs = rewrite_cmd(
                 [ZPAQ, "x", str(self.arc), "-to", str(dest)]
@@ -384,6 +512,12 @@ class TestOtherArgumentsUntouched(Temp):
         self.assertIn(str(folder), out)
 
     def test_mask_never_touched(self):
+        pass
+
+
+
+
+
         existing = self.archive("Резерв", name="маска.zpaq")
         out, _cwd, _subs = rewrite_cmd(
             [ZPAQ, "x", str(self.arc), "-only", str(existing)]
@@ -394,12 +528,21 @@ class TestOtherArgumentsUntouched(Temp):
                          "архив не переписан, хотя путь нелатинский")
 
     def test_non_latin_mask_survives(self):
+        pass
+
+
+
         out, _cwd, _subs = rewrite_cmd(
             [ZPAQ, "x", str(self.arc), "-only", "Проект/*"]
         )
         self.assertIn("Проект/*", out)
 
     def test_password_never_touched(self):
+        pass
+
+
+
+
         pwd_file = self.archive("Резерв", name="пароль")
         out, _cwd, _subs = rewrite_cmd(
             [ZPAQ, "x", str(self.arc), "-key", str(pwd_file)]
@@ -407,13 +550,17 @@ class TestOtherArgumentsUntouched(Temp):
         self.assertIn(str(pwd_file), out, "пароль был переписан")
 
     def test_russian_password_survives(self):
-
+        pass
         out, _cwd, _subs = rewrite_cmd(
             [ZPAQ, "x", str(self.arc), "-key", "секрет"]
         )
         self.assertIn("секрет", out)
 
     def test_sources_not_touched(self):
+        pass
+
+
+
         src = self.archive("Мои", name="Документ.txt")
         out, _cwd, _subs = rewrite_cmd(
             [ZPAQ, "a", str(self.dir / "lat_out.zpaq"), str(src)]
@@ -428,7 +575,7 @@ class TestOtherArgumentsUntouched(Temp):
             self.assertIn(f, out, f"флаг {f} исчез из команды")
 
     def test_command_length_preserved(self):
-
+        pass
         cmd = [ZPAQ, "x", str(self.arc), "-to", str(self.dir / "out"),
                "-noeta", "-force"]
         out, _cwd, _subs = rewrite_cmd(cmd)
@@ -446,18 +593,35 @@ class TestOtherArgumentsUntouched(Temp):
 
 class TestShortPath(Temp):
     def test_short_path_can_shorten_a_latin_path(self):
+        pass
+
+
+
+
+
+
+
+
         p = self.archive("lat")
         self.assertTrue(
             short_path(str(p)) != str(p) or len(str(p)) < 40,
             "ожидалось, что длинный путь сократится")
 
     def test_latin_path_is_not_shortened_for_the_engine(self):
+        pass
+
+
+
         p = self.archive("lat")
         arg, cwd, _subs = read_target(str(p))
         self.assertEqual(arg, str(p))
         self.assertIsNone(cwd)
 
     def test_non_windows_returns_empty(self):
+        pass
+
+
+
         real = os.name
         try:
             import core.engine_path as ep

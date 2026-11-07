@@ -1,3 +1,23 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 from PySide6.QtGui import QActionGroup
@@ -8,13 +28,13 @@ from ui.test_modes import menu_entries as test_mode_entries
 
 
 class MenuActionsMixin:
-
+    pass
 
     def _create_actions(self):
         mb = self.menuBar()
         mb.clear()
 
-
+                                                                             
         m_file = mb.addMenu(tr("menu.file"))
 
         act_create = m_file.addAction(tr("menu.file.create_archive"))
@@ -31,7 +51,7 @@ class MenuActionsMixin:
         act_exit.setShortcut("Ctrl+Q")
         act_exit.triggered.connect(self.close)
 
-
+                                                                             
         m_view = mb.addMenu(tr("menu.view"))
 
         act_refresh = m_view.addAction(tr("menu.go.refresh"))
@@ -46,7 +66,7 @@ class MenuActionsMixin:
         self.latest_only_action.setStatusTip(tr("menu.view.latest_only.tip"))
         self.latest_only_action.triggered.connect(self._on_toggle_latest)
 
-
+                                                                             
         m_arc = mb.addMenu(tr("menu.archive"))
 
         act_create_arc = m_arc.addAction(tr("menu.file.create_archive"))
@@ -60,7 +80,7 @@ class MenuActionsMixin:
         self.archive_info_action.setEnabled(False)
         self.archive_info_action.triggered.connect(self._on_archive_info)
 
-
+                                                               
         self.convert_action = m_arc.addAction(tr("context.convert_to_zpaq"))
         self.convert_action.setStatusTip(tr("context.convert_to_zpaq"))
         self.convert_action.setEnabled(False)
@@ -79,8 +99,8 @@ class MenuActionsMixin:
 
         m_test = m_arc.addMenu(tr("menu.test"))
         self._test_menu = m_test
-
-
+                                                                   
+                                                                
         for mode, label in test_mode_entries():
             act = m_test.addAction(label)
             act.setData(mode)
@@ -106,18 +126,27 @@ class MenuActionsMixin:
         self.search_action.setEnabled(False)
         self.search_action.triggered.connect(self._focus_search)
 
-
+                                                                       
+                                                                       
+                                                               
+         
+                                                                      
+                                                                     
+                                                                       
+                                                                
         self.global_search_action = m_arc.addAction(tr("menu.go.global_search"))
         self.global_search_action.setShortcut("Ctrl+Shift+F")
         self.global_search_action.triggered.connect(self._on_global_search)
 
-
+                                                                       
+                                                                        
+                                               
         self.all_archives_action = m_arc.addAction(
             tr("menu.go.all_archives"))
         self.all_archives_action.triggered.connect(
             self._on_show_all_archives)
 
-
+                                                                             
         m_backup = mb.addMenu(tr("menu.backup"))
 
         act_run_task = m_backup.addAction(tr("task.run_menu"))
@@ -134,7 +163,11 @@ class MenuActionsMixin:
         act_scheduler.setStatusTip(tr("scheduler.manager_menu_tip"))
         act_scheduler.triggered.connect(self._on_open_scheduler)
 
-
+                                                                             
+                                                                    
+                                                                   
+                                                                     
+                                  
         m_par2 = mb.addMenu(tr("menu.par2"))
 
         self._par2_menu_create_action = m_par2.addAction(
@@ -159,11 +192,12 @@ class MenuActionsMixin:
         )
 
         m_par2.aboutToShow.connect(self._refresh_par2_menu)
-
-
+                                                                 
+                                                                       
+                      
         self._refresh_par2_menu()
 
-
+                                                                             
         m_settings = mb.addMenu(tr("menu.settings"))
 
         act_zq = m_settings.addAction(tr("menu.file.zpaq_path"))
@@ -176,13 +210,15 @@ class MenuActionsMixin:
 
         m_settings.addSeparator()
 
-
+                                                                 
+                                                                      
         try:
             self._build_profile_menu(m_settings)
         except Exception:
             pass
 
-
+                                                                   
+                                                
         try:
             self._build_skin_menu(m_settings)
         except Exception:
@@ -210,42 +246,44 @@ class MenuActionsMixin:
 
         m_settings.addSeparator()
 
-
+                                                                
         act_assoc = m_settings.addAction(tr("menu.settings.integration"))
         act_assoc.setStatusTip(tr("menu.settings.integration.tip"))
         act_assoc.triggered.connect(self._on_open_association_dialog)
 
-
+                                                                             
         m_help = mb.addMenu(tr("menu.help"))
 
         act_guide = m_help.addAction(tr("menu.help.guide"))
         act_guide.triggered.connect(self._on_open_manual)
 
-
+                                                                        
+                                                           
         act_updates = m_help.addAction(tr("menu.help.check_updates"))
         act_updates.triggered.connect(self._on_check_updates)
 
         act_about = m_help.addAction(tr("menu.help.about"))
         act_about.triggered.connect(self._on_about)
 
+                                                                     
 
     def _on_convert_current_to_zpaq(self):
-
+        pass
         if self.archive_path and self.mode == "universal":
             self._convert_universal_to_zpaq(self.archive_path)
 
     def _on_check_updates(self):
-
+        pass
         self.start_update_check(manual=True)
 
     def _on_open_association_dialog(self):
-
+        pass
         from ui.association_dialog import AssociationDialog
         dlg = AssociationDialog(self)
         dlg.exec()
 
     def _on_open_archive_dialog(self):
-
+        pass
         path, _ = QFileDialog.getOpenFileName(
             self, tr("menu.file.open_archive"), "", tr("create.filter")
         )
@@ -253,13 +291,14 @@ class MenuActionsMixin:
             self._enter_archive(path)
 
     def _on_global_search(self):
-
+        pass
         from ui.global_search_dialog import GlobalSearchDialog
 
         dlg = GlobalSearchDialog(self)
         dlg.archive_requested.connect(self._on_global_archive_requested)
-
-
+                                                                    
+                                                                
+                                                                      
         open_catalog = {"flag": False}
 
         def _request_catalog():
@@ -267,8 +306,9 @@ class MenuActionsMixin:
             dlg.accept()
 
         dlg.catalog_requested.connect(_request_catalog)
-
-
+                                                                     
+                                                                   
+                                               
         dlg.reset_search()
         dlg.exec()
 
@@ -276,7 +316,7 @@ class MenuActionsMixin:
             self._on_show_all_archives()
 
     def _on_show_all_archives(self):
-
+        pass
         from PySide6.QtWidgets import QDialog
 
         from core import config as config_mod
@@ -297,12 +337,21 @@ class MenuActionsMixin:
             self._enter_archive(dlg.chosen_path())
 
     def _on_global_archive_requested(self, path: str):
-
+        pass
         if not path:
             return
         self._enter_archive(path)
 
     def _on_open_scheduler(self):
+        pass
+
+
+
+
+
+
+
+
         from ui.scheduler_dialog import SchedulerManagerDialog
 
         def _container_provider():
@@ -317,6 +366,7 @@ class MenuActionsMixin:
         )
         dlg.exec()
 
+                                                                      
 
     def _change_language(self, code: str):
         handler = getattr(self, "_switch_language", None)

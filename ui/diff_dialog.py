@@ -1,3 +1,20 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 from typing import List
@@ -29,7 +46,10 @@ from ui.presentation import format_size
 from ui.qt_compat import HEADER_STRETCH, NO_EDIT, SELECT_ROWS
 from ui.skins import color as skin_color
 
-
+                                                                  
+                                                                
+                                                              
+                                                                   
 _DIFF_STATUS_TOKENS = {
     ADDED:     "DIFF_ADDED",
     REMOVED:   "DIFF_REMOVED",
@@ -37,11 +57,17 @@ _DIFF_STATUS_TOKENS = {
     UNCHANGED: "DIFF_UNCHANGED",
 }
 
-
+                                                    
 MAX_ROWS = 10000
 
 
 def _diff_color(status: str) -> QColor:
+    pass
+
+
+
+
+
     token = _DIFF_STATUS_TOKENS.get(status, "DIFF_UNCHANGED")
     return QColor(skin_color(token))
 
@@ -58,7 +84,7 @@ class DiffDialog(QDialog):
 
         self._create_ui()
 
-
+                                             
         if len(self._versions) >= 2:
             self.combo_a.setCurrentIndex(len(self._versions) - 2)
             self.combo_b.setCurrentIndex(len(self._versions) - 1)
@@ -69,7 +95,7 @@ class DiffDialog(QDialog):
         lay.setContentsMargins(12, 12, 12, 12)
         lay.setSpacing(10)
 
-
+                                      
         top = QHBoxLayout()
         top.setSpacing(8)
 
@@ -91,14 +117,15 @@ class DiffDialog(QDialog):
 
         lay.addLayout(top)
 
-
+                                 
         self.lbl_summary = QLabel("")
-
-
+                                                                   
+                                                                       
+                                                                
         self.lbl_summary.setObjectName("diff_summary")
         lay.addWidget(self.lbl_summary)
 
-
+                                   
         self.table = QTableWidget()
         self.table.setColumnCount(5)
         self.table.setHorizontalHeaderLabels(
@@ -175,7 +202,9 @@ class DiffDialog(QDialog):
             row = self.table.rowCount()
             self.table.insertRow(row)
 
-
+                                                               
+                                                                   
+                                  
             color = _diff_color(rec.status)
 
             it_status = QTableWidgetItem(tr(f"diff.status.{rec.status}"))

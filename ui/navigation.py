@@ -1,3 +1,9 @@
+
+
+
+
+
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -10,9 +16,45 @@ from ui.qt_compat import multipart_pattern
 
 
 class NavigationMixin:
+    pass
 
+                                                                               
 
     def _check_archive_engine(self, arc_path: str) -> bool:
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         arc_low = str(arc_path or "").lower()
 
         if arc_low.endswith((".zip", ".7z", ".rar")):
@@ -37,6 +79,7 @@ class NavigationMixin:
 
         return True
 
+                                                                      
 
     def _update_chrome(self):
         self.crumb.update_state(
@@ -51,8 +94,8 @@ class NavigationMixin:
         path = Path(path)
 
         if self.mode == "fs" and self.fs_path is not None and path == self.fs_path:
-
-
+                                                                         
+                                                                               
             if from_tree:
                 self._populate_right_fs()
             return
@@ -84,7 +127,7 @@ class NavigationMixin:
         key = (self.archive_path, inner)
 
         if self.mode == "archive" and self._nav_key == key:
-
+                                                                        
             self._rebuild_versions_menu()
             return
 
@@ -152,10 +195,32 @@ class NavigationMixin:
         self.navigate_fs(Path(path), from_tree=True)
 
     def _on_tree_arc_selected(self, arc_path: str, inner: str):
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if not arc_path:
             return
 
-
+                                                                
+                                                                     
+                                      
         if not self._check_archive_engine(arc_path):
             return
 
@@ -175,6 +240,14 @@ class NavigationMixin:
         self.navigate_archive(inner, from_tree=True)
 
     def _on_tree_arc_open_requested(self, arc_path: str):
+        pass
+
+
+
+
+
+
+
         if not arc_path:
             return
 
@@ -184,8 +257,8 @@ class NavigationMixin:
         key = multipart_pattern(arc_path)
         c = self._cache(key)
         if c["loaded"]:
-
-
+                                                          
+                                                                
             try:
                 self.tree.build_archive_subtree(key, c["entries"])
             except Exception:

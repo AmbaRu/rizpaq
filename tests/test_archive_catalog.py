@@ -1,3 +1,9 @@
+                       
+
+
+
+
+
 from __future__ import annotations
 
 import os
@@ -14,19 +20,19 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from PySide6.QtWidgets import QApplication, QDialog, QWidget
+from PySide6.QtWidgets import QApplication, QDialog, QWidget              
 
 _APP = QApplication.instance() or QApplication(sys.argv)
 
-from ui import i18n
+from ui import i18n              
 
 i18n.set_language("ru", notify=False)
 
-from core import archive_catalog
-from core import archive_index as idx
-from core import config as config_mod
-from core.models import ArchiveEntry
-from workers.catalog_worker import CatalogWorker
+from core import archive_catalog              
+from core import archive_index as idx              
+from core import config as config_mod              
+from core.models import ArchiveEntry              
+from workers.catalog_worker import CatalogWorker              
 
 
 def _entry(path: str) -> ArchiveEntry:
@@ -43,6 +49,9 @@ def _entry(path: str) -> ArchiveEntry:
 def _touch(path: Path, data: bytes = b"x") -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_bytes(data)
+
+
+                                                                          
 
 
 class ScanRootsTests(unittest.TestCase):
@@ -114,6 +123,9 @@ class ScanRootsTests(unittest.TestCase):
         self.assertEqual(len(seen), 2)
 
 
+                                                                           
+
+
 class CatalogSqlTests(unittest.TestCase):
     def setUp(self):
         self._tmp = Path(tempfile.mkdtemp(prefix="rizpaq_catalog_sql_"))
@@ -168,7 +180,7 @@ class CatalogSqlTests(unittest.TestCase):
         idx.catalog_upsert("C:/a.zpaq", 10, 20)
         idx.catalog_forget("C:/a.zpaq")
         self.assertEqual(idx.catalog_list(), [])
-
+                                                              
         self.assertEqual(idx.list_archives()[0]["path"], "C:/a.zpaq")
 
     def test_catalog_survives_schema_migration(self):
@@ -176,7 +188,7 @@ class CatalogSqlTests(unittest.TestCase):
         idx.store_entries("C:/a.zpaq", 2, 1, [_entry("d:/x.txt")])
         idx.close()
 
-
+                                                                     
         conn = sqlite3.connect(str(self.path))
         conn.execute("PRAGMA user_version = 1")
         conn.commit()
@@ -184,8 +196,11 @@ class CatalogSqlTests(unittest.TestCase):
 
         rows = idx.catalog_list()
         self.assertEqual([r["path"] for r in rows], ["C:/a.zpaq"])
-
+                                                  
         self.assertEqual(idx.list_archives(), [])
+
+
+                                                                          
 
 
 class CatalogConfigTests(unittest.TestCase):
@@ -209,6 +224,9 @@ class CatalogConfigTests(unittest.TestCase):
     def test_garbage_gives_none(self):
         s = config_mod._from_dict({"catalog_roots": "C:/a"})
         self.assertIsNone(s.catalog_roots)
+
+
+                                                                          
 
 
 class CatalogWorkerTests(unittest.TestCase):
@@ -241,6 +259,9 @@ class CatalogWorkerTests(unittest.TestCase):
         w.run()
         self.assertEqual(len(results), 1)
         self.assertTrue(results[0]["cancelled"])
+
+
+                                                                          
 
 
 class CatalogDialogTests(unittest.TestCase):
@@ -335,6 +356,9 @@ class CatalogDialogTests(unittest.TestCase):
             catalog_roots=["C:/root"],
             catalog_index_on_scan=False,
         )
+
+
+                                                                          
 
 
 class CatalogMenuTests(unittest.TestCase):

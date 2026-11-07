@@ -1,11 +1,20 @@
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 
 class DragDropMixin:
-
+    pass
 
     def _setup_drag_drop(self):
-
+        pass
         try:
             self.setAcceptDrops(True)
         except Exception:

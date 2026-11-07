@@ -1,3 +1,27 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from __future__ import annotations
 
 from PySide6.QtCore import QThread, Signal
@@ -13,13 +37,14 @@ from core.password_store import get_password
 
 
 class CatalogWorker(QThread):
-
+    pass
 
     progress = Signal(dict)
     found = Signal(list)
     done = Signal(dict)
 
-
+                                                                     
+                                                                         
     MAX_ERRORS = 20
 
     def __init__(self, roots, zpaq_bin: str, index_on_scan: bool = True,
@@ -30,13 +55,22 @@ class CatalogWorker(QThread):
         self._index_on_scan = bool(index_on_scan)
         self._cancel = False
 
+                                                                             
 
     def cancel_request(self):
+        pass
+
+
+
+
+
+
         self._cancel = True
 
     def _cancelled(self) -> bool:
         return bool(self._cancel)
 
+                                                                             
 
     def run(self):
         result = {
@@ -53,7 +87,9 @@ class CatalogWorker(QThread):
             "error": "",
         }
 
-
+                                                                    
+                                                                   
+                                                                    
         try:
             found = self._scan(result)
             result["found"] = list(found)
@@ -75,6 +111,7 @@ class CatalogWorker(QThread):
 
         self.done.emit(result)
 
+                                                                             
 
     def _scan(self, result: dict) -> list:
         errors = result["errors"]
@@ -99,7 +136,9 @@ class CatalogWorker(QThread):
             on_error=on_error,
         )
 
-
+                                                                     
+                                                                   
+                                           
         paths = []
         for record in found:
             path = str(record.get("path") or "")
@@ -109,18 +148,22 @@ class CatalogWorker(QThread):
                            record.get("mtime_ns") or 0)
             paths.append(path)
 
-
+                                                                    
+                                                                        
+                                      
         if not self._cancelled():
             result["missing"] = catalog_mark_scanned(self._roots, paths)
 
         return found
 
+                                                                            
 
     def _index(self, found: list, result: dict) -> None:
         if not self._index_on_scan or not self._zpaq_bin:
             return
 
-
+                                                                  
+                                                               
         candidates = [
             r for r in found
             if r.get("path") and "?" not in str(r["path"])
@@ -144,7 +187,8 @@ class CatalogWorker(QThread):
                 "current": path,
             })
 
-
+                                                                   
+                                                             
             if is_fresh(path, mtime_ns, size):
                 result["skipped_fresh"] += 1
                 continue
