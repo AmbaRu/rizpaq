@@ -321,7 +321,13 @@ class _TmpMixin(unittest.TestCase):
 
 def _top_level_work_items(page):
     tree = page._tree
-    return [tree.topLevelItem(i) for i in range(tree.topLevelItemCount())]
+    out = []
+    for i in range(tree.topLevelItemCount()):
+        item = tree.topLevelItem(i)
+        payload = item.data(_COL_NAME, _PAYLOAD_ROLE)
+        if isinstance(payload, dict) and payload.get("kind") == "work":
+            out.append(item)
+    return out
 
 
 def _payload(item):
