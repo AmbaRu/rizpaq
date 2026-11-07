@@ -1,0 +1,324 @@
+{
+  "raw": {
+    "format": "rizpaq.tasks",
+    "version": 1,
+    "name": "  Мой набор  ",
+    "created": "2026-01-01 10:00:00",
+    "modified": "2026-01-01 10:00:00",
+    "works": [
+      {
+        "id": "w1",
+        "title": "Документы",
+        "created": "2026-01-01 10:00:00",
+        "modified": "2026-01-01 10:00:00",
+        "sources": [
+          "C:\\data\\a",
+          "  C:\\data\\b  ",
+          ""
+        ],
+        "dest": "D:\\backup\\arhiv.zpaq",
+        "password_b64": "0YHQtdC60YDQtdGCMTIz",
+        "only_masks": [
+          "*.doc",
+          5,
+          null
+        ],
+        "not_masks": [
+          "~$*"
+        ],
+        "comment": "Коммент",
+        "par2_size": "15",
+        "par2_created": "2026-01-02 12:00:00",
+        "jobs": [
+          {
+            "id": "job-backup",
+            "title": "Ночной бэкап",
+            "created": "2026-01-01 10:00:00",
+            "modified": "2026-01-01 10:00:00",
+            "last_run": "2026-01-02 12:00:00",
+            "last_status": "ok",
+            "last_reason": null,
+            "run_count": "7",
+            "schedule": {
+              "kind": "daily",
+              "time": "03:00"
+            },
+            "task_log_mode": "full",
+            "action": "backup",
+            "test_mode": "full",
+            "level": [
+              "-m256"
+            ],
+            "level_key": null,
+            "hash": "",
+            "hash_key": null,
+            "method_params": null,
+            "verify": null,
+            "longpath": true,
+            "date": true,
+            "norecursion": null,
+            "forcewindows": null,
+            "force_xls": null,
+            "nochecksum": null,
+            "nodedup": null,
+            "vss": true,
+            "checkspace": "1024",
+            "noonedrive": null,
+            "ignore": null,
+            "errorlog": "",
+            "shutdown": null,
+            "sfx": "",
+            "chunk": "100m",
+            "copy": null,
+            "par2_enabled": true,
+            "par2_options": {
+              "redundancy": "10"
+            }
+          },
+          {
+            "id": "job-test",
+            "title": "Проверка",
+            "created": "2026-01-01 10:00:00",
+            "modified": "2026-01-01 10:00:00",
+            "action": "test",
+            "test_mode": "paranoid",
+            "task_log_mode": "short",
+            "run_count": -2,
+            "last_status": "weird_status",
+            "last_reason": "par2_damaged"
+          },
+          {
+            "id": "job-weird",
+            "title": "  ",
+            "created": "2026-01-01 10:00:00",
+            "modified": "2026-01-01 10:00:00",
+            "action": "TEST",
+            "test_mode": "paranoid ",
+            "task_log_mode": "nope",
+            "run_count": "12"
+          },
+          {
+            "title": "Без id — выбрасывается"
+          },
+          "не словарь"
+        ]
+      },
+      {
+        "id": "",
+        "title": "Работа без id — выбрасывается",
+        "jobs": []
+      },
+      "тоже не словарь"
+    ]
+  },
+  "expected": {
+    "format": "rizpaq.tasks",
+    "version": 1,
+    "name": "Мой набор",
+    "created": "2026-01-01 10:00:00",
+    "modified": "2026-01-01 10:00:00",
+    "works": [
+      {
+        "id": "w1",
+        "title": "Документы",
+        "created": "2026-01-01 10:00:00",
+        "modified": "2026-01-01 10:00:00",
+        "sources": [
+          "C:\\data\\a",
+          "  C:\\data\\b  "
+        ],
+        "dest": "D:\\backup\\arhiv.zpaq",
+        "password_b64": "0YHQtdC60YDQtdGCMTIz",
+        "only_masks": [
+          "*.doc",
+          "5",
+          "None"
+        ],
+        "not_masks": [
+          "~$*"
+        ],
+        "comment": "Коммент",
+        "par2_size": 15,
+        "par2_created": "2026-01-02 12:00:00",
+        "jobs": [
+          {
+            "id": "job-backup",
+            "title": "Ночной бэкап",
+            "created": "2026-01-01 10:00:00",
+            "modified": "2026-01-01 10:00:00",
+            "last_run": "2026-01-02 12:00:00",
+            "last_status": "ok",
+            "last_reason": null,
+            "run_count": 7,
+            "schedule": {
+              "kind": "daily",
+              "time": "03:00"
+            },
+            "task_log_mode": "full",
+            "action": "backup",
+            "test_mode": "full",
+            "level": [
+              "-m256"
+            ],
+            "level_key": null,
+            "hash": "",
+            "hash_key": null,
+            "method_params": null,
+            "verify": null,
+            "longpath": true,
+            "date": true,
+            "norecursion": null,
+            "forcewindows": null,
+            "force_xls": null,
+            "nochecksum": null,
+            "nodedup": null,
+            "vss": true,
+            "checkspace": "1024",
+            "noonedrive": null,
+            "ignore": null,
+            "errorlog": "",
+            "shutdown": null,
+            "sfx": "",
+            "chunk": "100m",
+            "copy": null,
+            "par2_enabled": true,
+            "par2_options": {
+              "redundancy": "10"
+            }
+          },
+          {
+            "id": "job-test",
+            "title": "Проверка",
+            "created": "2026-01-01 10:00:00",
+            "modified": "2026-01-01 10:00:00",
+            "last_run": null,
+            "last_status": null,
+            "last_reason": "par2_damaged",
+            "run_count": -2,
+            "schedule": null,
+            "task_log_mode": "short",
+            "action": "test",
+            "test_mode": "paranoid",
+            "level": null,
+            "level_key": null,
+            "hash": null,
+            "hash_key": null,
+            "method_params": null,
+            "verify": null,
+            "longpath": null,
+            "date": null,
+            "norecursion": null,
+            "forcewindows": null,
+            "force_xls": null,
+            "nochecksum": null,
+            "nodedup": null,
+            "vss": null,
+            "checkspace": null,
+            "noonedrive": null,
+            "ignore": null,
+            "errorlog": null,
+            "shutdown": null,
+            "sfx": null,
+            "chunk": null,
+            "copy": null,
+            "par2_enabled": null,
+            "par2_options": null
+          },
+          {
+            "id": "job-weird",
+            "title": "Задание",
+            "created": "2026-01-01 10:00:00",
+            "modified": "2026-01-01 10:00:00",
+            "last_run": null,
+            "last_status": null,
+            "last_reason": null,
+            "run_count": 12,
+            "schedule": null,
+            "task_log_mode": "short",
+            "action": "backup",
+            "test_mode": "full",
+            "level": null,
+            "level_key": null,
+            "hash": null,
+            "hash_key": null,
+            "method_params": null,
+            "verify": null,
+            "longpath": null,
+            "date": null,
+            "norecursion": null,
+            "forcewindows": null,
+            "force_xls": null,
+            "nochecksum": null,
+            "nodedup": null,
+            "vss": null,
+            "checkspace": null,
+            "noonedrive": null,
+            "ignore": null,
+            "errorlog": null,
+            "shutdown": null,
+            "sfx": null,
+            "chunk": null,
+            "copy": null,
+            "par2_enabled": null,
+            "par2_options": null
+          }
+        ]
+      }
+    ]
+  },
+  "job_id": "job-backup",
+  "expected_settings": {
+    "sources": [
+      "C:\\data\\a",
+      "  C:\\data\\b  "
+    ],
+    "dest": "D:\\backup\\arhiv.zpaq",
+    "password": "секрет123",
+    "only_masks": [
+      "*.doc",
+      "5",
+      "None"
+    ],
+    "not_masks": [
+      "~$*"
+    ],
+    "comment": "Коммент",
+    "title": "Ночной бэкап",
+    "work_title": "Документы",
+    "action": "backup",
+    "test_mode": "full",
+    "level": [
+      "-m256"
+    ],
+    "level_key": null,
+    "hash": "",
+    "hash_key": null,
+    "method_params": null,
+    "verify": null,
+    "longpath": true,
+    "date": true,
+    "norecursion": null,
+    "forcewindows": null,
+    "force_xls": null,
+    "nochecksum": null,
+    "nodedup": null,
+    "vss": true,
+    "checkspace": "1024",
+    "noonedrive": null,
+    "ignore": null,
+    "errorlog": "",
+    "shutdown": null,
+    "sfx": "",
+    "chunk": "100m",
+    "copy": null,
+    "schedule": {
+      "kind": "daily",
+      "time": "03:00"
+    },
+    "task_log_mode": "full",
+    "par2_enabled": true,
+    "par2_options": {
+      "redundancy": "10"
+    }
+  }
+}

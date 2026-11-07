@@ -1,0 +1,17 @@
+[package]
+name = "rizpaq_task"
+version = "2.9.5"
+edition = "2021"
+description = "Rizpaq headless task runner (scheduled jobs, no GUI, no console)"
+
+[dependencies]
+serde_json = { version = "1", features = ["preserve_order"] }
+chrono = "0.4"
+base64 = "0.22"
+encoding_rs = "0.8"
+rusqlite = { version = "0.32", features = ["bundled"] }
+
+[profile.release]
+lto = true
+strip = true
+codegen-units = 1
