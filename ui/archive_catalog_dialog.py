@@ -72,7 +72,7 @@ def _format_time(timestamp: int) -> str:
     if not timestamp:
         return ""
     try:
-        return time.strftime("%Y-%m-%d %H:%M", time.localtime(int(timestamp)))
+        return time.strftime("%d.%m.%Y %H:%M", time.localtime(int(timestamp)))
     except (OverflowError, OSError, ValueError):
         return ""
 

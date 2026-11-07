@@ -179,7 +179,7 @@ def _parse_par2_date(text: str) -> str:
 
     try:
         return datetime.strptime(
-            str(text or "").strip(), "%Y-%m-%d %H:%M:%S"
+            str(text or "").strip(), "%d.%m.%Y %H:%M:%S"
         ).strftime("%d.%m.%Y")
     except ValueError:
         return ""

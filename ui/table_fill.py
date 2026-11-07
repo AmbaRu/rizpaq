@@ -183,7 +183,7 @@ class TableFillMixin:
                                                                 
         arc_color = QColor(skin_color("ARC_BLUE"))
         for name, full, size, mtime in files:
-            dt = datetime.fromtimestamp(mtime).strftime("%Y-%m-%d %H:%M:%S")
+            dt = datetime.fromtimestamp(mtime).strftime("%d.%m.%Y %H:%M:%S")
             name_low = name.lower()
             if name_low.endswith(".zpaq"):
                 self._set_row(
