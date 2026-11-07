@@ -288,7 +288,25 @@ JOB_FIELDS = (
                                                                     
 ACTION_BACKUP = "backup"
 ACTION_TEST = "test"
-ACTIONS = (ACTION_BACKUP, ACTION_TEST)
+                                                                  
+                                                                 
+                                                            
+ACTION_CROP = "crop"
+                                                                
+                                                         
+ACTION_CONSOLIDATE = "consolidate"
+                                                          
+                                                            
+ACTION_SFX = "sfx"
+                                                                       
+                                              
+ACTION_INFO = "info"
+                                                                      
+                               
+ACTION_PASSWORD = "password"
+                                                                           
+ACTION_CHECKPASSWORD = "checkpassword"
+ACTIONS = (ACTION_BACKUP, ACTION_TEST, ACTION_CROP, ACTION_CONSOLIDATE, ACTION_SFX, ACTION_INFO, ACTION_PASSWORD, ACTION_CHECKPASSWORD)
 
                                                                    
                                                                  
@@ -302,12 +320,18 @@ TEST_MODE_PARANOID = "paranoid"
                                                                 
                                                    
 TEST_MODE_PAR2 = "par2"
+                                                               
+                                                                   
+                                                                  
+                                               
+TEST_MODE_VERIFY_FS = "verify_fs"
 TEST_MODES = (
     TEST_MODE_FULL,
     TEST_MODE_CHECKSUM,
     TEST_MODE_VERIFY,
     TEST_MODE_PARANOID,
     TEST_MODE_PAR2,
+    TEST_MODE_VERIFY_FS,
 )
 
                                                  

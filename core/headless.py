@@ -419,18 +419,28 @@ def _build_test_cmd(zpaq_bin, dest, password, test_mode, tmp_dir=None):
 
 
 
-    cmd = [zpaq_bin, "t", dest]
+
+
+
+
     mode = str(test_mode or "full").strip().lower()
-    if mode == "checksum":
-        cmd += ["-all", "-checksum"]
-    elif mode == "verify":
-        cmd += ["-verify"]
-    elif mode == "paranoid":
-        cmd += ["-verify", "-paranoid"]
-        if tmp_dir:
-            cmd += ["-to", str(tmp_dir)]
-                                                              
-                                               
+    if mode == "verify_fs":
+                                                                   
+                                                                
+                                                        
+        cmd = [zpaq_bin, "v", dest]
+    else:
+        cmd = [zpaq_bin, "t", dest]
+        if mode == "checksum":
+            cmd += ["-all", "-checksum"]
+        elif mode == "verify":
+            cmd += ["-verify"]
+        elif mode == "paranoid":
+            cmd += ["-verify", "-paranoid"]
+            if tmp_dir:
+                cmd += ["-to", str(tmp_dir)]
+                                                                  
+                                                   
     if password:
         cmd += ["-key", password]
     return cmd
@@ -996,6 +1006,45 @@ def _headless_task(rest: list) -> int:
                 except OSError:
                     tmp_dir = None
             cmd = _build_test_cmd(zpaq, dest, password, test_mode, tmp_dir)
+        elif action == ACTION_CROP:
+                                                                
+                                                            
+                                                            
+            cmd = [zpaq_bin, "crop", dest, "-kill", "-to", dest]
+        elif action == ACTION_CONSOLIDATE:
+                                                                         
+                                                          
+            cmd = [zpaq_bin, "consolidate", dest, "-to", dest]
+        elif action == ACTION_SFX:
+                                                                    
+                                                       
+                                                                 
+            sfx_dest = str(Path(dest).with_suffix(".exe"))
+            cmd = [zpaq_bin, "sfx", dest, sfx_dest]
+        elif action == ACTION_INFO:
+                                                            
+                                                                
+            cmd = [zpaq_bin, "i", dest, "-comment"]
+        elif action == ACTION_PASSWORD:
+                                                           
+                                                                                                 
+                                                                            
+            old_pw = password or ""
+            new_pw = str(settings.get("new_password") or "").strip()
+            if not old_pw or not new_pw:
+                                               
+                rc, log_out = 1, "ERROR: password change requires both old and new password\n"
+                ok = False
+                                                                                      
+                                                             
+                cmd = None
+            else:
+                sfx_dest = str(Path(dest).with_suffix(".zpaq"))
+                cmd = [zpaq_bin, "password", dest, sfx_dest, "-key", old_pw, "-key2", new_pw]
+        elif action == ACTION_CHECKPASSWORD:
+                                                                   
+                                                 
+            cmd = [zpaq_bin, "checkpassword", dest, "-key", password or ""]
         else:
                                                                 
             if settings.get("chunk") and "?" not in dest:
@@ -1005,8 +1054,10 @@ def _headless_task(rest: list) -> int:
 
                                                             
         if not par2_mode:
-            rc, log = run_zpaq(cmd)
-            ok = rc == 0
+            if cmd is not None:
+                rc, log = run_zpaq(cmd)
+                ok = rc == 0
+                                                                              
     finally:
         if tmp_dir:
             shutil.rmtree(tmp_dir, ignore_errors=True)
