@@ -173,8 +173,13 @@ instant, and nothing you were doing is lost.
   earlier moment.
 - **Compare two versions** — what was added, changed, removed, with sizes and
   dates side by side.
-- **Five integrity-check modes** — from block checks to paranoid — plus
-  a PAR2 set verification.
+- **Seven check modes** — full (blocks and CRC-32), all versions with
+  checksums, verify against sources, paranoid (extract and compare every
+  hash), verify against the filesystem (`v`), sync with sources, and PAR2
+  set verification. The last three answer different questions: verify
+  against sources uses what the archive itself recorded, `v` compares the
+  archive with the files as they are on disk now, and `sync` compares it
+  with the source folders and lists what a new backup would change.
 - Open a file from inside an archive with its associated application:
   Rizpaq extracts it to a temporary folder and hands it to Windows.
 - **Search across all your archives.** "Archive → Search all archives"
@@ -200,11 +205,13 @@ instant, and nothing you were doing is lost.
 - **A check job has only what applies to it**: check mode, schedule, log
   mode. No compression, no hash, no VSS — those are properties of a backup
   job and do not appear in the check dialog.
-- **Five check modes**, matching the manual "Test" menu exactly: full (blocks
-  and CRC-32), all versions with checksums, verify against the filesystem,
-  paranoid (extract into a temporary folder and compare every hash), and
+- **Seven check modes**, matching the manual "Test" menu exactly: full
+  (blocks and CRC-32), all versions with checksums, verify against sources,
+  paranoid (extract into a temporary folder and compare every hash),
   verify archive (PAR2) — the check that the recovery set still matches
-  the current archive.
+  the current archive, verify against the filesystem (`v`), and sync with
+  sources (`sync`) — the pre-flight that lists what a new backup would add,
+  change or lose, without writing anything.
 - **Edit the work itself** from its context menu: name, sources, destination,
   comment, include and exclude masks, password. Everything that is common to
   all jobs of the work — and only that.
@@ -460,10 +467,13 @@ Rizpaq превращает эту временную линию в то, что
 
 Rizpaq умеет проверять архивы по расписанию. Наряду с *заданием
 бэкапа* — «создать архив» — у работы может быть *задание проверки*:
-«убедиться, что архив цел». Пять режимов проверки — от быстрого
+«убедиться, что архив цел». Семь режимов проверки — от быстрого
 прохода по всем блокам до параноидального, который распаковывает весь
 архив во временную папку и сверяет каждый хэш с тем, что было
-сохранено, — плюс проверка архива по его PAR2-набору восстановления. Результат пишется в тот же лог задания, а в дереве рядом с
+сохранено, — плюс проверка архива по его PAR2-набору восстановления
+и сверка с папками-источниками перед бэкапом: она показывает, что
+добавится, изменится или пропадёт, ничего не записывая. Результат
+пишется в тот же лог задания, а в дереве рядом с
 заданиями бэкапа видны дата, статус и исход последней проверки.
 
 Задание проверки — не отдельная сущность, которую надо изучать
@@ -514,9 +524,10 @@ ZPAQ**. Один клик: старый RAR, набитый дублями, пр
 
 - **Задание бэкапа** — делает архив. Всё про сжатие, хэш, проверку и
   расписание относится к нему.
-- **Задание проверки** — проверяет готовый архив. Пять режимов, от
+- **Задание проверки** — проверяет готовый архив. Семь режимов, от
   быстрой проверки блоков до параноидальной сверки с полной
-  распаковкой, плюс проверка PAR2-набора.
+  распаковкой, плюс проверка PAR2-набора и сверка с источниками
+  перед бэкапом.
 
 Виды заданий легко различить с одного взгляда: в дереве у них разные
 значки. В Планировщике Windows имена задач тоже различаются, поэтому
@@ -575,8 +586,9 @@ ZPAQ**. Один клик: старый RAR, набитый дублями, пр
   момент в прошлом.
 - **Сравнение двух версий** — что добавлено, изменено, удалено,
   с размерами и датами рядом.
-- **Пять режимов проверки целостности** — от блоков до
-  параноидального, плюс проверка PAR2-набора.
+- **Семь режимов проверки** — от блоков до параноидального, сверка
+  архива с диском (`v`), сверка с источниками (`sync`) и проверка
+  PAR2-набора.
 - Открытие файла из архива в связанном приложении: Rizpaq извлекает
   его во временную папку и отдаёт Windows.
 - **Поиск по всем архивам.** «Архив → Поиск по всем архивам»
@@ -603,11 +615,13 @@ ZPAQ**. Один клик: старый RAR, набитый дублями, пр
 - **У задания проверки только то, что к нему относится**: режим
   проверки, расписание, режим лога. Ни сжатия, ни хэша, ни VSS — они
   относятся к заданию бэкапа и в диалоге проверки не показываются.
-- **Пять режимов проверки**, ровно совпадающие с меню «Проверка»:
+- **Семь режимов проверки**, ровно совпадающие с меню «Проверка»:
   полная (блоки и CRC-32), все версии с контрольными суммами, сверка с
-  файловой системой, параноидальная (распаковка во временную папку и
-  сверка всех хэшей) и «Проверить архив (PAR2)» — сверка набора
-  восстановления с текущим архивом.
+  исходниками, параноидальная (распаковка во временную папку и сверка
+  всех хэшей), «Проверить архив (PAR2)» — сверка набора восстановления
+  с текущим архивом, сверка с файловой системой (`v`) и сверка с
+  источниками (`sync`) — префлайт перед бэкапом: что добавится,
+  изменится или пропадёт.
 - **Редактирование самой работы** из её контекстного меню: имя,
   источники, назначение, комментарий, маски включения и исключения,
   пароль. Всё, что общее для всех её заданий, и ничего лишнего.
