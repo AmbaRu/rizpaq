@@ -802,6 +802,14 @@
     "checkpassword.confirm_text_missing": "Password is required.",
     "checkpassword.ok": "Password is correct: {name}",
     "checkpassword.fail": "Password check failed: {name}",
-    "checkpassword.title": "Check password"
+    "checkpassword.title": "Check password",
+    "menu.test.sync": "Сверить архив с источниками",
+    "check.mode_sync": "Сверка с источниками (sync)",
+    "sync.title": "Сверка архива с папками",
+    "sync.choose_folder": "Выберите папку для сверки с архивом",
+    "sync.no_sources": "Для сверки нужны папки-источники. Задайте их в задании проверки или выберите папку.",
+    "sync.ok": "Архив совпадает с источниками: {name}",
+    "sync.diff": "Есть отличия между архивом и источниками: {name}",
+    "sync.fail": "Сверка не выполнена: {name}"
   }
 }

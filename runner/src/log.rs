@@ -1,9 +1,4 @@
 
-
-
-
-
-
 use std::fs::OpenOptions;
 use std::io::Write;
 use serde_json::Value;
@@ -11,9 +6,6 @@ use serde_json::Value;
 const PASSWORD_VALUE_FLAGS: &[&str] = &["-key"];
 const PASSWORD_INLINE_PREFIX: &str = "-p";
 const MASK: &str = "***";
-
-
-
 
 pub fn mask_secrets(cmd: &[String], password: Option<&str>) -> Vec<String> {
     let pw = match password {
@@ -48,8 +40,6 @@ pub fn mask_secrets(cmd: &[String], password: Option<&str>) -> Vec<String> {
     masked
 }
 
-
-
 pub fn list2cmdline(args: &[String]) -> String {
     let mut out = String::new();
     for arg in args {
@@ -79,7 +69,6 @@ pub fn list2cmdline(args: &[String]) -> String {
             }
         }
         if needquote {
-            
             for _ in 0..bs * 2 {
                 out.push('\\');
             }
@@ -93,7 +82,6 @@ pub fn list2cmdline(args: &[String]) -> String {
     out
 }
 
-
 pub fn safe_cmdline(cmd: &[String], password: Option<&str>) -> String {
     list2cmdline(&mask_secrets(cmd, password))
 }
@@ -101,8 +89,6 @@ pub fn safe_cmdline(cmd: &[String], password: Option<&str>) -> String {
 fn vstr(v: Option<&Value>) -> String {
     v.and_then(Value::as_str).unwrap_or("").to_string()
 }
-
-
 
 pub fn build_log_header(
     rzp_path: &str,
@@ -112,7 +98,6 @@ pub fn build_log_header(
     password: Option<&str>,
     cmd: Option<&[String]>,
 ) -> String {
-    
     let mut lines: Vec<String> = Vec::new();
     lines.push(format!(
         "--- Rizpaq task run {} ---",
@@ -134,9 +119,6 @@ pub fn build_log_header(
     lines.join("\n")
 }
 
-
-
-
 pub fn write_task_log(
     rzp_path: &str,
     header: &str,
@@ -153,7 +135,6 @@ pub fn write_task_log(
     let mut buf = String::new();
     buf.push_str(header);
     buf.push('\n');
-    
     if !note.is_empty() {
         buf.push_str(note);
         if !note.ends_with('\n') {
@@ -172,7 +153,6 @@ pub fn write_task_log(
         } else {
             buf.push_str(&format!("Status: ERROR (rc={})\n", rc));
             if !log.is_empty() {
-                
                 let clean = log.replace('\r', "\n");
                 let lines: Vec<&str> = clean
                     .split('\n')

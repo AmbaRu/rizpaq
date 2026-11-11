@@ -39,6 +39,7 @@ TEST_MODES_UI = (
     ("paranoid", "menu.test.paranoid", "check.mode_paranoid"),
     ("par2", "menu.test.par2", "par2.test_mode"),
     ("verify_fs", "menu.test.verify_fs", "check.mode_verify_fs"),
+    ("sync", "menu.test.sync", "check.mode_sync"),
 )
 
 

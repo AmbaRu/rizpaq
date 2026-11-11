@@ -121,8 +121,8 @@
       {
         "id": "w1",
         "title": "Документы",
-        "created": "2026-01-01 10:00:00",
-        "modified": "2026-01-01 10:00:00",
+        "created": "01.01.2026 10:00:00",
+        "modified": "01.01.2026 10:00:00",
         "sources": [
           "C:\\data\\a",
           "  C:\\data\\b  "
@@ -139,14 +139,14 @@
         ],
         "comment": "Коммент",
         "par2_size": 15,
-        "par2_created": "2026-01-02 12:00:00",
+        "par2_created": "02.01.2026 12:00:00",
         "jobs": [
           {
             "id": "job-backup",
             "title": "Ночной бэкап",
-            "created": "2026-01-01 10:00:00",
-            "modified": "2026-01-01 10:00:00",
-            "last_run": "2026-01-02 12:00:00",
+            "created": "01.01.2026 10:00:00",
+            "modified": "01.01.2026 10:00:00",
+            "last_run": "02.01.2026 12:00:00",
             "last_status": "ok",
             "last_reason": null,
             "run_count": 7,
@@ -189,8 +189,8 @@
           {
             "id": "job-test",
             "title": "Проверка",
-            "created": "2026-01-01 10:00:00",
-            "modified": "2026-01-01 10:00:00",
+            "created": "01.01.2026 10:00:00",
+            "modified": "01.01.2026 10:00:00",
             "last_run": null,
             "last_status": null,
             "last_reason": "par2_damaged",
@@ -227,8 +227,8 @@
           {
             "id": "job-weird",
             "title": "Задание",
-            "created": "2026-01-01 10:00:00",
-            "modified": "2026-01-01 10:00:00",
+            "created": "01.01.2026 10:00:00",
+            "modified": "01.01.2026 10:00:00",
             "last_run": null,
             "last_status": null,
             "last_reason": null,

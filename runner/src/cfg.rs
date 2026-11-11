@@ -1,8 +1,4 @@
 
-
-
-
-
 use serde_json::Value;
 use std::path::{Path, PathBuf};
 
@@ -12,10 +8,6 @@ const STALL_MIN_S: f64 = 5.0;
 const STALL_MAX_S: f64 = 3600.0;
 const LOG_MAX_BYTES: u64 = 256 * 1024;
 const LOG_KEEP_BYTES: usize = 64 * 1024;
-
-
-
-
 
 pub fn config_path() -> Option<PathBuf> {
     if let Ok(p) = std::env::var("ZPAQ_GUI_CONFIG") {
@@ -42,13 +34,10 @@ pub fn config_path() -> Option<PathBuf> {
     Some(base.join(APP_DIR_NAME).join(CONFIG_NAME))
 }
 
-
 fn load_config() -> Option<Value> {
     let text = std::fs::read_to_string(config_path()?).ok()?;
     serde_json::from_str(&text).ok()
 }
-
-
 
 pub fn config_zpaq_path() -> Option<PathBuf> {
     let v = load_config()?;
@@ -60,8 +49,6 @@ pub fn config_zpaq_path() -> Option<PathBuf> {
     }
 }
 
-
-
 pub fn engine_stall_timeout(default: f64) -> f64 {
     let Some(v) = load_config() else { return default };
     let Some(raw) = v.get("engine_stall_timeout") else { return default };
@@ -69,7 +56,6 @@ pub fn engine_stall_timeout(default: f64) -> f64 {
     let f = i as f64;
     f.min(STALL_MAX_S).max(STALL_MIN_S)
 }
-
 
 fn log_candidates(name: &str) -> Vec<PathBuf> {
     let mut out: Vec<PathBuf> = Vec::new();
@@ -98,8 +84,6 @@ fn log_candidates(name: &str) -> Vec<PathBuf> {
     let mut seen = std::collections::HashSet::new();
     out.into_iter().filter(|p| seen.insert(p.clone())).collect()
 }
-
-
 
 pub fn write_error_log_named(text: &str, name: &str) {
     if text.is_empty() {
@@ -138,8 +122,6 @@ pub fn write_error_log_named(text: &str, name: &str) {
         }
     }
 }
-
-
 
 fn trim_log(path: &Path) -> Option<String> {
     let size = std::fs::metadata(path).ok()?.len();

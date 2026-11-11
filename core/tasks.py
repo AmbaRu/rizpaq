@@ -325,6 +325,13 @@ TEST_MODE_PAR2 = "par2"
                                                                   
                                                
 TEST_MODE_VERIFY_FS = "verify_fs"
+                                                                  
+                                                                     
+                                                                       
+                                                                  
+                                                                    
+                                                        
+TEST_MODE_SYNC = "sync"
 TEST_MODES = (
     TEST_MODE_FULL,
     TEST_MODE_CHECKSUM,
@@ -332,6 +339,7 @@ TEST_MODES = (
     TEST_MODE_PARANOID,
     TEST_MODE_PAR2,
     TEST_MODE_VERIFY_FS,
+    TEST_MODE_SYNC,
 )
 
                                                  

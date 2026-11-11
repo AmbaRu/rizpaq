@@ -1,26 +1,15 @@
 
-
-
-
-
-
 use std::ffi::OsStr;
 use std::os::windows::ffi::OsStrExt;
 use std::path::Path;
 
-
-
 pub const READ_ONLY_SUBCOMMANDS: &[&str] = &["l", "t", "e", "x", "v"];
-
-
 
 pub struct EnginePathError(pub String);
 
 pub fn has_non_latin(text: &str) -> bool {
     text.chars().any(|c| !c.is_ascii())
 }
-
-
 
 pub fn short_path(long_path: &str) -> String {
     #[link(name = "kernel32")]
@@ -43,8 +32,6 @@ pub fn short_path(long_path: &str) -> String {
     String::from_utf16_lossy(&buf[..n as usize])
 }
 
-
-
 pub fn is_zpaq_cmd(cmd: &[String]) -> bool {
     match cmd.first() {
         Some(exe) => Path::new(exe)
@@ -56,7 +43,6 @@ pub fn is_zpaq_cmd(cmd: &[String]) -> bool {
     }
 }
 
-
 pub fn subcommand_of(cmd: &[String]) -> String {
     for arg in cmd.iter().skip(1) {
         if !arg.starts_with('-') {
@@ -65,7 +51,6 @@ pub fn subcommand_of(cmd: &[String]) -> String {
     }
     String::new()
 }
-
 
 pub fn archive_index(cmd: &[String]) -> i64 {
     let mut seen_sub = false;
@@ -81,9 +66,6 @@ pub fn archive_index(cmd: &[String]) -> i64 {
     }
     -1
 }
-
-
-
 
 fn latin_substitute(path: &str) -> Result<(String, Option<String>), EnginePathError> {
     let folder = crate::util::make_tmp_dir("rizpaq_link_").ok_or_else(|| {
@@ -104,11 +86,9 @@ fn latin_substitute(path: &str) -> Result<(String, Option<String>), EnginePathEr
     };
     let tmp = folder.join(format!("{}.zpaq", ascii_stem));
 
-    
     if std::fs::hard_link(src, &tmp).is_ok() {
         return Ok((tmp.to_string_lossy().into_owned(), None));
     }
-    
     match std::fs::copy(src, &tmp) {
         Ok(_) => Ok((tmp.to_string_lossy().into_owned(), None)),
         Err(exc) => {
@@ -124,36 +104,30 @@ fn latin_substitute(path: &str) -> Result<(String, Option<String>), EnginePathEr
     }
 }
 
-
-
 pub fn read_target(path: &str) -> Result<(String, Option<String>, Vec<String>), EnginePathError> {
     if !has_non_latin(path) {
         return Ok((path.to_string(), None, vec![]));
     }
-    let short = short_path(path); 
+    let short = short_path(path);
     if !short.is_empty() && !has_non_latin(&short) {
-        return Ok((short, None, vec![])); 
+        return Ok((short, None, vec![]));
     }
     let p = Path::new(path);
     let name = p.file_name().and_then(|s| s.to_str()).unwrap_or("");
     let folder = p.parent().map(|s| s.to_string_lossy().into_owned());
     if !has_non_latin(name) && folder.as_deref().map(|f| !f.is_empty()).unwrap_or(false) {
-        return Ok((name.to_string(), folder, vec![])); 
+        return Ok((name.to_string(), folder, vec![]));
     }
-    
     let (arg, cwd) = latin_substitute(path)?;
     let subs = vec![arg.clone()];
     Ok((arg, cwd, subs))
 }
-
-
 
 pub fn create_target(path: &str) -> Result<(String, Option<String>, Vec<String>), EnginePathError> {
     if !has_non_latin(path) {
         return Ok((path.to_string(), None, vec![]));
     }
     if Path::new(path).is_file() {
-        
         return read_target(path);
     }
     let p = Path::new(path);
@@ -164,8 +138,6 @@ pub fn create_target(path: &str) -> Result<(String, Option<String>, Vec<String>)
     }
     Ok((path.to_string(), None, vec![]))
 }
-
-
 
 pub fn rewrite_cmd(cmd: &[String]) -> Result<(Vec<String>, Option<String>, Vec<String>), EnginePathError> {
     if !is_zpaq_cmd(cmd) {
@@ -183,7 +155,6 @@ pub fn rewrite_cmd(cmd: &[String]) -> Result<(Vec<String>, Option<String>, Vec<S
     let sub = subcommand_of(cmd);
     let (new_arg, new_cwd, subs) = if Path::new(raw).is_file() {
         if !READ_ONLY_SUBCOMMANDS.contains(&sub.as_str()) {
-            
             let short = short_path(raw);
             let name = Path::new(raw)
                 .file_name()
@@ -219,8 +190,6 @@ pub fn rewrite_cmd(cmd: &[String]) -> Result<(Vec<String>, Option<String>, Vec<S
     out[idx as usize] = new_arg;
     Ok((out, new_cwd, subs))
 }
-
-
 
 pub fn drop_substitutes(paths: &[String]) {
     for p in paths {

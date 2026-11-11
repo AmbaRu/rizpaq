@@ -95,6 +95,7 @@ from core.tasks import (
     ACTION_TEST,
     ContainerLockBusy,
     PAR2_REASON_BY_STATE,
+    TEST_MODE_SYNC,
     _now,
     load_container,
     update_container,
@@ -390,8 +391,16 @@ def _build_create_cmd(zpaq_bin, settings, srcs, dest, password):
     return cmd
 
 
-def _build_test_cmd(zpaq_bin, dest, password, test_mode, tmp_dir=None):
+def _build_test_cmd(zpaq_bin, dest, password, test_mode, tmp_dir=None, sources=None):
     pass
+
+
+
+
+
+
+
+
 
 
 
@@ -429,6 +438,12 @@ def _build_test_cmd(zpaq_bin, dest, password, test_mode, tmp_dir=None):
                                                                 
                                                         
         cmd = [zpaq_bin, "v", dest]
+    elif mode == "sync":
+                                                             
+                                                                    
+                                                                     
+                                                               
+        cmd = [zpaq_bin, "sync", dest] + [str(s) for s in (sources or [])]
     else:
         cmd = [zpaq_bin, "t", dest]
         if mode == "checksum":
@@ -933,6 +948,18 @@ def _headless_task(rest: list) -> int:
         _write_task_log(rzp_path, header, "No sources specified in job.",
                         "full", 1)
         return 1
+                                                                  
+                                                                 
+                                                                 
+    if (
+        action == ACTION_TEST
+        and str(settings.get("test_mode") or "").strip().lower() == TEST_MODE_SYNC
+        and not srcs
+    ):
+        header = _build_log_header(rzp_path, work, job, 1)
+        _write_task_log(rzp_path, header, "No sources specified for sync.",
+                        "full", 1)
+        return 1
     dest = settings.get("dest")
     if not dest:
         header = _build_log_header(rzp_path, work, job, 1)
@@ -1005,7 +1032,7 @@ def _headless_task(rest: list) -> int:
                     tmp_dir = tempfile.mkdtemp(prefix="rizpaq_task_test_")
                 except OSError:
                     tmp_dir = None
-            cmd = _build_test_cmd(zpaq, dest, password, test_mode, tmp_dir)
+            cmd = _build_test_cmd(zpaq, dest, password, test_mode, tmp_dir, srcs)
         elif action == ACTION_CROP:
                                                                 
                                                             

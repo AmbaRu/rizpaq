@@ -336,6 +336,42 @@ class TestBuildTestCmd(unittest.TestCase):
         self.assertIn("-key", cmd)
         self.assertEqual(cmd[cmd.index("-key") + 1], "pw")
 
+    def test_sync_mode_uses_sync_command_and_sources(self):
+        pass
+
+
+
+
+        f = self._fn()
+        cmd = f(
+            "zpaq",
+            r"C:\a.zpaq",
+            None,
+            "sync",
+            None,
+            [r"D:\Photos", r"D:\Docs"],
+        )
+        self.assertEqual(
+            cmd,
+            ["zpaq", "sync", r"C:\a.zpaq", r"D:\Photos", r"D:\Docs"],
+        )
+
+    def test_sync_mode_keeps_password(self):
+        f = self._fn()
+        cmd = f("zpaq", r"C:\a.zpaq", "pw", "sync", None, [r"D:\Photos"])
+        self.assertEqual(cmd[-2:], ["-key", "pw"])
+        self.assertEqual(cmd[:3], ["zpaq", "sync", r"C:\a.zpaq"])
+
+    def test_sync_mode_without_sources_has_no_extra_args(self):
+        pass
+
+
+
+
+        f = self._fn()
+        cmd = f("zpaq", r"C:\a.zpaq", None, "sync")
+        self.assertEqual(cmd, ["zpaq", "sync", r"C:\a.zpaq"])
+
 
                                                                            
                                          

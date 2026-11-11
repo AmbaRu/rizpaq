@@ -802,6 +802,14 @@
     "checkpassword.confirm_text_missing": "Password is required.",
     "checkpassword.ok": "Password is correct: {name}",
     "checkpassword.fail": "Password check failed: {name}",
-    "checkpassword.title": "Check password"
+    "checkpassword.title": "Check password",
+    "menu.test.sync": "Sincronizza archivio (con le sorgenti)",
+    "check.mode_sync": "Sincronizzazione con le sorgenti (sync)",
+    "sync.title": "Sincronizza archivio con le cartelle",
+    "sync.choose_folder": "Scegli una cartella da confrontare con l'archivio",
+    "sync.no_sources": "La sincronizzazione richiede cartelle di origine. Impostale nell'attività di controllo o scegli una cartella.",
+    "sync.ok": "L'archivio corrisponde alle sorgenti: {name}",
+    "sync.diff": "Trovate differenze tra archivio e sorgenti: {name}",
+    "sync.fail": "Sincronizzazione non eseguita: {name}"
   }
 }

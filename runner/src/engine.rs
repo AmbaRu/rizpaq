@@ -1,10 +1,4 @@
 
-
-
-
-
-
-
 use crate::enginepath::{self, EnginePathError};
 use crate::proc::{Liveness, BUSY_STALL_MULTIPLIER, DEFAULT_STALL_TIMEOUT};
 use encoding_rs::{IBM866, UTF_8, WINDOWS_1251};
@@ -12,31 +6,19 @@ use std::os::windows::io::{FromRawHandle, RawHandle};
 use std::os::windows::process::CommandExt;
 use std::process::{Child, Command, Stdio};
 
-
 pub(crate) const CREATE_NO_WINDOW: u32 = 0x0800_0000;
-
 
 const POLL_INTERVAL_MS: u64 = 50;
 
-
 const READ_CHUNK: usize = 4096;
-
 
 const PROMPT_TAIL_CHUNKS: usize = 6;
 
-
-
-
 const BUSY_MARKER: &str = "another zpaqfranz is running";
-
-
 
 pub fn looks_like_busy_error(text: &str) -> bool {
     text.to_lowercase().contains(BUSY_MARKER)
 }
-
-
-
 
 pub fn decode_bytes(data: &[u8]) -> String {
     if data.is_empty() {
@@ -48,14 +30,8 @@ pub fn decode_bytes(data: &[u8]) -> String {
             return text.into_owned();
         }
     }
-    
-    
     String::from_utf8_lossy(data).into_owned()
 }
-
-
-
-
 
 
 type HANDLE = *mut core::ffi::c_void;
@@ -112,9 +88,6 @@ impl EnginePipe {
             if CreatePipe(&mut read, &mut write, std::ptr::null_mut(), 0) == 0 {
                 return Err("CreatePipe failed".to_string());
             }
-            
-            
-            
             let mut dup: HANDLE = std::ptr::null_mut();
             if DuplicateHandle(
                 CURRENT_PROCESS,
@@ -138,16 +111,13 @@ impl EnginePipe {
         }
     }
 
-    
-    
     pub(crate) fn split(self) -> (PipeRead, Stdio, Stdio) {
         let reader = PipeRead {
             handle: self.read,
         };
-        
         let out = unsafe { Stdio::from_raw_handle(self.write1) };
         let err = unsafe { Stdio::from_raw_handle(self.write2) };
-        std::mem::forget(self); 
+        std::mem::forget(self);
         (reader, out, err)
     }
 }
@@ -162,13 +132,11 @@ impl Drop for EnginePipe {
     }
 }
 
-
 pub(crate) struct PipeRead {
     handle: RawHandle,
 }
 
 impl PipeRead {
-    
     pub(crate) fn available(&self) -> u32 {
         let mut total: u32 = 0;
         unsafe {
@@ -187,7 +155,6 @@ impl PipeRead {
         total
     }
 
-    
     pub(crate) fn read_up_to(&self, buf: &mut [u8]) -> usize {
         let mut n: u32 = 0;
         unsafe {
@@ -213,12 +180,6 @@ impl Drop for PipeRead {
         }
     }
 }
-
-
-
-
-
-
 
 
 pub fn run_engine(cmd: &[String]) -> (i32, String) {
@@ -256,23 +217,17 @@ fn run_prepared(cmd: &[String], cwd: Option<&str>) -> (i32, String) {
     };
 
     let result = pump(&mut child, &reader);
-    
     let _ = child.wait();
     result
 }
-
 
 fn pump(child: &mut Child, reader: &PipeRead) -> (i32, String) {
     let mut chunks: Vec<Vec<u8>> = Vec::new();
     let stall_used = effective_stall_timeout();
     let mut liv = Liveness::new(
         Box::new({
-            
-            
             let child_ptr = child as *const Child;
             move || {
-                
-                
                 crate::proc::cpu_seconds(unsafe { &*child_ptr })
             }
         }),
@@ -282,10 +237,8 @@ fn pump(child: &mut Child, reader: &PipeRead) -> (i32, String) {
 
     let mut buf = vec![0u8; READ_CHUNK];
     loop {
-        
         match child.try_wait() {
             Ok(Some(status)) => {
-                
                 loop {
                     let avail = reader.available();
                     if avail == 0 {
@@ -303,14 +256,11 @@ fn pump(child: &mut Child, reader: &PipeRead) -> (i32, String) {
             }
             Ok(None) => {}
             Err(_) => {
-                
                 let output = decode_bytes(&chunks.concat());
                 return (-1, output);
             }
         }
 
-        
-        
         liv.verdict();
         if liv.stalled() {
             let tail: Vec<u8> = chunks
@@ -341,7 +291,6 @@ fn pump(child: &mut Child, reader: &PipeRead) -> (i32, String) {
             return (1, output + &format!("\nERROR: {}\n", reason));
         }
 
-        
         if reader.available() > 0 {
             let n = reader.read_up_to(&mut buf);
             if n > 0 {
@@ -355,8 +304,6 @@ fn pump(child: &mut Child, reader: &PipeRead) -> (i32, String) {
     }
 }
 
-
-
 pub(crate) fn wait_up_to(child: &mut Child, limit: std::time::Duration) {
     let start = std::time::Instant::now();
     while start.elapsed() < limit {
@@ -368,8 +315,6 @@ pub(crate) fn wait_up_to(child: &mut Child, limit: std::time::Duration) {
 }
 
 fn contains_ignore_case(haystack: &[u8], needle: &[u8]) -> bool {
-    
-    
     let needle_lower: Vec<u8> = needle.iter().map(|b| b.to_ascii_lowercase()).collect();
     if needle_lower.is_empty() {
         return true;
@@ -386,8 +331,6 @@ fn password_prompt_message() -> String {
 перенесите его в папку с латинским именем.\n"
         .to_string()
 }
-
-
 
 fn effective_stall_timeout() -> f64 {
     crate::cfg::engine_stall_timeout(DEFAULT_STALL_TIMEOUT)

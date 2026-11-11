@@ -1,16 +1,3 @@
-﻿
-
-
-
-
-
-
-
-
-
-
-
-
 
 use crate::engine::{self, EnginePipe};
 use crate::tasks::{self, py_truthy};
@@ -20,30 +7,17 @@ use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 use std::time::{Duration, Instant};
 
-
 pub(crate) const CREATE_NO_WINDOW: u32 = 0x0800_0000;
 
 
-
-
-
-
 pub const STATE_OK: &str = "ok";
-
 pub const STATE_DAMAGED: &str = "damaged";
-
 pub const STATE_UNREPAIRABLE: &str = "unrepairable";
-
 pub const STATE_MISSING: &str = "missing";
-
 pub const STATE_BROKEN: &str = "broken";
-
 pub const STATE_FAILED: &str = "failed";
 
-
 pub const DAMAGED_STATES: &[&str] = &[STATE_DAMAGED, STATE_UNREPAIRABLE];
-
-
 
 pub fn reason_by_state(state: &str) -> &'static str {
     match state {
@@ -130,7 +104,7 @@ fn is_vol_name(name: &str) -> bool {
     let Some(i) = s.rfind(".vol") else {
         return false;
     };
-    let tail = &s[i + 4..]; // после ".vol"
+    let tail = &s[i + 4..];
     let Some(plus) = tail.find('+') else {
         return false;
     };
@@ -465,12 +439,10 @@ pub fn classify_verify_log(log: &str) -> Option<&'static str> {
     }
     let lower = log.to_lowercase();
 
-    
     if contains_ci(log, "All files are correct") {
         return Some(STATE_OK);
     }
 
-    
     if contains_dash_word(&lower, "damaged") {
         if contains_ci(log, "Repair is not possible") {
             return Some(STATE_UNREPAIRABLE);
@@ -478,18 +450,13 @@ pub fn classify_verify_log(log: &str) -> Option<&'static str> {
         if contains_ci(log, "Repair is possible") {
             return Some(STATE_DAMAGED);
         }
-        
-        
-        
         return Some(STATE_UNREPAIRABLE);
     }
 
-    
     if contains_dash_word(&lower, "missing") {
         return Some(STATE_MISSING);
     }
 
-    
     for marker in [
         "Unable to load",
         "Cannot load",
@@ -505,8 +472,6 @@ pub fn classify_verify_log(log: &str) -> Option<&'static str> {
 
     None
 }
-
-
 
 fn classify_verify(rc: &RunRc, log: &str) -> Par2Result {
     let size = read_recorded_size(log);
@@ -591,7 +556,7 @@ pub fn create_parset(
 
     let (rc, log) = run_par2(bin_path, &args, timeout_secs);
     let subst_failed = subst.failed;
-    drop(subst); // буква снимается здесь, признак «не вышло» уже сохранён
+    drop(subst);
 
     if rc == RunRc::Code(0) {
         return Par2Result::new(true, STATE_OK, log);
@@ -816,16 +781,6 @@ pub fn headless_par2_verify(dest: &str) -> (i32, String, &'static str) {
     }
 }
 
-
-
-
-
-
-
-
-
-
-
 pub fn headless_par2_create(
     rzp_path: &str,
     work: &Value,
@@ -838,8 +793,6 @@ pub fn headless_par2_create(
         return header + "par2.exe не найден, набор не создан\n";
     };
 
-    
-    
     let options = settings
         .get("par2_options")
         .and_then(Value::as_object)
@@ -848,7 +801,6 @@ pub fn headless_par2_create(
 
     let known_size = work.get("par2_size").and_then(Value::as_i64);
 
-    
     let redundancy_raw = options.get("redundancy").cloned().unwrap_or(Value::Null);
     let redundancy = if py_truthy(Some(&redundancy_raw)) {
         match py_int(Some(&redundancy_raw)) {
@@ -866,7 +818,6 @@ with base 10: {}\n",
         5
     };
 
-    
     let mut opts: Vec<(String, Option<i64>)> = Vec::new();
     for key in ["memory_mb", "threads", "block_size"] {
         let raw = options.get(key).cloned().unwrap_or(Value::Null);
@@ -904,8 +855,6 @@ int() with base 10: {}\n",
     );
 
     if !res.ok {
-        
-        
         let tail: Vec<&str> = res.log.trim().lines().collect();
         let last = tail
             .last()
@@ -915,7 +864,6 @@ int() with base 10: {}\n",
     }
 
     if let Some(size) = res.recorded_size {
-        
         let work_id = match work.get("id") {
             Some(v) if py_truthy(Some(v)) => tasks::py_str(v),
             _ => String::new(),
@@ -939,16 +887,12 @@ int() with base 10: {}\n",
 }
 
 
-
-
-
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
     fn classify_ok_first() {
-        
         assert_eq!(
             classify_verify_log("All files are correct. Recovery: 3 blocks"),
             Some(STATE_OK)
@@ -961,7 +905,6 @@ mod tests {
         assert_eq!(classify_verify_log(damaged), Some(STATE_DAMAGED));
         let unrep = "Target: data.bin - damaged\nRepair is not possible.";
         assert_eq!(classify_verify_log(unrep), Some(STATE_UNREPAIRABLE));
-        
         assert_eq!(
             classify_verify_log("Target: data.bin - damaged"),
             Some(STATE_UNREPAIRABLE)
@@ -984,7 +927,6 @@ mod tests {
 
     #[test]
     fn classify_by_rc_fallback() {
-        
         let r = classify_verify(&RunRc::Code(2), "непонятно");
         assert_eq!(r.state, STATE_UNREPAIRABLE);
         let r = classify_verify(&RunRc::Code(3), "непонятно");
@@ -1026,9 +968,7 @@ mod tests {
 
     #[test]
     fn needs_subst_threshold() {
-        
         assert!(!needs_subst("C:\\backups"));
-        
         let long = format!("C:\\{}", "длинное_имя_папки_".repeat(12));
         assert!(needs_subst(&long));
     }

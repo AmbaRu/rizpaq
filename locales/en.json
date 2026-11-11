@@ -802,6 +802,14 @@
     "salvage.done_title": "Salvage finished",
     "salvage.done_text": "Data salvaged to folder:\n{dest}",
     "salvage.partial_title": "Part of the data was saved",
-    "salvage.partial_text": "The archive is damaged: everything readable was saved. Result folder:\n{dest}\n\nSee the log below for details."
+    "salvage.partial_text": "The archive is damaged: everything readable was saved. Result folder:\n{dest}\n\nSee the log below for details.",
+    "menu.test.sync": "Sync archive (against sources)",
+    "check.mode_sync": "Sync with sources (sync)",
+    "sync.title": "Archive sync with folders",
+    "sync.choose_folder": "Choose a folder to compare with the archive",
+    "sync.no_sources": "Sync needs source folders. Set them in the check job or choose a folder.",
+    "sync.ok": "Archive matches sources: {name}",
+    "sync.diff": "Differences found between archive and sources: {name}",
+    "sync.fail": "Sync not performed: {name}"
   }
 }

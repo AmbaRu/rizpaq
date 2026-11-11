@@ -1,45 +1,17 @@
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 use crate::cfg;
 use crate::engine;
 use rusqlite::params;
 use serde_json::Value;
 use std::path::Path;
 
-
 const INDEX_FILENAME: &str = "archive_index.sqlite";
 
-
-
-
 const SCHEMA_VERSION: i64 = 2;
-
-
 
 const LIST_FLAGS: &[&str] = &[
     "-all", "-terse", "-csv", "\t", "-csvhf", "#", "-utf", "-noeta",
 ];
-
-
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct IndexEntry {
@@ -52,7 +24,6 @@ pub struct IndexEntry {
     pub attr: String,
     pub ratio: String,
 }
-
 
 impl IndexEntry {
     pub fn name(&self) -> String {
@@ -68,8 +39,6 @@ impl IndexEntry {
     }
 }
 
-
-
 pub fn parse_size(value: &str) -> i64 {
     let cleaned: String = value
         .trim()
@@ -78,7 +47,6 @@ pub fn parse_size(value: &str) -> i64 {
         .collect();
     cleaned.parse::<i64>().unwrap_or(0)
 }
-
 
 fn clean_csv_line(line: &str) -> &str {
     let mut line = line.trim_end_matches('\n');
@@ -91,16 +59,12 @@ fn clean_csv_line(line: &str) -> &str {
     line
 }
 
-
-
-
-
 pub fn parse_csv_line(raw_line: &str) -> Option<IndexEntry> {
     if raw_line.trim().is_empty() {
         return None;
     }
     if raw_line.trim().starts_with("<<") {
-        return None; 
+        return None;
     }
 
     let line = clean_csv_line(raw_line);
@@ -153,11 +117,9 @@ pub fn parse_csv_line(raw_line: &str) -> Option<IndexEntry> {
     })
 }
 
-
 pub fn parse_csv_list(text: &str) -> Vec<IndexEntry> {
     text.lines().filter_map(parse_csv_line).collect()
 }
-
 
 pub fn build_list_cmd(zpaq_bin: &str, path: &str, password: Option<&str>) -> Vec<String> {
     let mut cmd: Vec<String> = Vec::with_capacity(4 + LIST_FLAGS.len());
@@ -174,7 +136,6 @@ pub fn build_list_cmd(zpaq_bin: &str, path: &str, password: Option<&str>) -> Vec
     cmd
 }
 
-
 fn file_stamp(path: &str) -> Option<(i64, i64)> {
     let md = std::fs::metadata(path).ok()?;
     let mtime = md.modified().ok()?;
@@ -185,19 +146,13 @@ fn file_stamp(path: &str) -> Option<(i64, i64)> {
     Some((ns, md.len() as i64))
 }
 
-
-
 fn is_supported(path: &str) -> bool {
     !path.is_empty() && !path.contains('?')
 }
 
-
-
 fn index_path() -> Option<std::path::PathBuf> {
     cfg::config_path()?.parent().map(|d| d.join(INDEX_FILENAME))
 }
-
-
 
 fn migrate_if_needed(conn: &rusqlite::Connection) {
     let version: i64 = conn
@@ -247,10 +202,6 @@ fn migrate_if_needed(conn: &rusqlite::Connection) {
     }
 }
 
-
-
-
-
 fn store_entries(path: &str, mtime_ns: i64, size: i64, entries: &[IndexEntry]) {
     if !is_supported(path) {
         return;
@@ -263,8 +214,6 @@ fn store_entries(path: &str, mtime_ns: i64, size: i64, entries: &[IndexEntry]) {
     let Ok(mut conn) = rusqlite::Connection::open(&db_path) else {
         return;
     };
-    
-    
     let _ = conn.query_row("PRAGMA journal_mode=WAL", [], |r| r.get::<_, String>(0));
     let _ = conn.query_row("PRAGMA synchronous=NORMAL", [], |r| r.get::<_, String>(0));
     let _ = conn.query_row("PRAGMA busy_timeout=3000", [], |r| r.get::<_, i64>(0));
@@ -318,8 +267,6 @@ fn store_entries(path: &str, mtime_ns: i64, size: i64, entries: &[IndexEntry]) {
     }
 }
 
-
-
 fn store_fresh_listing(path: &str, entries: &[IndexEntry]) -> usize {
     let Some((mtime_ns, size)) = file_stamp(path) else {
         return 0;
@@ -330,14 +277,6 @@ fn store_fresh_listing(path: &str, entries: &[IndexEntry]) -> usize {
     store_entries(path, mtime_ns, size, entries);
     entries.len()
 }
-
-
-
-
-
-
-
-
 
 pub fn refresh_index_sync(zpaq_bin: &str, path: &str, password: Option<&str>) -> usize {
     if !is_supported(path) {
@@ -357,7 +296,6 @@ pub fn refresh_index_sync(zpaq_bin: &str, path: &str, password: Option<&str>) ->
         return 0;
     }
 
-    
     if file_stamp(path) != Some(stamp) {
         return 0;
     }
@@ -369,8 +307,6 @@ pub fn refresh_index_sync(zpaq_bin: &str, path: &str, password: Option<&str>) ->
     store_fresh_listing(path, &entries)
 }
 
-
-
 #[allow(dead_code)]
 pub fn password_of(v: Option<&Value>) -> Option<&str> {
     match v {
@@ -378,9 +314,6 @@ pub fn password_of(v: Option<&Value>) -> Option<&str> {
         _ => None,
     }
 }
-
-
-
 
 
 #[cfg(test)]
@@ -419,15 +352,10 @@ mod tests {
 
     #[test]
     fn csv_line_rejects_garbage() {
-        
         assert!(parse_csv_line("<<D:\\b\\a.zpaq>>").is_none());
-        
         assert!(parse_csv_line("a\tb\tc").is_none());
-        
         assert!(parse_csv_line("dt\tattr\t1\t1\tabc\tf\tp").is_none());
-        
         assert!(parse_csv_line("dt\tattr\t1\t1\t1\tf\t   ").is_none());
-        
         let e = parse_csv_line("#dt\tattr\t1\t1\t1\tf\tp#").expect("разобрана");
         assert_eq!(e.path, "p");
     }

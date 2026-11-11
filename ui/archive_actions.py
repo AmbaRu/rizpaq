@@ -479,6 +479,50 @@ class ArchiveActionsMixin:
 
                                                                     
 
+    def _resolve_sync_sources(self, sources, job_context, archive_path) -> list:
+        pass
+
+
+
+
+
+
+
+
+
+
+        srcs = [str(s) for s in (sources or []) if str(s).strip()]
+        if srcs:
+            return srcs
+        if job_context:
+            try:
+                container, _path = self._load_container()
+                if container is not None:
+                    found = find_job(
+                        container, str(job_context.get("job_id") or "")
+                    )
+                    if found is not None:
+                        work, _job = found
+                        srcs = [
+                            str(s)
+                            for s in (work.get("sources") or [])
+                            if str(s).strip()
+                        ]
+            except Exception:
+                srcs = []
+        if srcs:
+            return srcs
+        start = ""
+        try:
+            if archive_path:
+                start = str(Path(archive_path).parent)
+        except Exception:
+            start = ""
+        folder = QFileDialog.getExistingDirectory(
+            self, tr("sync.choose_folder"), start
+        )
+        return [folder] if folder else []
+
     def _on_test_archive(
         self,
         path=None,
@@ -486,8 +530,14 @@ class ArchiveActionsMixin:
         from_create=False,
         job_context=None,
         password=None,
+        sources=None,
     ):
         pass
+
+
+
+
+
 
 
 
@@ -553,7 +603,17 @@ class ArchiveActionsMixin:
 
         cmd = [self.zpaq_bin, "t", arc]
         tmp = None
-        if mode == "verify_fs":
+        if mode == "sync":
+                                                                       
+                                                                 
+                                                                  
+                                          
+            srcs = self._resolve_sync_sources(sources, job_context, arc)
+            if not srcs:
+                self.statusBar().showMessage(tr("sync.no_sources"))
+                return
+            cmd = [self.zpaq_bin, "sync", arc] + srcs
+        elif mode == "verify_fs":
                                                                        
             cmd = [self.zpaq_bin, "v", arc]
         elif mode == "checksum":
@@ -592,6 +652,9 @@ class ArchiveActionsMixin:
                                                                     
                                                                 
                 "job_context": dict(job_context) if job_context else None,
+                                                                    
+                                                                 
+                "mode": mode,
             },
         )
         worker.result.connect(self._on_test_result)
@@ -673,6 +736,10 @@ class ArchiveActionsMixin:
             self.statusBar().showMessage(tr("status.cancel_requested"))
             return
 
+        if str(ctx.get("mode") or "") == "sync":
+            self._on_sync_done(rc, output, name)
+            return
+
         if rc == 0:
             self.statusBar().showMessage(tr("test.ok", name=name))
             QMessageBox.information(self, tr("test.title"), tr("test.ok", name=name))
@@ -682,6 +749,39 @@ class ArchiveActionsMixin:
             QMessageBox.warning(
                 self, tr("test.title"), tr("test.fail", name=name) + "\n\n" + tail
             )
+
+    def _on_sync_done(self, rc: int, output: str, name: str) -> None:
+        pass
+
+
+
+
+
+
+
+
+
+        if rc == 0:
+            self.statusBar().showMessage(tr("sync.ok", name=name))
+            QMessageBox.information(
+                self, tr("sync.title"), tr("sync.ok", name=name)
+            )
+            return
+        tail = output.strip()[-_TEST_TAIL:]
+        if rc == 2:
+            self.statusBar().showMessage(tr("sync.diff", name=name))
+            QMessageBox.warning(
+                self,
+                tr("sync.title"),
+                tr("sync.diff", name=name) + "\n\n" + tail,
+            )
+            return
+        self.statusBar().showMessage(tr("sync.fail", name=name))
+        QMessageBox.warning(
+            self,
+            tr("sync.title"),
+            tr("sync.fail", name=name) + "\n\n" + tail,
+        )
 
                                                                               
 

@@ -1,10 +1,5 @@
 
-
-
-
 use std::path::PathBuf;
-
-
 
 pub fn make_tmp_dir(prefix: &str) -> Option<PathBuf> {
     let base = std::env::temp_dir();

@@ -802,6 +802,14 @@
     "checkpassword.confirm_text_missing": "Password is required.",
     "checkpassword.ok": "Password is correct: {name}",
     "checkpassword.fail": "Password check failed: {name}",
-    "checkpassword.title": "Check password"
+    "checkpassword.title": "Check password",
+    "menu.test.sync": "同步归档（与源对比）",
+    "check.mode_sync": "与源同步 (sync)",
+    "sync.title": "同步归档与文件夹",
+    "sync.choose_folder": "选择要与归档比较的文件夹",
+    "sync.no_sources": "同步需要源文件夹。请在检查任务中设置，或选择一个文件夹。",
+    "sync.ok": "归档与源一致：{name}",
+    "sync.diff": "归档与源之间存在差异：{name}",
+    "sync.fail": "未执行同步：{name}"
   }
 }

@@ -1,14 +1,10 @@
-﻿
-
 
 use chrono::Local;
 use std::path::{Path, PathBuf};
 
-
 pub fn has_non_latin(name: &str) -> bool {
     name.chars().any(|c| !c.is_ascii())
 }
-
 
 fn translit_char(c: char) -> Option<&'static str> {
     let s = match c {

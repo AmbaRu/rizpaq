@@ -1,29 +1,11 @@
-﻿
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 use base64::Engine as _;
-use chrono::Local;
+use chrono::{Local, NaiveDate, NaiveDateTime};
 use serde_json::{json, Map, Value};
 use std::path::{Path, PathBuf};
 
 pub const CONTAINER_FORMAT: &str = "rizpaq.tasks";
 pub const CONTAINER_VERSION: i64 = 1;
-
 
 pub const JOB_FIELDS: &[&str] = &[
     "action",
@@ -65,15 +47,50 @@ pub const JOB_REASONS: &[&str] = &[
     "par2_failed",
 ];
 pub const LOG_MODES: &[&str] = &["short", "full", "none"];
-pub const TEST_MODES: &[&str] = &["full", "checksum", "verify", "paranoid", "par2"];
-
+pub const TEST_MODES: &[&str] = &[
+    "full",
+    "checksum",
+    "verify",
+    "paranoid",
+    "par2",
+    "verify_fs",
+    "sync",
+];
 
 pub fn now_str() -> String {
     Local::now().format("%d.%m.%Y %H:%M:%S").to_string()
 }
 
+fn normalize_date_str(raw: &str) -> String {
+    let text = raw.trim();
+    if text.is_empty() {
+        return String::new();
+    }
+    let b = text.as_bytes();
+    if text.len() == 19 && b[2] == b'.' && b[5] == b'.' {
+        return text.to_string();
+    }
+    if text.len() == 19 && b[4] == b'-' && b[7] == b'-' {
+        if let Ok(dt) = NaiveDateTime::parse_from_str(text, "%Y-%m-%d %H:%M:%S") {
+            return dt.format("%d.%m.%Y %H:%M:%S").to_string();
+        }
+        return text.to_string();
+    }
+    if text.len() == 10 && b[4] == b'-' && b[7] == b'-' {
+        if let Ok(d) = NaiveDate::parse_from_str(text, "%Y-%m-%d") {
+            return d.format("%d.%m.%Y").to_string();
+        }
+        return text.to_string();
+    }
+    text.to_string()
+}
 
-
+fn normalize_date_value(v: Option<&Value>) -> Value {
+    match v {
+        None | Some(Value::Null) => Value::Null,
+        Some(x) => json!(normalize_date_str(&py_str(x))),
+    }
+}
 
 pub fn py_str(v: &Value) -> String {
     match v {
@@ -81,13 +98,10 @@ pub fn py_str(v: &Value) -> String {
         Value::Bool(true) => "True".to_string(),
         Value::Bool(false) => "False".to_string(),
         Value::Number(_) => v.to_string(),
-        
-        
         Value::Null => "None".to_string(),
         other => other.to_string(),
     }
 }
-
 
 pub fn py_truthy(v: Option<&Value>) -> bool {
     match v {
@@ -100,8 +114,6 @@ pub fn py_truthy(v: Option<&Value>) -> bool {
     }
 }
 
-
-
 fn str_or(v: Option<&Value>, default: &str) -> String {
     if py_truthy(v) {
         py_str(v.unwrap())
@@ -109,7 +121,6 @@ fn str_or(v: Option<&Value>, default: &str) -> String {
         default.to_string()
     }
 }
-
 
 fn str_or_trim(v: Option<&Value>, default: &str) -> String {
     let s = str_or(v, "");
@@ -121,14 +132,12 @@ fn str_or_trim(v: Option<&Value>, default: &str) -> String {
     }
 }
 
-
 fn norm_action(v: Option<&Value>) -> Value {
     match v.and_then(Value::as_str) {
         Some(s) if s == "backup" || s == "test" => json!(s),
         _ => json!("backup"),
     }
 }
-
 
 fn norm_test_mode(v: Option<&Value>) -> Value {
     match v.and_then(Value::as_str) {
@@ -137,14 +146,12 @@ fn norm_test_mode(v: Option<&Value>) -> Value {
     }
 }
 
-
 fn norm_status(v: Option<&Value>) -> Value {
     match v.and_then(Value::as_str) {
         Some(s) if JOB_STATUSES.contains(&s) => json!(s),
         _ => Value::Null,
     }
 }
-
 
 fn norm_reason(v: Option<&Value>) -> Value {
     match v.and_then(Value::as_str) {
@@ -153,8 +160,6 @@ fn norm_reason(v: Option<&Value>) -> Value {
     }
 }
 
-
-
 fn norm_par2_size(v: Option<&Value>) -> Value {
     let parsed: Option<i64> = match v {
         None | Some(Value::Null) => None,
@@ -162,20 +167,18 @@ fn norm_par2_size(v: Option<&Value>) -> Value {
             if let Some(i) = n.as_i64() {
                 Some(i)
             } else {
-                n.as_f64().map(|f| f as i64) 
+                n.as_f64().map(|f| f as i64)
             }
         }
         Some(Value::String(s)) => s.trim().parse::<i64>().ok(),
-        Some(Value::Bool(b)) => Some(if *b { 1 } else { 0 }), 
-        _ => None,                                            
+        Some(Value::Bool(b)) => Some(if *b { 1 } else { 0 }),
+        _ => None,
     };
     match parsed {
         Some(i) if i >= 0 => json!(i),
         _ => Value::Null,
     }
 }
-
-
 
 fn norm_run_count(v: Option<&Value>) -> i64 {
     if !py_truthy(v) {
@@ -196,7 +199,6 @@ fn norm_run_count(v: Option<&Value>) -> i64 {
         _ => 0,
     }
 }
-
 
 pub fn decode_password(v: Option<&Value>) -> Value {
     let s = match v.and_then(Value::as_str) {
@@ -224,11 +226,8 @@ pub fn empty_container() -> Value {
     })
 }
 
-
-
 fn normalize_work(w: &Value) -> Option<Value> {
     let obj = w.as_object()?;
-    
     let id = match obj.get("id") {
         Some(Value::String(s)) if !s.is_empty() => s.clone(),
         _ => return None,
@@ -237,8 +236,8 @@ fn normalize_work(w: &Value) -> Option<Value> {
         Some(Value::Array(arr)) => arr
             .iter()
             .map(py_str)
-            .filter(|s| !s.trim().is_empty()) 
-            .map(|s| json!(s))                
+            .filter(|s| !s.trim().is_empty())
+            .map(|s| json!(s))
             .collect(),
         _ => Vec::new(),
     };
@@ -255,17 +254,16 @@ fn normalize_work(w: &Value) -> Option<Value> {
         if s.is_empty() {
             Value::Null
         } else {
-            json!(s)
+            json!(normalize_date_str(&s))
         }
     };
     Some(json!({
         "id": id,
         "title": str_or_trim(obj.get("title"), "Работа"),
-        "created": str_or(obj.get("created"), &now_str()),
-        "modified": str_or(obj.get("modified"), &now_str()),
+        "created": normalize_date_value(Some(&json!(str_or(obj.get("created"), &now_str())))),
+        "modified": normalize_date_value(Some(&json!(str_or(obj.get("modified"), &now_str())))),
         "sources": sources,
         "dest": str_or(obj.get("dest"), ""),
-        
         "password_b64": match obj.get("password_b64") {
             Some(v) if py_truthy(Some(v)) => v.clone(),
             _ => Value::Null,
@@ -283,7 +281,6 @@ fn normalize_work(w: &Value) -> Option<Value> {
     }))
 }
 
-
 fn normalize_job(j: &Value) -> Option<Value> {
     let obj = j.as_object()?;
     let id = match obj.get("id") {
@@ -293,11 +290,17 @@ fn normalize_job(j: &Value) -> Option<Value> {
     let mut out = Map::new();
     out.insert("id".into(), json!(id));
     out.insert("title".into(), json!(str_or_trim(obj.get("title"), "Задание")));
-    out.insert("created".into(), json!(str_or(obj.get("created"), &now_str())));
-    out.insert("modified".into(), json!(str_or(obj.get("modified"), &now_str())));
+    out.insert(
+        "created".into(),
+        normalize_date_value(Some(&json!(str_or(obj.get("created"), &now_str())))),
+    );
+    out.insert(
+        "modified".into(),
+        normalize_date_value(Some(&json!(str_or(obj.get("modified"), &now_str())))),
+    );
     out.insert(
         "last_run".into(),
-        obj.get("last_run").cloned().unwrap_or(Value::Null),
+        normalize_date_value(obj.get("last_run")),
     );
     out.insert("last_status".into(), norm_status(obj.get("last_status")));
     out.insert("last_reason".into(), norm_reason(obj.get("last_reason")));
@@ -318,7 +321,6 @@ fn normalize_job(j: &Value) -> Option<Value> {
     );
     out.insert("action".into(), norm_action(obj.get("action")));
     out.insert("test_mode".into(), norm_test_mode(obj.get("test_mode")));
-    
     for key in JOB_FIELDS {
         if matches!(*key, "schedule" | "task_log_mode" | "action" | "test_mode") {
             continue;
@@ -327,9 +329,6 @@ fn normalize_job(j: &Value) -> Option<Value> {
     }
     Some(Value::Object(out))
 }
-
-
-
 
 pub fn validate(c: &Value) -> Option<Value> {
     let obj = c.as_object()?;
@@ -340,7 +339,6 @@ pub fn validate(c: &Value) -> Option<Value> {
         return None;
     }
     let mut out = empty_container();
-    
     let name = str_or_trim(obj.get("name"), "");
     out["name"] = if name.is_empty() { Value::Null } else { json!(name) };
     let default_created = out["created"].as_str().unwrap_or_default().to_string();
@@ -357,8 +355,6 @@ pub fn validate(c: &Value) -> Option<Value> {
     Some(out)
 }
 
-
-
 pub fn load_container(path: &Path) -> Value {
     let text = match std::fs::read_to_string(path) {
         Ok(t) => t,
@@ -370,7 +366,6 @@ pub fn load_container(path: &Path) -> Value {
     };
     validate(&parsed).unwrap_or_else(empty_container)
 }
-
 
 pub fn iter_jobs<'a>(container: &'a Value) -> Vec<(&'a Value, &'a Value)> {
     let mut out = Vec::new();
@@ -391,7 +386,6 @@ pub fn find_job<'a>(container: &'a Value, job_id: &str) -> Option<(&'a Value, &'
         .into_iter()
         .find(|(_, j)| j.get("id").and_then(Value::as_str) == Some(job_id))
 }
-
 
 pub fn job_to_runnable_settings(work: &Value, job: &Value) -> Value {
     let mut s = Map::new();
@@ -427,7 +421,6 @@ pub fn job_to_runnable_settings(work: &Value, job: &Value) -> Value {
     for key in JOB_FIELDS {
         s.insert((*key).to_string(), job.get(*key).cloned().unwrap_or(Value::Null));
     }
-    
     s.insert(
         "schedule".into(),
         job.get("schedule").cloned().unwrap_or(Value::Null),
@@ -443,13 +436,6 @@ pub fn job_to_runnable_settings(work: &Value, job: &Value) -> Value {
 }
 
 
-
-
-
-
-
-
-
 pub fn save_container(path: &Path, container: &mut Value) -> Result<(), String> {
     if let Some(obj) = container.as_object_mut() {
         obj.insert("modified".to_string(), json!(now_str()));
@@ -461,8 +447,6 @@ pub fn save_container(path: &Path, container: &mut Value) -> Result<(), String> 
     std::fs::create_dir_all(&parent)
         .map_err(|e| format!("OSError: cannot create {}: {}", parent.display(), e))?;
 
-    
-    
     let nanos = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
         .map(|d| d.as_nanos())
@@ -515,7 +499,6 @@ pub fn save_container(path: &Path, container: &mut Value) -> Result<(), String> 
         }
     }
 }
-
 
 fn find_job_mut<'a>(container: &'a mut Value, job_id: &str) -> Option<&'a mut Value> {
     let works = container.get_mut("works")?.as_array_mut()?;

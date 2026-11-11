@@ -802,6 +802,14 @@
     "checkpassword.confirm_text_missing": "Password is required.",
     "checkpassword.ok": "Password is correct: {name}",
     "checkpassword.fail": "Password check failed: {name}",
-    "checkpassword.title": "Check password"
+    "checkpassword.title": "Check password",
+    "menu.test.sync": "Synchroniser l'archive (avec les sources)",
+    "check.mode_sync": "Synchronisation avec les sources (sync)",
+    "sync.title": "Synchroniser l'archive avec les dossiers",
+    "sync.choose_folder": "Choisissez un dossier à comparer avec l'archive",
+    "sync.no_sources": "La synchronisation nécessite des dossiers sources. Définissez-les dans la tâche de vérification ou choisissez un dossier.",
+    "sync.ok": "L'archive correspond aux sources : {name}",
+    "sync.diff": "Des différences ont été trouvées entre l'archive et les sources : {name}",
+    "sync.fail": "Synchronisation non effectuée : {name}"
   }
 }

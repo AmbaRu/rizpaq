@@ -1,19 +1,3 @@
-﻿
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
@@ -24,14 +8,10 @@ use std::path::{Path, PathBuf};
 const ACTION_TEST: &str = "test";
 
 fn main() {
-    
-    
     let args: Vec<String> = std::env::args_os()
         .skip(1)
         .map(|s| s.to_string_lossy().into_owned())
         .collect();
-    
-    
     let rest: &[String] =
         if args.first().map(|s| s.trim() == "--task").unwrap_or(false) {
             &args[1..]
@@ -40,8 +20,6 @@ fn main() {
         };
     std::process::exit(run(rest));
 }
-
-
 
 fn py_repr_str(s: &str) -> String {
     let mut out = String::from("'");
@@ -60,13 +38,10 @@ fn py_repr_str(s: &str) -> String {
     out
 }
 
-
 fn py_repr_list(items: &[String]) -> String {
     let inner: Vec<String> = items.iter().map(|s| py_repr_str(s)).collect();
     format!("[{}]", inner.join(", "))
 }
-
-
 
 fn parse_task_args(rest: &[String]) -> (String, String) {
     if rest.is_empty() {
@@ -86,7 +61,6 @@ fn parse_task_args(rest: &[String]) -> (String, String) {
     (rzp_path, job_id)
 }
 
-
 fn zpaq_bin() -> String {
     if let Ok(z) = std::env::var("ZPAQ_BIN") {
         if !z.is_empty() {
@@ -102,7 +76,6 @@ fn zpaq_bin() -> String {
 }
 
 fn run(rest: &[String]) -> i32 {
-    
     let (rzp_path, job_id) = parse_task_args(rest);
     if rzp_path.is_empty() {
         errlog::write_temp_error(&format!(
@@ -120,10 +93,8 @@ fn run(rest: &[String]) -> i32 {
         return 1;
     }
 
-    
     let container = tasks::load_container(Path::new(&rzp_path));
 
-    
     let Some((work, job)) = tasks::find_job(&container, &job_id) else {
         errlog::write_temp_error(&format!(
             "Rizpaq: в контейнере {} нет задания с id={}. Возможно, контейнер отредактировали после регистрации задачи в Планировщике, и запись указывает на устаревший id.\n",
@@ -152,10 +123,20 @@ fn run(rest: &[String]) -> i32 {
         })
         .unwrap_or_default();
 
+    let test_mode_raw = settings
+        .get("test_mode")
+        .and_then(Value::as_str)
+        .unwrap_or("full");
+    let test_mode = test_mode_raw.trim().to_lowercase();
+
     if action != ACTION_TEST && srcs.is_empty() {
-        
         let header = log::build_log_header(&rzp_path, work, job, 1, None, None);
         log::write_task_log(&rzp_path, &header, "No sources specified in job.", "full", 1, false, "");
+        return 1;
+    }
+    if action == ACTION_TEST && test_mode == "sync" && srcs.is_empty() {
+        let header = log::build_log_header(&rzp_path, work, job, 1, None, None);
+        log::write_task_log(&rzp_path, &header, "No sources specified for sync.", "full", 1, false, "");
         return 1;
     }
 
@@ -177,8 +158,6 @@ fn run(rest: &[String]) -> i32 {
         .unwrap_or("short")
         .to_string();
 
-    
-    
     let mut dest = dest0;
     let mut rename_note = String::new();
     {
@@ -196,18 +175,11 @@ fn run(rest: &[String]) -> i32 {
         }
     }
 
-    
-    let test_mode_raw = settings
-        .get("test_mode")
-        .and_then(Value::as_str)
-        .unwrap_or("full");
-    let test_mode = test_mode_raw.trim().to_lowercase();
     let par2_mode = action == ACTION_TEST && test_mode == "par2";
 
     let mut tmp_dir: Option<PathBuf> = None;
     let mut cmd: Option<Vec<String>> = None;
     let mut par2_note = String::new();
-    
     let mut par2_reason: Option<&'static str> = None;
 
     let (rc, mut log_out, ok): (i32, String, bool);
@@ -235,6 +207,7 @@ fn run(rest: &[String]) -> i32 {
                 password,
                 Some(&test_mode),
                 tmp_arg.as_deref(),
+                &srcs,
             ));
         } else {
             if tasks::py_truthy(settings.get("chunk")) && !dest.contains('?') {

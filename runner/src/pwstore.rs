@@ -1,25 +1,12 @@
 
-
-
-
-
-
-
-
-
-
 use base64::Engine as _;
 use serde_json::{json, Map, Value};
 use std::path::{Path, PathBuf};
 
-
 pub const STORE_NAME: &str = "archive_passwords.json";
-
 const CORRUPT_SUFFIX: &str = ".corrupt";
-
 const TMP_PREFIX: &str = ".rizpaq_pw_";
 const TMP_SUFFIX: &str = ".tmp";
-
 
 fn store_dir() -> Option<PathBuf> {
     crate::cfg::config_path()?.parent().map(|d| d.to_path_buf())
@@ -29,12 +16,8 @@ fn store_path() -> Option<PathBuf> {
     store_dir().map(|d| d.join(STORE_NAME))
 }
 
-
-
-
 fn norm_key(archive_path: &str) -> String {
     let s = archive_path.replace('/', "\\").to_lowercase();
-    
     let is_abs = s.starts_with('\\')
         || (s.len() >= 2 && s.as_bytes()[1] == b':');
     let s = if is_abs {
@@ -52,10 +35,7 @@ fn norm_key(archive_path: &str) -> String {
     normpath(&s)
 }
 
-
-
 fn normpath(s: &str) -> String {
-    
     let (prefix, rest, rooted): (String, &str, bool) = if s.len() >= 2 && s.as_bytes()[1] == b':' {
         (s[..2].to_string(), &s[2..], true)
     } else if s.starts_with("\\\\") {
@@ -64,7 +44,7 @@ fn normpath(s: &str) -> String {
             Some(p1) => match after[p1 + 1..].find('\\') {
                 Some(p2) => (
                     s[..2 + p1 + 1 + p2].to_string(),
-                    &after[p1 + 1 + p2..], 
+                    &after[p1 + 1 + p2..],
                     true,
                 ),
                 None => (s.to_string(), "", true),
@@ -90,7 +70,6 @@ fn normpath(s: &str) -> String {
                     if !rooted {
                         comps.push("..");
                     }
-                    
                 }
             }
             continue;
@@ -116,18 +95,13 @@ fn normpath(s: &str) -> String {
     }
 }
 
-
-
 fn report(message: &str) {
     crate::cfg::write_error_log_named(message, "password_store.log");
 }
 
-
-
-
 fn migrate_legacy(target: &Path) -> Option<String> {
     if target.is_file() {
-        return None; 
+        return None;
     }
     let home = std::env::var("USERPROFILE").ok()?;
     let legacy = PathBuf::from(home)
@@ -151,10 +125,7 @@ fn migrate_legacy(target: &Path) -> Option<String> {
     }
 }
 
-
-
 fn load(path: &Path) -> (Value, Option<String>) {
-    
     if let Some(note) = migrate_legacy(path) {
         if let Some(rest) = note.strip_prefix("перенесено") {
             let _ = rest;
@@ -218,15 +189,11 @@ fn load(path: &Path) -> (Value, Option<String>) {
     (data, None)
 }
 
-
-
 fn quarantine(path: &Path) {
     let corrupt = PathBuf::from(format!("{}{}", path.display(), CORRUPT_SUFFIX));
     if std::fs::rename(path, &corrupt).is_ok() {
         return;
     }
-    
-    
     let copied = std::fs::copy(path, &corrupt).is_ok();
     report(&format!(
         "не удалось отодвинуть испорченный файл паролей; \
@@ -235,9 +202,6 @@ fn quarantine(path: &Path) {
         if copied { "" } else { " (копирование не удалось)" }
     ));
 }
-
-
-
 
 fn atomic_write(path: &Path, data: &Value) -> Option<String> {
     let parent = path.parent().unwrap_or(Path::new("."));
@@ -248,7 +212,6 @@ fn atomic_write(path: &Path, data: &Value) -> Option<String> {
             e
         ));
     }
-    
     let nanos = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
         .map(|d| d.as_nanos())
@@ -306,9 +269,6 @@ fn atomic_write(path: &Path, data: &Value) -> Option<String> {
         let mut f = std::fs::OpenOptions::new().write(true).open(&tmp)?;
         use std::io::Write;
         f.write_all(body.as_bytes())?;
-        
-        
-        
         f.sync_all().ok();
         drop(f);
         std::fs::rename(&tmp, path)
@@ -326,9 +286,6 @@ fn atomic_write(path: &Path, data: &Value) -> Option<String> {
     }
 }
 
-
-
-
 pub fn set_password(archive_path: &str, password: Option<&str>) {
     let Some(path) = store_path() else {
         report("не удалось определить путь хранилища");
@@ -337,9 +294,6 @@ pub fn set_password(archive_path: &str, password: Option<&str>) {
 
     let (mut data, problem) = load(&path);
     if let Some(p) = problem {
-        
-        
-        
         report(&p);
         if path.is_file() {
             quarantine(&path);

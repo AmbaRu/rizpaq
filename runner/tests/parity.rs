@@ -1,9 +1,4 @@
 
-
-
-
-
-
 use rizpaq_task::{cmdline, log, naming, tasks};
 use serde_json::Value;
 use std::path::PathBuf;
@@ -53,8 +48,6 @@ fn create_cmd_matches_python() {
             password,
         );
         assert_eq!(got, expected, "create-кейс {}", name);
-        
-        
         let expected_line = case["expected_cmdline"].as_str().unwrap_or("");
         let got_line = log::safe_cmdline(&got, password);
         assert_eq!(got_line, expected_line, "cmdline create-кейса {}", name);
@@ -76,6 +69,15 @@ fn test_cmd_matches_python() {
         let password = case["password"].as_str();
         let test_mode = case["test_mode"].as_str();
         let tmp_dir = case["tmp_dir"].as_str();
+        let sources = case
+            .get("sources")
+            .and_then(|v| v.as_array())
+            .map(|a| {
+                a.iter()
+                    .map(|x| x.as_str().unwrap_or("").to_string())
+                    .collect::<Vec<String>>()
+            })
+            .unwrap_or_default();
         let expected = str_vec(&case["expected"]);
         let got = cmdline::build_test_cmd(
             case["zpaq"].as_str().unwrap_or(""),
@@ -83,6 +85,7 @@ fn test_cmd_matches_python() {
             password,
             test_mode,
             tmp_dir,
+            &sources,
         );
         assert_eq!(got, expected, "test-кейс {}", name);
         checked += 1;
@@ -98,7 +101,6 @@ fn container_normalization_matches_python() {
         .expect("Python-эталон должен проходить валидацию");
     assert_eq!(got, expected, "нормализация контейнера");
 
-    
     let job_id = case["job_id"].as_str().expect("job_id");
     let (work, job) = tasks::find_job(&got, job_id)
         .unwrap_or_else(|| panic!("задание {} не найдено в нормализованном контейнере", job_id));
@@ -112,8 +114,6 @@ fn container_normalization_matches_python() {
 
 #[test]
 fn foreign_container_becomes_empty() {
-    
-    
     let bad = serde_json::json!({"format": "nope", "works": []});
     let got = tasks::validate(&bad);
     assert!(got.is_none(), "чужой format должен давать None");
@@ -127,11 +127,10 @@ fn foreign_container_becomes_empty() {
 
 #[test]
 fn transliteration_matches_reference() {
-    
     assert!(!naming::has_non_latin("plain-zpaq.1"));
     assert!(naming::has_non_latin("архив"));
     assert_eq!(naming::transliterate("Архив-2026"), "arhiv-2026");
     assert_eq!(naming::transliterate("Ёлка Жучок"), "yolka zhuchok");
-    assert_eq!(naming::transliterate("汉 Ω"), " "); 
-    assert_eq!(naming::transliterate("a_b_"), "a_b_"); 
+    assert_eq!(naming::transliterate("汉 Ω"), " ");
+    assert_eq!(naming::transliterate("a_b_"), "a_b_");
 }

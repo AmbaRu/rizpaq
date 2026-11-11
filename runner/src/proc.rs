@@ -1,32 +1,14 @@
 
-
-
-
-
-
-
-
-
-
 use std::os::windows::io::AsRawHandle;
 use std::process::Child;
 
-
-
 pub const DEFAULT_STALL_TIMEOUT: f64 = 90.0;
-
-
 
 pub const BUSY_STALL_MULTIPLIER: f64 = 30.0;
 
-
 pub const CPU_SAMPLE_INTERVAL: f64 = 0.25;
 
-
-
 pub const CPU_BUSY_RATIO: f64 = 0.10;
-
-
 
 pub const CPU_BUSY_FLOOR: f64 = 0.05;
 
@@ -43,8 +25,6 @@ extern "system" {
     ) -> i32;
 }
 
-
-
 pub fn cpu_seconds(child: &Child) -> f64 {
     let handle = child.as_raw_handle();
     let mut c: u64 = 0;
@@ -57,11 +37,8 @@ pub fn cpu_seconds(child: &Child) -> f64 {
     if ok == 0 {
         return 0.0;
     }
-    
     (k.wrapping_add(u)) as f64 / 10_000_000.0
 }
-
-
 
 pub struct Liveness {
     cpu_reader: Box<dyn Fn() -> f64>,
@@ -101,8 +78,6 @@ impl Liveness {
         }
     }
 
-    
-    
     pub fn note_data(&mut self) {
         let t = now_monotonic();
         self.last_data = t;
@@ -110,9 +85,6 @@ impl Liveness {
         self.cpu_at_data = self.cpu_sampled;
     }
 
-    
-    
-    
     fn sample(&mut self, t: f64) {
         if t - self.sample_at < CPU_SAMPLE_INTERVAL {
             return;
@@ -125,15 +97,12 @@ impl Liveness {
         self.busy = used > CPU_BUSY_FLOOR.max(CPU_BUSY_RATIO * silent);
     }
 
-    
     pub fn verdict(&mut self) {
         let t = now_monotonic();
         self.last_silent = t - self.last_data;
         self.sample(t);
     }
 
-    
-    
     pub fn stalled(&self) -> bool {
         if self.busy {
             self.last_silent > self.busy_timeout

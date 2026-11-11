@@ -802,6 +802,14 @@
     "checkpassword.confirm_text_missing": "Password is required.",
     "checkpassword.ok": "Password is correct: {name}",
     "checkpassword.fail": "Password check failed: {name}",
-    "checkpassword.title": "Check password"
+    "checkpassword.title": "Check password",
+    "menu.test.sync": "Archiv mit Quellen abgleichen",
+    "check.mode_sync": "Abgleich mit Quellen (sync)",
+    "sync.title": "Archiv mit Ordnern abgleichen",
+    "sync.choose_folder": "Ordner zum Abgleich mit dem Archiv wählen",
+    "sync.no_sources": "Für den Abgleich werden Quellordner benötigt. Legen Sie sie im Prüfauftrag fest oder wählen Sie einen Ordner.",
+    "sync.ok": "Archiv stimmt mit den Quellen überein: {name}",
+    "sync.diff": "Unterschiede zwischen Archiv und Quellen gefunden: {name}",
+    "sync.fail": "Abgleich nicht durchgeführt: {name}"
   }
 }

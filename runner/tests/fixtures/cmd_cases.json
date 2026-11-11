@@ -537,6 +537,7 @@
     "password": null,
     "test_mode": "full",
     "tmp_dir": null,
+    "sources": [],
     "expected": [
       "C:\\bin\\zpaqfranz.exe",
       "t",
@@ -551,6 +552,7 @@
     "password": null,
     "test_mode": "checksum",
     "tmp_dir": null,
+    "sources": [],
     "expected": [
       "C:\\bin\\zpaqfranz.exe",
       "t",
@@ -567,6 +569,7 @@
     "password": null,
     "test_mode": "verify",
     "tmp_dir": null,
+    "sources": [],
     "expected": [
       "C:\\bin\\zpaqfranz.exe",
       "t",
@@ -582,6 +585,7 @@
     "password": null,
     "test_mode": "paranoid",
     "tmp_dir": "C:\\Users\\X\\AppData\\Local\\Temp\\rizpaq_task_test_abc123",
+    "sources": [],
     "expected": [
       "C:\\bin\\zpaqfranz.exe",
       "t",
@@ -600,6 +604,7 @@
     "password": null,
     "test_mode": "paranoid",
     "tmp_dir": null,
+    "sources": [],
     "expected": [
       "C:\\bin\\zpaqfranz.exe",
       "t",
@@ -616,6 +621,7 @@
     "password": "секрет123",
     "test_mode": "checksum",
     "tmp_dir": null,
+    "sources": [],
     "expected": [
       "C:\\bin\\zpaqfranz.exe",
       "t",
@@ -634,6 +640,7 @@
     "password": "секрет123",
     "test_mode": "verify",
     "tmp_dir": null,
+    "sources": [],
     "expected": [
       "C:\\bin\\zpaqfranz.exe",
       "t",
@@ -651,6 +658,7 @@
     "password": null,
     "test_mode": " WEIRD ",
     "tmp_dir": null,
+    "sources": [],
     "expected": [
       "C:\\bin\\zpaqfranz.exe",
       "t",
@@ -665,10 +673,66 @@
     "password": null,
     "test_mode": null,
     "tmp_dir": null,
+    "sources": [],
     "expected": [
       "C:\\bin\\zpaqfranz.exe",
       "t",
       "D:\\b\\a.zpaq"
+    ]
+  },
+  {
+    "kind": "test",
+    "name": "verify_fs",
+    "zpaq": "C:\\bin\\zpaqfranz.exe",
+    "dest": "D:\\b\\a.zpaq",
+    "password": null,
+    "test_mode": "verify_fs",
+    "tmp_dir": null,
+    "sources": [],
+    "expected": [
+      "C:\\bin\\zpaqfranz.exe",
+      "v",
+      "D:\\b\\a.zpaq"
+    ]
+  },
+  {
+    "kind": "test",
+    "name": "sync_two_sources",
+    "zpaq": "C:\\bin\\zpaqfranz.exe",
+    "dest": "D:\\b\\a.zpaq",
+    "password": null,
+    "test_mode": "sync",
+    "tmp_dir": null,
+    "sources": [
+      "C:\\data\\docs",
+      "C:\\data\\photos"
+    ],
+    "expected": [
+      "C:\\bin\\zpaqfranz.exe",
+      "sync",
+      "D:\\b\\a.zpaq",
+      "C:\\data\\docs",
+      "C:\\data\\photos"
+    ]
+  },
+  {
+    "kind": "test",
+    "name": "sync_with_password",
+    "zpaq": "C:\\bin\\zpaqfranz.exe",
+    "dest": "D:\\b\\a.zpaq",
+    "password": "секрет123",
+    "test_mode": "sync",
+    "tmp_dir": null,
+    "sources": [
+      "C:\\data"
+    ],
+    "expected": [
+      "C:\\bin\\zpaqfranz.exe",
+      "sync",
+      "D:\\b\\a.zpaq",
+      "C:\\data",
+      "-key",
+      "секрет123"
     ]
   }
 ]

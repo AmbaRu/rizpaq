@@ -1,18 +1,8 @@
 
-
-
-
-
-
-
 use std::fs::OpenOptions;
 use std::io::Write;
 
 pub const TEMP_ERROR_NAME: &str = "rizpaq_task_error.log";
-
-
-
-
 
 pub fn write_temp_error(text: &str) {
     let path = std::env::temp_dir().join(TEMP_ERROR_NAME);
@@ -28,11 +18,6 @@ pub fn write_temp_error(text: &str) {
         let _ = f.write_all(buf.as_bytes());
     }
 }
-
-
-
-
-
 
 pub fn append_raw(text: &str) {
     let path = std::env::temp_dir().join(TEMP_ERROR_NAME);

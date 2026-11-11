@@ -1,30 +1,14 @@
 
-
-
-
-
-
-
 use crate::tasks::{py_str, py_truthy};
 use serde_json::Value;
-
 
 fn truthy(settings: &Value, key: &str) -> bool {
     py_truthy(settings.get(key))
 }
 
-
 fn py_value(settings: &Value, key: &str) -> String {
     py_str(settings.get(key).unwrap_or(&Value::Null))
 }
-
-
-
-
-
-
-
-
 
 pub fn build_create_cmd(
     zpaq: &str,
@@ -40,10 +24,8 @@ pub fn build_create_cmd(
     for s in srcs {
         cmd.push(s.clone());
     }
-    
     cmd.push("-open".to_string());
 
-    
     if let Some(arr) = settings.get("level").and_then(Value::as_array) {
         for f in arr {
             cmd.push(py_str(f));
@@ -68,7 +50,6 @@ pub fn build_create_cmd(
             cmd.push(py_str(m));
         }
     }
-    
     if truthy(settings, "longpath") && !srcs.is_empty() && !srcs.iter().any(|s| s == "*") {
         cmd.push("-longpath".to_string());
     }
@@ -127,44 +108,47 @@ pub fn build_create_cmd(
     cmd
 }
 
-
-
-
-
-
-
 pub fn build_test_cmd(
     zpaq: &str,
     dest: &str,
     password: Option<&str>,
     test_mode: Option<&str>,
     tmp_dir: Option<&str>,
+    sources: &[String],
 ) -> Vec<String> {
+    let mode = test_mode.unwrap_or("full").trim().to_lowercase();
     let mut cmd: Vec<String> = Vec::new();
     cmd.push(zpaq.to_string());
-    cmd.push("t".to_string());
-    cmd.push(dest.to_string());
-    let mode = test_mode.unwrap_or("full").trim().to_lowercase();
-    match mode.as_str() {
-        "checksum" => {
-            cmd.push("-all".to_string());
-            cmd.push("-checksum".to_string());
-        }
-        "verify" => {
-            cmd.push("-verify".to_string());
-        }
-        "paranoid" => {
-            cmd.push("-verify".to_string());
-            cmd.push("-paranoid".to_string());
-            if let Some(tmp) = tmp_dir {
-                if !tmp.is_empty() {
-                    cmd.push("-to".to_string());
-                    cmd.push(tmp.to_string());
+    if mode == "verify_fs" {
+        cmd.push("v".to_string());
+        cmd.push(dest.to_string());
+    } else if mode == "sync" {
+        cmd.push("sync".to_string());
+        cmd.push(dest.to_string());
+        cmd.extend(sources.iter().cloned());
+    } else {
+        cmd.push("t".to_string());
+        cmd.push(dest.to_string());
+        match mode.as_str() {
+            "checksum" => {
+                cmd.push("-all".to_string());
+                cmd.push("-checksum".to_string());
+            }
+            "verify" => {
+                cmd.push("-verify".to_string());
+            }
+            "paranoid" => {
+                cmd.push("-verify".to_string());
+                cmd.push("-paranoid".to_string());
+                if let Some(tmp) = tmp_dir {
+                    if !tmp.is_empty() {
+                        cmd.push("-to".to_string());
+                        cmd.push(tmp.to_string());
+                    }
                 }
             }
+            _ => {}
         }
-        
-        _ => {}
     }
     if let Some(pw) = password {
         if !pw.is_empty() {

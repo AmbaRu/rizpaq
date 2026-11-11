@@ -1,35 +1,11 @@
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 use std::path::{Path, PathBuf};
-
 
 pub const DEFAULT_TIMEOUT_S: f64 = 2.0;
 
-
 const POLL_INTERVAL_S: f64 = 0.05;
 
-
 pub const LOCK_SUFFIX: &str = ".lock";
-
-
-
 
 pub struct LockError {
     pub busy: bool,
@@ -52,7 +28,6 @@ fn fail_error(lock_path: &Path, err: &str) -> LockError {
         message: format!("cannot lock container {}: {}", lock_path.display(), err),
     }
 }
-
 
 pub fn lock_path_for(container_path: &Path) -> PathBuf {
     let mut s = container_path.to_string_lossy().into_owned();
@@ -82,9 +57,6 @@ const OPEN_ALWAYS: u32 = 4;
 const FILE_ATTRIBUTE_NORMAL: u32 = 0x0000_0080;
 const INVALID_HANDLE_VALUE: HANDLE = -1isize as HANDLE;
 
-
-
-
 fn open_exclusive(path: &Path) -> Result<HANDLE, Option<String>> {
     use std::os::windows::ffi::OsStrExt;
     let wide: Vec<u16> = path
@@ -96,9 +68,9 @@ fn open_exclusive(path: &Path) -> Result<HANDLE, Option<String>> {
         CreateFileW(
             wide.as_ptr(),
             GENERIC_READ | GENERIC_WRITE,
-            0, 
+            0,
             std::ptr::null_mut(),
-            OPEN_ALWAYS, 
+            OPEN_ALWAYS,
             FILE_ATTRIBUTE_NORMAL,
             std::ptr::null_mut(),
         )
@@ -118,9 +90,6 @@ fn open_exclusive(path: &Path) -> Result<HANDLE, Option<String>> {
     Ok(handle)
 }
 
-
-
-
 pub struct ContainerLock {
     handle: HANDLE,
 }
@@ -133,13 +102,9 @@ impl Drop for ContainerLock {
     }
 }
 
-
-
 pub fn acquire(container_path: &Path, timeout_s: f64) -> Result<ContainerLock, LockError> {
     let lock_path = lock_path_for(container_path);
 
-    
-    
     if let Some(parent) = lock_path.parent() {
         if !parent.as_os_str().is_empty() {
             if let Err(e) = std::fs::create_dir_all(parent) {
@@ -156,7 +121,7 @@ pub fn acquire(container_path: &Path, timeout_s: f64) -> Result<ContainerLock, L
     loop {
         match open_exclusive(&lock_path) {
             Ok(handle) => return Ok(ContainerLock { handle }),
-            Err(None) => {} 
+            Err(None) => {}
             Err(Some(text)) => return Err(fail_error(&lock_path, &text)),
         }
         if std::time::Instant::now() >= deadline {
