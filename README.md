@@ -7,6 +7,7 @@ Rizpaq is a desktop archiver for Windows. It puts the full strength of
 deduplication, one of the best compression ratios available — behind a clean,
 familiar interface. Alongside it, Rizpaq opens, extracts, and *converts*
 ZIP, 7z, and RAR archives, so a single tool covers what used to need three.
+<img width="1166" height="626" alt="3" src="https://github.com/user-attachments/assets/1dca607d-cecc-477c-9f14-7ca6bf58d35f" />
 
 Every archive can also be wrapped into a **PAR2 recovery set** kept
 right next to it: background bit-rot becomes a detectable, repairable
