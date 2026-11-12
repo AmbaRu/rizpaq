@@ -53,7 +53,7 @@ class ScheduleDialog(QDialog):
     def __init__(self, parent=None, initial_schedule=None):
         super().__init__(parent)
         self.setWindowTitle(tr("scheduler.title"))
-        self.resize(540, 400)
+        self.resize(540, 480)
         self._result = None
 
         layout = QVBoxLayout(self)
@@ -80,6 +80,20 @@ class ScheduleDialog(QDialog):
         row_min.addWidget(self._lbl_minute_unit)
         row_min.addStretch(1)
         group_layout.addLayout(row_min)
+
+                                                
+        row_cont = QHBoxLayout()
+        self._rb_continuous = QRadioButton(tr("scheduler.rb_continuous"))
+        self._spin_continuous = QSpinBox()
+        self._spin_continuous.setRange(1, 60)
+        self._spin_continuous.setValue(5)
+        self._lbl_continuous_unit = QLabel(tr("scheduler.minutes"))
+        row_cont.addWidget(self._rb_continuous)
+        row_cont.addWidget(QLabel(tr("scheduler.every")))
+        row_cont.addWidget(self._spin_continuous)
+        row_cont.addWidget(self._lbl_continuous_unit)
+        row_cont.addStretch(1)
+        group_layout.addLayout(row_cont)
 
                          
         row_hour = QHBoxLayout()
@@ -186,6 +200,14 @@ class ScheduleDialog(QDialog):
         group.setLayout(group_layout)
         layout.addWidget(group)
 
+                                                                 
+                                                                       
+                                                      
+        self._continuous_hint = QLabel(tr("scheduler.continuous_hint"))
+        self._continuous_hint.setWordWrap(True)
+        self._continuous_hint.setObjectName("schedHint")
+        layout.addWidget(self._continuous_hint)
+
                                              
         hint_label = QLabel(tr("scheduler.time_hint"))
         hint_label.setWordWrap(True)
@@ -200,6 +222,7 @@ class ScheduleDialog(QDialog):
 
                                                     
         self._rb_minute.toggled.connect(self._update_ui_state)
+        self._rb_continuous.toggled.connect(self._update_ui_state)
         self._rb_hour.toggled.connect(self._update_ui_state)
         self._rb_daily.toggled.connect(self._update_ui_state)
         self._rb_weekly.toggled.connect(self._update_ui_state)
@@ -216,6 +239,7 @@ class ScheduleDialog(QDialog):
     def _update_ui_state(self):
         pass
         is_min = self._rb_minute.isChecked()
+        is_cont = self._rb_continuous.isChecked()
         is_hour = self._rb_hour.isChecked()
         is_day = self._rb_daily.isChecked()
         is_week = self._rb_weekly.isChecked()
@@ -223,6 +247,10 @@ class ScheduleDialog(QDialog):
 
         self._spin_minute.setEnabled(is_min)
         self._lbl_minute_unit.setEnabled(is_min)
+
+        self._spin_continuous.setEnabled(is_cont)
+        self._lbl_continuous_unit.setEnabled(is_cont)
+        self._continuous_hint.setVisible(is_cont)
 
         self._spin_hour.setEnabled(is_hour)
         self._lbl_hour_unit.setEnabled(is_hour)
@@ -248,6 +276,9 @@ class ScheduleDialog(QDialog):
         if freq == "minute":
             self._rb_minute.setChecked(True)
             self._spin_minute.setValue(schedule.get("interval", 15))
+        elif freq == "continuous":
+            self._rb_continuous.setChecked(True)
+            self._spin_continuous.setValue(schedule.get("interval", 5))
         elif freq == "hourly":
             self._rb_hour.setChecked(True)
             self._spin_hour.setValue(schedule.get("interval", 2))
@@ -287,6 +318,12 @@ class ScheduleDialog(QDialog):
             schedule.update({
                 "frequency": "minute",
                 "interval": self._spin_minute.value(),
+                "time": "00:00"
+            })
+        elif self._rb_continuous.isChecked():
+            schedule.update({
+                "frequency": "continuous",
+                "interval": self._spin_continuous.value(),
                 "time": "00:00"
             })
         elif self._rb_hour.isChecked():

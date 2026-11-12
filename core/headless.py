@@ -79,6 +79,9 @@
 
 
 
+
+
+
 from __future__ import annotations
 
 import os
@@ -92,6 +95,12 @@ from pathlib import Path
 from core.password_store import get_password, set_password
 from core.incomplete_archive import incomplete_archive_action
 from core.tasks import (
+    ACTION_CHECKPASSWORD,
+    ACTION_CONSOLIDATE,
+    ACTION_CROP,
+    ACTION_INFO,
+    ACTION_PASSWORD,
+    ACTION_SFX,
     ACTION_TEST,
     ContainerLockBusy,
     PAR2_REASON_BY_STATE,
@@ -459,6 +468,34 @@ def _build_test_cmd(zpaq_bin, dest, password, test_mode, tmp_dir=None, sources=N
     if password:
         cmd += ["-key", password]
     return cmd
+
+
+def _continuous_precheck(zpaq_bin, dest, password, sources):
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+    from core.zpaq_cli import run_zpaq
+
+    cmd = _build_test_cmd(
+        zpaq_bin, dest, password, TEST_MODE_SYNC, sources=sources
+    )
+    rc, log = run_zpaq(cmd)
+    log = log or ""
+    if rc == 0:
+        return "skip", int(rc), log, cmd
+    if rc == 2:
+        return "run", int(rc), log, cmd
+    return "error", int(rc), log, cmd
 
 
 def _headless_create(sources: list) -> int:
@@ -856,8 +893,29 @@ def _parse_task_args(rest: list) -> tuple:
     return rzp_path, job_id
 
 
+def _has_task_flag(rest: list, flag: str) -> bool:
+    pass
+
+
+
+
+
+    target = str(flag or "").strip().lower()
+    if not target:
+        return False
+    return any(
+        str(arg).strip().lower() == target for arg in (rest or [])
+    )
+
+
 def _headless_task(rest: list) -> int:
     pass
+
+
+
+
+
+
 
 
 
@@ -894,6 +952,10 @@ def _headless_task(rest: list) -> int:
 
                              
     rzp_path, job_id = _parse_task_args(rest)
+                                                                   
+                                                                     
+                       
+    if_changed = _has_task_flag(rest, "--if-changed")
     if not rzp_path:
         _write_temp_error(
             f"Rizpaq: --task без пути к контейнеру. "
@@ -990,6 +1052,38 @@ def _headless_task(rest: list) -> int:
             f"'{old_name}' -> '{Path(dest).name}'\n"
         )
 
+                                                          
+     
+                                                                       
+                                                                    
+                                                                 
+                                                                     
+                          
+     
+                                                                        
+                                                                        
+                                                          
+    skip_run = False
+    skip_note = ""
+    pre_rc = None
+    pre_log = ""
+    pre_cmd = None
+    if if_changed and action == "backup" and Path(dest).is_file():
+        decision, pre_rc, pre_log, pre_cmd = _continuous_precheck(
+            zpaq, dest, password, srcs
+        )
+        if decision == "skip":
+            skip_run = True
+            skip_note = (
+                "\n[rizpaq] no changes since the last backup, "
+                "backup skipped\n"
+            )
+        elif decision == "error":
+            skip_run = True
+            skip_note = (
+                "\n[rizpaq] sync precheck failed, backup not started\n"
+            )
+
                                                    
     tmp_dir = None                                              
     cmd = None
@@ -999,7 +1093,14 @@ def _headless_task(rest: list) -> int:
     par2_note = ""
     par2_reason = None                                                
     try:
-        if par2_mode:
+        if skip_run:
+                                                                 
+                                                                 
+            cmd = pre_cmd
+            rc = pre_rc
+            log = pre_log
+            ok = (pre_rc == 0)
+        elif par2_mode:
                                                                    
                                                                   
                                                                       
@@ -1037,21 +1138,21 @@ def _headless_task(rest: list) -> int:
                                                                 
                                                             
                                                             
-            cmd = [zpaq_bin, "crop", dest, "-kill", "-to", dest]
+            cmd = [zpaq, "crop", dest, "-kill", "-to", dest]
         elif action == ACTION_CONSOLIDATE:
                                                                          
                                                           
-            cmd = [zpaq_bin, "consolidate", dest, "-to", dest]
+            cmd = [zpaq, "consolidate", dest, "-to", dest]
         elif action == ACTION_SFX:
                                                                     
                                                        
                                                                  
             sfx_dest = str(Path(dest).with_suffix(".exe"))
-            cmd = [zpaq_bin, "sfx", dest, sfx_dest]
+            cmd = [zpaq, "sfx", dest, sfx_dest]
         elif action == ACTION_INFO:
                                                             
                                                                 
-            cmd = [zpaq_bin, "i", dest, "-comment"]
+            cmd = [zpaq, "i", dest, "-comment"]
         elif action == ACTION_PASSWORD:
                                                            
                                                                                                  
@@ -1060,18 +1161,18 @@ def _headless_task(rest: list) -> int:
             new_pw = str(settings.get("new_password") or "").strip()
             if not old_pw or not new_pw:
                                                
-                rc, log_out = 1, "ERROR: password change requires both old and new password\n"
+                rc, log = 1, "ERROR: password change requires both old and new password\n"
                 ok = False
                                                                                       
                                                              
                 cmd = None
             else:
                 sfx_dest = str(Path(dest).with_suffix(".zpaq"))
-                cmd = [zpaq_bin, "password", dest, sfx_dest, "-key", old_pw, "-key2", new_pw]
+                cmd = [zpaq, "password", dest, sfx_dest, "-key", old_pw, "-key2", new_pw]
         elif action == ACTION_CHECKPASSWORD:
                                                                    
                                                  
-            cmd = [zpaq_bin, "checkpassword", dest, "-key", password or ""]
+            cmd = [zpaq, "checkpassword", dest, "-key", password or ""]
         else:
                                                                 
             if settings.get("chunk") and "?" not in dest:
@@ -1080,7 +1181,7 @@ def _headless_task(rest: list) -> int:
             cmd = _build_create_cmd(zpaq, settings, srcs, dest, password)
 
                                                             
-        if not par2_mode:
+        if not skip_run and not par2_mode:
             if cmd is not None:
                 rc, log = run_zpaq(cmd)
                 ok = rc == 0
@@ -1094,8 +1195,17 @@ def _headless_task(rest: list) -> int:
 
                                                              
                                                                    
-                                                      
-    busy = (not ok) and looks_like_busy_error(log or "")
+                                                                      
+                                                                  
+    busy = (
+        (not ok) and (not skip_run) and looks_like_busy_error(log or "")
+    )
+    if ok:
+        status = "ok"
+    elif busy:
+        status = "busy"
+    else:
+        status = "error"
 
                                                   
                                                           
@@ -1112,13 +1222,6 @@ def _headless_task(rest: list) -> int:
                                                                
                                                                   
     try:
-        if ok:
-            status = "ok"
-        elif busy:
-            status = "busy"
-        else:
-            status = "error"
-
         def _mutate(c: dict) -> None:
                                                                    
                                                                  
@@ -1137,8 +1240,9 @@ def _headless_task(rest: list) -> int:
     except Exception:
         pass
 
-                                               
-    if ok and password:
+                                                                      
+                                                            
+    if ok and password and not skip_run:
         try:
             set_password(dest, password)
         except Exception:
@@ -1152,7 +1256,7 @@ def _headless_task(rest: list) -> int:
                                                                      
                                                                         
                                                  
-    if ok and action != ACTION_TEST and settings.get("par2_enabled"):
+    if ok and not skip_run and action != ACTION_TEST and settings.get("par2_enabled"):
                                                                    
                                                                         
                                                                     
@@ -1174,7 +1278,7 @@ def _headless_task(rest: list) -> int:
                                                                 
                                                                      
                                                   
-    if ok and action != ACTION_TEST:
+    if ok and not skip_run and action != ACTION_TEST:
         try:
             from core import index_refresh
             index_refresh.refresh_index_sync(zpaq, dest, password)
@@ -1184,8 +1288,9 @@ def _headless_task(rest: list) -> int:
                                                    
     log_header = _build_log_header(rzp_path, work, job, rc,
                                    password, cmd=cmd)
+    task_note = (skip_note + (par2_note or "")) if skip_note else par2_note
     _write_task_log(rzp_path, log_header, log, log_mode, rc, busy=busy,
-                    note=par2_note)
+                    note=task_note)
 
                                                                 
                                                              
@@ -1197,7 +1302,41 @@ def _headless_task(rest: list) -> int:
         except Exception:
             pass
 
+                                                              
+                                                                  
+                                                                 
+                                                                    
+             
+    if not (skip_run and ok):
+        _notify_task_result(work, job, status, par2_reason, dest)
+
     return 0 if ok else 1
+
+
+def _notify_task_result(work: dict, job: dict, status: str,
+                        reason, archive: str) -> None:
+    pass
+
+
+
+
+
+
+
+    try:
+        from core import config as config_mod
+        from core import notify as notify_mod
+
+        notify_mod.notify_job(
+            config_mod.load(),
+            work,
+            job,
+            status,
+            reason=str(reason or ""),
+            archive=str(archive or ""),
+        )
+    except Exception:
+        pass
 
 
 def _build_log_header(rzp_path: str, work: dict, job: dict,

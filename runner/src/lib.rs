@@ -8,6 +8,7 @@ pub mod index;
 pub mod lock;
 pub mod log;
 pub mod naming;
+pub mod notify;
 pub mod par2;
 pub mod proc;
 pub mod pwstore;

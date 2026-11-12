@@ -104,6 +104,11 @@ def format_schedule(schedule) -> str:
         interval = 1
 
     try:
+        if frequency == "continuous":
+            if interval == 1:
+                return tr("sched.fmt.continuous_one")
+            return tr("sched.fmt.continuous_n", n=interval)
+
         if frequency == "minute":
             if interval == 1:
                 return tr("sched.fmt.minute_one")

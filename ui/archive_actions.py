@@ -3220,6 +3220,16 @@ class ArchiveActionsMixin:
             if not job_id:
                 return
 
+                                                                    
+                                                                   
+            work = job = None
+            try:
+                found = find_job(container, job_id)
+                if found is not None:
+                    work, job = found
+            except Exception:
+                pass
+
             def mutate(c):
                 update_job_meta(c, job_id, status, reason=reason)
 
@@ -3235,6 +3245,12 @@ class ArchiveActionsMixin:
                                                                      
             self._write_run_log_record(
                 str(path), job_id, status, rc, output)
+
+                                                                     
+                                                                        
+                                                    
+            if work is not None and job is not None:
+                self._notify_job_result(work, job, status, reason)
         except Exception:
             pass
 
@@ -3244,6 +3260,32 @@ class ArchiveActionsMixin:
                 page.refresh()
             except Exception:
                 pass
+
+    def _notify_job_result(self, work: dict, job: dict, status: str,
+                           reason=None) -> None:
+        pass
+
+
+
+
+
+
+
+        try:
+            from core import config as config_mod
+            from core import notify as notify_mod
+
+            cfg = config_mod.load()
+            notify_mod.notify_job_async(
+                cfg,
+                work,
+                job,
+                status,
+                reason=str(reason or ""),
+                archive=str((work or {}).get("dest") or ""),
+            )
+        except Exception:
+            pass
 
     def _write_run_log_record(self, rzp_path: str, job_id: str, status: str,
                               rc, output):

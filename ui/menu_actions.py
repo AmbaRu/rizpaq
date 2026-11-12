@@ -251,6 +251,14 @@ class MenuActionsMixin:
         act_assoc.setStatusTip(tr("menu.settings.integration.tip"))
         act_assoc.triggered.connect(self._on_open_association_dialog)
 
+        m_settings.addSeparator()
+
+                                                                        
+                                                             
+        act_notify = m_settings.addAction(tr("menu.settings.notifications"))
+        act_notify.setStatusTip(tr("menu.settings.notifications.tip"))
+        act_notify.triggered.connect(self._on_open_notify_dialog)
+
                                                                              
         m_help = mb.addMenu(tr("menu.help"))
 
@@ -281,6 +289,38 @@ class MenuActionsMixin:
         from ui.association_dialog import AssociationDialog
         dlg = AssociationDialog(self)
         dlg.exec()
+
+    def _on_open_notify_dialog(self):
+        pass
+
+
+
+
+
+
+        from PySide6.QtWidgets import QDialog
+
+        from ui.notify_dialog import NotifyDialog
+
+        try:
+            from core import config as config_mod
+            cfg = config_mod.load()
+        except Exception:
+            cfg = None
+
+        dlg = NotifyDialog(cfg, parent=self)
+        if dlg.exec() != QDialog.Accepted:
+            return
+
+        saved = dlg.saved_settings()
+        if saved is None:
+            return
+        for name in ("notify_mode", "notify_telegram_token",
+                     "notify_telegram_chat_id"):
+            try:
+                setattr(self._cfg, name, getattr(saved, name))
+            except Exception:
+                pass
 
     def _on_open_archive_dialog(self):
         pass

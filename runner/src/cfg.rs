@@ -39,6 +39,54 @@ fn load_config() -> Option<Value> {
     serde_json::from_str(&text).ok()
 }
 
+pub struct NotifyConfig {
+    pub mode: String,
+    pub token: String,
+    pub chat_id: String,
+    pub language: String,
+}
+
+pub fn notify_config() -> Option<NotifyConfig> {
+    let v = load_config()?;
+    let mode = v
+        .get("notify_mode")
+        .and_then(Value::as_str)
+        .unwrap_or("off")
+        .trim()
+        .to_lowercase();
+    let mode = match mode.as_str() {
+        "errors" | "all" => mode,
+        _ => "off".to_string(),
+    };
+    let language = v
+        .get("language")
+        .and_then(Value::as_str)
+        .unwrap_or("en")
+        .trim()
+        .to_string();
+    let language = if language.is_empty() {
+        "en".to_string()
+    } else {
+        language
+    };
+    Some(NotifyConfig {
+        mode,
+        token: v
+            .get("notify_telegram_token")
+            .and_then(Value::as_str)
+            .unwrap_or("")
+            .trim()
+            .to_string(),
+        chat_id: v
+            .get("notify_telegram_chat_id")
+            .and_then(Value::as_str)
+            .unwrap_or("")
+            .trim()
+            .to_string(),
+        language,
+    })
+}
+
 pub fn config_zpaq_path() -> Option<PathBuf> {
     let v = load_config()?;
     let s = v.get("zpaq_path")?.as_str()?.trim().to_string();

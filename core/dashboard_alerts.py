@@ -60,6 +60,7 @@ _SILENT_MIN_SECONDS = 24 * 3600
                                            
 _INTERVAL_SECONDS = {
     "minute": 60,
+    "continuous": 60,
     "hourly": 3600,
     "daily": 24 * 3600,
     "weekly": 7 * 24 * 3600,

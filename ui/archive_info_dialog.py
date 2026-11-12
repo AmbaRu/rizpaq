@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from PySide6.QtWidgets import (
     QDialog,
+    QGroupBox,
     QHBoxLayout,
     QLabel,
     QPushButton,
@@ -16,6 +17,7 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
 )
 
+from core.dedup import archive_size_on_disk, dedup_stats
 from ui.i18n import tr
 from ui.presentation import format_size
 from ui.qt_compat import HEADER_STRETCH, NO_EDIT, SELECT_ROWS
@@ -54,6 +56,21 @@ class ArchiveInfoDialog(QDialog):
 
                         
         versions = sorted(versions or [], key=lambda v: v.number)
+
+                                       
+                                                                  
+                                                                       
+                                                                    
+                    
+        dedup_text = self._dedup_text(archive_path, versions)
+        if dedup_text:
+            dedup_box = QGroupBox(tr("archive_info.dedup_title"))
+            dedup_lay = QVBoxLayout(dedup_box)
+            dedup_lay.setContentsMargins(10, 8, 10, 8)
+            dedup_label = QLabel(dedup_text)
+            dedup_label.setWordWrap(True)
+            dedup_lay.addWidget(dedup_label)
+            lay.addWidget(dedup_box)
 
         if versions:
             table = QTableWidget()
@@ -108,6 +125,48 @@ class ArchiveInfoDialog(QDialog):
         bottom.addWidget(btn_close)
 
         lay.addLayout(bottom)
+
+    @staticmethod
+    def _dedup_text(archive_path, versions) -> str:
+        pass
+
+
+
+
+
+
+
+        if not versions:
+            return ""
+        stats = dedup_stats(versions, archive_size_on_disk(archive_path))
+        lines = [
+            tr(
+                "archive_info.dedup_logical",
+                size=format_size(stats["logical"]),
+            )
+        ]
+        if stats["actual"] is not None:
+            lines.append(
+                tr(
+                    "archive_info.dedup_actual",
+                    size=format_size(stats["actual"]),
+                )
+            )
+            if stats["saved"] is not None:
+                lines.append(
+                    tr(
+                        "archive_info.dedup_saved",
+                        size=format_size(stats["saved"]),
+                    )
+                )
+            if stats["ratio"] is not None:
+                lines.append(
+                    tr(
+                        "archive_info.dedup_ratio",
+                        ratio=f'{stats["ratio"]:.2f}',
+                    )
+                )
+        return "\n".join(lines)
 
     @staticmethod
     def _summary_text(summary, password_set: bool) -> str:

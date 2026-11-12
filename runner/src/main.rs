@@ -1,7 +1,9 @@
 
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use rizpaq_task::{cfg, cmdline, engine, errlog, index, log, naming, par2, pwstore, tasks, util};
+use rizpaq_task::{
+    cfg, cmdline, engine, errlog, index, log, naming, notify, par2, pwstore, tasks, util,
+};
 use serde_json::Value;
 use std::path::{Path, PathBuf};
 
@@ -61,6 +63,40 @@ fn parse_task_args(rest: &[String]) -> (String, String) {
     (rzp_path, job_id)
 }
 
+fn has_task_flag(rest: &[String], flag: &str) -> bool {
+    let target = flag.trim().to_lowercase();
+    if target.is_empty() {
+        return false;
+    }
+    rest.iter().any(|arg| arg.trim().to_lowercase() == target)
+}
+
+fn precheck_decision(rc: i32) -> &'static str {
+    match rc {
+        0 => "skip",
+        2 => "run",
+        _ => "error",
+    }
+}
+
+fn continuous_precheck(
+    zpaq: &str,
+    dest: &str,
+    password: Option<&str>,
+    sources: &[String],
+) -> (&'static str, i32, String, Vec<String>) {
+    let cmd = cmdline::build_test_cmd(
+        zpaq,
+        dest,
+        password,
+        Some("sync"),
+        None,
+        sources,
+    );
+    let (rc, log) = engine::run_engine(&cmd);
+    (precheck_decision(rc), rc, log, cmd)
+}
+
 fn zpaq_bin() -> String {
     if let Ok(z) = std::env::var("ZPAQ_BIN") {
         if !z.is_empty() {
@@ -77,6 +113,7 @@ fn zpaq_bin() -> String {
 
 fn run(rest: &[String]) -> i32 {
     let (rzp_path, job_id) = parse_task_args(rest);
+    let if_changed = has_task_flag(rest, "--if-changed");
     if rzp_path.is_empty() {
         errlog::write_temp_error(&format!(
             "Rizpaq: --task без пути к контейнеру. Аргументы: {}\n",
@@ -175,6 +212,30 @@ fn run(rest: &[String]) -> i32 {
         }
     }
 
+    let mut skip_run = false;
+    let mut skip_note = String::new();
+    let mut pre_rc: Option<i32> = None;
+    let mut pre_log = String::new();
+    let mut pre_cmd: Option<Vec<String>> = None;
+    if if_changed && action == "backup" && Path::new(&dest).is_file() {
+        let (decision, rc0, log0, cmd0) =
+            continuous_precheck(&zpaq, &dest, password, &srcs);
+        pre_rc = Some(rc0);
+        pre_log = log0;
+        pre_cmd = Some(cmd0);
+        if decision == "skip" {
+            skip_run = true;
+            skip_note =
+                "\n[rizpaq] no changes since the last backup, backup skipped\n"
+                    .to_string();
+        } else if decision == "error" {
+            skip_run = true;
+            skip_note =
+                "\n[rizpaq] sync precheck failed, backup not started\n"
+                    .to_string();
+        }
+    }
+
     let par2_mode = action == ACTION_TEST && test_mode == "par2";
 
     let mut tmp_dir: Option<PathBuf> = None;
@@ -184,7 +245,12 @@ fn run(rest: &[String]) -> i32 {
 
     let (rc, mut log_out, ok): (i32, String, bool);
 
-    if par2_mode {
+    if skip_run {
+        cmd = pre_cmd;
+        rc = pre_rc.unwrap_or(1);
+        log_out = pre_log;
+        ok = rc == 0;
+    } else if par2_mode {
         let (r, l, state) = par2::headless_par2_verify(&dest);
         rc = r;
         log_out = l.clone();
@@ -248,7 +314,7 @@ fn run(rest: &[String]) -> i32 {
         log_out = format!("{}{}", rename_note, log_out);
     }
 
-    let busy = !ok && engine::looks_like_busy_error(&log_out);
+    let busy = !ok && !skip_run && engine::looks_like_busy_error(&log_out);
 
     let status = if ok {
         "ok"
@@ -265,31 +331,118 @@ fn run(rest: &[String]) -> i32 {
         });
     }
 
-    if ok {
+    if ok && !skip_run {
         if let Some(p) = password {
             pwstore::set_password(&dest, Some(p));
         }
     }
 
-    if ok && action != ACTION_TEST && tasks::py_truthy(settings.get("par2_enabled")) {
+    if ok && !skip_run && action != ACTION_TEST && tasks::py_truthy(settings.get("par2_enabled")) {
         par2_note = par2::headless_par2_create(&rzp_path, work, &dest, &settings);
     }
 
-    if ok && action != ACTION_TEST {
+    if ok && !skip_run && action != ACTION_TEST {
         index::refresh_index_sync(&zpaq, &dest, password);
     }
 
     let log_header =
         log::build_log_header(&rzp_path, work, job, rc, password, cmd.as_deref());
-    log::write_task_log(&rzp_path, &log_header, &log_out, &log_mode, rc, busy, &par2_note);
+    let task_note = if skip_note.is_empty() {
+        par2_note
+    } else {
+        format!("{}{}", skip_note, par2_note)
+    };
+    log::write_task_log(
+        &rzp_path,
+        &log_header,
+        &log_out,
+        &log_mode,
+        rc,
+        busy,
+        &task_note,
+    );
 
     if !ok && !busy {
         errlog::append_raw(&format!("{}\n{}\n\n", log_header, log_out));
+    }
+
+    if !(skip_run && ok) {
+        notify::notify_job(
+            &tasks::py_str(work.get("title").unwrap_or(&Value::Null)),
+            &tasks::py_str(job.get("title").unwrap_or(&Value::Null)),
+            status,
+            par2_reason,
+            &dest,
+        );
     }
 
     if ok {
         0
     } else {
         1
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn args(items: &[&str]) -> Vec<String> {
+        items.iter().map(|s| s.to_string()).collect()
+    }
+
+    #[test]
+    fn has_task_flag_finds_flag_anywhere() {
+        assert!(has_task_flag(
+            &args(&[r"C:\tasks\t.rzp", "--job", "j1", "--if-changed"]),
+            "--if-changed"
+        ));
+    }
+
+    #[test]
+    fn has_task_flag_is_case_insensitive() {
+        assert!(has_task_flag(&args(&["--IF-CHANGED"]), "--if-changed"));
+    }
+
+    #[test]
+    fn has_task_flag_ignores_whitespace() {
+        assert!(has_task_flag(
+            &args(&["  --if-changed  "]),
+            "--if-changed"
+        ));
+    }
+
+    #[test]
+    fn has_task_flag_rejects_missing_and_empty() {
+        assert!(!has_task_flag(&[], "--if-changed"));
+        assert!(!has_task_flag(&args(&["--job", "j1"]), "--if-changed"));
+        assert!(!has_task_flag(&args(&["--if-changed"]), ""));
+        assert!(!has_task_flag(&args(&["--if-changed"]), "   "));
+    }
+
+    #[test]
+    fn has_task_flag_requires_exact_match() {
+        assert!(!has_task_flag(&args(&["--if-changed=1"]), "--if-changed"));
+        assert!(!has_task_flag(
+            &args(&[r"C:\--if-changed"]),
+            "--if-changed"
+        ));
+    }
+
+    #[test]
+    fn precheck_zero_means_skip() {
+        assert_eq!(precheck_decision(0), "skip");
+    }
+
+    #[test]
+    fn precheck_two_means_run() {
+        assert_eq!(precheck_decision(2), "run");
+    }
+
+    #[test]
+    fn precheck_other_codes_mean_error() {
+        for rc in [1, 3, 128, -1] {
+            assert_eq!(precheck_decision(rc), "error", "rc={rc}");
+        }
     }
 }

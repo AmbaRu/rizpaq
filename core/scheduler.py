@@ -118,7 +118,7 @@ def _rizpaq_cmd() -> str:
                       
                                                                              
 
-def _exec_cmd_for(rzp_path, job_id: str) -> str:
+def _exec_cmd_for(rzp_path, job_id: str, if_changed: bool = False) -> str:
     pass
 
 
@@ -126,8 +126,14 @@ def _exec_cmd_for(rzp_path, job_id: str) -> str:
 
 
 
+
+
+
+
+
     rizpaq = _rizpaq_cmd()
-    return f'{rizpaq} --task "{rzp_path}" --job "{job_id}"'
+    changed = " --if-changed" if if_changed else ""
+    return f'{rizpaq} --task "{rzp_path}" --job "{job_id}"{changed}'
 
 
 def create_scheduled_task(
@@ -147,6 +153,11 @@ def create_scheduled_task(
 
 
 
+
+
+
+
+
     if os.name != "nt":
         return False
 
@@ -155,17 +166,28 @@ def create_scheduled_task(
     if not schedule or not schedule.get("enabled"):
         return remove_scheduled_task(work, job)
 
-    frequency = schedule.get("frequency", "daily")
+    frequency = str(schedule.get("frequency", "daily") or "daily").lower()
     time_str = schedule.get("time", "10:00")
     interval = max(1, int(schedule.get("interval", 1) or 1))
     days = schedule.get("days") or None
     day_of_month = schedule.get("day_of_month")
 
     cmd = [_schtasks_bin(), "/create", "/tn", task_name,
-           "/tr", _exec_cmd_for(rzp_path, str(job.get("id") or "")),
+           "/tr", _exec_cmd_for(
+               rzp_path, str(job.get("id") or ""),
+               if_changed=(frequency == "continuous"),
+           ),
            "/f"]
 
     if frequency == "minute":
+        cmd += ["/sc", "minute", "/mo", str(interval)]
+    elif frequency == "continuous":
+                                                                
+                                                                        
+                                                                     
+                                                    
+        interval = max(1, min(60, interval))
+        time_str = schedule.get("time") or "00:00"
         cmd += ["/sc", "minute", "/mo", str(interval)]
     elif frequency == "hourly":
         cmd += ["/sc", "hourly", "/mo", str(interval)]

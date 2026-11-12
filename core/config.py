@@ -139,6 +139,13 @@ class Settings:
                                                               
     last_close: Optional[int] = None
     digest_enabled: bool = True
+                                                               
+                                                                      
+                                                                  
+                                                         
+    notify_mode: str = "off"
+    notify_telegram_token: str = ""
+    notify_telegram_chat_id: str = ""
 
 
                                                                              
@@ -464,6 +471,14 @@ def _from_dict(data: dict) -> Settings:
     s.skipped_version = _coerce_str(data.get("skipped_version"))
     s.last_close = _coerce_int_or_none(data.get("last_close"))
     s.digest_enabled = _coerce_bool(data.get("digest_enabled"), True)
+                                                                      
+                                                                    
+    mode = (_coerce_str(data.get("notify_mode")) or "off").lower()
+    s.notify_mode = mode if mode in ("off", "errors", "all") else "off"
+    s.notify_telegram_token = _coerce_str(
+        data.get("notify_telegram_token")) or ""
+    s.notify_telegram_chat_id = _coerce_str(
+        data.get("notify_telegram_chat_id")) or ""
     return s
 
 

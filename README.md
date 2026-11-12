@@ -263,6 +263,21 @@ instant, and nothing you were doing is lost.
   Scheduler's part. A job with log mode "off" stays out of the history by
   design.
 
+### Continuous backup, dedup report and notifications (3.0)
+- **Continuous backup** — a new schedule, "Continuous (on changes)", with an
+  interval of 1 to 60 minutes. Rizpaq compares the archive with the source
+  folders itself and starts a backup only when something actually changed;
+  when nothing changed, the run is skipped and the log says so.
+- **Deduplication report** — the archive information window now shows how
+  many bytes all versions added, how much the archive takes on disk, how much
+  was saved and by how much (the ratio). No extra engine call is needed: the
+  numbers come from the archive information that was already fetched.
+- **Telegram notifications** — get a message when a job finishes or fails.
+  Choose "off", "only errors" or "all results" in Settings → Notifications…,
+  then paste the bot token and the chat id. Notifications work for manual
+  runs as well, and a failed send never breaks the job. If the send fails,
+  the reason is written to `rizpaq_notify.log` next to your settings.
+
 ### Archive protection (PAR2)
 - Every archive can carry a **PAR2 recovery set** — protection files kept
   right next to the archive. The `par2` engine is bundled.
@@ -675,6 +690,22 @@ ZPAQ**. Один клик: старый RAR, набитый дублями, пр
   поэтому карточки запусков и история лога показывают всю активность,
   а не только работу Планировщика. Задание с режимом лога «не вести»
   в историю не попадает — так и задумано.
+
+### Непрерывный бэкап, отчёт о дедупликации и уведомления (3.0)
+- **Непрерывный бэкап** — новое расписание «Непрерывно (при изменениях)» с
+  интервалом от 1 до 60 минут. Программа сама сверяет архив с папками-
+  источниками и запускает архивацию только когда есть что менять; если
+  изменений нет, запуск пропускается, а в логе пишется причина.
+- **Отчёт о дедупликации** — в окне информации об архиве теперь видно, сколько
+  байт добавили все версии, сколько архив занимает на диске, сколько
+  сэкономлено и во сколько раз. Отдельных запросов к архиватору не требуется:
+  цифры берутся из уже полученной информации об архиве.
+- **Уведомления в Telegram** — сообщение о том, что задание выполнено или
+  сорвалось. В «Настройки → Уведомления…» выбирается режим (выключено, только
+  ошибки или все результаты), вводится токен бота и chat_id. Уведомления
+  приходят и для ручных запусков, а неудачная отправка никогда не портит
+  результат задания. Причина сбоя пишется в `rizpaq_notify.log` рядом с
+  настройками.
 
 ### Защита архива (PAR2)
 - У любого архива может быть **PAR2-набор восстановления** — файлы
