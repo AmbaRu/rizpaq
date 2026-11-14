@@ -1346,6 +1346,13 @@ class ArchiveActionsMixin:
                         self._cache(path)["password"] = new_pw or None
                     except Exception:
                         pass
+                                                                  
+                                                                      
+                                                  
+                    try:
+                        set_password(path, new_pw or None)
+                    except Exception:
+                        pass
                     try:
                         self._on_refresh()
                     except Exception:
