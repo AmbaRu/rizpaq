@@ -22,7 +22,9 @@ from __future__ import annotations
 
 import os
 import sys
+import tempfile
 import unittest
+from pathlib import Path
 from types import SimpleNamespace
 from unittest import mock
 
@@ -315,6 +317,84 @@ class TestDashboardSilence(unittest.TestCase):
     def test_continuous_is_a_minute_interval(self):
         pass
         self.assertEqual(DA._INTERVAL_SECONDS["continuous"], 60)
+
+
+class TestPrecheckBlocked(unittest.TestCase):
+    pass
+
+
+
+
+
+
+
+
+    def test_plain_work_is_not_blocked(self):
+        self.assertEqual(
+            H._precheck_blocked_reason({}, r"D:\arc\arc.zpaq"), ""
+        )
+
+    def test_only_masks_block_precheck(self):
+        reason = H._precheck_blocked_reason(
+            {"only_masks": ["*.txt"]}, r"D:\arc\arc.zpaq"
+        )
+        self.assertIn("masks", reason)
+
+    def test_not_masks_block_precheck(self):
+        reason = H._precheck_blocked_reason(
+            {"not_masks": ["*.tmp"]}, r"D:\arc\arc.zpaq"
+        )
+        self.assertIn("masks", reason)
+
+    def test_chunk_blocks_precheck(self):
+        reason = H._precheck_blocked_reason(
+            {"chunk": "100m"}, r"D:\arc\arc.zpaq"
+        )
+        self.assertIn("multi-volume", reason)
+
+    def test_multivolume_path_blocks_precheck(self):
+        reason = H._precheck_blocked_reason({}, r"D:\arc\arc_????.zpaq")
+        self.assertIn("multi-volume", reason)
+
+    def test_empty_masks_do_not_block(self):
+        reason = H._precheck_blocked_reason(
+            {"only_masks": [], "not_masks": []}, r"D:\arc\arc.zpaq"
+        )
+        self.assertEqual(reason, "")
+
+
+class TestEmptyArchive(unittest.TestCase):
+    pass
+
+
+
+
+
+
+
+    def _tmp(self):
+        return tempfile.TemporaryDirectory(prefix="empty_archive_")
+
+    def test_empty_file_is_empty(self):
+        with self._tmp() as tmp:
+            path = Path(tmp) / "arc.zpaq"
+            path.write_bytes(b"")
+            self.assertTrue(H._archive_is_empty(path))
+
+    def test_non_empty_file_is_not_empty(self):
+        with self._tmp() as tmp:
+            path = Path(tmp) / "arc.zpaq"
+            path.write_bytes(b"data")
+            self.assertFalse(H._archive_is_empty(path))
+
+    def test_missing_file_is_not_empty(self):
+        with self._tmp() as tmp:
+            path = Path(tmp) / "missing.zpaq"
+            self.assertFalse(H._archive_is_empty(path))
+
+    def test_directory_is_not_empty_archive(self):
+        with self._tmp() as tmp:
+            self.assertFalse(H._archive_is_empty(Path(tmp)))
 
 
 if __name__ == "__main__":

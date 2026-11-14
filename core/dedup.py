@@ -1,3 +1,20 @@
+                       
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -27,7 +44,7 @@ from pathlib import Path
 from typing import Optional
 
 
-def dedup_stats(versions, size_on_disk: Optional[int]) -> dict:
+def dedup_stats(uncompressed: Optional[int], size_on_disk: Optional[int]) -> dict:
     pass
 
 
@@ -35,16 +52,14 @@ def dedup_stats(versions, size_on_disk: Optional[int]) -> dict:
 
 
 
+
+
+
+
+
     logical = 0
-    for version in versions or []:
-        if isinstance(version, dict):
-            value = version.get("bytes_added")
-        else:
-            value = getattr(version, "bytes_added", 0)
-        try:
-            logical += max(0, int(value or 0))
-        except (TypeError, ValueError):
-            continue
+    if isinstance(uncompressed, int) and not isinstance(uncompressed, bool):
+        logical = max(0, uncompressed)
 
     actual = None
     if isinstance(size_on_disk, int) and not isinstance(size_on_disk, bool):

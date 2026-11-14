@@ -184,7 +184,8 @@
             "par2_enabled": true,
             "par2_options": {
               "redundancy": "10"
-            }
+            },
+            "new_password": null
           },
           {
             "id": "job-test",
@@ -222,7 +223,8 @@
             "chunk": null,
             "copy": null,
             "par2_enabled": null,
-            "par2_options": null
+            "par2_options": null,
+            "new_password": null
           },
           {
             "id": "job-weird",
@@ -260,7 +262,8 @@
             "chunk": null,
             "copy": null,
             "par2_enabled": null,
-            "par2_options": null
+            "par2_options": null,
+            "new_password": null
           }
         ]
       }
@@ -319,6 +322,7 @@
     "par2_enabled": true,
     "par2_options": {
       "redundancy": "10"
-    }
+    },
+    "new_password": null
   }
 }

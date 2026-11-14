@@ -95,6 +95,7 @@ from pathlib import Path
 from core.password_store import get_password, set_password
 from core.incomplete_archive import incomplete_archive_action
 from core.tasks import (
+    ACTION_BACKUP,
     ACTION_CHECKPASSWORD,
     ACTION_CONSOLIDATE,
     ACTION_CROP,
@@ -104,6 +105,7 @@ from core.tasks import (
     ACTION_TEST,
     ContainerLockBusy,
     PAR2_REASON_BY_STATE,
+    REASON_SYNC_FAILED,
     TEST_MODE_SYNC,
     _now,
     load_container,
@@ -468,6 +470,52 @@ def _build_test_cmd(zpaq_bin, dest, password, test_mode, tmp_dir=None, sources=N
     if password:
         cmd += ["-key", password]
     return cmd
+
+
+def _precheck_blocked_reason(settings: dict, dest: str) -> str:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    if settings.get("only_masks") or settings.get("not_masks"):
+        return "the work uses include/exclude masks"
+    if settings.get("chunk"):
+        return "the job writes a multi-volume archive"
+    if "?" in str(dest):
+        return "the archive is multi-volume"
+    return ""
+
+
+def _archive_is_empty(path) -> bool:
+    pass
+
+
+
+
+
+
+    try:
+        p = Path(str(path))
+        return p.is_file() and p.stat().st_size == 0
+    except OSError:
+        return False
 
 
 def _continuous_precheck(zpaq_bin, dest, password, sources):
@@ -1061,32 +1109,51 @@ def _headless_task(rest: list) -> int:
                           
      
                                                                         
-                                                                        
-                                                          
     skip_run = False
     skip_note = ""
     pre_rc = None
     pre_log = ""
     pre_cmd = None
-    if if_changed and action == "backup" and Path(dest).is_file():
-        decision, pre_rc, pre_log, pre_cmd = _continuous_precheck(
-            zpaq, dest, password, srcs
-        )
-        if decision == "skip":
-            skip_run = True
-            skip_note = (
-                "\n[rizpaq] no changes since the last backup, "
-                "backup skipped\n"
+    notify_reason = None
+    if if_changed and action == ACTION_BACKUP:
+                                                                 
+                                                                     
+                                                                 
+        blocked = _precheck_blocked_reason(settings, dest)
+        if blocked:
+            skip_note = f"\n[rizpaq] precheck skipped: {blocked}\n"
+        elif Path(dest).is_file():
+            decision, pre_rc, pre_log, pre_cmd = _continuous_precheck(
+                zpaq, dest, password, srcs
             )
-        elif decision == "error":
-            skip_run = True
-            skip_note = (
-                "\n[rizpaq] sync precheck failed, backup not started\n"
-            )
+            if decision == "skip":
+                skip_run = True
+                skip_note = (
+                    "\n[rizpaq] no changes since the last backup, "
+                    "backup skipped\n"
+                )
+            elif decision == "error":
+                                                                           
+                                                                           
+                                      
+                 
+                                                                      
+                                                                           
+                                                                             
+                                                                          
+                                                                       
+                                                              
+                if not _archive_is_empty(dest):
+                    skip_run = True
+                    notify_reason = REASON_SYNC_FAILED
+                    skip_note = (
+                        "\n[rizpaq] sync precheck failed, backup not started\n"
+                    )
 
                                                    
     tmp_dir = None                                              
     cmd = None
+    password_target = None                                               
     par2_mode = (action == ACTION_TEST
                  and str(settings.get("test_mode") or "").strip().lower()
                  == "par2")
@@ -1157,6 +1224,13 @@ def _headless_task(rest: list) -> int:
                                                            
                                                                                                  
                                                                             
+             
+                                                                   
+                                                                       
+                                                                        
+                                                                      
+                                                                       
+                                                                   
             old_pw = password or ""
             new_pw = str(settings.get("new_password") or "").strip()
             if not old_pw or not new_pw:
@@ -1164,11 +1238,21 @@ def _headless_task(rest: list) -> int:
                 rc, log = 1, "ERROR: password change requires both old and new password\n"
                 ok = False
                                                                                       
-                                                             
+                cmd = None
+            elif "?" in dest:
+                                                                             
+                rc, log = 1, "ERROR: password change is not supported for multi-volume archives\n"
+                ok = False
                 cmd = None
             else:
-                sfx_dest = str(Path(dest).with_suffix(".zpaq"))
-                cmd = [zpaq, "password", dest, sfx_dest, "-key", old_pw, "-key2", new_pw]
+                p = Path(dest)
+                password_target = str(
+                    p.with_name(p.stem + ".new" + (p.suffix or ".zpaq"))
+                )
+                cmd = [
+                    zpaq, "password", dest, password_target,
+                    "-key", old_pw, "-key2", new_pw, "-force",
+                ]
         elif action == ACTION_CHECKPASSWORD:
                                                                    
                                                  
@@ -1189,6 +1273,30 @@ def _headless_task(rest: list) -> int:
     finally:
         if tmp_dir:
             shutil.rmtree(tmp_dir, ignore_errors=True)
+
+                                                                     
+                                                                       
+                                                                      
+                                                   
+    if action == ACTION_PASSWORD and password_target:
+        if ok:
+            try:
+                os.replace(password_target, dest)
+            except OSError as exc:
+                ok = False
+                rc = 1
+                log = (log or "") + (
+                    "\nERROR: cannot replace the archive with the "
+                    f"re-encrypted copy: {exc}\n"
+                )
+            else:
+                password = str(settings.get("new_password") or "").strip()
+                settings["password"] = password
+        else:
+            try:
+                os.remove(password_target)
+            except OSError:
+                pass
 
     if rename_note:
         log = rename_note + (log or "")
@@ -1227,7 +1335,8 @@ def _headless_task(rest: list) -> int:
                                                                  
                                                                       
                                          
-            update_job_meta(c, job_id, status, reason=par2_reason)
+            update_job_meta(c, job_id, status,
+                            reason=(notify_reason or par2_reason))
 
         try:
             update_container(rzp_path, _mutate)
@@ -1308,7 +1417,8 @@ def _headless_task(rest: list) -> int:
                                                                     
              
     if not (skip_run and ok):
-        _notify_task_result(work, job, status, par2_reason, dest)
+        _notify_task_result(work, job, status,
+                            (notify_reason or par2_reason), dest)
 
     return 0 if ok else 1
 

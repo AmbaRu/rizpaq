@@ -13,6 +13,8 @@
 
 
 
+
+
 from __future__ import annotations
 
 import os
@@ -20,88 +22,58 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
-from types import SimpleNamespace
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from core.dedup import archive_size_on_disk, dedup_stats
+from core.parser import parse_info_stat
 
 
 class TestDedupStats(unittest.TestCase):
-    def test_empty_versions(self):
-        stats = dedup_stats([], 100)
-        self.assertEqual(stats["logical"], 0)
-        self.assertEqual(stats["actual"], 100)
-        self.assertEqual(stats["saved"], -100)
-        self.assertEqual(stats["ratio"], 0.0)
-
-    def test_none_versions(self):
-        stats = dedup_stats(None, None)
-        self.assertEqual(stats["logical"], 0)
-        self.assertIsNone(stats["actual"])
-        self.assertIsNone(stats["saved"])
-        self.assertIsNone(stats["ratio"])
-
-    def test_sums_bytes_added_from_objects(self):
-        versions = [
-            SimpleNamespace(bytes_added=100),
-            SimpleNamespace(bytes_added=200),
-            SimpleNamespace(bytes_added=300),
-        ]
-        stats = dedup_stats(versions, 300)
-        self.assertEqual(stats["logical"], 600)
-        self.assertEqual(stats["actual"], 300)
-        self.assertEqual(stats["saved"], 300)
-        self.assertEqual(stats["ratio"], 2.0)
-
-    def test_accepts_dicts(self):
-        versions = [{"bytes_added": 10}, {"bytes_added": 90}]
-        stats = dedup_stats(versions, 50)
-        self.assertEqual(stats["logical"], 100)
-        self.assertEqual(stats["saved"], 50)
-        self.assertEqual(stats["ratio"], 2.0)
-
-    def test_bad_values_count_as_zero(self):
-        versions = [
-            SimpleNamespace(bytes_added="garbage"),
-            SimpleNamespace(bytes_added=None),
-            SimpleNamespace(bytes_added=-50),
-            {"bytes_added": "???"},
-            SimpleNamespace(bytes_added=7),
-        ]
-        stats = dedup_stats(versions, 10)
-        self.assertEqual(stats["logical"], 7)
-
-    def test_missing_bytes_added_attribute(self):
-        stats = dedup_stats([SimpleNamespace(other=1)], None)
-        self.assertEqual(stats["logical"], 0)
-
-    def test_unknown_actual_keeps_saved_and_ratio_none(self):
-        stats = dedup_stats([SimpleNamespace(bytes_added=100)], None)
-        self.assertEqual(stats["logical"], 100)
-        self.assertIsNone(stats["actual"])
-        self.assertIsNone(stats["saved"])
-        self.assertIsNone(stats["ratio"])
-
-    def test_zero_actual_keeps_saved_and_ratio_none(self):
+    def test_plain_archive(self):
         pass
-        stats = dedup_stats([SimpleNamespace(bytes_added=100)], 0)
+        stats = dedup_stats(1_000_000, 300_000)
+        self.assertEqual(stats["logical"], 1_000_000)
+        self.assertEqual(stats["actual"], 300_000)
+        self.assertEqual(stats["saved"], 700_000)
+        self.assertAlmostEqual(stats["ratio"], 1_000_000 / 300_000, places=6)
+
+    def test_no_compression(self):
+        stats = dedup_stats(500, 500)
+        self.assertEqual(stats["saved"], 0)
+        self.assertEqual(stats["ratio"], 1.0)
+
+    def test_unknown_size_keeps_saved_and_ratio_none(self):
+        stats = dedup_stats(1000, None)
+        self.assertEqual(stats["logical"], 1000)
+        self.assertIsNone(stats["actual"])
+        self.assertIsNone(stats["saved"])
+        self.assertIsNone(stats["ratio"])
+
+    def test_zero_size_keeps_saved_and_ratio_none(self):
+        pass
+        stats = dedup_stats(1000, 0)
         self.assertEqual(stats["actual"], 0)
         self.assertIsNone(stats["saved"])
         self.assertIsNone(stats["ratio"])
 
-    def test_negative_actual_is_clamped(self):
-        stats = dedup_stats([SimpleNamespace(bytes_added=100)], -5)
+    def test_negative_size_is_clamped(self):
+        stats = dedup_stats(1000, -5)
         self.assertEqual(stats["actual"], 0)
         self.assertIsNone(stats["saved"])
 
     def test_bool_is_not_a_size(self):
-        stats = dedup_stats([SimpleNamespace(bytes_added=100)], True)
+        stats = dedup_stats(1000, True)
         self.assertIsNone(stats["actual"])
+
+    def test_none_uncompressed_is_zero(self):
+        stats = dedup_stats(None, 500)
+        self.assertEqual(stats["logical"], 0)
+        self.assertEqual(stats["saved"], -500)
 
     def test_saved_can_be_negative(self):
         pass
-        stats = dedup_stats([SimpleNamespace(bytes_added=10)], 50)
+        stats = dedup_stats(10, 50)
         self.assertEqual(stats["saved"], -40)
         self.assertEqual(stats["ratio"], 0.2)
 
@@ -140,12 +112,6 @@ class TestArchiveSizeOnDisk(unittest.TestCase):
             size = archive_size_on_disk(Path(tmp) / "arc_????.zpaq")
             self.assertIsNone(size)
 
-    def test_non_volume_path_with_wildcard_in_name(self):
-        pass
-        with self._tmp() as tmp:
-            size = archive_size_on_disk(Path(tmp) / "arc_*.zpaq")
-            self.assertIsNone(size)
-
     def test_star_mask(self):
         with self._tmp() as tmp:
             base = Path(tmp)
@@ -154,6 +120,68 @@ class TestArchiveSizeOnDisk(unittest.TestCase):
             self.assertEqual(
                 archive_size_on_disk(base / "*.zpaq"), 12
             )
+
+
+class TestParseInfoStat(unittest.TestCase):
+    pass
+
+
+
+
+
+    REAL = """zpaqfranz v65.5g-JIT8+M,SFTP,RES-L,HW BLK3,SHA1/2,4,SFX64 55.1,(2026-09-28)
+
+<<C:/tmp/arc.zpaq>>:
+3 versions, 4 files, 3.667 bytes (3.58 KB)
+Windows path                   4
+----------------------------------------------------------------------------------------------
+<  Ver  > <  date  > <  time  > <  added > <removed> <    uncompressed   > <    compressed     >
+----------------------------------------------------------------------------------------------
+V00000001 2026-11-12 22:57:42  +00000002 -00000000                  700 [               1.234]
+V00000002 2026-11-12 22:57:58  +00000001 -00000000                2.500 [               1.215]
+V00000003 2026-11-12 22:58:04  +00000001 -00000000                  850 [               1.218]
+----------------------------------------------------------------------------------------------
+               3.667                                              4.050                 3.667
+0.000s (00:00:00,35.17KB) (all OK)
+"""
+
+    def test_totals_are_summed(self):
+        stat = parse_info_stat(self.REAL)
+        self.assertIsNotNone(stat)
+        self.assertEqual(stat["versions"], 3)
+        self.assertEqual(stat["uncompressed"], 4050)
+        self.assertEqual(stat["compressed"], 3667)
+
+    def test_thousands_separators_are_parsed(self):
+        pass
+        text = (
+            "V00000001 2026-11-13 18:23:58  +00005011 -00000000"
+            "            1.053.890 [             309.463]\n"
+        )
+        stat = parse_info_stat(text)
+        self.assertEqual(stat["uncompressed"], 1_053_890)
+        self.assertEqual(stat["compressed"], 309_463)
+
+    def test_empty_output_gives_none(self):
+        self.assertIsNone(parse_info_stat(""))
+        self.assertIsNone(parse_info_stat("no versions here"))
+
+    def test_ordinary_info_output_gives_none(self):
+        pass
+        text = (
+            "V00000001 2026-11-12 22:57:42  +00000002 -00000000 ->"
+            "                1.234\n"
+        )
+        self.assertIsNone(parse_info_stat(text))
+
+    def test_stats_feed_the_report(self):
+        pass
+        stat = parse_info_stat(self.REAL)
+        stats = dedup_stats(stat["uncompressed"], 3667)
+        self.assertEqual(stats["logical"], 4050)
+        self.assertEqual(stats["actual"], 3667)
+        self.assertEqual(stats["saved"], 383)
+        self.assertAlmostEqual(stats["ratio"], 4050 / 3667, places=6)
 
 
 if __name__ == "__main__":

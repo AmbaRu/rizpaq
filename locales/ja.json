@@ -5,12 +5,17 @@
     "fallback": "en"
   },
   "strings": {
+    "password.multipart_unsupported": "マルチボリュームアーカイブのパスワード変更には対応していません。先に統合してください。",
+    "backup.reason.sync_failed": "照合に失敗",
+    "backup.reason_full.sync_failed": "アーカイブとソースの照合に失敗したため、バックアップは開始されませんでした。タスクログを確認してください。",
+    "dashboard.alerts.job_silent_min": "「{job}」が {mins} 分間実行されていません（スケジュール済み）",
+    "dashboard.alerts.job_silent_hour": "「{job}」が {hours} 時間実行されていません（スケジュール済み）",
     "scheduler.rb_continuous": "連続（変更時）",
     "scheduler.continuous_hint": "Rizpaq は N 分ごとに変更を確認し、変更がある場合のみバックアップを開始します。",
     "sched.fmt.continuous_one": "変更時、毎分",
     "sched.fmt.continuous_n": "変更時、{n} 分ごと",
     "archive_info.dedup_title": "重複排除と圧縮",
-    "archive_info.dedup_logical": "バージョン累計の追加量：{size}",
+    "archive_info.dedup_logical": "圧縮前のデータ: {size}",
     "archive_info.dedup_actual": "ディスク上のアーカイブサイズ：{size}",
     "archive_info.dedup_saved": "節約：{size}",
     "archive_info.dedup_ratio": "係数：{ratio}×",

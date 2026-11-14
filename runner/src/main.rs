@@ -8,6 +8,7 @@ use serde_json::Value;
 use std::path::{Path, PathBuf};
 
 const ACTION_TEST: &str = "test";
+const ACTION_BACKUP: &str = "backup";
 
 fn main() {
     let args: Vec<String> = std::env::args_os()
@@ -21,6 +22,10 @@ fn main() {
             &args
         };
     std::process::exit(run(rest));
+}
+
+fn unsupported_action(action: &str) -> bool {
+    action != ACTION_BACKUP && action != ACTION_TEST
 }
 
 fn py_repr_str(s: &str) -> String {
@@ -76,6 +81,33 @@ fn precheck_decision(rc: i32) -> &'static str {
         0 => "skip",
         2 => "run",
         _ => "error",
+    }
+}
+
+fn precheck_blocked_reason(settings: &Value, dest: &str) -> String {
+    let has = |key: &str| -> bool {
+        match settings.get(key) {
+            Some(Value::Array(a)) => !a.is_empty(),
+            Some(Value::String(s)) => !s.trim().is_empty(),
+            _ => false,
+        }
+    };
+    if has("only_masks") || has("not_masks") {
+        return "the work uses include/exclude masks".to_string();
+    }
+    if has("chunk") {
+        return "the job writes a multi-volume archive".to_string();
+    }
+    if dest.contains('?') {
+        return "the archive is multi-volume".to_string();
+    }
+    String::new()
+}
+
+fn archive_is_empty(path: &str) -> bool {
+    match std::fs::metadata(path) {
+        Ok(meta) => meta.is_file() && meta.len() == 0,
+        Err(_) => false,
     }
 }
 
@@ -166,6 +198,24 @@ fn run(rest: &[String]) -> i32 {
         .unwrap_or("full");
     let test_mode = test_mode_raw.trim().to_lowercase();
 
+    let log_mode = settings
+        .get("task_log_mode")
+        .and_then(Value::as_str)
+        .unwrap_or("short")
+        .to_string();
+
+    if unsupported_action(&action) {
+        let text = format!(
+            "Rizpaq: job type '{}' is not supported by the headless runner. \
+             Run this job from the program window, or use a backup/check job.\n",
+            action
+        );
+        errlog::write_temp_error(&text);
+        let header = log::build_log_header(&rzp_path, work, job, 1, None, None);
+        log::write_task_log(&rzp_path, &header, &text, &log_mode, 1, false, "");
+        return 1;
+    }
+
     if action != ACTION_TEST && srcs.is_empty() {
         let header = log::build_log_header(&rzp_path, work, job, 1, None, None);
         log::write_task_log(&rzp_path, &header, "No sources specified in job.", "full", 1, false, "");
@@ -189,11 +239,6 @@ fn run(rest: &[String]) -> i32 {
         .and_then(Value::as_str)
         .filter(|p| !p.is_empty());
     let zpaq = zpaq_bin();
-    let log_mode = settings
-        .get("task_log_mode")
-        .and_then(Value::as_str)
-        .unwrap_or("short")
-        .to_string();
 
     let mut dest = dest0;
     let mut rename_note = String::new();
@@ -217,22 +262,31 @@ fn run(rest: &[String]) -> i32 {
     let mut pre_rc: Option<i32> = None;
     let mut pre_log = String::new();
     let mut pre_cmd: Option<Vec<String>> = None;
-    if if_changed && action == "backup" && Path::new(&dest).is_file() {
-        let (decision, rc0, log0, cmd0) =
-            continuous_precheck(&zpaq, &dest, password, &srcs);
-        pre_rc = Some(rc0);
-        pre_log = log0;
-        pre_cmd = Some(cmd0);
-        if decision == "skip" {
-            skip_run = true;
-            skip_note =
-                "\n[rizpaq] no changes since the last backup, backup skipped\n"
-                    .to_string();
-        } else if decision == "error" {
-            skip_run = true;
-            skip_note =
-                "\n[rizpaq] sync precheck failed, backup not started\n"
-                    .to_string();
+    let mut sync_failed = false;
+    if if_changed && action == ACTION_BACKUP {
+        let blocked = precheck_blocked_reason(&settings, &dest);
+        if !blocked.is_empty() {
+            skip_note = format!("\n[rizpaq] precheck skipped: {}\n", blocked);
+        } else if Path::new(&dest).is_file() {
+            let (decision, rc0, log0, cmd0) =
+                continuous_precheck(&zpaq, &dest, password, &srcs);
+            pre_rc = Some(rc0);
+            pre_log = log0;
+            pre_cmd = Some(cmd0);
+            if decision == "skip" {
+                skip_run = true;
+                skip_note =
+                    "\n[rizpaq] no changes since the last backup, backup skipped\n"
+                        .to_string();
+            } else if decision == "error" {
+                if !archive_is_empty(&dest) {
+                    skip_run = true;
+                    sync_failed = true;
+                    skip_note =
+                        "\n[rizpaq] sync precheck failed, backup not started\n"
+                            .to_string();
+                }
+            }
         }
     }
 
@@ -325,7 +379,11 @@ fn run(rest: &[String]) -> i32 {
     };
     {
         let jid = job_id.clone();
-        let reason: Option<&str> = par2_reason;
+        let reason: Option<&str> = if sync_failed {
+            Some("sync_failed")
+        } else {
+            par2_reason
+        };
         let _ = tasks::update_container(Path::new(&rzp_path), |c| {
             tasks::update_job_meta(c, &jid, status, reason);
         });
@@ -371,7 +429,11 @@ fn run(rest: &[String]) -> i32 {
             &tasks::py_str(work.get("title").unwrap_or(&Value::Null)),
             &tasks::py_str(job.get("title").unwrap_or(&Value::Null)),
             status,
-            par2_reason,
+            if sync_failed {
+                Some("sync_failed")
+            } else {
+                par2_reason
+            },
             &dest,
         );
     }
@@ -444,5 +506,53 @@ mod tests {
         for rc in [1, 3, 128, -1] {
             assert_eq!(precheck_decision(rc), "error", "rc={rc}");
         }
+    }
+
+    #[test]
+    fn runner_supports_only_backup_and_test() {
+        assert!(!unsupported_action("backup"));
+        assert!(!unsupported_action("test"));
+        for action in [
+            "crop",
+            "consolidate",
+            "sfx",
+            "info",
+            "password",
+            "checkpassword",
+        ] {
+            assert!(unsupported_action(action), "{action} должен быть отклонён");
+        }
+    }
+
+    #[test]
+    fn empty_archive_is_detected() {
+        let dir = std::env::temp_dir().join("rizpaq_empty_archive_test");
+        let _ = std::fs::create_dir_all(&dir);
+        let path = dir.join("empty.zpaq");
+        std::fs::write(&path, b"").unwrap();
+        assert!(archive_is_empty(path.to_str().unwrap()));
+        std::fs::write(&path, b"data").unwrap();
+        assert!(!archive_is_empty(path.to_str().unwrap()));
+        let missing = dir.join("missing.zpaq");
+        assert!(!archive_is_empty(missing.to_str().unwrap()));
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn precheck_is_blocked_for_masks_and_multivolume() {
+        let plain = serde_json::json!({});
+        assert_eq!(precheck_blocked_reason(&plain, r"D:\arc\arc.zpaq"), "");
+
+        let only = serde_json::json!({"only_masks": ["*.txt"]});
+        assert!(precheck_blocked_reason(&only, r"D:\arc\arc.zpaq").contains("masks"));
+
+        let not = serde_json::json!({"not_masks": ["*.tmp"]});
+        assert!(precheck_blocked_reason(&not, r"D:\arc\arc.zpaq").contains("masks"));
+
+        let chunk = serde_json::json!({"chunk": "100m"});
+        assert!(precheck_blocked_reason(&chunk, r"D:\arc\arc.zpaq").contains("multi-volume"));
+
+        assert!(precheck_blocked_reason(&plain, r"D:\arc\arc_????.zpaq")
+            .contains("multi-volume"));
     }
 }

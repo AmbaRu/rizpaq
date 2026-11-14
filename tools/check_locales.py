@@ -50,6 +50,11 @@ LOCALES = ROOT / "locales"
 
 PLACEHOLDER_RE = re.compile(r"\{([A-Za-z0-9_]+)\}")
 LITERAL_RE = re.compile(r"\btr\(\s*[\"']([^\"']+)[\"']")
+                                                                     
+                                                                   
+                                                                      
+                                                 
+TEXT_KEY_RE = re.compile(r"\btext_key\s*=\s*[\"']([^\"']+)[\"']")
 SKIP_DIRS = {"__pycache__", "build", "dist", "locales", "tools", "tests"}
 
                                        
@@ -99,12 +104,12 @@ DYNAMIC_KEYS = {
                             
     f"backup.reason.{r}" for r in (
         "par2_missing", "par2_broken", "par2_damaged",
-        "par2_unrepairable", "par2_failed",
+        "par2_unrepairable", "par2_failed", "sync_failed",
     )
 } | {
     f"backup.reason_full.{r}" for r in (
         "par2_missing", "par2_broken", "par2_damaged",
-        "par2_unrepairable", "par2_failed",
+        "par2_unrepairable", "par2_failed", "sync_failed",
     )
 }
 
@@ -268,6 +273,7 @@ def used_keys() -> set:
         except Exception:
             continue
         used |= set(LITERAL_RE.findall(text))
+        used |= set(TEXT_KEY_RE.findall(text))
         used |= _keys_from_tr_calls(text)
 
                                                               

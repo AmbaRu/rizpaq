@@ -5,12 +5,17 @@
     "fallback": "en"
   },
   "strings": {
+    "password.multipart_unsupported": "A alteração da senha não é suportada para um arquivo multivolume. Consolide-o primeiro.",
+    "backup.reason.sync_failed": "falha na comparação",
+    "backup.reason_full.sync_failed": "Não foi possível comparar o arquivo com as fontes e o backup não foi iniciado. Veja o log da tarefa.",
+    "dashboard.alerts.job_silent_min": "«{job}» não é executado há {mins} minutos (agendado)",
+    "dashboard.alerts.job_silent_hour": "«{job}» não é executado há {hours} horas (agendado)",
     "scheduler.rb_continuous": "Contínuo (com alterações)",
     "scheduler.continuous_hint": "O Rizpaq verifica alterações a cada N minutos e só inicia o backup quando existem.",
     "sched.fmt.continuous_one": "Com alterações, a cada minuto",
     "sched.fmt.continuous_n": "Com alterações, a cada {n} min",
     "archive_info.dedup_title": "Desduplicação e compressão",
-    "archive_info.dedup_logical": "Adicionado ao longo das versões: {size}",
+    "archive_info.dedup_logical": "Dados antes da compressão: {size}",
     "archive_info.dedup_actual": "Tamanho do arquivo em disco: {size}",
     "archive_info.dedup_saved": "Economizado: {size}",
     "archive_info.dedup_ratio": "Coeficiente: {ratio}×",

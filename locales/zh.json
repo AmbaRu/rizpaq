@@ -5,12 +5,17 @@
     "fallback": "en"
   },
   "strings": {
+    "password.multipart_unsupported": "不支持修改多卷压缩包的密码。请先合并分卷。",
+    "backup.reason.sync_failed": "对比失败",
+    "backup.reason_full.sync_failed": "无法将压缩包与来源进行对比，备份未启动。请查看任务日志。",
+    "dashboard.alerts.job_silent_min": "“{job}” 已有 {mins} 分钟未运行（按计划）",
+    "dashboard.alerts.job_silent_hour": "“{job}” 已有 {hours} 小时未运行（按计划）",
     "scheduler.rb_continuous": "连续（有变化时）",
     "scheduler.continuous_hint": "Rizpaq 每 N 分钟检查一次变化，仅在有变化时启动备份。",
     "sched.fmt.continuous_one": "有变化时，每分钟",
     "sched.fmt.continuous_n": "有变化时，每 {n} 分钟",
     "archive_info.dedup_title": "去重与压缩",
-    "archive_info.dedup_logical": "各版本累计新增：{size}",
+    "archive_info.dedup_logical": "压缩前的数据：{size}",
     "archive_info.dedup_actual": "磁盘上的归档大小：{size}",
     "archive_info.dedup_saved": "节省：{size}",
     "archive_info.dedup_ratio": "系数：{ratio}×",

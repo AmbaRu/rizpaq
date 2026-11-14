@@ -5,12 +5,17 @@
     "fallback": "en"
   },
   "strings": {
+    "password.multipart_unsupported": "Das Ändern des Passworts wird für ein mehrteiliges Archiv nicht unterstützt. Führen Sie zuerst die Konsolidierung aus.",
+    "backup.reason.sync_failed": "Abgleich fehlgeschlagen",
+    "backup.reason_full.sync_failed": "Der Archivabgleich mit den Quellen ist fehlgeschlagen, die Sicherung wurde nicht gestartet. Siehe Aufgabenprotokoll.",
+    "dashboard.alerts.job_silent_min": "„{job}“ lief seit {mins} Minuten nicht (geplant)",
+    "dashboard.alerts.job_silent_hour": "„{job}“ lief seit {hours} Stunden nicht (geplant)",
     "scheduler.rb_continuous": "Kontinuierlich (bei Änderungen)",
     "scheduler.continuous_hint": "Rizpaq prüft alle N Minuten auf Änderungen und startet nur dann eine Sicherung.",
     "sched.fmt.continuous_one": "Bei Änderungen, jede Minute",
     "sched.fmt.continuous_n": "Bei Änderungen, alle {n} Min.",
     "archive_info.dedup_title": "Deduplizierung und Komprimierung",
-    "archive_info.dedup_logical": "Über alle Versionen hinzugefügt: {size}",
+    "archive_info.dedup_logical": "Daten vor der Komprimierung: {size}",
     "archive_info.dedup_actual": "Archivgröße auf dem Datenträger: {size}",
     "archive_info.dedup_saved": "Gespart: {size}",
     "archive_info.dedup_ratio": "Faktor: {ratio}×",

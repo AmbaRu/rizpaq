@@ -168,7 +168,15 @@ def create_scheduled_task(
 
     frequency = str(schedule.get("frequency", "daily") or "daily").lower()
     time_str = schedule.get("time", "10:00")
-    interval = max(1, int(schedule.get("interval", 1) or 1))
+                                                                      
+                                                                 
+                                                                        
+                                                                    
+                            
+    try:
+        interval = max(1, int(schedule.get("interval", 1) or 1))
+    except (TypeError, ValueError):
+        interval = 1
     days = schedule.get("days") or None
     day_of_month = schedule.get("day_of_month")
 
@@ -180,6 +188,11 @@ def create_scheduled_task(
            "/f"]
 
     if frequency == "minute":
+                                                                   
+                                                                        
+                                                                  
+                                          
+        interval = max(1, min(59, interval))
         cmd += ["/sc", "minute", "/mo", str(interval)]
     elif frequency == "continuous":
                                                                 

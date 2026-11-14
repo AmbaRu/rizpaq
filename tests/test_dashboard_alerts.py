@@ -172,6 +172,47 @@ class TestJobSilent(unittest.TestCase):
         alerts = DA.collect_alerts({"works": [_work(jobs=[j])]}, history)
         self.assertEqual([a for a in alerts if a.kind == "job_silent"], [])
 
+    def test_continuous_silent_uses_minutes(self):
+        pass
+
+
+
+        j = _job("j1", schedule={"enabled": True, "frequency": "continuous",
+                                 "interval": 5})
+        history = [_entry("j1", "ok", minutes_ago=20)]
+        alerts = DA.collect_alerts({"works": [_work(jobs=[j])]}, history)
+        silent = [a for a in alerts if a.kind == "job_silent"]
+        self.assertEqual(len(silent), 1)
+        self.assertEqual(silent[0].text_key, "dashboard.alerts.job_silent_min")
+        self.assertEqual(silent[0].params["mins"], 20)
+
+    def test_continuous_silent_uses_hours_after_an_hour(self):
+        j = _job("j1", schedule={"enabled": True, "frequency": "continuous",
+                                 "interval": 5})
+        history = [_entry("j1", "ok", minutes_ago=2 * 60)]
+        alerts = DA.collect_alerts({"works": [_work(jobs=[j])]}, history)
+        silent = [a for a in alerts if a.kind == "job_silent"]
+        self.assertEqual(len(silent), 1)
+        self.assertEqual(silent[0].text_key, "dashboard.alerts.job_silent_hour")
+        self.assertEqual(silent[0].params["hours"], 2)
+
+    def test_minute_schedule_also_uses_minutes(self):
+        j = _job("j1", schedule={"enabled": True, "frequency": "minute",
+                                 "interval": 5})
+        history = [_entry("j1", "ok", minutes_ago=20)]
+        alerts = DA.collect_alerts({"works": [_work(jobs=[j])]}, history)
+        silent = [a for a in alerts if a.kind == "job_silent"]
+        self.assertEqual(len(silent), 1)
+        self.assertEqual(silent[0].text_key, "dashboard.alerts.job_silent_min")
+
+    def test_daily_silence_still_requires_a_day(self):
+        pass
+        j = _job("j1", schedule={"enabled": True, "frequency": "daily",
+                                 "interval": 1})
+        history = [_entry("j1", "ok", minutes_ago=60)]
+        alerts = DA.collect_alerts({"works": [_work(jobs=[j])]}, history)
+        self.assertEqual([a for a in alerts if a.kind == "job_silent"], [])
+
 
 class TestStreaks(unittest.TestCase):
     def test_streaks_basic(self):

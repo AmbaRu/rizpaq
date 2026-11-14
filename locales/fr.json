@@ -5,12 +5,17 @@
     "fallback": "en"
   },
   "strings": {
+    "password.multipart_unsupported": "Le changement de mot de passe n’est pas pris en charge pour une archive multivolume. Consolidez-la d’abord.",
+    "backup.reason.sync_failed": "échec de la comparaison",
+    "backup.reason_full.sync_failed": "La comparaison de l’archive avec les sources a échoué, la sauvegarde n’a pas démarré. Voir le journal de la tâche.",
+    "dashboard.alerts.job_silent_min": "« {job} » n'a pas tourné depuis {mins} minutes (planifié)",
+    "dashboard.alerts.job_silent_hour": "« {job} » n'a pas tourné depuis {hours} heures (planifié)",
     "scheduler.rb_continuous": "Continu (sur modifications)",
     "scheduler.continuous_hint": "Rizpaq vérifie les modifications toutes les N minutes et ne lance une sauvegarde que s'il y en a.",
     "sched.fmt.continuous_one": "Sur modifications, chaque minute",
     "sched.fmt.continuous_n": "Sur modifications, toutes les {n} min",
     "archive_info.dedup_title": "Déduplication et compression",
-    "archive_info.dedup_logical": "Ajouté au fil des versions : {size}",
+    "archive_info.dedup_logical": "Données avant compression : {size}",
     "archive_info.dedup_actual": "Taille de l'archive sur disque : {size}",
     "archive_info.dedup_saved": "Économisé : {size}",
     "archive_info.dedup_ratio": "Ratio : {ratio}×",

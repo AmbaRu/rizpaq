@@ -127,6 +127,11 @@ class TestNoMissingTranslations(unittest.TestCase):
 
 
         literal_re = re.compile(r"\btr\(\s*[\"']([^\"']+)[\"']")
+                                                                     
+                                                                      
+                                                     
+                                                                    
+        text_key_re = re.compile(r"\btext_key\s*=\s*[\"']([^\"']+)[\"']")
         skip_dirs = {"__pycache__", "build", "dist", "locales", "tools", "tests"}
         root = ROOT
         used = set()
@@ -138,6 +143,7 @@ class TestNoMissingTranslations(unittest.TestCase):
             except Exception:
                 continue
             used |= set(literal_re.findall(text))
+            used |= set(text_key_re.findall(text))
 
                                                                   
                                                          

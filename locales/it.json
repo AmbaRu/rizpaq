@@ -5,12 +5,17 @@
     "fallback": "en"
   },
   "strings": {
+    "password.multipart_unsupported": "La modifica della password non è supportata per un archivio multivolume. Consolidalo prima.",
+    "backup.reason.sync_failed": "confronto non riuscito",
+    "backup.reason_full.sync_failed": "Il confronto dell’archivio con le origini non è riuscito, il backup non è stato avviato. Vedi il registro dell’attività.",
+    "dashboard.alerts.job_silent_min": "«{job}» non viene eseguito da {mins} minuti (pianificato)",
+    "dashboard.alerts.job_silent_hour": "«{job}» non viene eseguito da {hours} ore (pianificato)",
     "scheduler.rb_continuous": "Continuo (sulle modifiche)",
     "scheduler.continuous_hint": "Rizpaq controlla le modifiche ogni N minuti e avvia il backup solo se ce ne sono.",
     "sched.fmt.continuous_one": "Sulle modifiche, ogni minuto",
     "sched.fmt.continuous_n": "Sulle modifiche, ogni {n} min",
     "archive_info.dedup_title": "Deduplicazione e compressione",
-    "archive_info.dedup_logical": "Aggiunto nelle versioni: {size}",
+    "archive_info.dedup_logical": "Dati prima della compressione: {size}",
     "archive_info.dedup_actual": "Dimensione dell'archivio su disco: {size}",
     "archive_info.dedup_saved": "Risparmiato: {size}",
     "archive_info.dedup_ratio": "Rapporto: {ratio}×",

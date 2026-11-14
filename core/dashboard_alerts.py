@@ -281,15 +281,40 @@ def collect_alerts(container: dict, history: list) -> list:
             if last is None:
                 continue                                         
             overdue = (now - last).total_seconds()
-            if overdue > step * _SILENT_FACTOR \
-                    and overdue > _SILENT_MIN_SECONDS:
-                alerts.append(Alert(
-                    "job_silent", wid, jid,
-                    text_key="dashboard.alerts.job_silent",
-                    params={
+                                                                      
+                                                                    
+                                                                       
+                                                                      
+                                                                       
+                       
+            if freq in ("minute", "continuous"):
+                floor = 0
+            else:
+                floor = _SILENT_MIN_SECONDS
+            if overdue > step * _SILENT_FACTOR and overdue > floor:
+                if freq in ("minute", "continuous"):
+                    if overdue < 3600:
+                        text_key = "dashboard.alerts.job_silent_min"
+                        params = {
+                            "job": str(job.get("title") or ""),
+                            "mins": max(1, int(overdue // 60)),
+                        }
+                    else:
+                        text_key = "dashboard.alerts.job_silent_hour"
+                        params = {
+                            "job": str(job.get("title") or ""),
+                            "hours": max(1, int(overdue // 3600)),
+                        }
+                else:
+                    text_key = "dashboard.alerts.job_silent"
+                    params = {
                         "job": str(job.get("title") or ""),
                         "days": max(1, int(overdue // (24 * 3600))),
-                    },
+                    }
+                alerts.append(Alert(
+                    "job_silent", wid, jid,
+                    text_key=text_key,
+                    params=params,
                 ))
 
                                                                   

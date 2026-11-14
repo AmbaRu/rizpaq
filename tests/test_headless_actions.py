@@ -51,10 +51,12 @@ class TestHeadlessActions(unittest.TestCase):
 
                                                                          
 
-    def _make_container(self, action: str, extra: dict = None) -> str:
+    def _make_container(self, action: str, extra: dict = None,
+                        password: str = None) -> str:
         container = T.empty_container("live")
         work = T.add_work(
-            container, "Работа", [str(self.src)], str(self.dest)
+            container, "Работа", [str(self.src)], str(self.dest),
+            password=password,
         )
         settings = {
             "title": "Задание",
@@ -66,13 +68,15 @@ class TestHeadlessActions(unittest.TestCase):
         T.save_container(self.rzp, container)
         return job["id"]
 
-    def _run(self, action: str, extra: dict = None):
+    def _run(self, action: str, extra: dict = None, fake_run=None):
         pass
         job_id = self._make_container(action, extra)
         calls = []
 
         def fake_run_zpaq(cmd, is_cancelled=None, set_proc=None):
             calls.append(list(cmd))
+            if fake_run is not None:
+                return fake_run(cmd)
             return 0, "engine output\n"
 
                                                                        
@@ -160,6 +164,56 @@ class TestHeadlessActions(unittest.TestCase):
         self.assertEqual(calls, [])
         state = self._job_state(job_id)
         self.assertEqual(state.get("last_status"), "error")
+
+    def test_password_action_writes_separate_file_and_replaces(self):
+        pass
+
+
+
+        self.dest.write_bytes(b"old encrypted archive")
+        job_id = self._make_container(
+            "password",
+            {"new_password": "newpass"},
+            password="oldpass",
+        )
+
+        def fake_run(cmd):
+            target = Path(cmd[3])
+            self.assertNotEqual(target, self.dest, "цель не должна совпадать с исходником")
+            target.write_bytes(b"new encrypted archive")
+            return 0, "password changed\n"
+
+        cfg_path = self.dir / "test_config.json"
+        cfg_path.write_text(
+            json.dumps({"notify_mode": "off"}), encoding="utf-8"
+        )
+        calls = []
+
+        def fake_run_zpaq(cmd, is_cancelled=None, set_proc=None):
+            calls.append(list(cmd))
+            return fake_run(cmd)
+
+        with mock.patch.dict(
+            os.environ,
+            {"ZPAQ_BIN": ZPAQ, "ZPAQ_GUI_CONFIG": str(cfg_path)},
+        ), mock.patch(
+            "core.zpaq_cli.run_zpaq", fake_run_zpaq
+        ), mock.patch(
+            "core.index_refresh.refresh_index_sync", lambda *a, **k: None
+        ):
+            rc = H._headless_task([str(self.rzp), "--job", job_id])
+
+        self.assertEqual(rc, 0)
+        self.assertEqual(len(calls), 1)
+        cmd = calls[0]
+        self.assertEqual(cmd[1], "password")
+        self.assertEqual(cmd[2], str(self.dest))
+        self.assertIn("-force", cmd)
+        self.assertIn("oldpass", cmd)
+        self.assertIn("newpass", cmd)
+        self.assertEqual(self.dest.read_bytes(), b"new encrypted archive")
+        self.assertFalse(Path(cmd[3]).exists(), "временный файл должен исчезнуть")
+        self.assertEqual(self._job_state(job_id).get("last_status"), "ok")
 
     def test_all_actions_are_imported(self):
         pass

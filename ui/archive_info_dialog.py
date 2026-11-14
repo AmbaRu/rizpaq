@@ -1,3 +1,14 @@
+                       
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5,6 +16,8 @@
 
 
 from __future__ import annotations
+
+from typing import Optional
 
 from PySide6.QtWidgets import (
     QDialog,
@@ -41,6 +54,10 @@ class ArchiveInfoDialog(QDialog):
         lay = QVBoxLayout(self)
         lay.setContentsMargins(12, 12, 12, 12)
         lay.setSpacing(10)
+        self._lay = lay
+        self._archive_path = str(archive_path)
+        self._dedup_box = None
+        self._dedup_label = None
 
                                
         path_label = QLabel(str(archive_path))
@@ -54,23 +71,14 @@ class ArchiveInfoDialog(QDialog):
         summary_label.setWordWrap(True)
         lay.addWidget(summary_label)
 
+                                          
+                                                                        
+                                                                      
+                       
+        self._dedup_index = lay.count()
+
                         
         versions = sorted(versions or [], key=lambda v: v.number)
-
-                                       
-                                                                  
-                                                                       
-                                                                    
-                    
-        dedup_text = self._dedup_text(archive_path, versions)
-        if dedup_text:
-            dedup_box = QGroupBox(tr("archive_info.dedup_title"))
-            dedup_lay = QVBoxLayout(dedup_box)
-            dedup_lay.setContentsMargins(10, 8, 10, 8)
-            dedup_label = QLabel(dedup_text)
-            dedup_label.setWordWrap(True)
-            dedup_lay.addWidget(dedup_label)
-            lay.addWidget(dedup_box)
 
         if versions:
             table = QTableWidget()
@@ -126,8 +134,35 @@ class ArchiveInfoDialog(QDialog):
 
         lay.addLayout(bottom)
 
-    @staticmethod
-    def _dedup_text(archive_path, versions) -> str:
+                                                                          
+
+    def set_dedup_stats(self, uncompressed: Optional[int]) -> None:
+        pass
+
+
+
+
+
+
+        if uncompressed is None:
+            return
+        text = self._dedup_text(uncompressed)
+        if not text:
+            return
+        if self._dedup_label is None:
+            box = QGroupBox(tr("archive_info.dedup_title"))
+            box_lay = QVBoxLayout(box)
+            box_lay.setContentsMargins(10, 8, 10, 8)
+            label = QLabel(text)
+            label.setWordWrap(True)
+            box_lay.addWidget(label)
+            self._lay.insertWidget(self._dedup_index, box)
+            self._dedup_box = box
+            self._dedup_label = label
+        else:
+            self._dedup_label.setText(text)
+
+    def _dedup_text(self, uncompressed: Optional[int]) -> str:
         pass
 
 
@@ -136,9 +171,7 @@ class ArchiveInfoDialog(QDialog):
 
 
 
-        if not versions:
-            return ""
-        stats = dedup_stats(versions, archive_size_on_disk(archive_path))
+        stats = dedup_stats(uncompressed, archive_size_on_disk(self._archive_path))
         lines = [
             tr(
                 "archive_info.dedup_logical",

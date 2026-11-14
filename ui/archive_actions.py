@@ -165,7 +165,7 @@ from pathlib import Path
 
 from PySide6.QtWidgets import QDialog, QFileDialog, QInputDialog, QMessageBox
 
-from core.parser import parse_create_stats
+from core.parser import parse_create_stats, parse_info_stat
 from core.password_store import set_password
 from core.incomplete_archive import incomplete_archive_action
 from core.tasks import (
@@ -461,7 +461,55 @@ class ArchiveActionsMixin:
             bool(c.get("password")),
             parent=self,
         )
+        self._start_dedup_worker(path, dlg)
         dlg.exec()
+
+    def _start_dedup_worker(self, path: str, dlg) -> None:
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        try:
+            pw = self._cache(path).get("password")
+            cmd = [self.zpaq_bin, "i", str(path), "-stat"]
+            if pw:
+                cmd += ["-key", pw]
+            worker = ZpaqWorker("info_stat", cmd, {"path": str(path)})
+            worker.result.connect(
+                lambda res, d=dlg: self._on_dedup_stats(d, res)
+            )
+            worker.finished.connect(lambda w=worker: self._cleanup_worker(w))
+            self._workers.append(worker)
+            worker.start()
+        except Exception:
+            pass
+
+    def _on_dedup_stats(self, dlg, result: dict) -> None:
+        pass
+        try:
+            if not result or result.get("rc", 1) != 0:
+                return
+            stat = parse_info_stat(result.get("output", "") or "")
+            if not stat:
+                return
+            dlg.set_dedup_stats(stat.get("uncompressed"))
+        except Exception:
+            pass
 
     def _on_archive_info(self):
         if self.archive_path is None:
@@ -1192,6 +1240,17 @@ class ArchiveActionsMixin:
             )
             return
 
+        if "?" in arc:
+                                                                         
+                                                                        
+                                                              
+            QMessageBox.warning(
+                self,
+                tr("password.dialog_title"),
+                tr("password.multipart_unsupported"),
+            )
+            return
+
         old_pw = str(settings.get("password") or "").strip()
         new_pw = str(settings.get("new_password") or "").strip()
         if not old_pw or not new_pw:
@@ -1202,19 +1261,25 @@ class ArchiveActionsMixin:
             )
             return
 
-        sfx_dest = str(Path(arc).with_suffix(".zpaq"))
+                                                                    
+                                                                     
+        p = Path(arc)
+        target = str(p.with_name(p.stem + ".new" + (p.suffix or ".zpaq")))
 
                                                                      
         ans = QMessageBox.question(
             self,
             tr("password.dialog_title"),
-            tr("password.confirm_text", name=Path(arc).name, sfx=Path(sfx_dest).name),
+            tr("password.confirm_text", name=p.name, sfx=Path(target).name),
             QMessageBox.Yes | QMessageBox.No,
         )
         if ans != QMessageBox.Yes:
             return
 
-        cmd = [self.zpaq_bin, "password", arc, sfx_dest, "-key", old_pw, "-key2", new_pw]
+        cmd = [
+            self.zpaq_bin, "password", arc, target,
+            "-key", old_pw, "-key2", new_pw, "-force",
+        ]
 
         self.log_command(cmd)
 
@@ -1223,6 +1288,8 @@ class ArchiveActionsMixin:
             cmd,
             {
                 "path": arc,
+                "target": target,
+                "new_password": new_pw,
                 "from_create": False,
                 "job_context": dict(job_context) if job_context else None,
             },
@@ -1256,8 +1323,38 @@ class ArchiveActionsMixin:
         output = result.get("output", "") or ""
         ctx = result.get("context", {})
         path = ctx.get("path", "")
+        target = ctx.get("target", "")
+        new_pw = str(ctx.get("new_password") or "")
         job_context = ctx.get("job_context")
         name = Path(path).name if path else ""
+
+                                                                    
+                                                                    
+                                                                   
+        if target:
+            if rc == 0:
+                try:
+                    os.replace(target, path)
+                except OSError as exc:
+                    rc = 1
+                    output = (output or "") + (
+                        "\nERROR: cannot replace the archive with the "
+                        f"re-encrypted copy: {exc}\n"
+                    )
+                else:
+                    try:
+                        self._cache(path)["password"] = new_pw or None
+                    except Exception:
+                        pass
+                    try:
+                        self._on_refresh()
+                    except Exception:
+                        pass
+            else:
+                try:
+                    os.remove(target)
+                except OSError:
+                    pass
 
         if job_context:
             status = "ok" if rc == 0 else "error"

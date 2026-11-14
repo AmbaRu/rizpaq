@@ -5,12 +5,17 @@
     "fallback": "en"
   },
   "strings": {
+    "password.multipart_unsupported": "Zmiana hasła nie jest obsługiwana dla archiwum wieloczęściowego. Najpierw je scal.",
+    "backup.reason.sync_failed": "błąd porównania",
+    "backup.reason_full.sync_failed": "Nie udało się porównać archiwum ze źródłami, kopia nie została uruchomiona. Sprawdź dziennik zadania.",
+    "dashboard.alerts.job_silent_min": "„{job}“ nie było uruchamiane {mins} min (wg harmonogramu)",
+    "dashboard.alerts.job_silent_hour": "„{job}“ nie było uruchamiane {hours} godz. (wg harmonogramu)",
     "scheduler.rb_continuous": "Ciągłe (przy zmianach)",
     "scheduler.continuous_hint": "Rizpaq sprawdza zmiany co N minut i uruchamia kopię zapasową tylko wtedy, gdy są.",
     "sched.fmt.continuous_one": "Przy zmianach, co minutę",
     "sched.fmt.continuous_n": "Przy zmianach, co {n} min",
     "archive_info.dedup_title": "Deduplikacja i kompresja",
-    "archive_info.dedup_logical": "Dodano we wszystkich wersjach: {size}",
+    "archive_info.dedup_logical": "Dane przed kompresją: {size}",
     "archive_info.dedup_actual": "Rozmiar archiwum na dysku: {size}",
     "archive_info.dedup_saved": "Zaoszczędzono: {size}",
     "archive_info.dedup_ratio": "Współczynnik: {ratio}×",

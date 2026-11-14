@@ -282,6 +282,12 @@ JOB_FIELDS = (
                                                       
     "par2_enabled",
     "par2_options",
+                                                                       
+                                                                   
+                                                                    
+                                                                     
+                                                  
+    "new_password",
 )
 
                                                                     
@@ -376,12 +382,17 @@ REASON_PAR2_BROKEN = "par2_broken"
 REASON_PAR2_DAMAGED = "par2_damaged"                                  
 REASON_PAR2_UNREPAIRABLE = "par2_unrepairable"                          
 REASON_PAR2_FAILED = "par2_failed"                                         
+                                                                    
+                                                                  
+                                                                
+REASON_SYNC_FAILED = "sync_failed"
 JOB_REASONS = (
     REASON_PAR2_MISSING,
     REASON_PAR2_BROKEN,
     REASON_PAR2_DAMAGED,
     REASON_PAR2_UNREPAIRABLE,
     REASON_PAR2_FAILED,
+    REASON_SYNC_FAILED,
 )
 
                                                                 

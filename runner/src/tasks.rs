@@ -36,6 +36,7 @@ pub const JOB_FIELDS: &[&str] = &[
     "task_log_mode",
     "par2_enabled",
     "par2_options",
+    "new_password",
 ];
 
 pub const JOB_STATUSES: &[&str] = &["ok", "error", "busy"];
@@ -45,6 +46,7 @@ pub const JOB_REASONS: &[&str] = &[
     "par2_damaged",
     "par2_unrepairable",
     "par2_failed",
+    "sync_failed",
 ];
 pub const LOG_MODES: &[&str] = &["short", "full", "none"];
 pub const TEST_MODES: &[&str] = &[
@@ -134,7 +136,21 @@ fn str_or_trim(v: Option<&Value>, default: &str) -> String {
 
 fn norm_action(v: Option<&Value>) -> Value {
     match v.and_then(Value::as_str) {
-        Some(s) if s == "backup" || s == "test" => json!(s),
+        Some(s)
+            if matches!(
+                s,
+                "backup"
+                    | "test"
+                    | "crop"
+                    | "consolidate"
+                    | "sfx"
+                    | "info"
+                    | "password"
+                    | "checkpassword"
+            ) =>
+        {
+            json!(s)
+        }
         _ => json!("backup"),
     }
 }

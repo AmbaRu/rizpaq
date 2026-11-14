@@ -349,6 +349,76 @@ def parse_info(text: str) -> tuple:
                                 
                                                                 
                                                              
+                                                                      
+                                                                       
+                                                                       
+                                                                  
+ 
+                                                  
+                                                                                                  
+                                                                                                  
+ 
+                                                                   
+                                               
+STAT_VERSION_RE = re.compile(
+    r"^V(?P<num>\d+)\s+"
+    r"(?P<date>\d{4}-\d{2}-\d{2})\s+"
+    r"(?P<time>\d{2}:\d{2}:\d{2})\s+"
+    r"\+(?P<added>\d+)\s+"
+    r"-(?P<removed>\d+)\s+"
+    r"(?P<uncompressed>[\d.]+)\s+"
+    r"\[\s*(?P<compressed>[\d.]+)\s*\]"
+)
+
+
+def parse_info_stat(text: str) -> Optional[dict]:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    if not text:
+        return None
+
+    uncompressed = 0
+    compressed = 0
+    count = 0
+    for raw_line in text.splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#"):
+            continue
+        m = STAT_VERSION_RE.match(line)
+        if not m:
+            continue
+        uncompressed += parse_size(m.group("uncompressed"))
+        compressed += parse_size(m.group("compressed"))
+        count += 1
+
+    if not count:
+        return None
+    return {
+        "uncompressed": uncompressed,
+        "compressed": compressed,
+        "versions": count,
+    }
+
+
 CREATE_STATS_RE = re.compile(
     r"\(\s*(?P<original>[\d.]+)\s*->\s*"
     r"(?P<after_dedup>[\d.]+)\s*->\s*"

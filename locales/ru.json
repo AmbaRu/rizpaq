@@ -5,12 +5,17 @@
     "fallback": "en"
   },
   "strings": {
+    "password.multipart_unsupported": "Смена пароля не поддерживается для многотомного архива. Сначала склейте его командой «Консолидация».",
+    "backup.reason.sync_failed": "сверка не удалась",
+    "backup.reason_full.sync_failed": "Сверка архива с источниками не выполнена — бэкап не запускался. Причина в логе задания.",
+    "dashboard.alerts.job_silent_min": "«{job}» не запускалось {mins} мин. (по расписанию)",
+    "dashboard.alerts.job_silent_hour": "«{job}» не запускалось {hours} ч. (по расписанию)",
     "scheduler.rb_continuous": "Непрерывно (при изменениях)",
     "scheduler.continuous_hint": "Rizpaq проверяет изменения каждые N минут и запускает бэкап, только если они есть.",
     "sched.fmt.continuous_one": "При изменениях, каждую минуту",
     "sched.fmt.continuous_n": "При изменениях, каждые {n} мин.",
     "archive_info.dedup_title": "Дедупликация и сжатие",
-    "archive_info.dedup_logical": "Добавлено по версиям: {size}",
+    "archive_info.dedup_logical": "Данных без сжатия: {size}",
     "archive_info.dedup_actual": "Размер архива на диске: {size}",
     "archive_info.dedup_saved": "Сэкономлено: {size}",
     "archive_info.dedup_ratio": "Коэффициент: {ratio}×",

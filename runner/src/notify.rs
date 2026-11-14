@@ -16,6 +16,8 @@ const TIMEOUT_MS: i32 = 10_000;
 const RETRY_COUNT: u32 = 3;
 const RETRY_PAUSE_S: u64 = 2;
 
+const NOTIFY_DEADLINE_S: u64 = 30;
+
 #[derive(Debug)]
 pub enum SendResult {
     Ok,
@@ -191,9 +193,28 @@ pub fn notify_job(
         reason.unwrap_or(""),
         &time_text,
     );
+    let token = cfg.token.clone();
+    let chat_id = cfg.chat_id.clone();
+    let (tx, rx) = std::sync::mpsc::channel();
+    std::thread::spawn(move || {
+        send_with_retries(&token, &chat_id, &text);
+        let _ = tx.send(());
+    });
+    if rx
+        .recv_timeout(std::time::Duration::from_secs(NOTIFY_DEADLINE_S))
+        .is_err()
+    {
+        log_failure(&format!(
+            "Telegram: отправка не завершилась за {} с",
+            NOTIFY_DEADLINE_S
+        ));
+    }
+}
+
+fn send_with_retries(token: &str, chat_id: &str, text: &str) {
     let mut last_reason = String::new();
     for attempt in 1..=RETRY_COUNT {
-        match post_json(&cfg.token, &cfg.chat_id, &text) {
+        match post_json(token, chat_id, text) {
             SendResult::Ok => return,
             SendResult::Rejected(reason) => {
                 log_failure(&format!("Telegram: {}", reason));
@@ -211,23 +232,7 @@ pub fn notify_job(
 }
 
 fn log_failure(text: &str) {
-    let path = std::env::temp_dir().join("rizpaq_notify.log");
-    let iso = chrono::Local::now().format("%Y-%m-%dT%H:%M:%S");
-    let mut buf = format!("--- Rizpaq notify {} ---\n", iso);
-    buf.push_str(text);
-    if !text.ends_with('\n') {
-        buf.push('\n');
-    }
-    buf.push_str(&"=".repeat(50));
-    buf.push_str("\n\n");
-    if let Ok(mut f) = std::fs::OpenOptions::new()
-        .create(true)
-        .append(true)
-        .open(&path)
-    {
-        use std::io::Write;
-        let _ = f.write_all(buf.as_bytes());
-    }
+    cfg::write_error_log_named(text, "rizpaq_notify.log");
 }
 
 
@@ -306,6 +311,16 @@ mod winhttp {
             nReceiveTimeout: i32,
         ) -> i32;
         pub fn WinHttpCloseHandle(hInternet: Handle) -> i32;
+        pub fn WinHttpQueryDataAvailable(
+            hRequest: Handle,
+            lpdwDataAvailable: *mut u32,
+        ) -> i32;
+        pub fn WinHttpReadData(
+            hRequest: Handle,
+            lpBuffer: *mut c_void,
+            dwBufferLength: u32,
+            lpdwBytesRead: *mut u32,
+        ) -> i32;
     }
 
     pub struct Guard(pub Handle);
@@ -423,7 +438,57 @@ unsafe fn post_json_inner(token: &str, chat_id: &str, text: &str) -> SendResult 
     if (200..300).contains(&status) {
         return SendResult::Ok;
     }
-    SendResult::Rejected(format!("Telegram ответил HTTP {}", status))
+
+    let detail = read_response_description(request.0);
+    let mut text = format!("Telegram ответил HTTP {}", status);
+    if !detail.is_empty() {
+        text.push(' ');
+        text.push_str(&detail);
+    }
+    if status == 429 {
+        return SendResult::Transport(text);
+    }
+    SendResult::Rejected(text)
+}
+
+#[cfg(windows)]
+unsafe fn read_response_description(request: winhttp::Handle) -> String {
+    let mut available: u32 = 0;
+    if winhttp::WinHttpQueryDataAvailable(request, &mut available) == 0 {
+        return String::new();
+    }
+    let mut buf = vec![0u8; (available as usize).min(4096)];
+    if buf.is_empty() {
+        return String::new();
+    }
+    let mut read: u32 = 0;
+    if winhttp::WinHttpReadData(
+        request,
+        buf.as_mut_ptr() as *mut core::ffi::c_void,
+        buf.len() as u32,
+        &mut read,
+    ) == 0
+    {
+        return String::new();
+    }
+    let text = String::from_utf8_lossy(&buf[..read as usize]).into_owned();
+    match text.find("\"description\"") {
+        Some(pos) => {
+            let rest = &text[pos + "\"description\"".len()..];
+            match rest.find(':') {
+                Some(colon) => {
+                    let tail = rest[colon + 1..].trim_start();
+                    let tail = tail.strip_prefix('"').unwrap_or(tail);
+                    match tail.find('"') {
+                        Some(end) => tail[..end].to_string(),
+                        None => String::new(),
+                    }
+                }
+                None => String::new(),
+            }
+        }
+        None => String::new(),
+    }
 }
 
 #[cfg(test)]
