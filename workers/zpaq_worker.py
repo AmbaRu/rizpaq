@@ -11,8 +11,9 @@ from workers.streaming import StreamingZpaqThread
 class ZpaqWorker(StreamingZpaqThread):
     result = Signal(dict)
 
-    def __init__(self, kind: str, cmd, context=None, parent=None, cwd=None):
-        super().__init__(cmd, parent, cwd=cwd)
+    def __init__(self, kind: str, cmd, context=None, parent=None, cwd=None,
+                 stdin_text=None):
+        super().__init__(cmd, parent, cwd=cwd, stdin_text=stdin_text)
         self.kind = kind
         self.context = context or {}
 

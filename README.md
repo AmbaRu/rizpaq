@@ -288,13 +288,18 @@ instant, and nothing you were doing is lost.
   skipped.
 - **Repair after an interrupted backup** — if adding a version was
   interrupted, Rizpaq offers to remove only the unfinished transaction and
-  keep the completed versions. The repair works on a copy next to the
-  archive, checks it, and only then replaces the original. Ordinary archives
-  are trimmed; encrypted ones are cropped with the key; multi-volume
-  archives are not repaired automatically. The copy needs free space on the
-  archive disk (up to the archive size); if there is not enough, Rizpaq
-  leaves the original unchanged and reports how much is needed. A copy that
-  the engine failed to finish is deleted and never replaces the original.
+  keep the completed versions. There are two modes: repair on a copy next to
+  the archive (the default, safer — the copy is checked and only then
+  replaces the original) or directly in the file (no copy needed).
+  Ordinary archives are trimmed; encrypted ones are cropped with the key;
+  multi-volume archives are not repaired automatically. The copy needs free
+  space on the archive disk (up to the archive size); if there is not
+  enough, Rizpaq reports how much is needed and offers the copy-free mode;
+  a copy is made only when that mode is chosen. A copy that the engine
+  failed to finish is deleted and never replaces the original. In-place
+  repair requires an extra confirmation and warns that there is no backup;
+  after it the archive is still checked, and a failed check is reported
+  honestly.
 - **Fixes after 3.0.0** — the deduplication report uses the engine's real
   before- and after-compression sizes; unsupported job actions are rejected
   by the Rust runner instead of silently becoming backups; a password change
@@ -741,12 +746,17 @@ ZPAQ**. Один клик: старый RAR, набитый дублями, пр
   пропуска сверки пишется в лог.
 - **Починка после оборванного бэкапа** — если добавление версии прервалось,
   Rizpaq предлагает убрать только незавершённую транзакцию, сохранив
-  завершённые версии. Ремонт идёт в копию рядом с архивом, проверяет её и
-  только потом заменяет исходный файл. Обычные архивы очищаются через trim,
-  шифрованные — через crop с ключом; многотомные автоматически не чинятся.
-  Для копии нужно свободное место на диске архива (до его размера); если его
-  не хватает, Rizpaq оставляет исходник без изменений и пишет, сколько нужно.
+  завершённые версии. Есть два режима: ремонт в копию рядом с архивом
+  (по умолчанию, безопаснее — копия проверяется и только потом заменяет
+  исходный файл) или прямо в файле (без копии). Обычные архивы очищаются
+  через trim, шифрованные — через crop с ключом; многотомные автоматически
+  не чинятся. Для копии нужно свободное место на диске архива (до его
+  размера); если его не хватает, Rizpaq пишет, сколько нужно, и предлагает
+  режим без копии; копия создаётся только при выборе этого режима.
   Недостроенная движком копия удаляется и никогда не заменяет исходник.
+  Ремонт прямо в файле требует отдельного подтверждения и предупреждает,
+  что страховочной копии не будет; после него архив всё равно проверяется,
+  а неудачная проверка честно сообщается пользователю.
 - **Исправления после 3.0.0** — отчёт о дедупликации использует настоящие
   размеры до и после сжатия; неподдержанные виды заданий в Rust-раннере
   отклоняются, а не превращаются молча в бэкап; смена пароля пишет отдельный

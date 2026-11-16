@@ -325,10 +325,11 @@ class StreamingZpaqThread(QThread):
     progress_info = Signal(dict)
     line_received = Signal(str)
 
-    def __init__(self, cmd, parent=None, cwd=None):
+    def __init__(self, cmd, parent=None, cwd=None, stdin_text=None):
         super().__init__(parent)
         self.cmd = cmd
         self.cwd = cwd                                     
+        self.stdin_text = stdin_text
         self._cancel = False
         self._proc = None
 
@@ -397,12 +398,21 @@ class StreamingZpaqThread(QThread):
         try:
             p = subprocess.Popen(
                 cmd,
+                stdin=(subprocess.PIPE if self.stdin_text is not None
+                       else None),
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
                 cwd=run_cwd,                               
                 **popen_kwargs(),
             )
             self._proc = p
+            if self.stdin_text is not None and p.stdin is not None:
+                try:
+                    p.stdin.write(self.stdin_text.encode("utf-8"))
+                    p.stdin.flush()
+                    p.stdin.close()
+                except Exception:
+                    pass
             fd = p.stdout.fileno()
                                                                    
                                                                       
@@ -577,6 +587,11 @@ class StreamingZpaqThread(QThread):
                                                           
                                                        
             if p is not None:
+                try:
+                    if p.stdin is not None:
+                        p.stdin.close()
+                except Exception:
+                    pass
                 try:
                     if p.stdout is not None:
                         p.stdout.close()

@@ -54,9 +54,9 @@ def repair_temp_path(dest: str) -> str:
     return str(p.with_name(f"{p.stem}.repair-{token}{suffix}"))
 
 
-def incomplete_repair_plan(dest: str, password=None) -> dict:
+def incomplete_repair_plan(dest: str, password=None, inplace=False) -> dict:
     p = Path(dest)
-    temp = repair_temp_path(dest)
+    temp = "" if inplace else repair_temp_path(dest)
     if "?" in str(p):
         return {"action": "none", "temp": temp, "reason": "многотомный архив"}
     if not p.is_file():
@@ -65,10 +65,11 @@ def incomplete_repair_plan(dest: str, password=None) -> dict:
     kind = archive_encryption(str(p))
     if kind == "plain":
         return {
-            "action": "trim",
+            "action": "trim_in_place" if inplace else "trim",
             "temp": temp,
             "password": None,
-            "reason": "обычный архив: trim в копию",
+            "reason": ("обычный архив: trim на месте, без копии" if inplace
+                       else "обычный архив: trim в копию"),
         }
     if kind == "encrypted":
         pw = str(password or "")
@@ -81,15 +82,19 @@ def incomplete_repair_plan(dest: str, password=None) -> dict:
                 "reason": "архив зашифрован, пароль неизвестен",
             }
         return {
-            "action": "crop",
+            "action": "crop_in_place" if inplace else "crop",
             "temp": temp,
             "password": pw,
-            "reason": "шифрованный архив: crop с ключом в копию",
+            "reason": ("шифрованный архив: crop с ключом на месте, без копии"
+                       if inplace else
+                       "шифрованный архив: crop с ключом в копию"),
         }
     return {"action": "none", "temp": temp, "reason": "формат не распознан"}
 
 
 def incomplete_repair_space(dest: str, plan: dict, free=None):
+    if str(plan.get("action") or "").endswith("_in_place"):
+        return None
     temp = str(plan.get("temp") or "")
     folder = Path(temp).parent if temp else Path(dest).parent
     try:
@@ -116,12 +121,24 @@ def incomplete_repair_command(zpaq: str, dest: str, plan: dict) -> list:
     if action == "crop":
         return [zpaq, "crop", dest, "-kill", "-to", temp,
                 "-key", plan.get("password") or ""]
+    if action == "trim_in_place":
+        return [zpaq, "trim", dest, "-kill"]
+    if action == "crop_in_place":
+        return [zpaq, "crop", dest, "-kill", "-force",
+                "-key", plan.get("password") or ""]
     raise ValueError(f"unknown repair action: {action!r}")
+
+
+def incomplete_repair_stdin(plan: dict):
+    if plan.get("action") == "crop_in_place":
+        return "cropplease\n"
+    return None
 
 
 def incomplete_repair_check_command(zpaq: str, temp: str, plan: dict) -> list:
     cmd = [zpaq, "i", temp]
-    if plan.get("action") == "crop" and plan.get("password"):
+    if (plan.get("action") in ("crop", "crop_in_place")
+            and plan.get("password")):
         cmd += ["-key", plan["password"]]
     return cmd
 

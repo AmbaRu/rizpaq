@@ -173,6 +173,7 @@ from core.incomplete_archive import (
     incomplete_repair_command,
     incomplete_repair_plan,
     incomplete_repair_space,
+    incomplete_repair_stdin,
     incomplete_repair_verified,
 )
 from core.tasks import (
@@ -3536,9 +3537,13 @@ class ArchiveActionsMixin:
                 tr("create.incomplete_deleted", name=p.name))
             return
         plan = incomplete_repair_plan(str(p), password)
+        inplace = incomplete_repair_plan(str(p), password, inplace=True)
         space = None
         if plan["action"] != "none":
             space = incomplete_repair_space(str(p), plan)
+        copy_ok = (plan["action"] != "none"
+                   and (space is None or space["enough"]))
+        inplace_ok = inplace["action"] != "none"
         tail = (output or "").strip()[-2000:]
         text = tr("create.incomplete_text")
         if tail:
@@ -3552,19 +3557,57 @@ class ArchiveActionsMixin:
                 free=format_size(space["free"]),
             )
         QMessageBox.warning(self, tr("create.incomplete_title"), text)
-        if plan["action"] == "none":
-            return
-        if space is not None and not space["enough"]:
+        if not copy_ok and not inplace_ok:
             return
 
-        ans = QMessageBox.question(
+        mode = self._ask_repair_mode(str(p), copy_ok, inplace_ok)
+        if mode == "copy":
+            self._start_incomplete_repair(str(p), plan)
+        elif mode == "inplace":
+            if not self._confirm_inplace_repair(str(p)):
+                return
+            self._start_incomplete_repair_inplace(str(p), inplace)
+
+    def _ask_repair_mode(self, dest, copy_ok, inplace_ok):
+        box = QMessageBox(self)
+        box.setIcon(QMessageBox.Warning)
+        box.setWindowTitle(tr("create.incomplete_title"))
+        box.setText(
+            tr("create.incomplete_repair_choose", name=Path(dest).name))
+        copy_btn = None
+        inplace_btn = None
+        if copy_ok:
+            copy_btn = box.addButton(
+                tr("create.incomplete_repair_with_copy"),
+                QMessageBox.AcceptRole,
+            )
+        if inplace_ok:
+            inplace_btn = box.addButton(
+                tr("create.incomplete_repair_inplace"),
+                QMessageBox.DestructiveRole,
+            )
+        cancel_btn = box.addButton(
+            tr("progress.cancel"), QMessageBox.RejectRole)
+        box.setEscapeButton(cancel_btn)
+        box.setDefaultButton(copy_btn if copy_btn is not None else cancel_btn)
+        box.exec()
+        clicked = box.clickedButton()
+        if copy_btn is not None and clicked is copy_btn:
+            return "copy"
+        if inplace_btn is not None and clicked is inplace_btn:
+            return "inplace"
+        return None
+
+    def _confirm_inplace_repair(self, dest):
+        ans = QMessageBox.warning(
             self,
             tr("create.incomplete_title"),
-            tr("create.incomplete_repair_ask"),
+            tr("create.incomplete_repair_inplace_warning",
+               name=Path(dest).name),
             QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No,
         )
-        if ans == QMessageBox.Yes:
-            self._start_incomplete_repair(str(p), plan)
+        return ans == QMessageBox.Yes
 
     def _start_incomplete_repair(self, dest, plan):
         temp = plan.get("temp") or ""
@@ -3588,6 +3631,112 @@ class ArchiveActionsMixin:
         worker.finished.connect(lambda w=worker: self._cleanup_worker(w))
         self._workers.append(worker)
         worker.start()
+
+    def _start_incomplete_repair_inplace(self, dest, plan):
+        zpaq = getattr(self, "zpaq_bin", None)
+        if not zpaq:
+            self._repair_failed_inplace(dest, tr("create.error_title"))
+            return
+        cmd = incomplete_repair_command(zpaq, dest, plan)
+        self.log_command(cmd, plan.get("password") or "")
+        self.statusBar().showMessage(tr("create.incomplete_repair_running"))
+        worker = ZpaqWorker(
+            "repair_inplace",
+            cmd,
+            {"dest": dest, "plan": plan},
+            stdin_text=incomplete_repair_stdin(plan),
+        )
+        worker.result.connect(self._on_incomplete_repair_inplace_result)
+        worker.finished.connect(lambda w=worker: self._cleanup_worker(w))
+        self._workers.append(worker)
+        worker.start()
+
+    def _on_incomplete_repair_inplace_result(self, result):
+        ctx = result.get("context") or {}
+        dest = ctx.get("dest", "")
+        plan = dict(ctx.get("plan") or {})
+        output = result.get("output", "") or ""
+        rc = result.get("rc", 1)
+        if output:
+            self.log_output(output)
+        if result.get("cancelled"):
+            self._repair_failed_inplace(
+                dest, _last_output_line(output) or tr("progress.cancel"))
+            return
+        if rc != 0:
+            if (plan.get("action") == "trim_in_place"
+                    and "trim seems not necessary" in output.lower()):
+                self.statusBar().showMessage(
+                    tr("create.incomplete_repair_not_needed"))
+                QMessageBox.information(
+                    self, tr("create.incomplete_title"),
+                    tr("create.incomplete_repair_not_needed"),
+                )
+                return
+            self._repair_failed_inplace(
+                dest, _last_output_line(output) or tr("create.error_title"))
+            return
+
+        zpaq = getattr(self, "zpaq_bin", None)
+        if not zpaq:
+            self._repair_failed_inplace(dest, tr("create.error_title"))
+            return
+        cmd = incomplete_repair_check_command(zpaq, dest, plan)
+        self.log_command(cmd, plan.get("password") or "")
+        worker = ZpaqWorker(
+            "repair_check_inplace",
+            cmd,
+            {"dest": dest, "plan": plan},
+        )
+        worker.result.connect(self._on_incomplete_repair_inplace_verified)
+        worker.finished.connect(lambda w=worker: self._cleanup_worker(w))
+        self._workers.append(worker)
+        worker.start()
+
+    def _on_incomplete_repair_inplace_verified(self, result):
+        ctx = result.get("context") or {}
+        dest = ctx.get("dest", "")
+        plan = dict(ctx.get("plan") or {})
+        output = result.get("output", "") or ""
+        rc = result.get("rc", 1)
+        if output:
+            self.log_output(output)
+        if not incomplete_repair_verified(output, rc):
+            self._repair_unverified_inplace(dest, output)
+            return
+        if dest and "?" not in dest:
+            self._refresh_index_after_create(
+                dest, plan.get("password") or None)
+        name = Path(dest).name if dest else ""
+        self.statusBar().showMessage(
+            tr("create.incomplete_repair_done", name=name))
+        QMessageBox.information(
+            self, tr("create.incomplete_title"),
+            tr("create.incomplete_repair_done", name=name),
+        )
+
+    def _repair_failed_inplace(self, dest, error):
+        name = Path(dest).name if dest else ""
+        self.statusBar().showMessage(
+            tr("create.incomplete_repair_inplace_failed",
+               name=name, error=error))
+        QMessageBox.warning(
+            self,
+            tr("create.incomplete_title"),
+            tr("create.incomplete_repair_inplace_failed",
+               name=name, error=_esc(error)),
+        )
+
+    def _repair_unverified_inplace(self, dest, output):
+        name = Path(dest).name if dest else ""
+        text = tr("create.incomplete_repair_inplace_unverified", name=name)
+        tail = _last_output_line(output)
+        if tail:
+            text += "\n\n" + _esc(tail)
+        self.statusBar().showMessage(
+            tr("create.incomplete_repair_inplace_unverified", name=name))
+        QMessageBox.warning(
+            self, tr("create.incomplete_title"), text)
 
     def _on_incomplete_repair_result(self, result):
         ctx = result.get("context") or {}
