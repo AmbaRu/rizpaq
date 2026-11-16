@@ -307,6 +307,16 @@ instant, and nothing you were doing is lost.
   notification requests are bounded by a 30-second deadline; silent
   continuous jobs are reported in minutes rather than after a day.
 
+### zpaqfranz 65.20 and warnings instead of failures (3.0.3)
+- **Engine updated to zpaqfranz 65.20.** Archives stay as compact as before:
+  the new engine enables its `-lfast` listing history by default, which almost
+  doubles the archive, so Rizpaq turns it off for every backup.
+- **Warnings are not failures.** The engine now returns exit code 1 when a
+  backup finished with warnings (for example, a file was locked and skipped).
+  The archive is created, the job stays successful and the warning is shown in
+  the result dialog, the report and the log. For archive checks code 1 still
+  means a problem.
+
 ### Archive protection (PAR2)
 - Every archive can carry a **PAR2 recovery set** — protection files kept
   right next to the archive. The `par2` engine is bundled.
@@ -763,6 +773,17 @@ ZPAQ**. Один клик: старый RAR, набитый дублями, пр
   файл и обновляет хранилище паролей; запросы уведомлений ограничены сроком
   30 секунд; зависшие непрерывные задания видны на дашборде через минуты, а
   не через сутки.
+
+### zpaqfranz 65.20: предупреждения вместо ошибок (3.0.3)
+- **Движок обновлён до zpaqfranz 65.20.** Архивы остаются такими же
+  компактными: новый движок по умолчанию включает `-lfast` (историю правок
+  листинга), которая раздувает архив почти вдвое, поэтому Rizpaq отключает
+  её на каждом бэкапе.
+- **Предупреждение — не ошибка.** Движок теперь возвращает код 1, если
+  бэкап завершился с предупреждениями (например, занятый файл пропущен).
+  Архив создан, задание остаётся успешным, а предупреждение видно в диалоге
+  результата, отчёте и логе. Для проверок архива код 1 по-прежнему означает
+  проблему.
 
 ### Защита архива (PAR2)
 - У любого архива может быть **PAR2-набор восстановления** — файлы
