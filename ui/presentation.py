@@ -61,8 +61,25 @@ def _weekday_labels(codes) -> list:
     return [tr(_WEEKDAY_KEYS[c]) for c in _WEEKDAY_ORDER if c in present]
 
 
+def _skip_suffix(schedule: dict) -> str:
+    pass
+
+
+
+
+
+
+    if schedule.get("skip_unchanged"):
+        return tr("sched.fmt.skip_suffix")
+    return ""
+
+
 def format_schedule(schedule) -> str:
     pass
+
+
+
+
 
 
 
@@ -111,18 +128,20 @@ def format_schedule(schedule) -> str:
 
         if frequency == "minute":
             if interval == 1:
-                return tr("sched.fmt.minute_one")
-            return tr("sched.fmt.minute_n", n=interval)
+                return tr("sched.fmt.minute_one") + _skip_suffix(schedule)
+            return tr("sched.fmt.minute_n", n=interval) + _skip_suffix(schedule)
 
         if frequency == "hourly":
             if interval == 1:
-                return tr("sched.fmt.hourly_one")
-            return tr("sched.fmt.hourly_n", n=interval)
+                return tr("sched.fmt.hourly_one") + _skip_suffix(schedule)
+            return tr("sched.fmt.hourly_n", n=interval) + _skip_suffix(schedule)
 
         if frequency == "daily":
             if interval == 1:
-                return tr("sched.fmt.daily_one", time=time_str)
-            return tr("sched.fmt.daily_n", n=interval, time=time_str)
+                return tr("sched.fmt.daily_one", time=time_str) + _skip_suffix(schedule)
+            return tr(
+                "sched.fmt.daily_n", n=interval, time=time_str
+            ) + _skip_suffix(schedule)
 
         if frequency == "weekly":
             days = _weekday_labels(schedule.get("days"))
@@ -130,13 +149,13 @@ def format_schedule(schedule) -> str:
             if interval == 1:
                 return tr(
                     "sched.fmt.weekly_one", days=days_str, time=time_str
-                ).strip()
+                ).strip() + _skip_suffix(schedule)
             return tr(
                 "sched.fmt.weekly_n",
                 n=interval,
                 days=days_str,
                 time=time_str,
-            ).strip()
+            ).strip() + _skip_suffix(schedule)
 
         if frequency == "monthly":
             try:
@@ -144,10 +163,12 @@ def format_schedule(schedule) -> str:
             except (TypeError, ValueError):
                 day = 1
             if interval == 1:
-                return tr("sched.fmt.monthly_one", day=day, time=time_str)
+                return tr(
+                    "sched.fmt.monthly_one", day=day, time=time_str
+                ) + _skip_suffix(schedule)
             return tr(
                 "sched.fmt.monthly_n", n=interval, day=day, time=time_str
-            )
+            ) + _skip_suffix(schedule)
     except Exception:
         pass
 

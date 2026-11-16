@@ -268,15 +268,30 @@ instant, and nothing you were doing is lost.
   interval of 1 to 60 minutes. Rizpaq compares the archive with the source
   folders itself and starts a backup only when something actually changed;
   when nothing changed, the run is skipped and the log says so.
-- **Deduplication report** — the archive information window now shows how
-  many bytes all versions added, how much the archive takes on disk, how much
-  was saved and by how much (the ratio). No extra engine call is needed: the
-  numbers come from the archive information that was already fetched.
+- **Deduplication report** — the archive information window shows how many
+  bytes all versions passed through before compression, how much the archive
+  takes on disk, how much was saved and by how much (the ratio). The numbers
+  come from `zpaqfranz i <archive> -stat`, requested in the background: the
+  window opens at once and the block appears when the answer arrives.
 - **Telegram notifications** — get a message when a job finishes or fails.
   Choose "off", "only errors" or "all results" in Settings → Notifications…,
   then paste the bot token and the chat id. Notifications work for manual
   runs as well, and a failed send never breaks the job. If the send fails,
   the reason is written to `rizpaq_notify.log` next to your settings.
+
+### Skip unchanged runs and post-3.0 fixes (3.0.2)
+- **Skip unchanged runs on ordinary schedules** — daily, hourly, weekly and
+  monthly backups get a "Skip the run if nothing changed" option. Rizpaq
+  compares the archive with the sources before the run and creates no new
+  version when there is nothing to change. Masks and multi-volume archives
+  still run as normal backups, and the log records why the comparison was
+  skipped.
+- **Fixes after 3.0.0** — the deduplication report uses the engine's real
+  before- and after-compression sizes; unsupported job actions are rejected
+  by the Rust runner instead of silently becoming backups; a password change
+  writes a separate re-encrypted file and updates the password store;
+  notification requests are bounded by a 30-second deadline; silent
+  continuous jobs are reported in minutes rather than after a day.
 
 ### Archive protection (PAR2)
 - Every archive can carry a **PAR2 recovery set** — protection files kept
@@ -696,16 +711,31 @@ ZPAQ**. Один клик: старый RAR, набитый дублями, пр
   интервалом от 1 до 60 минут. Программа сама сверяет архив с папками-
   источниками и запускает архивацию только когда есть что менять; если
   изменений нет, запуск пропускается, а в логе пишется причина.
-- **Отчёт о дедупликации** — в окне информации об архиве теперь видно, сколько
-  байт добавили все версии, сколько архив занимает на диске, сколько
-  сэкономлено и во сколько раз. Отдельных запросов к архиватору не требуется:
-  цифры берутся из уже полученной информации об архиве.
+- **Отчёт о дедупликации** — в окне информации об архиве видно, сколько байт
+  прошло через все версии до сжатия, сколько архив занимает на диске, сколько
+  сэкономлено и во сколько раз. Числа берутся из `zpaqfranz i «архив» -stat`;
+  запрос идёт в фоне: окно открывается сразу, а блок появляется, когда ответ
+  пришёл.
 - **Уведомления в Telegram** — сообщение о том, что задание выполнено или
   сорвалось. В «Настройки → Уведомления…» выбирается режим (выключено, только
   ошибки или все результаты), вводится токен бота и chat_id. Уведомления
   приходят и для ручных запусков, а неудачная отправка никогда не портит
   результат задания. Причина сбоя пишется в `rizpaq_notify.log` рядом с
   настройками.
+
+### Пропуск запуска без изменений и исправления после 3.0 (3.0.2)
+- **Пропуск запуска без изменений для обычных расписаний** — у ежедневного,
+  ежечасного, недельного и месячного бэкапа появилась галочка «Пропускать,
+  если изменений нет». Перед запуском программа сверяет архив с источниками
+  и не создаёт новую версию, когда менять нечего. Для масок и многотомных
+  архивов задание по-прежнему выполняется как обычный бэкап, а причина
+  пропуска сверки пишется в лог.
+- **Исправления после 3.0.0** — отчёт о дедупликации использует настоящие
+  размеры до и после сжатия; неподдержанные виды заданий в Rust-раннере
+  отклоняются, а не превращаются молча в бэкап; смена пароля пишет отдельный
+  файл и обновляет хранилище паролей; запросы уведомлений ограничены сроком
+  30 секунд; зависшие непрерывные задания видны на дашборде через минуты, а
+  не через сутки.
 
 ### Защита архива (PAR2)
 - У любого архива может быть **PAR2-набор восстановления** — файлы

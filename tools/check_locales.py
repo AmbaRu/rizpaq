@@ -111,6 +111,20 @@ DYNAMIC_KEYS = {
         "par2_missing", "par2_broken", "par2_damaged",
         "par2_unrepairable", "par2_failed", "sync_failed",
     )
+} | {
+    f"dashboard.tile.{s}" for s in (
+        "all", "ok", "error", "busy", "never", "nopar2", "issues",
+    )
+} | {
+    f"dashboard.type.{s}" for s in ("backup", "test", "par2")
+} | {
+    f"dashboard.status.{s}" for s in ("ok", "error", "busy")
+} | {
+    "dashboard.legend.ok",
+    "dashboard.legend.error",
+} | {
+    "digest.backups",
+    "digest.tests",
 }
 
                                                                    

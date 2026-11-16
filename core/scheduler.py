@@ -158,6 +158,10 @@ def create_scheduled_task(
 
 
 
+
+
+
+
     if os.name != "nt":
         return False
 
@@ -183,7 +187,10 @@ def create_scheduled_task(
     cmd = [_schtasks_bin(), "/create", "/tn", task_name,
            "/tr", _exec_cmd_for(
                rzp_path, str(job.get("id") or ""),
-               if_changed=(frequency == "continuous"),
+               if_changed=(
+                   frequency == "continuous"
+                   or bool(schedule.get("skip_unchanged"))
+               ),
            ),
            "/f"]
 

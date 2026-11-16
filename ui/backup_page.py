@@ -2033,7 +2033,12 @@ class BackupPage(QWidget):
         from PySide6.QtWidgets import QDialog
         from ui.scheduler_dialog import ScheduleDialog
 
-        dlg = ScheduleDialog(self, initial_schedule=job.get("schedule"))
+        dlg = ScheduleDialog(
+            self, initial_schedule=job.get("schedule"),
+            allow_skip_unchanged=(
+                str(job.get("action") or "").strip().lower() != ACTION_TEST
+            ),
+        )
         if dlg.exec() != QDialog.Accepted:
             return
         schedule = dlg.result_schedule()

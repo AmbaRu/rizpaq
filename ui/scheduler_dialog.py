@@ -50,11 +50,15 @@ from ui.i18n import tr
 class ScheduleDialog(QDialog):
     pass
 
-    def __init__(self, parent=None, initial_schedule=None):
+    def __init__(self, parent=None, initial_schedule=None,
+                 allow_skip_unchanged=True):
         super().__init__(parent)
         self.setWindowTitle(tr("scheduler.title"))
-        self.resize(540, 480)
+        self.resize(540, 560)
         self._result = None
+                                                                   
+                                                                
+        self._allow_skip = bool(allow_skip_unchanged)
 
         layout = QVBoxLayout(self)
 
@@ -200,6 +204,17 @@ class ScheduleDialog(QDialog):
         group.setLayout(group_layout)
         layout.addWidget(group)
 
+                                                                  
+                                                                   
+                                                           
+        self._skip_changed_cb = QCheckBox(tr("scheduler.skip_unchanged"))
+        layout.addWidget(self._skip_changed_cb)
+
+        self._skip_changed_hint = QLabel(tr("scheduler.skip_unchanged_hint"))
+        self._skip_changed_hint.setWordWrap(True)
+        self._skip_changed_hint.setObjectName("schedHint")
+        layout.addWidget(self._skip_changed_hint)
+
                                                                  
                                                                        
                                                       
@@ -251,6 +266,9 @@ class ScheduleDialog(QDialog):
         self._spin_continuous.setEnabled(is_cont)
         self._lbl_continuous_unit.setEnabled(is_cont)
         self._continuous_hint.setVisible(is_cont)
+        show_skip = self._allow_skip and not is_cont
+        self._skip_changed_cb.setVisible(show_skip)
+        self._skip_changed_hint.setVisible(show_skip)
 
         self._spin_hour.setEnabled(is_hour)
         self._lbl_hour_unit.setEnabled(is_hour)
@@ -271,6 +289,7 @@ class ScheduleDialog(QDialog):
 
     def _apply_schedule(self, schedule: dict):
         self._enabled_cb.setChecked(schedule.get("enabled", True))
+        self._skip_changed_cb.setChecked(bool(schedule.get("skip_unchanged")))
         freq = schedule.get("frequency", "daily")
 
         if freq == "minute":
@@ -356,6 +375,17 @@ class ScheduleDialog(QDialog):
                 "time": self._time_monthly.time().toString("HH:mm"),
                 "day_of_month": self._dom_edit.value()
             })
+
+                                                                   
+                                                               
+                                                                      
+                                     
+        if (
+            self._allow_skip
+            and schedule.get("frequency") != "continuous"
+            and self._skip_changed_cb.isChecked()
+        ):
+            schedule["skip_unchanged"] = True
 
         self._result = schedule
         self.accept()

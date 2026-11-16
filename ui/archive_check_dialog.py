@@ -327,7 +327,10 @@ class ArchiveCheckDialog(QDialog):
 
         from ui.scheduler_dialog import ScheduleDialog
 
-        dlg = ScheduleDialog(self, initial_schedule=self._schedule)
+        dlg = ScheduleDialog(
+            self, initial_schedule=self._schedule,
+            allow_skip_unchanged=False,
+        )
         if dlg.exec() != QDialog.Accepted:
             return
         schedule = dlg.result_schedule()

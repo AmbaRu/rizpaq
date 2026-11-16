@@ -18,6 +18,7 @@
 
 
 
+
 from __future__ import annotations
 
 import os
@@ -143,6 +144,32 @@ class TestCreateScheduledTaskContinuous(unittest.TestCase):
                 ok, cmd = self._create(schedule)
                 self.assertTrue(ok)
                 self.assertNotIn("--if-changed", _value_after(cmd, "/tr"))
+
+    def test_ordinary_schedule_with_skip_gets_if_changed(self):
+        cases = [
+            {"frequency": "minute", "interval": 15},
+            {"frequency": "hourly", "interval": 2},
+            {"frequency": "daily", "interval": 1, "time": "10:00"},
+            {"frequency": "weekly", "interval": 1, "time": "10:00",
+             "days": ["MON"]},
+            {"frequency": "monthly", "interval": 1, "time": "10:00",
+             "day_of_month": 1},
+        ]
+        for schedule in cases:
+            with self.subTest(frequency=schedule["frequency"]):
+                schedule = dict(schedule, enabled=True, skip_unchanged=True)
+                ok, cmd = self._create(schedule)
+                self.assertTrue(ok)
+                self.assertIn("--if-changed", _value_after(cmd, "/tr"))
+
+    def test_skip_unchanged_false_keeps_flag_out(self):
+        ok, cmd = self._create(dict(
+            {"frequency": "daily", "interval": 1, "time": "10:00"},
+            enabled=True,
+            skip_unchanged=False,
+        ))
+        self.assertTrue(ok)
+        self.assertNotIn("--if-changed", _value_after(cmd, "/tr"))
 
     def test_disabled_schedule_removes_task(self):
         with mock.patch.object(
@@ -292,6 +319,35 @@ class TestContinuousPresentation(unittest.TestCase):
             }),
             "sched.fmt.continuous_one",
         )
+
+    def test_ordinary_schedule_gets_skip_suffix(self):
+        text = self._format({
+            "enabled": True,
+            "frequency": "daily",
+            "interval": 1,
+            "time": "02:00",
+            "skip_unchanged": True,
+        })
+        self.assertIn("time=02:00", text)
+        self.assertTrue(text.endswith("sched.fmt.skip_suffix"))
+
+    def test_ordinary_schedule_without_flag_has_no_suffix(self):
+        text = self._format({
+            "enabled": True,
+            "frequency": "daily",
+            "interval": 1,
+            "time": "02:00",
+        })
+        self.assertNotIn("sched.fmt.skip_suffix", text)
+
+    def test_continuous_never_gets_the_suffix(self):
+        text = self._format({
+            "enabled": True,
+            "frequency": "continuous",
+            "interval": 5,
+            "skip_unchanged": True,
+        })
+        self.assertEqual(text, "sched.fmt.continuous_n|n=5")
 
     def test_disabled_is_dash(self):
         self.assertEqual(

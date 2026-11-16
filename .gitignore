@@ -52,3 +52,10 @@ archive_index.sqlite
 tasks.rzp
 *.rzp.log
 rizpaq_task_error.log
+
+# Scratch / build artifacts
+runner/Cargo.lock
+runner/target/
+tests/par2.exe
+tests/probe_out/
+tools/probe_extract_output.bat
