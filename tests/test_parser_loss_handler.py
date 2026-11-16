@@ -267,5 +267,51 @@ class TestHandlerEmpty(unittest.TestCase):
                          f"{announced}")
 
 
+class TestDamagedArchiveRcOne(unittest.TestCase):
+    pass
+
+
+
+
+
+
+
+    def _patch_boxes(self):
+        import ui.archive_loader as loader_mod
+        from unittest import mock
+
+        return (
+            mock.patch.object(loader_mod.QMessageBox, "warning"),
+            mock.patch.object(loader_mod.QMessageBox, "critical"),
+        )
+
+    def test_rc_one_shows_list_and_warns(self):
+        warn, crit = self._patch_boxes()
+        with warn as w, crit as c:
+            loader = run_handler("\n".join([GOOD7, GOOD7]), rc=1)
+
+        cached = list(loader.cached.values())[0]
+        self.assertTrue(cached.get("loaded"), "листинг не применён при rc 1")
+        self.assertEqual(len(cached.get("entries")), 2)
+        c.assert_not_called()
+        w.assert_called_once()
+        title, text = w.call_args[0][1], w.call_args[0][2]
+        self.assertNotIn("archive.warn", title + text,
+                         "в диалог попал ключ локали вместо перевода")
+        self.assertIn("поврежд", title.lower())
+        self.assertIn("backup.zpaq", text)
+
+    def test_rc_two_still_critical_and_no_list(self):
+        warn, crit = self._patch_boxes()
+        with warn as w, crit as c:
+            loader = run_handler("\n".join([GOOD7, GOOD7]), rc=2)
+
+        c.assert_called_once()
+        w.assert_not_called()
+        cached = loader.cached.get(str(ROOT / "backup.zpaq")) or {}
+        self.assertFalse(cached.get("loaded"),
+                         "при настоящей ошибке листинг применяться не должен")
+
+
 if __name__ == "__main__":
     unittest.main()

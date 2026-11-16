@@ -471,6 +471,12 @@ class ArchiveLoaderMixin:
                 self.statusBar().showMessage(tr("status.cancel_requested"))
                 return
 
+                                                                      
+                                                                     
+                                                                      
+                                                                    
+                                                                     
+            soft_warn = rc == 1
             if rc != 0:
                 if looks_like_password_error(tail):
                     pw, ok = QInputDialog.getText(
@@ -486,13 +492,14 @@ class ArchiveLoaderMixin:
                         self._load_archive_list(path, make_active, inner)
                     return
 
-                if make_active and path == self.archive_path:
-                    self.navigate_fs(Path(path).parent)
-                self._refresh_status_for_current_mode()
-                QMessageBox.critical(
-                    self, tr("archive.error.open_title"), tail or ""
-                )
-                return
+                if not soft_warn:
+                    if make_active and path == self.archive_path:
+                        self.navigate_fs(Path(path).parent)
+                    self._refresh_status_for_current_mode()
+                    QMessageBox.critical(
+                        self, tr("archive.error.open_title"), tail or ""
+                    )
+                    return
 
             if not entries:
                                                                         
@@ -517,6 +524,15 @@ class ArchiveLoaderMixin:
             self._index_store_if_unchanged(result, entries)
 
             self._apply_list_entries(result, entries, report)
+
+            if soft_warn:
+                                                                      
+                                                                          
+                QMessageBox.warning(
+                    self,
+                    tr("archive.warn.damaged_title"),
+                    tr("archive.warn.damaged_text", name=Path(path).name),
+                )
         finally:
             self._stop_busy()
 

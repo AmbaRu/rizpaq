@@ -262,6 +262,38 @@ class TestContinuousPrecheck(unittest.TestCase):
                 self.assertEqual(got_rc, rc)
                 self.assertEqual(log, "boom")
 
+    def test_rc_two_with_missing_source_is_error(self):
+        pass
+
+
+
+
+        log = (
+            "66838! <<D:\\Gone>> does not exist: nothing to compare, "
+            "nothing done\n"
+        )
+        (decision, rc, got_log, cmd), _ = self._run(2, log)
+        self.assertEqual(decision, "error")
+        self.assertEqual(got_log, log)
+
+    def test_rc_two_with_nothing_compared_is_error(self):
+                                                          
+        (decision, rc, log, cmd), _ = self._run(2, "66839! Nothing compared")
+        self.assertEqual(decision, "error")
+
+    def test_rc_two_with_missing_archive_is_error(self):
+        (decision, rc, log, cmd), _ = self._run(
+            2, "39127! Archive not found: a.zpaq")
+        self.assertEqual(decision, "error")
+
+    def test_fatal_marker_detection(self):
+        for marker in H.SYNC_FATAL_MARKERS:
+            with self.subTest(marker=marker):
+                self.assertTrue(H.sync_log_is_fatal(f"text {marker} text"))
+        self.assertFalse(H.sync_log_is_fatal("Total delta 5 (5.00 B)"))
+        self.assertFalse(H.sync_log_is_fatal(""))
+        self.assertFalse(H.sync_log_is_fatal(None))
+
     def test_all_sources_are_passed(self):
         sources = [r"D:\Photos", r"D:\Docs"]
         (decision, rc, log, cmd), _ = self._run(2, sources=sources)

@@ -219,7 +219,7 @@ from core import index_refresh
                                                                  
                                                                  
                                       
-from core.headless import _build_log_header, _write_task_log
+from core.headless import _build_log_header, _write_task_log, sync_log_is_fatal
 
                                                                    
                                                                
@@ -833,6 +833,11 @@ class ArchiveActionsMixin:
 
 
 
+
+
+
+
+
         if rc == 0:
             self.statusBar().showMessage(tr("sync.ok", name=name))
             QMessageBox.information(
@@ -840,7 +845,7 @@ class ArchiveActionsMixin:
             )
             return
         tail = output.strip()[-_TEST_TAIL:]
-        if rc == 2:
+        if rc == 2 and not sync_log_is_fatal(output):
             self.statusBar().showMessage(tr("sync.diff", name=name))
             QMessageBox.warning(
                 self,
@@ -2893,6 +2898,8 @@ class ArchiveActionsMixin:
 
 
 
+                                                                        
+                                                                     
         self._report_gate = None
 
         srcs = settings.get("sources") or []
@@ -2939,6 +2946,11 @@ class ArchiveActionsMixin:
                                                                      
                                         
         cmd.append("-open")
+                                                                   
+                                                                  
+                                                                 
+                                                  
+        cmd.append("-nolfast")
         for flag in settings.get("level", []) or []:
             cmd.append(flag)
         if settings.get("hash"):
@@ -3087,6 +3099,11 @@ class ArchiveActionsMixin:
 
 
 
+
+
+
+
+
         if getattr(self, "_report_gate", None):
             return
 
@@ -3110,6 +3127,15 @@ class ArchiveActionsMixin:
 
     def _report_stage_done(self, stage: str):
         pass
+
+
+
+
+
+
+
+
+
         gate = getattr(self, "_report_gate", None)
         if gate:
             gate.discard(stage)
@@ -3120,6 +3146,8 @@ class ArchiveActionsMixin:
 
     def _show_create_report(self):
         pass
+                                                                    
+                                                       
         if getattr(self, "_report_gate", None):
             return
 
@@ -3154,6 +3182,13 @@ class ArchiveActionsMixin:
 
 
 
+
+
+
+
+
+
+
         try:
             self._stop_busy()
         except Exception:
@@ -3173,9 +3208,14 @@ class ArchiveActionsMixin:
                                                                     
                                                                   
                            
+                                                                       
+                                                                     
+                                                                       
+                                                              
+        ok_create = rc in (0, 1)
         if cancelled:
             job_status = ""
-        elif rc == 0:
+        elif ok_create:
             job_status = "ok"
         elif looks_like_busy_error(output):
             job_status = "busy"
@@ -3210,8 +3250,8 @@ class ArchiveActionsMixin:
             if cancelled:
                 progress_dlg.finish(False, tr("status.cancel_requested"))
                 progress_dlg.accept()
-            elif rc != 0:
-                progress_dlg.finish(rc == 0, name)
+            elif not ok_create:
+                progress_dlg.finish(False, name)
                                                                       
                                                                       
                                                                 
@@ -3224,8 +3264,26 @@ class ArchiveActionsMixin:
             self._cleanup_transcode_temp_dir()
             return
 
-        if rc == 0:
-            self.statusBar().showMessage(tr("create.done", name=name))
+        if ok_create:
+            if rc == 1:
+                self.statusBar().showMessage(
+                    tr("create.warn_status", name=name))
+            else:
+                self.statusBar().showMessage(tr("create.done", name=name))
+            if rc == 1:
+                                                                       
+                                                                      
+                                                  
+                self.log_output(
+                    "[rizpaq] zpaqfranz finished with warnings (rc=1); "
+                    "some files may have been skipped\n")
+                QMessageBox.warning(
+                    self,
+                    tr("create.warn_title"),
+                    tr("create.warn_text", name=name)
+                    + "\n\n"
+                    + output.strip()[-_TEST_TAIL:],
+                )
                                                                    
                                                                     
                                                                    
@@ -3246,6 +3304,10 @@ class ArchiveActionsMixin:
                 )
             except Exception:
                 started_par2 = False
+                                                                        
+                                                                    
+                                                                    
+                                                      
             gate = set()
             if started_par2:
                 gate.add("par2")
@@ -3268,6 +3330,11 @@ class ArchiveActionsMixin:
                 "dest": dest,
                 "is_update": bool(ctx.get("is_update")),
                 "ok": True,
+                                                                      
+                                                                        
+                                                                  
+                                                          
+                "warnings": rc == 1,
                 "params_rows": ctx.get("params_rows") or [],
                 "test_rc": None,
                 "stats": stats,
@@ -3538,6 +3605,7 @@ class ArchiveActionsMixin:
 
     def _handle_incomplete_archive(self, dest, is_update, output,
                                    password=None):
+        pass
 
 
 

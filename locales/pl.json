@@ -832,6 +832,12 @@
     "sync.no_sources": "Synchronizacja wymaga folderów źródłowych. Ustaw je w zadaniu sprawdzania lub wybierz folder.",
     "sync.ok": "Archiwum zgadza się ze źródłami: {name}",
     "sync.diff": "Znaleziono różnice między archiwum a źródłami: {name}",
-    "sync.fail": "Nie wykonano synchronizacji: {name}"
+    "sync.fail": "Nie wykonano synchronizacji: {name}",
+    "archive.warn.damaged_title": "Archiwum może być uszkodzone",
+    "archive.warn.damaged_text": "Silnik zgłosił problemy podczas odczytu „{name}”. Poniższa lista plików może być niepełna — uruchom kontrolę integralności i w razie potrzeby napraw archiwum z zestawu PAR2.",
+    "create.warn_title": "Archiwum utworzone z ostrzeżeniami",
+    "create.warn_text": "Archiwum „{name}” zostało utworzone, ale silnik zgłosił ostrzeżenia: część plików mogła zostać pominięta (zablokowane przez inny program, brak dostępu). Szczegóły w dzienniku.",
+    "create.warn_status": "{name}: utworzono z ostrzeżeniami",
+    "create.done.warnings": "Zakończono z ostrzeżeniami"
   }
 }

@@ -353,11 +353,25 @@ def _build_create_cmd(zpaq_bin, settings, srcs, dest, password):
 
 
 
+
+
+
+
+
+
+
+
+
     cmd = [zpaq_bin, "a", dest] + list(srcs)
                                                                     
                                                                    
                                                        
     cmd.append("-open")
+                                                                   
+                                                                 
+                                                                
+                         
+    cmd.append("-nolfast")
     for flag in settings.get("level", []) or []:
         cmd.append(flag)
     if settings.get("hash"):
@@ -521,8 +535,29 @@ def _archive_is_empty(path) -> bool:
         return False
 
 
+                                                                    
+                                                                   
+                                                               
+                                    
+                                         
+                                                                    
+                             
+SYNC_FATAL_MARKERS = ("66838!", "66839!", "39127!")
+
+
+def sync_log_is_fatal(log) -> bool:
+    pass
+    text = str(log or "")
+    return any(marker in text for marker in SYNC_FATAL_MARKERS)
+
+
 def _continuous_precheck(zpaq_bin, dest, password, sources):
     pass
+
+
+
+
+
 
 
 
@@ -544,7 +579,7 @@ def _continuous_precheck(zpaq_bin, dest, password, sources):
     log = log or ""
     if rc == 0:
         return "skip", int(rc), log, cmd
-    if rc == 2:
+    if rc == 2 and not sync_log_is_fatal(log):
         return "run", int(rc), log, cmd
     return "error", int(rc), log, cmd
 
@@ -620,7 +655,10 @@ def _headless_create(sources: list) -> int:
     def on_result(result):
         rc = result.get("rc", 1)
         output = result.get("output", "") or ""
-        ok = rc == 0
+                                                                     
+                                                                        
+                                                          
+        ok = rc in (0, 1)
         busy = (not ok) and looks_like_busy_error(output)
         try:
             win.bar.finish(ok, 0, Path(dest).name)
@@ -629,11 +667,19 @@ def _headless_create(sources: list) -> int:
         if ok:
             if password:
                 set_password(dest, password)
-            QMessageBox.information(
-                win,
-                tr("create.dialog_title"),
-                tr("create.done", name=Path(dest).name),
-            )
+            if rc == 1:
+                QMessageBox.warning(
+                    win,
+                    tr("create.warn_title"),
+                    tr("create.warn_text", name=Path(dest).name)
+                    + "\n\n" + output.strip()[-2000:],
+                )
+            else:
+                QMessageBox.information(
+                    win,
+                    tr("create.dialog_title"),
+                    tr("create.done", name=Path(dest).name),
+                )
         elif busy:
                                                               
                                                     
@@ -661,6 +707,7 @@ def _headless_create(sources: list) -> int:
 
 def _handle_incomplete_headless(win, dest, existed_before, output,
                                 password=None):
+    pass
 
 
 
@@ -1278,7 +1325,14 @@ def _headless_task(rest: list) -> int:
         if not skip_run and not par2_mode:
             if cmd is not None:
                 rc, log = run_zpaq(cmd)
-                ok = rc == 0
+                                                                      
+                                                                     
+                                                                    
+                                                                        
+                                                                      
+                                                                       
+                            
+                ok = rc == 0 or (rc == 1 and action == ACTION_BACKUP)
                                                                               
     finally:
         if tmp_dir:

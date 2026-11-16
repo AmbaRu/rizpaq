@@ -31,6 +31,10 @@ class ArchiveDoneDialog(QDialog):
 
         is_update = bool(report.get("is_update"))
         ok = bool(report.get("ok", True))
+                                                                    
+                                                                   
+                                                            
+        warnings = bool(report.get("warnings"))
 
         title = tr("create.done.updated") if is_update else tr("create.done.new")
         self.setWindowTitle(title)
@@ -39,15 +43,22 @@ class ArchiveDoneDialog(QDialog):
         layout = QVBoxLayout(self)
 
                         
-        status_text = tr("create.done.ok") if ok else tr("create.done.error")
-        icon = "✓" if ok else "!"
+        if not ok:
+            status_text = tr("create.done.error")
+        elif warnings:
+            status_text = tr("create.done.warnings")
+        else:
+            status_text = tr("create.done.ok")
+        icon = "!" if not ok else ("⚠" if warnings else "✓")
         status_label = QLabel(f"{icon}  {title} — {status_text}")
         status_label.setWordWrap(True)
                                                                        
                                                                           
                                                                            
                                              
-        status_color = color("OK_GREEN") if ok else color("WARN_ORANGE")
+        status_color = (
+            color("OK_GREEN") if ok and not warnings else color("WARN_ORANGE")
+        )
         status_label.setStyleSheet(
             f"color: {status_color}; font-weight: 700; font-size: 13px;"
         )
@@ -101,11 +112,16 @@ class ArchiveDoneDialog(QDialog):
             grid.addRow(tr("create.done.files"), QLabel(str(summary.files)))
             grid.addRow(tr("create.done.size"), QLabel(format_size(summary.size)))
 
+                                                                       
+                                                                     
+                                                                      
         par2_info = report.get("par2") or {}
         if par2_info:
             par2_status = str(par2_info.get("status") or "")
             par2_color = ""
             if par2_status == "ok":
+                                                                      
+                                                                         
                 if is_update:
                     par2_text = tr("create.done.par2_ok")
                 else:

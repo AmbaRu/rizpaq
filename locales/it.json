@@ -832,6 +832,12 @@
     "sync.no_sources": "La sincronizzazione richiede cartelle di origine. Impostale nell'attività di controllo o scegli una cartella.",
     "sync.ok": "L'archivio corrisponde alle sorgenti: {name}",
     "sync.diff": "Trovate differenze tra archivio e sorgenti: {name}",
-    "sync.fail": "Sincronizzazione non eseguita: {name}"
+    "sync.fail": "Sincronizzazione non eseguita: {name}",
+    "archive.warn.damaged_title": "L'archivio potrebbe essere danneggiato",
+    "archive.warn.damaged_text": "Il motore ha segnalato problemi durante la lettura di \"{name}\". L'elenco dei file potrebbe essere incompleto: esegui un controllo di integrità e, se necessario, ripristina l'archivio dal set PAR2.",
+    "create.warn_title": "Archivio creato con avvisi",
+    "create.warn_text": "L'archivio \"{name}\" è stato creato, ma il motore ha segnalato avvisi: alcuni file potrebbero essere stati saltati (bloccati da un altro programma, accesso negato). I dettagli sono nel log.",
+    "create.warn_status": "{name}: creato con avvisi",
+    "create.done.warnings": "Completato con avvisi"
   }
 }

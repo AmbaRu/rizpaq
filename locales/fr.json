@@ -832,6 +832,12 @@
     "sync.no_sources": "La synchronisation nécessite des dossiers sources. Définissez-les dans la tâche de vérification ou choisissez un dossier.",
     "sync.ok": "L'archive correspond aux sources : {name}",
     "sync.diff": "Des différences ont été trouvées entre l'archive et les sources : {name}",
-    "sync.fail": "Synchronisation non effectuée : {name}"
+    "sync.fail": "Synchronisation non effectuée : {name}",
+    "archive.warn.damaged_title": "Archive peut-être endommagée",
+    "archive.warn.damaged_text": "Le moteur a signalé des problèmes lors de la lecture de « {name} ». La liste des fichiers ci-dessous peut être incomplète — lancez une vérification d'intégrité et, si nécessaire, réparez l'archive à partir du jeu PAR2.",
+    "create.warn_title": "Archive créée avec des avertissements",
+    "create.warn_text": "L'archive « {name} » a été créée, mais le moteur a signalé des avertissements : certains fichiers ont peut-être été ignorés (verrouillés par un autre programme, accès refusé). Voir le journal pour les détails.",
+    "create.warn_status": "{name} : créée avec des avertissements",
+    "create.done.warnings": "Terminé avec des avertissements"
   }
 }

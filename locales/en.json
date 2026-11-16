@@ -832,6 +832,12 @@
     "sync.no_sources": "Sync needs source folders. Set them in the check job or choose a folder.",
     "sync.ok": "Archive matches sources: {name}",
     "sync.diff": "Differences found between archive and sources: {name}",
-    "sync.fail": "Sync not performed: {name}"
+    "sync.fail": "Sync not performed: {name}",
+    "archive.warn.damaged_title": "Archive may be damaged",
+    "archive.warn.damaged_text": "The engine reported problems while reading \"{name}\". The file list below may be incomplete — run an integrity check and, if needed, repair the archive from the PAR2 set.",
+    "create.warn_title": "Archive created with warnings",
+    "create.warn_text": "Archive \"{name}\" was created, but the engine reported warnings: some files may have been skipped (locked by another program, access denied). See the log for details.",
+    "create.warn_status": "{name}: created with warnings",
+    "create.done.warnings": "Completed with warnings"
   }
 }

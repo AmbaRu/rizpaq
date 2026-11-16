@@ -832,6 +832,12 @@
     "sync.no_sources": "A sincronização precisa de pastas de origem. Defina-as na tarefa de verificação ou escolha uma pasta.",
     "sync.ok": "O arquivo corresponde às fontes: {name}",
     "sync.diff": "Foram encontradas diferenças entre o arquivo e as fontes: {name}",
-    "sync.fail": "Sincronização não realizada: {name}"
+    "sync.fail": "Sincronização não realizada: {name}",
+    "archive.warn.damaged_title": "O arquivo pode estar danificado",
+    "archive.warn.damaged_text": "O motor relatou problemas ao ler \"{name}\". A lista de arquivos abaixo pode estar incompleta — execute uma verificação de integridade e, se necessário, repare o arquivo a partir do conjunto PAR2.",
+    "create.warn_title": "Arquivo criado com avisos",
+    "create.warn_text": "O arquivo \"{name}\" foi criado, mas o motor relatou avisos: alguns arquivos podem ter sido ignorados (bloqueados por outro programa, acesso negado). Veja o log para detalhes.",
+    "create.warn_status": "{name}: criado com avisos",
+    "create.done.warnings": "Concluído com avisos"
   }
 }

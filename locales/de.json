@@ -832,6 +832,12 @@
     "sync.no_sources": "Für den Abgleich werden Quellordner benötigt. Legen Sie sie im Prüfauftrag fest oder wählen Sie einen Ordner.",
     "sync.ok": "Archiv stimmt mit den Quellen überein: {name}",
     "sync.diff": "Unterschiede zwischen Archiv und Quellen gefunden: {name}",
-    "sync.fail": "Abgleich nicht durchgeführt: {name}"
+    "sync.fail": "Abgleich nicht durchgeführt: {name}",
+    "archive.warn.damaged_title": "Archiv möglicherweise beschädigt",
+    "archive.warn.damaged_text": "Das Programm hat Probleme beim Lesen von \"{name}\" gemeldet. Die Dateiliste unten kann unvollständig sein — führen Sie eine Integritätsprüfung aus und stellen Sie das Archiv bei Bedarf aus dem PAR2-Satz wieder her.",
+    "create.warn_title": "Archiv mit Warnungen erstellt",
+    "create.warn_text": "Das Archiv \"{name}\" wurde erstellt, aber das Programm hat Warnungen gemeldet: Einige Dateien wurden möglicherweise übersprungen (durch ein anderes Programm gesperrt, Zugriff verweigert). Details stehen im Protokoll.",
+    "create.warn_status": "{name}: mit Warnungen erstellt",
+    "create.done.warnings": "Mit Warnungen abgeschlossen"
   }
 }

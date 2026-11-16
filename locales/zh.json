@@ -832,6 +832,12 @@
     "sync.no_sources": "同步需要源文件夹。请在检查任务中设置，或选择一个文件夹。",
     "sync.ok": "归档与源一致：{name}",
     "sync.diff": "归档与源之间存在差异：{name}",
-    "sync.fail": "未执行同步：{name}"
+    "sync.fail": "未执行同步：{name}",
+    "archive.warn.damaged_title": "存档可能已损坏",
+    "archive.warn.damaged_text": "引擎在读取“{name}”时报告了问题。下面的文件列表可能不完整——请运行完整性检查，必要时从 PAR2 集修复存档。",
+    "create.warn_title": "存档已创建，但有警告",
+    "create.warn_text": "存档“{name}”已创建，但引擎报告了警告：部分文件可能被跳过（被其他程序占用、没有访问权限）。详情见日志。",
+    "create.warn_status": "{name}：已创建，但有警告",
+    "create.done.warnings": "已完成，但有警告"
   }
 }

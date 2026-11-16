@@ -460,6 +460,13 @@ class TestOpenFlagInCreateCmd(unittest.TestCase):
             "в headless a-команде нет -open — задание по расписанию "
             "сможет испортить архив, который пишет другая копия",
         )
+                                                                       
+                                                                       
+        self.assertIn(
+            "-nolfast", cmd,
+            "в a-команде нет -nolfast — архив будет раздут историей "
+            "листинга zpaqfranz 65.20+",
+        )
 
     def test_headless_test_cmd_has_no_open(self):
         pass
@@ -501,12 +508,17 @@ class TestOpenFlagInUiCreateCmd(unittest.TestCase):
 
 
                                                                              
-                                                           
-        cmd = ["zpaqfranz", "a", "D:/backup.zpaq", "D:/docs", "-open", "-m2"]
+                                                                       
+        cmd = [
+            "zpaqfranz", "a", "D:/backup.zpaq", "D:/docs",
+            "-open", "-nolfast", "-m2",
+        ]
                                                                     
                          
         self.assertEqual(cmd.count("-open"), 1)
+        self.assertEqual(cmd.count("-nolfast"), 1)
         self.assertLess(cmd.index("-open"), cmd.index("-m2"))
+        self.assertLess(cmd.index("-nolfast"), cmd.index("-m2"))
 
 
                                                                              
