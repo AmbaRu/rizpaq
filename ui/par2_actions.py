@@ -597,6 +597,23 @@ class Par2ActionsMixin:
             verdict_key = "par2.create_failed"
             verdict_ok = False
 
+        verdict_args = {}
+        if verdict_key == "par2.created_ok":
+            verdict_args["name"] = (
+                Path(archive_path).name if archive_path else "")
+        elif verdict_key == "par2.create_failed":
+            verdict_args["error"] = _last_line(log)
+
+        deferred = "par2" in (getattr(self, "_report_gate", None) or ())
+        if cancelled:
+            par2_status = "cancelled"
+        elif skipped:
+            par2_status = "skipped"
+        elif ok:
+            par2_status = "ok"
+        else:
+            par2_status = "failed"
+
         if dialog is not None and hasattr(dialog, "finish_verdict"):
             detail = ""
             if isinstance(recorded_size, int) and recorded_size > 0:
@@ -613,12 +630,11 @@ class Par2ActionsMixin:
                 except Exception:
                     pass
         elif dialog is not None:
-                                                                     
-                                                                   
-                                                                       
-                                                                  
             try:
-                if cancelled:
+                if deferred:
+                    dialog.finish(True if cancelled else verdict_ok,
+                                  tr(verdict_key, **verdict_args))
+                elif cancelled:
                     dialog.finish(True, tr("par2.cancelled"), stay=True)
                 elif ok and skipped:
                     dialog.finish(True, tr("par2.create_skipped"),
@@ -633,32 +649,36 @@ class Par2ActionsMixin:
                         "par2.create_failed", error=_last_line(log)),
                         stay=True)
             except Exception:
-                                                                      
-                                       
                 pass
 
         if cancelled:
             self._par2_note(tr("par2.cancelled"), archive_path)
-            return
-
-                                                                  
-                                                                    
-                                                 
-        if ok and skipped:
+        elif ok and skipped:
             self._par2_note(tr("par2.create_skipped"), archive_path)
-            return
-
-        if ok:
+        elif ok:
             self._par2_note(
                 tr("par2.created_ok", name=Path(archive_path).name
                    if archive_path else ""),
                 archive_path,
             )
-            return
+        else:
+            self._par2_note(
+                tr("par2.create_failed", error=_last_line(log)),
+                archive_path,
+            )
 
-        self._par2_note(
-            tr("par2.create_failed", error=_last_line(log)), archive_path
-        )
+        if deferred:
+            rep = getattr(self, "_create_report", None) or getattr(
+                self, "_pending_create_report", None)
+            if rep is not None:
+                rep["par2"] = {
+                    "status": par2_status,
+                    "name": Path(archive_path).name if archive_path else "",
+                    "size": (recorded_size
+                             if isinstance(recorded_size, int) else None),
+                    "error": "" if ok else _last_line(log),
+                }
+            self._report_stage_done("par2")
 
                                                                             
 

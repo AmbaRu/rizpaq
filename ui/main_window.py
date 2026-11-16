@@ -178,6 +178,8 @@ class MainWindow(
                                                                  
         self._pending_info_path: Optional[str] = None
         self._pending_create_report: Optional[dict] = None
+        self._create_report: Optional[dict] = None
+        self._report_gate: Optional[set] = None
 
                                                                 
                                                                  

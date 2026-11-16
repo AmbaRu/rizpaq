@@ -101,6 +101,32 @@ class ArchiveDoneDialog(QDialog):
             grid.addRow(tr("create.done.files"), QLabel(str(summary.files)))
             grid.addRow(tr("create.done.size"), QLabel(format_size(summary.size)))
 
+        par2_info = report.get("par2") or {}
+        if par2_info:
+            par2_status = str(par2_info.get("status") or "")
+            par2_color = ""
+            if par2_status == "ok":
+                if is_update:
+                    par2_text = tr("create.done.par2_ok")
+                else:
+                    par2_text = tr("create.done.par2_created")
+                par2_color = color("OK_GREEN")
+            elif par2_status == "skipped":
+                par2_text = tr("create.done.par2_skipped")
+                par2_color = color("OK_GREEN")
+            elif par2_status == "cancelled":
+                par2_text = tr("create.done.par2_cancelled")
+            else:
+                par2_text = tr(
+                    "create.done.par2_failed",
+                    error=par2_info.get("error") or "",
+                )
+                par2_color = color("WARN_ORANGE")
+            par2_label = QLabel(par2_text)
+            if par2_color:
+                par2_label.setStyleSheet(f"color: {par2_color};")
+            grid.addRow(tr("create.done.par2"), par2_label)
+
                                         
         test_rc = report.get("test_rc")
         if test_rc is not None:

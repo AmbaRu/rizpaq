@@ -801,7 +801,7 @@ class ArchiveActionsMixin:
 
         if from_create and getattr(self, "_create_report", None):
             self._create_report["test_rc"] = rc
-            self._request_create_report()
+            self._report_stage_done("test")
             return
 
         if cancelled:
@@ -2893,6 +2893,8 @@ class ArchiveActionsMixin:
 
 
 
+        self._report_gate = None
+
         srcs = settings.get("sources") or []
         if not srcs:
             QMessageBox.warning(
@@ -3085,6 +3087,9 @@ class ArchiveActionsMixin:
 
 
 
+        if getattr(self, "_report_gate", None):
+            return
+
         rep = getattr(self, "_create_report", None)
         if not rep:
             return
@@ -3103,8 +3108,21 @@ class ArchiveActionsMixin:
         self._create_report = None
         self._load_info(dest, quiet=True)
 
+    def _report_stage_done(self, stage: str):
+        pass
+        gate = getattr(self, "_report_gate", None)
+        if gate:
+            gate.discard(stage)
+            if gate:
+                return
+            self._report_gate = None
+        self._request_create_report()
+
     def _show_create_report(self):
         pass
+        if getattr(self, "_report_gate", None):
+            return
+
         rep = getattr(self, "_create_report", None) or getattr(
             self, "_pending_create_report", None
         )
@@ -3228,6 +3246,12 @@ class ArchiveActionsMixin:
                 )
             except Exception:
                 started_par2 = False
+            gate = set()
+            if started_par2:
+                gate.add("par2")
+            if test_after:
+                gate.add("test")
+            self._report_gate = gate or None
             if progress_dlg is not None and not started_par2:
                 progress_dlg.finish(True, name)
             try:
@@ -3279,7 +3303,8 @@ class ArchiveActionsMixin:
                 )
                 return
 
-            self._request_create_report()
+            if not gate:
+                self._request_create_report()
             self._cleanup_transcode_temp_dir()
             return
 

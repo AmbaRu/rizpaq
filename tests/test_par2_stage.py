@@ -26,7 +26,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from PySide6.QtCore import QThread, Signal              
-from PySide6.QtWidgets import QApplication, QWidget              
+from PySide6.QtWidgets import QApplication, QDialog, QWidget 
 
 _APP = QApplication.instance() or QApplication(sys.argv)
 
@@ -213,6 +213,11 @@ class _StageHost(QWidget):
         self.logged = []
         self._workers = []
         self._par2_worker = None
+        self._report_gate = None
+        self._create_report = None
+        self._pending_create_report = None
+        self.report_stages = []
+        self.report_requested = False
 
     def statusBar(self):
         return self
@@ -228,6 +233,19 @@ class _StageHost(QWidget):
 
     def _save_par2_marker(self, job_context, size):
         pass
+
+    def _report_stage_done(self, stage):
+        self.report_stages.append(stage)
+        gate = getattr(self, "_report_gate", None)
+        if gate:
+            gate.discard(stage)
+            if gate:
+                return
+            self._report_gate = None
+        self._request_create_report()
+
+    def _request_create_report(self):
+        self.report_requested = True
 
 
 class TestWiring(unittest.TestCase):
@@ -302,6 +320,74 @@ class TestWiring(unittest.TestCase):
         }, dlg)
         self.assertEqual(dlg._title.property("state"), "ok")
 
+    def test_deferred_report_gets_par2_and_window_closes(self):
+        pass
+        host, dlg, worker = self._host_with_started_worker(None)
+        host._report_gate = {"par2"}
+        host._create_report = {
+            "dest": str(self.arch), "is_update": True, "ok": True,
+            "params_rows": [], "stats": None,
+        }
+        host._on_par2_done({}, {
+            "ok": True, "cancelled": False, "log": "",
+            "recorded_size": 100, "archive_path": str(self.arch),
+            "skipped": False,
+        }, dlg)
+        self.assertEqual(dlg.result(), QDialog.DialogCode.Accepted)
+        self.assertEqual(host._create_report["par2"]["status"], "ok")
+        self.assertEqual(host._create_report["par2"]["size"], 100)
+        self.assertIn("par2", host.report_stages)
+        self.assertTrue(host.report_requested)
+        self.assertIsNone(host._report_gate)
+
+    def test_deferred_report_waits_for_check(self):
+        pass
+        host, dlg, worker = self._host_with_started_worker(None)
+        host._report_gate = {"par2", "test"}
+        host._create_report = {"dest": str(self.arch), "ok": True,
+                               "is_update": False}
+        host._on_par2_done({}, {
+            "ok": False, "cancelled": False, "log": "par2 error",
+            "recorded_size": None, "archive_path": str(self.arch),
+            "skipped": False,
+        }, dlg)
+        self.assertEqual(host._create_report["par2"]["status"], "failed")
+        self.assertEqual(host._create_report["par2"]["error"], "par2 error")
+        self.assertFalse(host.report_requested)
+        self.assertEqual(host._report_gate, {"test"})
+
+    def test_report_waits_while_gate_busy(self):
+        pass
+        from ui.archive_actions import ArchiveActionsMixin
+
+        class Host:
+            _report_gate = {"par2"}
+            _create_report = {"dest": "x.zpaq"}
+
+            def _load_info(self, *a, **k):
+                raise AssertionError("отчёт запрошен раньше времени")
+
+        ArchiveActionsMixin._request_create_report(Host())
+
+    def test_gate_releases_only_after_last_stage(self):
+        pass
+        from ui.archive_actions import ArchiveActionsMixin
+
+        class Host:
+            _report_gate = {"par2", "test"}
+            requested = 0
+
+            def _request_create_report(self):
+                self.requested += 1
+
+        host = Host()
+        ArchiveActionsMixin._report_stage_done(host, "par2")
+        self.assertEqual(host.requested, 0)
+        self.assertEqual(host._report_gate, {"test"})
+        ArchiveActionsMixin._report_stage_done(host, "test")
+        self.assertEqual(host.requested, 1)
+        self.assertIsNone(host._report_gate)
+
     def test_cancel_cancels_par2_worker(self):
         pass
         from ui.archive_actions import ArchiveActionsMixin
@@ -315,6 +401,58 @@ class TestWiring(unittest.TestCase):
         host.showMessage = messages.append
         host._on_archive_progress_cancel()
         self.assertTrue(par2.cancel_called)
+
+
+class TestDoneReportPar2Row(unittest.TestCase):
+    pass
+
+    @classmethod
+    def setUpClass(cls):
+        i18n.set_language("ru", notify=False)
+
+    def _texts(self, report):
+        from PySide6.QtWidgets import QLabel
+
+        from ui.archive_done_dialog import ArchiveDoneDialog
+
+        dlg = ArchiveDoneDialog(report, None, [])
+        try:
+            return [w.text() for w in dlg.findChildren(QLabel)]
+        finally:
+            dlg.deleteLater()
+
+    def test_updated_archive_ok(self):
+        pass
+        texts = self._texts({
+            "dest": "backup.zpaq", "is_update": True, "ok": True,
+            "par2": {"status": "ok"},
+        })
+        self.assertIn(tr("create.done.par2"), texts)
+        self.assertIn(tr("create.done.par2_ok"), texts)
+
+    def test_new_archive_created(self):
+        pass
+        texts = self._texts({
+            "dest": "backup.zpaq", "is_update": False, "ok": True,
+            "par2": {"status": "ok"},
+        })
+        self.assertIn(tr("create.done.par2_created"), texts)
+
+    def test_failed_shows_error(self):
+        pass
+        texts = self._texts({
+            "dest": "backup.zpaq", "is_update": True, "ok": True,
+            "par2": {"status": "failed", "error": "boom"},
+        })
+        self.assertIn(
+            tr("create.done.par2_failed", error="boom"), texts)
+
+    def test_no_par2_row_without_par2(self):
+        pass
+        texts = self._texts({
+            "dest": "backup.zpaq", "is_update": True, "ok": True,
+        })
+        self.assertNotIn(tr("create.done.par2"), texts)
 
 
 if __name__ == "__main__":
