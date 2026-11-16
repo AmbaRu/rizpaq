@@ -93,7 +93,10 @@ from pathlib import Path
                                                                       
               
 from core.password_store import get_password, set_password
-from core.incomplete_archive import incomplete_archive_action
+from core.incomplete_archive import (
+    incomplete_archive_action,
+    incomplete_repair_plan,
+)
 from core.tasks import (
     ACTION_BACKUP,
     ACTION_CHECKPASSWORD,
@@ -642,7 +645,8 @@ def _headless_create(sources: list) -> int:
         else:
             tail = output.strip()[-2000:]
             QMessageBox.warning(win, tr("create.error_title"), tail)
-            _handle_incomplete_headless(win, dest, existed_before, output)
+            _handle_incomplete_headless(
+                win, dest, existed_before, output, password)
         QApplication.quit()
 
     worker = ZpaqWorker("create", cmd, {"dest": dest, "password": password})
@@ -655,8 +659,8 @@ def _headless_create(sources: list) -> int:
     return QApplication.instance().exec()
 
 
-def _handle_incomplete_headless(win, dest, existed_before, output):
-    pass
+def _handle_incomplete_headless(win, dest, existed_before, output,
+                                password=None):
 
 
 
@@ -690,11 +694,17 @@ def _handle_incomplete_headless(win, dest, existed_before, output):
             tr("create.incomplete_deleted", name=name),
         )
         return
+    plan = incomplete_repair_plan(dest, password)
     tail = (output or "").strip()[-2000:]
+    text = tr("create.incomplete_text")
+    if tail:
+        text += "\n\n" + tail
+    if plan.get("needs_password"):
+        text += "\n\n" + tr("create.incomplete_repair_encrypted")
     QMessageBox.warning(
         win,
         tr("create.incomplete_title"),
-        tr("create.incomplete_text") + ("\n\n" + tail if tail else ""),
+        text,
     )
 
 

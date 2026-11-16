@@ -105,8 +105,9 @@ class AppServicesMixin:
             self.statusBar().showMessage(tr("status.seven_zip_not_started", path=path))
 
                                                                          
-    def log_command(self, cmd: list):
-        self.log.appendPlainText("$ " + safe_cmdline(cmd, self.password))
+    def log_command(self, cmd: list, password=None):
+        self.log.appendPlainText(
+            "$ " + safe_cmdline(cmd, password or self.password))
 
     def log_output(self, text: str):
         if text:

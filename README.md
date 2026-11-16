@@ -286,6 +286,12 @@ instant, and nothing you were doing is lost.
   version when there is nothing to change. Masks and multi-volume archives
   still run as normal backups, and the log records why the comparison was
   skipped.
+- **Repair after an interrupted backup** — if adding a version was
+  interrupted, Rizpaq offers to remove only the unfinished transaction and
+  keep the completed versions. The repair works on a copy next to the
+  archive, checks it, and only then replaces the original. Ordinary archives
+  are trimmed; encrypted ones are cropped with the key; multi-volume
+  archives are not repaired automatically.
 - **Fixes after 3.0.0** — the deduplication report uses the engine's real
   before- and after-compression sizes; unsupported job actions are rejected
   by the Rust runner instead of silently becoming backups; a password change
@@ -730,6 +736,11 @@ ZPAQ**. Один клик: старый RAR, набитый дублями, пр
   и не создаёт новую версию, когда менять нечего. Для масок и многотомных
   архивов задание по-прежнему выполняется как обычный бэкап, а причина
   пропуска сверки пишется в лог.
+- **Починка после оборванного бэкапа** — если добавление версии прервалось,
+  Rizpaq предлагает убрать только незавершённую транзакцию, сохранив
+  завершённые версии. Ремонт идёт в копию рядом с архивом, проверяет её и
+  только потом заменяет исходный файл. Обычные архивы очищаются через trim,
+  шифрованные — через crop с ключом; многотомные автоматически не чинятся.
 - **Исправления после 3.0.0** — отчёт о дедупликации использует настоящие
   размеры до и после сжатия; неподдержанные виды заданий в Rust-раннере
   отклоняются, а не превращаются молча в бэкап; смена пароля пишет отдельный
