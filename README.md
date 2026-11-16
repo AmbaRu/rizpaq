@@ -291,7 +291,10 @@ instant, and nothing you were doing is lost.
   keep the completed versions. The repair works on a copy next to the
   archive, checks it, and only then replaces the original. Ordinary archives
   are trimmed; encrypted ones are cropped with the key; multi-volume
-  archives are not repaired automatically.
+  archives are not repaired automatically. The copy needs free space on the
+  archive disk (up to the archive size); if there is not enough, Rizpaq
+  leaves the original unchanged and reports how much is needed. A copy that
+  the engine failed to finish is deleted and never replaces the original.
 - **Fixes after 3.0.0** — the deduplication report uses the engine's real
   before- and after-compression sizes; unsupported job actions are rejected
   by the Rust runner instead of silently becoming backups; a password change
@@ -741,6 +744,9 @@ ZPAQ**. Один клик: старый RAR, набитый дублями, пр
   завершённые версии. Ремонт идёт в копию рядом с архивом, проверяет её и
   только потом заменяет исходный файл. Обычные архивы очищаются через trim,
   шифрованные — через crop с ключом; многотомные автоматически не чинятся.
+  Для копии нужно свободное место на диске архива (до его размера); если его
+  не хватает, Rizpaq оставляет исходник без изменений и пишет, сколько нужно.
+  Недостроенная движком копия удаляется и никогда не заменяет исходник.
 - **Исправления после 3.0.0** — отчёт о дедупликации использует настоящие
   размеры до и после сжатия; неподдержанные виды заданий в Rust-раннере
   отклоняются, а не превращаются молча в бэкап; смена пароля пишет отдельный

@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import os
+import shutil
 import time
 from pathlib import Path
 
 
 PLAIN_ARCHIVE_MAGIC = b"7kSt"
+REPAIR_SPACE_MARGIN = 1024 * 1024
 
 _INCOMPLETE_MARKERS = (
     "incomplete transaction",
@@ -85,6 +87,25 @@ def incomplete_repair_plan(dest: str, password=None) -> dict:
             "reason": "шифрованный архив: crop с ключом в копию",
         }
     return {"action": "none", "temp": temp, "reason": "формат не распознан"}
+
+
+def incomplete_repair_space(dest: str, plan: dict, free=None):
+    temp = str(plan.get("temp") or "")
+    folder = Path(temp).parent if temp else Path(dest).parent
+    try:
+        needed = Path(dest).stat().st_size
+        if free is None:
+            free = shutil.disk_usage(str(folder)).free
+    except OSError:
+        return None
+    required = int(needed) + REPAIR_SPACE_MARGIN
+    available = int(free)
+    return {
+        "enough": available >= required,
+        "free": available,
+        "needed": int(needed),
+        "required": required,
+    }
 
 
 def incomplete_repair_command(zpaq: str, dest: str, plan: dict) -> list:

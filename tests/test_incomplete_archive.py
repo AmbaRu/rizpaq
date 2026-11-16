@@ -11,11 +11,13 @@ sys.path.insert(0, str(ROOT))
 
 import ui.archive_actions as aa
 from core.incomplete_archive import (
+    REPAIR_SPACE_MARGIN,
     archive_encryption,
     incomplete_archive_action,
     incomplete_repair_check_command,
     incomplete_repair_command,
     incomplete_repair_plan,
+    incomplete_repair_space,
     incomplete_repair_verified,
     repair_temp_path,
 )
@@ -49,6 +51,9 @@ class _Stub:
     def _start_incomplete_repair(self, dest, plan):
         self.started.append((dest, dict(plan)))
 
+    def _repair_failed(self, dest, error):
+        aa.ArchiveActionsMixin._repair_failed(self, dest, error)
+
     def _refresh_index_after_create(self, dest, password=None):
         self.refreshed.append((dest, password))
 
@@ -80,10 +85,15 @@ class TestIncompleteArchive(unittest.TestCase):
         self.box = _FakeBox()
         self._real_box = aa.QMessageBox
         self._real_tr = aa.tr
+        self._real_space = aa.incomplete_repair_space
         aa.QMessageBox = self.box
         aa.tr = lambda key, **kw: f"[{key}|{kw}]"
+        aa.incomplete_repair_space = lambda dest, plan: {
+            "enough": True, "free": 10 ** 12, "needed": 1, "required": 1}
         self.addCleanup(setattr, aa, "QMessageBox", self._real_box)
         self.addCleanup(setattr, aa, "tr", self._real_tr)
+        self.addCleanup(
+            setattr, aa, "incomplete_repair_space", self._real_space)
 
     def _call(self, dest, is_update, output="", password=None):
         aa.ArchiveActionsMixin._handle_incomplete_archive(
@@ -194,6 +204,21 @@ class TestIncompleteArchive(unittest.TestCase):
         self.assertEqual(kind, "warning")
         self.assertIn("create.incomplete_text", text)
         self.assertTrue(text, "пустое предупреждение бесполезно")
+
+    def test_no_space_is_reported_and_repair_is_not_offered(self):
+        p = self._plain()
+        space = {"enough": False, "free": 1024, "needed": 10 ** 12,
+                 "required": 10 ** 12}
+        with mock.patch.object(aa, "incomplete_repair_space",
+                               return_value=space):
+            self._call(p, True)
+        self.assertTrue(p.exists())
+        self.assertEqual(len(self.box.calls), 1)
+        kind, title, text = self.box.calls[0]
+        self.assertEqual(kind, "warning")
+        self.assertIn("create.incomplete_repair_no_space", text)
+        self.assertIn("1.0 KB", text)
+        self.assertEqual(self.stub.started, [])
 
 
 class TestIncompleteArchiveDecision(unittest.TestCase):
@@ -310,6 +335,47 @@ class TestIncompleteArchiveRepair(unittest.TestCase):
         self.assertEqual(plan["action"], "none")
         self.assertIn("формат", plan["reason"])
 
+    def test_repair_space_enough(self):
+        p = self._write()
+        plan = incomplete_repair_plan(str(p))
+        size = p.stat().st_size
+        space = incomplete_repair_space(
+            str(p), plan, free=size + REPAIR_SPACE_MARGIN)
+        self.assertTrue(space["enough"])
+        self.assertEqual(space["needed"], size)
+        self.assertEqual(space["required"], size + REPAIR_SPACE_MARGIN)
+        self.assertEqual(space["free"], size + REPAIR_SPACE_MARGIN)
+
+    def test_repair_space_not_enough(self):
+        p = self._write()
+        plan = incomplete_repair_plan(str(p))
+        space = incomplete_repair_space(str(p), plan, free=1024)
+        self.assertFalse(space["enough"])
+        self.assertEqual(space["free"], 1024)
+        self.assertGreater(space["required"], space["free"])
+
+    def test_repair_space_missing_file(self):
+        plan = {
+            "action": "trim",
+            "temp": str(self.tmp / "arc.repair.zpaq"),
+        }
+        space = incomplete_repair_space(
+            str(self.tmp / "нет.zpaq"), plan, free=10 ** 12)
+        self.assertIsNone(space)
+
+    def test_repair_space_checks_temp_folder(self):
+        p = self._write()
+        sub = self.tmp / "sub"
+        sub.mkdir()
+        plan = {"action": "trim",
+                "temp": str(sub / "arc.repair.zpaq")}
+        usage = mock.Mock(free=10 ** 12)
+        with mock.patch("core.incomplete_archive.shutil.disk_usage",
+                        return_value=usage) as disk_usage:
+            space = incomplete_repair_space(str(p), plan)
+        disk_usage.assert_called_once_with(str(sub))
+        self.assertTrue(space["enough"])
+
     def test_repair_command_trim(self):
         plan = {"action": "trim", "temp": "copy.zpaq"}
         cmd = incomplete_repair_command("zpaq", "arc.zpaq", plan)
@@ -411,6 +477,29 @@ class TestIncompleteArchiveRepairUi(unittest.TestCase):
         self.assertFalse(temp.exists())
         self.assertEqual(len(self.box.calls), 1)
         self.assertIn("create.incomplete_repair_empty", self.box.calls[0][2])
+
+    def test_repair_failure_removes_copy_and_keeps_original(self):
+        dest = self.tmp / "arc.zpaq"
+        original = b"7kSt" + b"x" * 10
+        dest.write_bytes(original)
+        temp = self.tmp / "arc.repair.zpaq"
+        temp.write_bytes(b"7kSt" + b"y" * 10)
+        plan = {"action": "trim", "temp": str(temp), "password": None}
+        aa.ArchiveActionsMixin._on_incomplete_repair_result(
+            self.stub,
+            self._result(dest, plan, rc=2,
+                         output="ERROR media full, cannot write"),
+        )
+        self.assertFalse(temp.exists(),
+                         "недоделанная копия не должна оставаться")
+        self.assertEqual(dest.read_bytes(), original,
+                         "при ошибке ремонта исходник неприкосновенен")
+        self.assertEqual(self.stub._workers, [],
+                         "проверять недоделанную копию нельзя")
+        self.assertEqual(len(self.box.calls), 1)
+        self.assertEqual(self.box.calls[0][0], "warning")
+        self.assertIn("create.incomplete_repair_failed",
+                      self.box.calls[0][2])
 
     def test_repair_check_unverified_keeps_original(self):
         dest = self.tmp / "arc.zpaq"

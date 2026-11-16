@@ -556,6 +556,7 @@
     "create.incomplete_repair_empty": "Repair produced an empty file, so the original archive was left unchanged.",
     "create.incomplete_repair_failed": "Could not repair archive \"{name}\": {error}\nThe original archive was not changed.",
     "create.incomplete_repair_not_needed": "The archive has no unfinished transaction — repair is not needed.",
+    "create.incomplete_repair_no_space": "Repair needs a copy next to the archive: up to {need} may be required, but only {free} is free. The original archive was left unchanged. Free some space or repair on another disk.",
     "create.incomplete_repair_unverified": "The repaired copy did not pass the check, so the original archive was left unchanged.",
     "menu.help.guide": "User guide…",
     "manual.not_found": "User guide not found: {path}",

@@ -193,6 +193,7 @@
     "create.incomplete_repair_empty": "修復の結果が空のファイルになったため、元のアーカイブは変更していません。",
     "create.incomplete_repair_failed": "アーカイブ「{name}」を修復できませんでした：{error}\n元のアーカイブは変更していません。",
     "create.incomplete_repair_not_needed": "アーカイブに未完了のトランザクションはありません。修復は不要です。",
+    "create.incomplete_repair_no_space": "修復にはアーカイブの隣にコピーが必要です。最大 {need} の空きが必要ですが、空きは {free} しかありません。元のアーカイブは変更していません。空きを増やすか、別のディスクで修復してください。",
     "create.incomplete_repair_unverified": "修復したコピーが確認に合格しなかったため、元のアーカイブは変更していません。",
     "create.job_title": "ジョブ名：",
     "create.job_title_placeholder": "例：「毎日のバックアップ」",

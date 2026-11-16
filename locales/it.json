@@ -193,6 +193,7 @@
     "create.incomplete_repair_empty": "La riparazione ha prodotto un file vuoto, quindi l'archivio originale è rimasto invariato.",
     "create.incomplete_repair_failed": "Impossibile riparare l'archivio «{name}»: {error}\nL'archivio originale non è stato modificato.",
     "create.incomplete_repair_not_needed": "L'archivio non contiene transazioni incomplete: la riparazione non è necessaria.",
+    "create.incomplete_repair_no_space": "La riparazione richiede una copia accanto all'archivio: possono servire fino a {need}, ma sono liberi solo {free}. L'archivio originale è rimasto invariato. Libera spazio o ripara su un altro disco.",
     "create.incomplete_repair_unverified": "La copia riparata non ha superato il controllo, quindi l'archivio originale è rimasto invariato.",
     "create.job_title": "Nome dell'attività:",
     "create.job_title_placeholder": "Es.: «Backup giornaliero»",

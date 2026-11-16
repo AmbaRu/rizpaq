@@ -193,6 +193,7 @@
     "create.incomplete_repair_empty": "Die Reparatur ergab eine leere Datei; das Originalarchiv wurde daher nicht verändert.",
     "create.incomplete_repair_failed": "Archiv „{name}“ konnte nicht repariert werden: {error}\nDas Originalarchiv wurde nicht verändert.",
     "create.incomplete_repair_not_needed": "Das Archiv enthält keine unvollständige Transaktion — eine Reparatur ist nicht nötig.",
+    "create.incomplete_repair_no_space": "Für die Reparatur ist eine Kopie neben dem Archiv nötig: Es können bis zu {need} benötigt werden, frei sind aber nur {free}. Das Originalarchiv wurde nicht verändert. Geben Sie Speicher frei oder reparieren Sie auf einem anderen Datenträger.",
     "create.incomplete_repair_unverified": "Die reparierte Kopie hat die Prüfung nicht bestanden; das Originalarchiv wurde daher nicht verändert.",
     "create.job_title": "Aufgabenname:",
     "create.job_title_placeholder": "Z. B. „Tägliche Sicherung“",

@@ -193,6 +193,7 @@
     "create.incomplete_repair_empty": "La réparation a produit un fichier vide ; l'archive originale n'a donc pas été modifiée.",
     "create.incomplete_repair_failed": "Impossible de réparer l'archive « {name} » : {error}\nL'archive originale n'a pas été modifiée.",
     "create.incomplete_repair_not_needed": "L'archive ne contient aucune transaction inachevée — la réparation n'est pas nécessaire.",
+    "create.incomplete_repair_no_space": "La réparation nécessite une copie à côté de l'archive : jusqu'à {need} peuvent être nécessaires, mais seulement {free} sont libres. L'archive originale n'a pas été modifiée. Libérez de l'espace ou réparez sur un autre disque.",
     "create.incomplete_repair_unverified": "La copie réparée n'a pas passé la vérification ; l'archive originale n'a donc pas été modifiée.",
     "create.job_title": "Nom de la tâche :",
     "create.job_title_placeholder": "Ex. : « Sauvegarde quotidienne »",

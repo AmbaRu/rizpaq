@@ -172,6 +172,7 @@ from core.incomplete_archive import (
     incomplete_repair_check_command,
     incomplete_repair_command,
     incomplete_repair_plan,
+    incomplete_repair_space,
     incomplete_repair_verified,
 )
 from core.tasks import (
@@ -232,6 +233,7 @@ from ui.archive_progress_dialog import ArchiveProgressDialog
 from ui.archive_work_dialog import ArchiveWorkDialog
 from ui.extract_progress_dialog import ExtractProgressDialog
 from ui.i18n import tr
+from ui.presentation import format_size
 from ui.test_modes import mode_label as test_mode_label
 from ui.qt_compat import (
     K_FS,
@@ -3534,14 +3536,25 @@ class ArchiveActionsMixin:
                 tr("create.incomplete_deleted", name=p.name))
             return
         plan = incomplete_repair_plan(str(p), password)
+        space = None
+        if plan["action"] != "none":
+            space = incomplete_repair_space(str(p), plan)
         tail = (output or "").strip()[-2000:]
         text = tr("create.incomplete_text")
         if tail:
             text += "\n\n" + tail
         if plan.get("needs_password"):
             text += "\n\n" + tr("create.incomplete_repair_encrypted")
+        if space is not None and not space["enough"]:
+            text += "\n\n" + tr(
+                "create.incomplete_repair_no_space",
+                need=format_size(space["required"]),
+                free=format_size(space["free"]),
+            )
         QMessageBox.warning(self, tr("create.incomplete_title"), text)
         if plan["action"] == "none":
+            return
+        if space is not None and not space["enough"]:
             return
 
         ans = QMessageBox.question(
@@ -3582,15 +3595,15 @@ class ArchiveActionsMixin:
         plan = dict(ctx.get("plan") or {})
         temp = plan.get("temp", "")
         output = result.get("output", "") or ""
+        rc = result.get("rc", 1)
         if output:
             self.log_output(output)
         if result.get("cancelled"):
             _remove_quiet(temp)
             return
 
-        try:
-            size = Path(temp).stat().st_size
-        except OSError:
+        if rc != 0:
+            _remove_quiet(temp)
             if (plan.get("action") == "trim"
                     and "trim seems not necessary" in output.lower()):
                 self.statusBar().showMessage(
@@ -3600,6 +3613,13 @@ class ArchiveActionsMixin:
                     tr("create.incomplete_repair_not_needed"),
                 )
                 return
+            self._repair_failed(
+                dest, _last_output_line(output) or tr("create.error_title"))
+            return
+
+        try:
+            size = Path(temp).stat().st_size
+        except OSError:
             _remove_quiet(temp)
             self._repair_failed(
                 dest, _last_output_line(output) or tr("create.error_title"))

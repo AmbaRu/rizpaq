@@ -193,6 +193,7 @@
     "create.incomplete_repair_empty": "A reparação produziu um arquivo vazio, então o arquivo original não foi alterado.",
     "create.incomplete_repair_failed": "Não foi possível reparar o arquivo «{name}»: {error}\nO arquivo original não foi alterado.",
     "create.incomplete_repair_not_needed": "O arquivo não contém transação inacabada — a reparação não é necessária.",
+    "create.incomplete_repair_no_space": "A reparação precisa de uma cópia ao lado do arquivo: podem ser necessários até {need}, mas há apenas {free} livres. O arquivo original não foi alterado. Libere espaço ou repare em outro disco.",
     "create.incomplete_repair_unverified": "A cópia reparada não passou na verificação, então o arquivo original não foi alterado.",
     "create.job_title": "Nome da tarefa:",
     "create.job_title_placeholder": "Ex.: «Backup diário»",

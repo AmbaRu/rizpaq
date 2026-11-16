@@ -193,6 +193,7 @@
     "create.incomplete_repair_empty": "修复后得到空文件，因此原始档案保持不变。",
     "create.incomplete_repair_failed": "无法修复档案「{name}」：{error}\n原始档案未更改。",
     "create.incomplete_repair_not_needed": "档案中没有未完成的事务，无需修复。",
+    "create.incomplete_repair_no_space": "修复需要在档案旁创建副本：最多可能需要 {need}，但当前仅剩 {free}。原始档案未更改。请释放空间或在其他磁盘上修复。",
     "create.incomplete_repair_unverified": "修复后的副本未通过检查，因此原始档案保持不变。",
     "create.job_title": "任务名称：",
     "create.job_title_placeholder": "例如：「每日备份」",

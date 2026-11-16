@@ -193,6 +193,7 @@
     "create.incomplete_repair_empty": "Naprawa utworzyła pusty plik, więc oryginalne archiwum pozostało bez zmian.",
     "create.incomplete_repair_failed": "Nie udało się naprawić archiwum „{name}”: {error}\nOryginalne archiwum nie zostało zmienione.",
     "create.incomplete_repair_not_needed": "Archiwum nie zawiera niekompletnej transakcji — naprawa nie jest potrzebna.",
+    "create.incomplete_repair_no_space": "Naprawa wymaga kopii obok archiwum: może być potrzebne do {need}, ale wolne jest tylko {free}. Oryginalne archiwum pozostało bez zmian. Zwolnij miejsce lub napraw na innym dysku.",
     "create.incomplete_repair_unverified": "Naprawiona kopia nie przeszła sprawdzenia, więc oryginalne archiwum pozostało bez zmian.",
     "create.job_title": "Nazwa zadania:",
     "create.job_title_placeholder": "Np. „Codzienna kopia zapasowa”",
