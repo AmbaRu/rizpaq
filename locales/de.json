@@ -914,6 +914,7 @@
     "tip.manual": "Benutzerhandbuch öffnen",
     "tip.command_ref": "zpaqfranz-Befehle und ihre Schalter durchsuchen",
     "tip.cancel": "Aktuelle Operation sicher abbrechen",
-    "tip.open_external": "Datei mit der vom System festgelegten Standardanwendung öffnen"
+    "tip.open_external": "Datei mit der vom System festgelegten Standardanwendung öffnen",
+    "tip.checkspace": "So viel freien Speicherplatz vor dem Schreiben verlangen; beim Anhängen an ein vorhandenes Archiv gilt mindestens 1 GB"
   }
 }

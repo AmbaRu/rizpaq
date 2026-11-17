@@ -914,6 +914,7 @@
     "tip.manual": "ユーザーガイドを開く",
     "tip.command_ref": "zpaqfranz のコマンドとそのオプションを検索する",
     "tip.cancel": "現在の操作を安全にキャンセルする",
-    "tip.open_external": "ファイルをシステムの既定のアプリケーションで開く"
+    "tip.open_external": "ファイルをシステムの既定のアプリケーションで開く",
+    "tip.checkspace": "書き込み前に要求する空き容量。既存のアーカイブへの追記では最低 1 GB を要求します"
   }
 }

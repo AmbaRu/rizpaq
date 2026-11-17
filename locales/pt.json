@@ -914,6 +914,7 @@
     "tip.manual": "Abrir o guia do usuário",
     "tip.command_ref": "Pesquisar comandos do zpaqfranz e suas opções",
     "tip.cancel": "Cancelar a operação atual com segurança",
-    "tip.open_external": "Abrir o arquivo com o aplicativo padrão do sistema"
+    "tip.open_external": "Abrir o arquivo com o aplicativo padrão do sistema",
+    "tip.checkspace": "Quanto espaço livre exigir antes de gravar; ao acrescentar a um arquivo existente, exige-se pelo menos 1 GB"
   }
 }

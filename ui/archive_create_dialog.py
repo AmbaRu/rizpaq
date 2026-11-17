@@ -79,6 +79,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from core.zpaq_cli import checksize_for_append
 from ui.i18n import tr
 from ui.par2_options import Par2OptionsWidget
 from ui.qt_compat import PASSWORD_ECHO
@@ -146,7 +147,17 @@ def _source_size(path: str) -> int:
     return total
 
 
-def _auto_checksize(total: int) -> str:
+def _auto_checksize(total: int, is_update: bool = False) -> str:
+    pass
+
+
+
+
+
+
+
+    if is_update:
+        return checksize_for_append()
     total = int(total)
     return _fmt_checksize(total + max(total // 20, 1 << 20))
 
@@ -468,8 +479,10 @@ class ArchiveCreateDialog(QDialog):
 
         csr = QHBoxLayout()
         self._opt_checkspace = QCheckBox(tr("create.opt_checkspace"))
+        self._opt_checkspace.setToolTip(tr("tip.checkspace"))
         self._checkspace_edit = QLineEdit()
         self._checkspace_edit.setPlaceholderText("10G")
+        self._checkspace_edit.setToolTip(tr("tip.checkspace"))
         self._checkspace_edit.textChanged.connect(self._on_checkspace_text_changed)
         csr.addWidget(self._opt_checkspace)
         csr.addWidget(self._checkspace_edit, 1)
@@ -702,7 +715,7 @@ class ArchiveCreateDialog(QDialog):
         c = self._checkspace_edit.text().strip()
         if c and c != self._auto_checkspace:
             return
-        self._auto_checkspace = _auto_checksize(total)
+        self._auto_checkspace = _auto_checksize(total, self._dest_exists())
         self._set_checkspace(self._auto_checkspace)
 
                                                                           
@@ -847,9 +860,16 @@ class ArchiveCreateDialog(QDialog):
             tr("create.will_append") if self._dest_exists() else tr("create.will_create")
         )
         c = self._checkspace_edit.text().strip()
-        if not c and not self._user_cleared and self._source_total > 0:
-            self._auto_checkspace = _auto_checksize(self._source_total)
-            self._set_checkspace(self._auto_checkspace)
+        if self._source_total <= 0 or self._user_cleared:
+            return
+                                                                       
+                                                                      
+        if c and c != self._auto_checkspace:
+            return
+        self._auto_checkspace = _auto_checksize(
+            self._source_total, self._dest_exists()
+        )
+        self._set_checkspace(self._auto_checkspace)
 
     def _browse_dest(self):
         p, _ = QFileDialog.getSaveFileName(

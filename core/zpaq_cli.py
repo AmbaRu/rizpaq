@@ -32,8 +32,10 @@ from __future__ import annotations
 
 import os
 import re
+import shutil
 import subprocess
 import time
+from pathlib import Path
 from typing import Callable, Optional
 
                                                                  
@@ -167,6 +169,120 @@ def looks_like_busy_error(text: str) -> bool:
 
 
     return _BUSY_MARKER in (text or "").lower()
+
+
+                                                                             
+                              
+                                                                             
+ 
+                                                     
+ 
+                                                                   
+ 
+                                                                         
+                                                                        
+                                                                        
+                                                                    
+                                                                         
+                                                              
+ 
+                                                                       
+                                                                     
+                                                                         
+                                                                     
+                                                                          
+
+APPEND_CHECK = "1G"
+APPEND_MIN_FREE = 1 << 30
+
+_CHECK_UNITS = {"k": 1 << 10, "m": 1 << 20, "g": 1 << 30, "t": 1 << 40}
+
+
+def checksize_bytes(text) -> int:
+    pass
+
+
+
+
+
+
+    value = str(text or "").strip().replace(",", ".")
+    if not value:
+        return 0
+    mult = 1
+    if value[-1].lower() in _CHECK_UNITS:
+        mult = _CHECK_UNITS[value[-1].lower()]
+        value = value[:-1].strip()
+    try:
+        return int(float(value) * mult)
+    except (TypeError, ValueError):
+        return 0
+
+
+def checksize_text(n: int) -> str:
+    pass
+    n = int(n)
+    if n <= 0:
+        return ""
+    for suffix, mult in (
+        ("T", 1 << 40),
+        ("G", 1 << 30),
+        ("M", 1 << 20),
+        ("K", 1 << 10),
+    ):
+        if n >= mult:
+            value = n / mult
+            if abs(value - round(value)) < 0.01:
+                return "%d%s" % (round(value), suffix)
+            return ("%.2f" % value).rstrip("0").rstrip(".") + suffix
+    return str(n)
+
+
+def checksize_for_append(requested: str = "") -> str:
+    pass
+
+
+
+
+
+    want = checksize_bytes(requested)
+    if want and want < APPEND_MIN_FREE:
+        return checksize_text(want)
+    return APPEND_CHECK
+
+
+def archive_exists(dest) -> bool:
+    pass
+    text = str(dest or "")
+    if not text or "?" in text:
+        return False
+    try:
+        return Path(text).is_file()
+    except Exception:
+        return False
+
+
+def resolve_checksize(requested: str, dest, is_update: bool = False) -> str:
+    pass
+
+
+
+
+
+
+    value = str(requested or "").strip()
+    if not value:
+        return ""
+    if not is_update:
+        return value
+    try:
+        folder = Path(str(dest)).parent
+        free = shutil.disk_usage(str(folder)).free
+    except Exception:
+        return value
+    if free >= APPEND_MIN_FREE:
+        return checksize_for_append(value)
+    return value
 
 
 def _is_cancelled(is_cancelled: Optional[Callable[[], bool]]) -> bool:

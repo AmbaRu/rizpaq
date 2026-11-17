@@ -120,7 +120,11 @@ from core.tasks import (
     find_job,
     job_to_runnable_settings,
 )
-from core.zpaq_cli import looks_like_busy_error
+from core.zpaq_cli import (
+    archive_exists,
+    looks_like_busy_error,
+    resolve_checksize,
+)
 
 _HEADLESS_OPS = ("--test", "--extract-here", "--create", "--task")
 
@@ -402,8 +406,15 @@ def _build_create_cmd(zpaq_bin, settings, srcs, dest, password):
         cmd.append("-nodedup")
     if settings.get("vss"):
         cmd.append("-vss")
-    if settings.get("checkspace"):
-        cmd += ["-checksize", settings["checkspace"]]
+                                                                      
+                                                                            
+                                                                   
+                                                      
+    checksize = resolve_checksize(
+        settings.get("checkspace"), dest, is_update=archive_exists(dest)
+    )
+    if checksize:
+        cmd += ["-checksize", checksize]
     if settings.get("noonedrive"):
         cmd.append("-noonedrive")
     if settings.get("ignore"):

@@ -225,7 +225,7 @@ from core.headless import _build_log_header, _write_task_log, sync_log_is_fatal
                                                                    
                                                                
                                            
-from core.zpaq_cli import looks_like_busy_error
+from core.zpaq_cli import looks_like_busy_error, resolve_checksize
 
 from ui.archive_check_dialog import ArchiveCheckDialog
 from ui.archive_create_dialog import ArchiveCreateDialog
@@ -3007,8 +3007,13 @@ class ArchiveActionsMixin:
             cmd.append("-nodedup")
         if settings.get("vss"):
             cmd.append("-vss")
-        if settings.get("checkspace"):
-            cmd += ["-checksize", settings["checkspace"]]
+                                                                       
+                                                                         
+        checksize = resolve_checksize(
+            settings.get("checkspace"), dest, is_update=is_update
+        )
+        if checksize:
+            cmd += ["-checksize", checksize]
         if settings.get("noonedrive"):
             cmd.append("-noonedrive")
         if settings.get("ignore"):

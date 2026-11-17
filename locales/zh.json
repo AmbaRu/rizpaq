@@ -914,6 +914,7 @@
     "tip.manual": "打开用户指南",
     "tip.command_ref": "搜索 zpaqfranz 命令及其开关",
     "tip.cancel": "安全地取消当前操作",
-    "tip.open_external": "用系统默认应用程序打开文件"
+    "tip.open_external": "用系统默认应用程序打开文件",
+    "tip.checkspace": "写入前要求的最小可用空间；向现有归档追加时至少要求 1 GB"
   }
 }

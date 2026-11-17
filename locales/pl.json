@@ -914,6 +914,7 @@
     "tip.manual": "Otwórz przewodnik użytkownika",
     "tip.command_ref": "Szukaj poleceń zpaqfranz i ich przełączników",
     "tip.cancel": "Bezpiecznie przerwij bieżącą operację",
-    "tip.open_external": "Otwórz plik w domyślnej aplikacji systemu"
+    "tip.open_external": "Otwórz plik w domyślnej aplikacji systemu",
+    "tip.checkspace": "Ile wolnego miejsca wymagać przed zapisem; przy dopisywaniu do istniejącego archiwum wymagany jest co najmniej 1 GB"
   }
 }
