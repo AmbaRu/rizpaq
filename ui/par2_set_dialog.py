@@ -79,6 +79,7 @@ class Par2SetDialog(QDialog):
             QDialogButtonBox.Ok | QDialogButtonBox.Cancel, parent=self
         )
         buttons.button(QDialogButtonBox.Ok).setText(tr("par2.set_create"))
+        buttons.button(QDialogButtonBox.Ok).setToolTip(tr("tip.par2_create"))
         buttons.button(QDialogButtonBox.Cancel).setText(tr("progress.cancel"))
         buttons.accepted.connect(self.accept)
         buttons.rejected.connect(self.reject)

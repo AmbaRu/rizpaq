@@ -71,6 +71,7 @@ class ScheduleDialog(QDialog):
                               
         self._enabled_cb = QCheckBox(tr("scheduler.enable"))
         self._enabled_cb.setChecked(True)
+        self._enabled_cb.setToolTip(tr("tip.schedule_enable"))
         layout.addWidget(self._enabled_cb)
 
                           
@@ -94,6 +95,7 @@ class ScheduleDialog(QDialog):
                                                 
         row_cont = QHBoxLayout()
         self._rb_continuous = QRadioButton(tr("scheduler.rb_continuous"))
+        self._rb_continuous.setToolTip(tr("tip.schedule_continuous"))
         self._spin_continuous = QSpinBox()
         self._spin_continuous.setRange(1, 60)
         self._spin_continuous.setValue(5)
@@ -214,6 +216,7 @@ class ScheduleDialog(QDialog):
                                                                    
                                                            
         self._skip_changed_cb = QCheckBox(tr("scheduler.skip_unchanged"))
+        self._skip_changed_cb.setToolTip(tr("tip.schedule_skip_unchanged"))
         layout.addWidget(self._skip_changed_cb)
 
         self._skip_changed_hint = QLabel(tr("scheduler.skip_unchanged_hint"))

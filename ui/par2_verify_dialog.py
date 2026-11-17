@@ -100,6 +100,7 @@ class Par2VerifyDialog(Par2OperationDialog):
             tr("par2.test_mode"), tr("par2.verify_running"),
             archive_name, parent,
         )
+        self.setToolTip(tr("tip.par2_verify"))
 
 
 class Par2CreateDialog(Par2OperationDialog):
@@ -110,6 +111,7 @@ class Par2CreateDialog(Par2OperationDialog):
             tr("par2.create_title"), tr("par2.create_running"),
             archive_name, parent,
         )
+        self.setToolTip(tr("tip.par2_create"))
 
 
 class Par2RepairDialog(Par2OperationDialog):
@@ -135,6 +137,7 @@ class Par2RepairDialog(Par2OperationDialog):
             tr("par2.repair_title"), tr("par2.repair_checking"),
             archive_name, parent,
         )
+        self.setToolTip(tr("tip.par2_repair"))
 
     def begin_repair(self) -> None:
         pass

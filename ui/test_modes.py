@@ -42,6 +42,35 @@ TEST_MODES_UI = (
     ("sync", "menu.test.sync", "check.mode_sync"),
 )
 
+                                                                 
+                                                                     
+                                                                 
+                                                                          
+                                                                     
+                                                                        
+                  
+TEST_MODE_TIPS = {
+    "full": "tip.test_archive",
+    "checksum": "tip.test_archive",
+    "verify": "tip.test_archive",
+    "paranoid": "tip.paranoid",
+    "par2": "tip.par2_verify",
+    "verify_fs": "tip.verify_fs",
+    "sync": "tip.sync",
+}
+
+
+def mode_tooltip(mode: str) -> str:
+    pass
+
+
+
+
+
+
+    key = TEST_MODE_TIPS.get(str(mode or ""))
+    return tr(key) if key else ""
+
 
 def menu_entries():
     pass

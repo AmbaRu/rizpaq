@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+                      
 
 
 
@@ -114,17 +114,31 @@ DYNAMIC_KEYS = {
         "copy_failed",
     )
 } | {
+                                                                    
+                                                                   
+                                                     
     f"dashboard.tile.{s}" for s in (
         "all", "ok", "error", "busy", "never", "nopar2", "issues",
     )
 } | {
+                                                                   
+                                                 
     f"dashboard.type.{s}" for s in ("backup", "test", "par2")
 } | {
+                                                               
+                                                           
+                                                                      
+                                                      
+                                                                      
     f"dashboard.status.{s}" for s in ("ok", "error", "busy")
 } | {
+                                                                        
+                                                
     "dashboard.legend.ok",
     "dashboard.legend.error",
 } | {
+                                                                 
+                                 
     "digest.backups",
     "digest.tests",
 }
@@ -169,6 +183,8 @@ LEGACY_KEYS = {
  
                                                                
                                                                    
+                                                                     
+                                                
                                                                      
                                                                    
                                                                  
@@ -218,7 +234,7 @@ def _keys_from_tables() -> set:
     return out
 
 
-KEY_TABLE_NAMES = {"TEST_MODES_UI"}
+KEY_TABLE_NAMES = {"TEST_MODES_UI", "TEST_MODE_TIPS"}
 
 
 def _keys_from_tr_calls(text: str) -> set:

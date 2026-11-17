@@ -91,6 +91,7 @@ class ExtractionMixin:
         )
 
         initial_dir = self._initial_extract_dir()
+        self.setStatusTip(tr("tip.extract_to"))
 
         dest, _ = QFileDialog.getSaveFileName(
             self,
@@ -118,6 +119,7 @@ class ExtractionMixin:
             dest_path = dest_path.with_name(dest_path.name + "_file")
 
         if dest_path.exists():
+            self.setStatusTip(tr("tip.extract_force"))
             ans = QMessageBox.question(
                 self,
                 tr("extract.dialog.file_exists_title"),
@@ -139,6 +141,7 @@ class ExtractionMixin:
         if not self.archive_path or not entry:
             return
 
+        self.setStatusTip(tr("tip.open_external"))
         try:
             tmp_dir = tempfile.mkdtemp(prefix="rizpaq_open_")
         except OSError:
@@ -190,6 +193,9 @@ class ExtractionMixin:
         from ui.restore_revision_dialog import RestoreRevisionDialog
 
         dlg = RestoreRevisionDialog(self)
+        dlg.all_radio.setToolTip(tr("tip.extract_all_versions"))
+        dlg.date_radio.setToolTip(tr("tip.extract_until"))
+        dlg.date_edit.setToolTip(tr("tip.extract_until"))
         if dlg.exec() != QDialog.Accepted:
             return
 
@@ -205,6 +211,7 @@ class ExtractionMixin:
             return
 
         initial = str(self._initial_extract_dir())
+        self.setStatusTip(tr("tip.extract_to"))
         dest = QFileDialog.getExistingDirectory(
             self, tr("restore.rev.dest_title"), initial
         )
@@ -240,6 +247,7 @@ class ExtractionMixin:
             return
 
         initial_dir = self._initial_extract_dir()
+        self.setStatusTip(tr("tip.extract_to"))
 
         dest_parent = QFileDialog.getExistingDirectory(
             self,

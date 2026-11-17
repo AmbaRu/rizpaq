@@ -90,6 +90,7 @@ class Par2OptionsWidget(QWidget):
         self.redundancy = QSpinBox()
         self.redundancy.setRange(1, 100)
         self.redundancy.setSuffix(" %")
+        self.redundancy.setToolTip(tr("tip.par2_redundancy"))
         form.addRow(tr("par2.redundancy"), self.redundancy)
         gl.addLayout(form)
 

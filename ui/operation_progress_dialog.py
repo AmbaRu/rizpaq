@@ -268,6 +268,7 @@ class OperationProgressDialog(QDialog):
         bottom.addStretch(1)
 
         self._btn = QPushButton(tr("progress.cancel"))
+        self._btn.setToolTip(tr("tip.cancel"))
         self._btn.clicked.connect(self._on_button)
         bottom.addWidget(self._btn)
 

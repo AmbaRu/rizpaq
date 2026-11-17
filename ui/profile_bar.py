@@ -95,9 +95,9 @@ from ui.profile_bridge import PROFILES, profile_title
                                                                       
 _ACTION_SPECS = (
                                                            
-    ("menu.file.create_archive", None,
+    ("menu.file.create_archive", "tip.create_archive",
      "_on_create_archive_current", ("archive",)),
-    ("menu.file.open_archive", None,
+    ("menu.file.open_archive", "tip.open_archive",
      "_on_open_archive_dialog", ("archive",)),
                                              
     ("task.run_menu", "task.run_menu.tip",
@@ -107,7 +107,7 @@ _ACTION_SPECS = (
     ("scheduler.manager_menu", "scheduler.manager_menu_tip",
      "_on_open_scheduler", ("backup",)),
                                   
-    ("menu.go.refresh", None,
+    ("menu.go.refresh", "tip.refresh",
      "_on_refresh", "*"),
 )
 
@@ -168,7 +168,7 @@ class ProfileBar(QWidget):
         self._dashboard_button.setAutoDefault(False)
         self._dashboard_button.setDefault(False)
         self._dashboard_button.setCursor(Qt.PointingHandCursor)
-        self._dashboard_button.setToolTip(tr("dashboard.menu.tip"))
+        self._dashboard_button.setToolTip(tr("tip.dashboard"))
         self._dashboard_button.clicked.connect(self._on_dashboard_clicked)
         switch_layout.addWidget(self._dashboard_button)
 

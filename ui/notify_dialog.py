@@ -35,6 +35,7 @@ class NotifyDialog(QDialog):
     def __init__(self, settings=None, parent=None):
         super().__init__(parent)
         self.setWindowTitle(tr("notify.title"))
+        self.setToolTip(tr("tip.notify"))
         self.resize(580, 320)
         self._saved = None
 

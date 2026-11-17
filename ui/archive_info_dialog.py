@@ -49,6 +49,7 @@ class ArchiveInfoDialog(QDialog):
     ):
         super().__init__(parent)
         self.setWindowTitle(tr("archive_info.title"))
+        self.setToolTip(tr("tip.archive_info"))
         self.resize(860, 560)
 
         lay = QVBoxLayout(self)
@@ -69,6 +70,7 @@ class ArchiveInfoDialog(QDialog):
         summary_label = QLabel(self._summary_text(summary, password_set))
         summary_label.setObjectName("archive_info_summary")
         summary_label.setWordWrap(True)
+        summary_label.setToolTip(tr("tip.archive_info"))
         lay.addWidget(summary_label)
 
                                           

@@ -489,6 +489,7 @@ class BackupPage(QWidget):
         self._refresh_btn = QPushButton(tr("backup.refresh"), bar)
         self._refresh_btn.setAutoDefault(False)
         self._refresh_btn.setDefault(False)
+        self._refresh_btn.setToolTip(tr("tip.refresh"))
         self._refresh_btn.clicked.connect(self.refresh)
         lay.addWidget(self._refresh_btn)
 
@@ -517,6 +518,7 @@ class BackupPage(QWidget):
         self._choose_btn = QPushButton(tr("backup.choose_dir"), self._empty_page)
         self._choose_btn.setAutoDefault(False)
         self._choose_btn.setDefault(False)
+        self._choose_btn.setToolTip(tr("tip.tasks_dir"))
         self._choose_btn.clicked.connect(self.select_dir)
         empty_lay.addWidget(self._choose_btn, 0, Qt.AlignCenter)
 
@@ -646,10 +648,12 @@ class BackupPage(QWidget):
             pass
         try:
             self._refresh_btn.setText(tr("backup.refresh"))
+            self._refresh_btn.setToolTip(tr("tip.refresh"))
         except Exception:
             pass
         try:
             self._choose_btn.setText(tr("backup.choose_dir"))
+            self._choose_btn.setToolTip(tr("tip.tasks_dir"))
         except Exception:
             pass
         self.refresh()
@@ -1241,6 +1245,10 @@ class BackupPage(QWidget):
         btn.setCursor(Qt.PointingHandCursor)
         btn.setAutoDefault(False)
         btn.setDefault(False)
+                                                             
+                                                              
+                                                     
+        btn.setToolTip(tr("tip.schedule_enable"))
         btn.clicked.connect(lambda checked=False, jid=job_id: self._schedule_job(jid))
 
         wrap = QWidget()
@@ -1433,20 +1441,24 @@ class BackupPage(QWidget):
                                                                       
                           
             act_add_backup = menu.addAction(tr("context.add_backup_job"))
+            act_add_backup.setToolTip(tr("tip.create_archive"))
             act_add_backup.triggered.connect(lambda: self._add_job(work_id))
 
             act_add_check = menu.addAction(tr("context.add_check_job"))
+            act_add_check.setToolTip(tr("tip.test_archive"))
             act_add_check.triggered.connect(lambda: self._add_check_job(work_id))
 
             act_add_check_par2 = menu.addAction(
                 tr("context.add_check_par2_job")
             )
+            act_add_check_par2.setToolTip(tr("tip.par2_verify"))
             act_add_check_par2.triggered.connect(
                 lambda: self._add_check_par2_job(work_id)
             )
 
             archive_path = self._archive_path_for_work(work_id)
             act_open = menu.addAction(tr("context.open_archive"))
+            act_open.setToolTip(tr("tip.open_archive"))
             act_open.setEnabled(bool(archive_path))
             act_open.triggered.connect(lambda: self._open_archive_for_work(work_id))
 
@@ -1463,6 +1475,7 @@ class BackupPage(QWidget):
 
             if par2_path:
                 act_repair = menu.addAction(tr("par2.repair"))
+                act_repair.setToolTip(tr("tip.par2_repair"))
                 act_repair.triggered.connect(
                     lambda: self._repair_par2(archive_path)
                 )
@@ -1485,14 +1498,17 @@ class BackupPage(QWidget):
 
             archive_path = self._archive_path_for_work(work_id)
             act_open = menu.addAction(tr("context.open_archive"))
+            act_open.setToolTip(tr("tip.open_archive"))
             act_open.setEnabled(bool(archive_path))
             act_open.triggered.connect(lambda: self._open_archive_for_work(work_id))
 
             act_test = menu.addAction(tr("menu.test.full"))
+            act_test.setToolTip(tr("tip.test_archive"))
             act_test.setEnabled(bool(archive_path))
             act_test.triggered.connect(lambda: self._test_archive_for_work(work_id))
 
             act_test_par2 = menu.addAction(tr("par2.quick_check"))
+            act_test_par2.setToolTip(tr("tip.par2_verify"))
             act_test_par2.setEnabled(bool(archive_path))
             act_test_par2.triggered.connect(
                 lambda: self._test_par2_for_work(work_id)

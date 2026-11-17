@@ -126,6 +126,7 @@ class ArchiveCatalogDialog(QDialog):
 
                                                                           
         self.table = QTableWidget()
+        self.table.setToolTip(tr("tip.catalog"))
         self.table.setColumnCount(COLUMN_COUNT)
         self.table.setHorizontalHeaderLabels([
             tr("catalog.col.path"),

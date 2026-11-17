@@ -57,6 +57,7 @@
 
 from __future__ import annotations
 
+from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
     QComboBox,
     QDialog,
@@ -70,7 +71,10 @@ from PySide6.QtWidgets import (
 )
 
 from ui.i18n import tr
-from ui.test_modes import combo_entries as test_mode_combo_entries
+from ui.test_modes import (
+    combo_entries as test_mode_combo_entries,
+    mode_tooltip,
+)
 
 
 class ArchiveCheckDialog(QDialog):
@@ -118,6 +122,10 @@ class ArchiveCheckDialog(QDialog):
         pw_label = QLabel(
             tr("check.password_set") if pw_set else tr("check.password_not_set")
         )
+                                                                     
+                                                                  
+                                                                  
+        pw_label.setToolTip(tr("tip.password"))
         info.addRow(tr("check.password"), pw_label)
 
         layout.addLayout(info)
@@ -140,6 +148,17 @@ class ArchiveCheckDialog(QDialog):
                                                               
         for mode, label in test_mode_combo_entries():
             self._mode_combo.addItem(label, mode)
+
+                                                                 
+                                                               
+                                                                        
+                                                               
+        for i in range(self._mode_combo.count()):
+            text = mode_tooltip(self._mode_combo.itemData(i))
+            if text:
+                self._mode_combo.setItemData(i, text, Qt.ToolTipRole)
+        self._mode_combo.setToolTip(tr("tip.test_archive"))
+
         form.addRow(tr("check.mode"), self._mode_combo)
 
         hint = QLabel(tr("check.mode_hint"))

@@ -39,10 +39,12 @@ class MenuActionsMixin:
 
         act_create = m_file.addAction(tr("menu.file.create_archive"))
         act_create.setShortcut("Ctrl+N")
+        act_create.setToolTip(tr("tip.create_archive"))
         act_create.triggered.connect(self._on_create_archive_current)
 
         act_open = m_file.addAction(tr("menu.file.open_archive"))
         act_open.setShortcut("Ctrl+O")
+        act_open.setToolTip(tr("tip.open_archive"))
         act_open.triggered.connect(self._on_open_archive_dialog)
 
         m_file.addSeparator()
@@ -56,6 +58,7 @@ class MenuActionsMixin:
 
         act_refresh = m_view.addAction(tr("menu.go.refresh"))
         act_refresh.setShortcut("F5")
+        act_refresh.setToolTip(tr("tip.refresh"))
         act_refresh.triggered.connect(self._on_refresh)
 
         m_view.addSeparator()
@@ -63,20 +66,21 @@ class MenuActionsMixin:
         self.latest_only_action = m_view.addAction(tr("menu.view.latest_only"))
         self.latest_only_action.setCheckable(True)
         self.latest_only_action.setChecked(False)
-        self.latest_only_action.setStatusTip(tr("menu.view.latest_only.tip"))
+        self.latest_only_action.setStatusTip(tr("tip.latest_only"))
         self.latest_only_action.triggered.connect(self._on_toggle_latest)
 
                                                                              
         m_arc = mb.addMenu(tr("menu.archive"))
 
         act_create_arc = m_arc.addAction(tr("menu.file.create_archive"))
+        act_create_arc.setToolTip(tr("tip.create_archive"))
         act_create_arc.triggered.connect(self._on_create_archive_current)
 
         m_arc.addSeparator()
 
         self.archive_info_action = m_arc.addAction(tr("menu.tools.archive_info"))
         self.archive_info_action.setShortcut("Alt+Return")
-        self.archive_info_action.setStatusTip(tr("menu.tools.archive_info.tip"))
+        self.archive_info_action.setStatusTip(tr("tip.archive_info"))
         self.archive_info_action.setEnabled(False)
         self.archive_info_action.triggered.connect(self._on_archive_info)
 
@@ -126,7 +130,7 @@ class MenuActionsMixin:
         self._ver_group = None
 
         self.compare_action = m_arc.addAction(tr("menu.view.compare"))
-        self.compare_action.setStatusTip(tr("menu.view.compare.tip"))
+        self.compare_action.setStatusTip(tr("tip.compare_versions"))
         self.compare_action.setEnabled(False)
         self.compare_action.triggered.connect(self._on_compare_versions)
 
@@ -147,6 +151,7 @@ class MenuActionsMixin:
                                                                 
         self.global_search_action = m_arc.addAction(tr("menu.go.global_search"))
         self.global_search_action.setShortcut("Ctrl+Shift+F")
+        self.global_search_action.setToolTip(tr("tip.global_search"))
         self.global_search_action.triggered.connect(self._on_global_search)
 
                                                                        
@@ -154,6 +159,7 @@ class MenuActionsMixin:
                                                
         self.all_archives_action = m_arc.addAction(
             tr("menu.go.all_archives"))
+        self.all_archives_action.setToolTip(tr("tip.catalog"))
         self.all_archives_action.triggered.connect(
             self._on_show_all_archives)
 
@@ -212,7 +218,7 @@ class MenuActionsMixin:
         m_settings = mb.addMenu(tr("menu.settings"))
 
         act_zq = m_settings.addAction(tr("menu.file.zpaq_path"))
-        act_zq.setStatusTip(tr("menu.file.zpaq_path.tip"))
+        act_zq.setStatusTip(tr("tip.engine_path"))
         act_zq.triggered.connect(self._choose_zpaq_path)
 
         act_7z = m_settings.addAction(tr("menu.file.seven_zip_path"))
@@ -231,11 +237,15 @@ class MenuActionsMixin:
                                                                    
                                                 
         try:
-            self._build_skin_menu(m_settings)
+            skin_menu = self._build_skin_menu(m_settings)
+            skin_menu.setToolTip(tr("tip.skin"))
+            skin_menu.menuAction().setStatusTip(tr("tip.skin"))
         except Exception:
             pass
 
         m_lang = m_settings.addMenu(tr("menu.tools.language"))
+        m_lang.setToolTip(tr("tip.language"))
+        m_lang.menuAction().setStatusTip(tr("tip.language"))
         old_group = getattr(self, "_lang_group", None)
         if old_group is not None:
             try:
@@ -259,7 +269,7 @@ class MenuActionsMixin:
 
                                                                 
         act_assoc = m_settings.addAction(tr("menu.settings.integration"))
-        act_assoc.setStatusTip(tr("menu.settings.integration.tip"))
+        act_assoc.setStatusTip(tr("tip.associations"))
         act_assoc.triggered.connect(self._on_open_association_dialog)
 
         m_settings.addSeparator()
@@ -267,23 +277,26 @@ class MenuActionsMixin:
                                                                         
                                                              
         act_notify = m_settings.addAction(tr("menu.settings.notifications"))
-        act_notify.setStatusTip(tr("menu.settings.notifications.tip"))
+        act_notify.setStatusTip(tr("tip.notify"))
         act_notify.triggered.connect(self._on_open_notify_dialog)
 
                                                                              
         m_help = mb.addMenu(tr("menu.help"))
 
         act_guide = m_help.addAction(tr("menu.help.guide"))
+        act_guide.setToolTip(tr("tip.manual"))
         act_guide.triggered.connect(self._on_open_manual)
 
                                                                      
                                                                    
         act_commands = m_help.addAction(tr("menu.help.commands"))
+        act_commands.setToolTip(tr("tip.command_ref"))
         act_commands.triggered.connect(self._on_open_command_help)
 
                                                                         
                                                            
         act_updates = m_help.addAction(tr("menu.help.check_updates"))
+        act_updates.setToolTip(tr("tip.updates"))
         act_updates.triggered.connect(self._on_check_updates)
 
         act_about = m_help.addAction(tr("menu.help.about"))

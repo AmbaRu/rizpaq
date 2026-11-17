@@ -41,6 +41,7 @@ class SalvageOptionsDialog(QDialog):
         if archive_name:
             title = f"{title}: {archive_name}"
         self.setWindowTitle(title)
+        self.setToolTip(tr("tip.salvage"))
         self.setModal(True)
         self.setMinimumWidth(420)
 
@@ -48,6 +49,7 @@ class SalvageOptionsDialog(QDialog):
 
         intro = QLabel(tr("salvage.intro"))
         intro.setWordWrap(True)
+        intro.setToolTip(tr("tip.salvage"))
         lay.addWidget(intro)
 
         ram_row = QLabel(tr("salvage.ram_label"))

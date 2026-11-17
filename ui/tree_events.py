@@ -181,12 +181,14 @@ class TreeEventsMixin:
         act_open.triggered.connect(lambda: self.navigate_archive(inner))
         menu.addSeparator()
         act_extract_last = menu.addAction(tr("context.extract_folder_latest"))
+        act_extract_last.setToolTip(tr("tip.extract_folder"))
         act_extract_last.triggered.connect(
             lambda: self._extract_folder(inner, None)
         )
         act_extract_version = menu.addAction(
             tr("context.extract_folder_version")
         )
+        act_extract_version.setToolTip(tr("tip.extract_folder"))
         act_extract_version.triggered.connect(
             lambda: self._extract_folder_ask_version(inner)
         )

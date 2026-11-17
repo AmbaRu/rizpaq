@@ -73,6 +73,7 @@ class GlobalSearchDialog(QDialog):
 
         self.search_edit = QLineEdit()
         self.search_edit.setPlaceholderText(tr("search.placeholder"))
+        self.search_edit.setToolTip(tr("tip.global_search"))
         self.search_edit.textChanged.connect(self._on_text_changed)
         layout.addWidget(self.search_edit)
 

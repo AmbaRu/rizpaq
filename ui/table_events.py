@@ -158,10 +158,12 @@ class TableEventsMixin:
             open_act.triggered.connect(lambda: self.navigate_archive(folder_path))
             menu.addSeparator()
             a1 = menu.addAction(tr("context.extract_folder_latest"))
+            a1.setToolTip(tr("tip.extract_folder"))
             a1.triggered.connect(
                 lambda: self._extract_folder(folder_path, None)
             )
             a2 = menu.addAction(tr("context.extract_folder_version"))
+            a2.setToolTip(tr("tip.extract_folder"))
             a2.triggered.connect(
                 lambda: self._extract_folder_ask_version(folder_path)
             )
@@ -178,10 +180,12 @@ class TableEventsMixin:
             a1 = menu.addAction(
                 tr("context.extract_version", version=version_text)
             )
+            a1.setToolTip(tr("tip.extract_file"))
             a1.triggered.connect(lambda: self._extract_file_entry(entry))
             latest = self._latest_entry_for_path(entry.path)
             if latest:
                 a2 = menu.addAction(tr("context.extract_latest"))
+                a2.setToolTip(tr("tip.extract_file"))
                 a2.triggered.connect(lambda: self._extract_file_entry(latest))
 
         else:
