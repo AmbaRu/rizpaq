@@ -68,6 +68,14 @@ for _lang in ("ru", "en"):
     if _help_dir.is_dir() and (_help_dir / "index.html").is_file():
         datas.append((str(_help_dir), f"help/{_lang}"))
 
+# Справочник команд zpaqfranz — локальный поиск без сети.
+# Кладём рядом с HTML-руководством: core/zpaq_help.py ищет эти файлы
+# в _internal/help/ в собранной программе и в doc/ при запуске из проекта.
+for _ref_name in ("zpaqfranz-commands.md", "zpaqfranz-help-builtin-ru.txt"):
+    _ref_path = root / "doc" / _ref_name
+    if _ref_path.is_file():
+        datas.append((str(_ref_path), "help"))
+
 a = Analysis(
     ["main.py"],
     pathex=[str(root)],

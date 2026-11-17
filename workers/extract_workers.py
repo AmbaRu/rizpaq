@@ -664,3 +664,112 @@ class ExtractSalvageWorker(StreamingZpaqThread):
                 "dest_folder": self.dest_folder,
             }
         )
+
+
+class ExtractRevisionWorker(StreamingZpaqThread):
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+    worker_started = Signal()
+    done = Signal(dict)
+
+    def __init__(
+        self,
+        zpaq,
+        archive,
+        password,
+        mode,
+        until,
+        dest_folder,
+        parent=None,
+    ):
+        self.zpaq = zpaq
+        self.archive = archive
+        self.password = password
+        self.mode = mode                    
+        self.until = until
+        self.dest_folder = dest_folder
+        self.cmd = self._build_cmd(self.dest_folder)
+        super().__init__(self.cmd, parent)
+
+    def _build_cmd(self, out_dir):
+        cmd = [self.zpaq, "x", self.archive]
+        if self.password:
+            cmd += ["-key", self.password]
+        if self.mode == "all":
+            cmd.append("-all")
+        elif self.until:
+            cmd += ["-until", str(self.until)]
+        cmd += ["-to", str(out_dir)]
+        return cmd
+
+    def run(self):
+        self.worker_started.emit()
+
+        dest = Path(self.dest_folder)
+        staging = None
+        log = ""
+        ok = False
+        cancelled = False
+
+        try:
+            if dest.exists() and dest.is_file():
+                raise NotADirectoryError(f"Destination is a file: {dest}")
+            dest.mkdir(parents=True, exist_ok=True)
+
+            try:
+                staging = Path(
+                    tempfile.mkdtemp(
+                        prefix="rizpaq_rev_", dir=str(dest.parent)
+                    )
+                )
+            except Exception:
+                staging = Path(tempfile.mkdtemp(prefix="rizpaq_rev_"))
+
+            self.cmd = self._build_cmd(staging)
+            rc, log = self._run_stream()
+            cancelled = bool(self._cancel)
+
+            if not cancelled and rc == 0:
+                merge_tree(staging, dest)
+                ok = True
+            elif not cancelled:
+                log += f"\n[zpaqfranz] return code: {rc}"
+
+        except Exception as exc:
+            log += f"\n[layout] error: {exc}"
+
+        finally:
+            if staging is not None and (ok or cancelled):
+                shutil.rmtree(staging, ignore_errors=True)
+            elif staging is not None:
+                log += (
+                    "\n[layout] temporary data kept: " + str(staging)
+                    + "\n[layout] the files that could not be moved to "
+                      "the destination are still there."
+                )
+
+        self.done.emit(
+            {
+                "kind": "extract_revision",
+                "ok": ok,
+                "cancelled": cancelled,
+                "dest_folder": str(dest),
+                "staging": (
+                    str(staging) if (staging and not (ok or cancelled)) else ""
+                ),
+                "mode": self.mode,
+                "log": log,
+            }
+        )

@@ -92,6 +92,17 @@ class MenuActionsMixin:
         self._unpack_menu = m_unpack
         self._unpack_all_action = m_unpack.addAction(tr("menu.unpack.all"))
         self._unpack_all_action.triggered.connect(self._on_unpack_all)
+
+                                                                       
+                                                                          
+                                                              
+        self._restore_revision_action = m_unpack.addAction(
+            tr("menu.unpack.revision")
+        )
+        self._restore_revision_action.triggered.connect(
+            self._on_restore_revision
+        )
+
         self._unpack_ver_menu = m_unpack.addMenu(tr("menu.unpack.version"))
         m_unpack.aboutToShow.connect(self._rebuild_unpack_menu)
         self._salvage_action = m_unpack.addAction(tr("menu.unpack.salvage"))
@@ -265,6 +276,11 @@ class MenuActionsMixin:
         act_guide = m_help.addAction(tr("menu.help.guide"))
         act_guide.triggered.connect(self._on_open_manual)
 
+                                                                     
+                                                                   
+        act_commands = m_help.addAction(tr("menu.help.commands"))
+        act_commands.triggered.connect(self._on_open_command_help)
+
                                                                         
                                                            
         act_updates = m_help.addAction(tr("menu.help.check_updates"))
@@ -283,6 +299,24 @@ class MenuActionsMixin:
     def _on_check_updates(self):
         pass
         self.start_update_check(manual=True)
+
+    def _on_open_command_help(self):
+        pass
+        from ui.command_help_dialog import CommandHelpDialog
+
+        dlg = CommandHelpDialog(self)
+        dlg.exec()
+
+    def _on_restore_revision(self):
+        pass
+
+
+
+
+
+        impl = getattr(self, "_on_restore_revision_impl", None)
+        if impl is not None:
+            impl()
 
     def _on_open_association_dialog(self):
         pass

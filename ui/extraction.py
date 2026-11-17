@@ -26,6 +26,7 @@ from pathlib import Path
 from typing import Optional
 
 from PySide6.QtWidgets import (
+    QDialog,
     QFileDialog,
     QInputDialog,
     QMessageBox,
@@ -172,6 +173,58 @@ class ExtractionMixin:
             )
                                                                  
             remove_temp_dir(Path(dest).parent)
+
+    def _on_restore_revision_impl(self):
+        pass
+
+
+
+
+
+
+
+        if self.mode != "archive" or not self.archive_path:
+            self.statusBar().showMessage(tr("status.test_only_archive"))
+            return
+
+        from ui.restore_revision_dialog import RestoreRevisionDialog
+
+        dlg = RestoreRevisionDialog(self)
+        if dlg.exec() != QDialog.Accepted:
+            return
+
+        mode = dlg.mode()
+        try:
+            until = dlg.until()
+        except ValueError:
+            QMessageBox.warning(
+                self,
+                tr("restore.rev.title"),
+                tr("restore.rev.bad_date"),
+            )
+            return
+
+        initial = str(self._initial_extract_dir())
+        dest = QFileDialog.getExistingDirectory(
+            self, tr("restore.rev.dest_title"), initial
+        )
+        if not dest:
+            return
+
+        dest_path = Path(dest)
+        if dest_path.exists() and directory_not_empty(dest_path):
+            ans = QMessageBox.question(
+                self,
+                tr("restore.rev.exists_title"),
+                tr("restore.rev.exists_text"),
+                YES_NO_BUTTONS,
+            )
+            if ans != YES_BUTTON:
+                return
+
+        self.last_extract_dir = dest_path
+        self.statusBar().showMessage(tr("restore.rev.started"))
+        self._start_extract_revision_worker(mode, until, str(dest_path))
 
     def _extract_folder_ask_version(self, folder_path: str):
         text, ok = QInputDialog.getText(
@@ -415,7 +468,7 @@ class ExtractionMixin:
                 output = result.get("output", "")
                 if output:
                     self.log_output(output)
-            elif kind == "extract_folder_batch":
+            elif kind in ("extract_folder_batch", "extract_revision"):
                 log = result.get("log", "")
                 if log:
                     self.log_output(log)
@@ -489,6 +542,32 @@ class ExtractionMixin:
                     self,
                     tr("extract.dialog.extract_folder_error_title"),
                     (log or tr("extract.dialog.extract_folder_error_fallback"))[:5000],
+                )
+
+        elif kind == "extract_revision":
+            log = result.get("log", "")
+            if log:
+                self.log_output(log)
+
+            dest = result.get("dest_folder", "")
+
+            if result.get("ok"):
+                if dest:
+                    dp = Path(dest)
+                    if dp.is_dir():
+                        self.last_extract_dir = dp
+                self._remember_extract_dir()
+                done_text = tr("restore.rev.done", dest=dest)
+                self.statusBar().showMessage(done_text)
+                self._ui_extract_finished(True, 0, dest or "")
+            else:
+                error_text = tr("restore.rev.error")
+                self.statusBar().showMessage(error_text)
+                self._ui_extract_finished(False, 0, error_text)
+                QMessageBox.warning(
+                    self,
+                    tr("restore.rev.title"),
+                    (log or error_text)[:5000],
                 )
 
         elif kind == "extract_folder":

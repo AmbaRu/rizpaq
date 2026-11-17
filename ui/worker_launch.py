@@ -26,6 +26,7 @@ from workers import (
     ExtractFolderBatchWorker,
     ExtractFolderWorker,
     ExtractSalvageWorker,
+    ExtractRevisionWorker,
 )
 
 
@@ -127,6 +128,38 @@ class WorkerLaunchMixin:
         worker.worker_started.connect(self._ui_folder_batch_started)
         worker.percent.connect(self._ui_folder_percent)
 
+        self._connect_extract_stream(worker)
+
+        worker.done.connect(self._on_extract_done)
+        worker.finished.connect(lambda w=worker: self._cleanup_worker(w))
+
+        self._workers.append(worker)
+        worker.start()
+
+    def _start_extract_revision_worker(
+        self, mode: str, until: str, dest_folder: str
+    ):
+        pass
+
+
+
+
+
+
+        if not self.archive_path:
+            return
+
+        worker = ExtractRevisionWorker(
+            self.zpaq_bin,
+            self.archive_path,
+            self.password,
+            mode,
+            until,
+            dest_folder,
+        )
+
+        worker.worker_started.connect(self._ui_folder_batch_started)
+        worker.percent.connect(self._ui_folder_percent)
         self._connect_extract_stream(worker)
 
         worker.done.connect(self._on_extract_done)
