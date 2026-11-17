@@ -157,7 +157,9 @@ instant, and nothing you were doing is lost.
 - **Self-extracting (SFX)** archives.
 - **VSS shadow copies** — pack files that are open or locked.
 - Automatic free-space check with a small headroom.
-- Optional **second copy** of the archive into another folder after creation.
+- Optional **second copy** of the archive into another folder after creation —
+  including scheduled jobs — with a byte-for-byte check before the previous
+  copy is replaced.
 - **Post-creation check**: none, quick test, verify against filesystem, or
   paranoid mode.
 
@@ -316,6 +318,20 @@ instant, and nothing you were doing is lost.
   The archive is created, the job stays successful and the warning is shown in
   the result dialog, the report and the log. For archive checks code 1 still
   means a problem.
+
+### Verified second copy in scheduled jobs (3.0.4)
+- **The second copy now works in scheduled jobs too.** The "Second copy to
+  folder" field used to be honoured only when an archive was created by hand
+  from the window; a scheduled job quietly ignored it. Now the copy is made by
+  the headless job and by the Rust runner as well.
+- **The copy is verified, not assumed.** It is written to a temporary
+  `<name>.rizpaq-part` next to the target and compared with the archive byte
+  for byte in 1 MiB chunks; only on a match does it replace the previous copy.
+  A multi-volume archive is copied in full by its mask.
+- **A failed copy is honest.** The job status becomes "Error" with the reason
+  "second copy failed" and exit code 1, while the backup itself is not
+  cancelled: the archive, PAR2, the index and the password are still
+  processed, and the previous whole copy stays in place.
 
 ### Archive protection (PAR2)
 - Every archive can carry a **PAR2 recovery set** — protection files kept
@@ -624,7 +640,9 @@ ZPAQ**. Один клик: старый RAR, набитый дублями, пр
 - **Самораспаковывающиеся (SFX)** архивы.
 - **Теневые копии VSS** — упаковка открытых и заблокированных файлов.
 - Автоматическая проверка свободного места с небольшим запасом.
-- Опциональная **вторая копия** архива в другую папку после создания.
+- Опциональная **вторая копия** архива в другую папку после создания — в том
+  числе в заданиях по расписанию — со сверкой побайтово, прежде чем заменить
+  прежнюю копию.
 - **Проверка после создания**: без проверки, быстрый тест, сверка с
   файловой системой или параноидальный режим.
 
@@ -784,6 +802,20 @@ ZPAQ**. Один клик: старый RAR, набитый дублями, пр
   Архив создан, задание остаётся успешным, а предупреждение видно в диалоге
   результата, отчёте и логе. Для проверок архива код 1 по-прежнему означает
   проблему.
+
+### Вторая копия в расписании и сверка (3.0.4)
+- **Вторая копия работает и в задании по расписанию.** Поле «Вторая копия
+  в папку» раньше учитывалось только при ручном создании архива из окна, а
+  задание по расписанию его молча игнорировало. Теперь копию делают и
+  headless-задание, и Rust-раннер.
+- **Копия проверяется, а не предполагается.** Она пишется во временный
+  `<имя>.rizpaq-part` рядом с целевым файлом и сверяется с архивом
+  побайтово порциями по 1 МиБ; прежнюю копию она заменяет только при
+  совпадении. Многотомный архив копируется целиком по маске.
+- **Неудача копии не молчит.** Статус задания становится «Ошибка» с
+  причиной «вторая копия не создалась» и кодом возврата 1, но сам бэкап не
+  отменяется: архив, PAR2, индекс и пароль выполняются, а прежняя целая
+  копия остаётся на месте.
 
 ### Защита архива (PAR2)
 - У любого архива может быть **PAR2-набор восстановления** — файлы
