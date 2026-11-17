@@ -280,9 +280,9 @@ def _report_fatal(error_text: str) -> None:
 def _check_stale_scheduler(window) -> None:
     pass
     try:
-        from ui.stale_scheduler import check_on_startup
+        from ui.stale_scheduler import start_check
 
-        check_on_startup(window)
+        start_check(window)
     except Exception:
         pass
 

@@ -49,6 +49,17 @@ class TestStaleStartup(unittest.TestCase):
         create.assert_called_once()
         info.assert_called_once()
 
+    def test_start_check_uses_background_worker(self):
+        from ui.stale_scheduler import start_check
+
+        with mock.patch.object(stale_scheduler.sys, "frozen", True, create=True), \
+             mock.patch("workers.stale_worker.StaleTaskWorker") as worker_cls:
+            start_check(_Parent())
+            worker_cls.assert_called_once()
+            worker_cls.return_value.start.assert_called_once()
+            start_check(_Parent())
+            worker_cls.assert_called_once()                      
+
     def test_skipped_on_second_call(self):
         with mock.patch.object(stale_scheduler.sys, "frozen", True, create=True), \
              mock.patch.object(scheduler, "find_stale_runner_tasks",

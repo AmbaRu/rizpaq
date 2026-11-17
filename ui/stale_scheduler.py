@@ -29,29 +29,64 @@ def _reset_for_tests() -> None:
     _checked = False
 
 
-def check_on_startup(parent) -> None:
+def should_check() -> bool:
+    pass
+    if _checked:
+        return False
+                                                                     
+                                                                  
+    return bool(getattr(sys, "frozen", False))
+
+
+def start_check(parent) -> None:
     pass
     global _checked
-    if _checked:
+    if not should_check():
         return
     _checked = True
 
-                                                                     
-                                                                  
-    if not getattr(sys, "frozen", False):
+    try:
+        from workers.stale_worker import StaleTaskWorker
+
+        worker = StaleTaskWorker(parent)
+        worker.done.connect(
+            lambda tasks, p=parent: on_tasks_found(p, tasks)
+        )
+                                                                 
+                                               
+        setattr(parent, "_stale_worker", worker)
+        worker.start()
+    except Exception:
+                                                         
         return
 
-    try:
-        from core.scheduler import (
-            container_task_map,
-            create_scheduled_task,
-            find_stale_runner_tasks,
-        )
-        from core.tasks import container_path, load_container
 
-        tasks = find_stale_runner_tasks()
-        if not tasks:
-            return
+def check_on_startup(parent) -> None:
+    pass
+
+
+
+
+
+    global _checked
+    if not should_check():
+        return
+    _checked = True
+    try:
+        from core.scheduler import find_stale_runner_tasks
+
+        on_tasks_found(parent, find_stale_runner_tasks())
+    except Exception:
+        return
+
+
+def on_tasks_found(parent, tasks) -> None:
+    pass
+    if not tasks:
+        return
+    try:
+        from core.scheduler import container_task_map, create_scheduled_task
+        from core.tasks import container_path, load_container
 
         folder = ""
         try:

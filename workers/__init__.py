@@ -13,6 +13,7 @@ from workers.extract_workers import (
     ExtractSalvageWorker,
     ExtractRevisionWorker,
 )
+from workers.stale_worker import StaleTaskWorker
 
 __all__ = [
     "ZpaqWorker",
@@ -26,4 +27,5 @@ __all__ = [
     "ExtractFolderBatchWorker",
     "ExtractSalvageWorker",
     "ExtractRevisionWorker",
+    "StaleTaskWorker",
 ]
