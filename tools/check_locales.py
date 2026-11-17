@@ -105,11 +105,13 @@ DYNAMIC_KEYS = {
     f"backup.reason.{r}" for r in (
         "par2_missing", "par2_broken", "par2_damaged",
         "par2_unrepairable", "par2_failed", "sync_failed",
+        "copy_failed",
     )
 } | {
     f"backup.reason_full.{r}" for r in (
         "par2_missing", "par2_broken", "par2_damaged",
         "par2_unrepairable", "par2_failed", "sync_failed",
+        "copy_failed",
     )
 } | {
     f"dashboard.tile.{s}" for s in (

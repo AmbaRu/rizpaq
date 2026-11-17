@@ -8,6 +8,8 @@
     "password.multipart_unsupported": "Le changement de mot de passe n’est pas pris en charge pour une archive multivolume. Consolidez-la d’abord.",
     "backup.reason.sync_failed": "échec de la comparaison",
     "backup.reason_full.sync_failed": "La comparaison de l’archive avec les sources a échoué, la sauvegarde n’a pas démarré. Voir le journal de la tâche.",
+    "backup.reason.copy_failed": "échec de la deuxième copie",
+    "backup.reason_full.copy_failed": "L'archive a été créée, mais la deuxième copie a échoué ou ne correspond pas à la source. Vérifiez le dossier de copie et l'espace libre ; voir le journal de la tâche.",
     "dashboard.alerts.job_silent_min": "« {job} » n'a pas tourné depuis {mins} minutes (planifié)",
     "dashboard.alerts.job_silent_hour": "« {job} » n'a pas tourné depuis {hours} heures (planifié)",
     "scheduler.rb_continuous": "Continu (sur modifications)",

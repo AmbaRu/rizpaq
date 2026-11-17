@@ -8,6 +8,8 @@
     "password.multipart_unsupported": "Changing the password is not supported for a multi-volume archive. Consolidate it first.",
     "backup.reason.sync_failed": "sync check failed",
     "backup.reason_full.sync_failed": "The archive could not be compared with the sources, so the backup was not started. See the task log.",
+    "backup.reason.copy_failed": "second copy failed",
+    "backup.reason_full.copy_failed": "The archive was created, but the second copy failed or does not match the source. Check the copy folder and free space; see the task log.",
     "dashboard.alerts.job_silent_min": "\"{job}\" has not run for {mins} min (scheduled)",
     "dashboard.alerts.job_silent_hour": "\"{job}\" has not run for {hours} h (scheduled)",
     "scheduler.rb_continuous": "Continuous (on changes)",

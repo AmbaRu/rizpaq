@@ -8,6 +8,8 @@
     "password.multipart_unsupported": "La modifica della password non è supportata per un archivio multivolume. Consolidalo prima.",
     "backup.reason.sync_failed": "confronto non riuscito",
     "backup.reason_full.sync_failed": "Il confronto dell’archivio con le origini non è riuscito, il backup non è stato avviato. Vedi il registro dell’attività.",
+    "backup.reason.copy_failed": "seconda copia non riuscita",
+    "backup.reason_full.copy_failed": "L'archivio è stato creato, ma la seconda copia non è riuscita o non corrisponde all'originale. Controlla la cartella di copia e lo spazio libero; vedi il registro dell'attività.",
     "dashboard.alerts.job_silent_min": "«{job}» non viene eseguito da {mins} minuti (pianificato)",
     "dashboard.alerts.job_silent_hour": "«{job}» non viene eseguito da {hours} ore (pianificato)",
     "scheduler.rb_continuous": "Continuo (sulle modifiche)",

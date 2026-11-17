@@ -2,7 +2,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use rizpaq_task::{
-    cfg, cmdline, engine, errlog, index, log, naming, notify, par2, pwstore, tasks, util,
+    cfg, cmdline, copy, engine, errlog, index, log, naming, notify, par2, pwstore, tasks, util,
 };
 use serde_json::Value;
 use std::path::{Path, PathBuf};
@@ -297,7 +297,7 @@ fn run(rest: &[String]) -> i32 {
     let mut par2_note = String::new();
     let mut par2_reason: Option<&'static str> = None;
 
-    let (rc, mut log_out, ok): (i32, String, bool);
+    let (mut rc, mut log_out, ok): (i32, String, bool);
 
     if skip_run {
         cmd = pre_cmd;
@@ -364,13 +364,33 @@ fn run(rest: &[String]) -> i32 {
         }
     }
 
+    let mut copy_failed = false;
+    let mut copy_note = String::new();
+    let mut copy_reason: Option<&'static str> = None;
+    let copy_dir = tasks::py_str(settings.get("copy").unwrap_or(&Value::Null))
+        .trim()
+        .to_string();
+    if action == ACTION_BACKUP && ok && !skip_run && !copy_dir.is_empty() {
+        let (copy_ok, copy_text) = copy::copy_archive(&dest, &copy_dir);
+        if copy_ok {
+            if !copy_text.is_empty() {
+                copy_note = format!("\n[rizpaq] second copy: {}\n", copy_text);
+            }
+        } else {
+            copy_failed = true;
+            copy_reason = Some("copy_failed");
+            copy_note = format!("\n[rizpaq] second copy failed: {}\n", copy_text);
+            rc = 1;
+        }
+    }
+
     if !rename_note.is_empty() {
         log_out = format!("{}{}", rename_note, log_out);
     }
 
     let busy = !ok && !skip_run && engine::looks_like_busy_error(&log_out);
 
-    let status = if ok {
+    let status = if ok && !copy_failed {
         "ok"
     } else if busy {
         "busy"
@@ -382,7 +402,7 @@ fn run(rest: &[String]) -> i32 {
         let reason: Option<&str> = if sync_failed {
             Some("sync_failed")
         } else {
-            par2_reason
+            par2_reason.or(copy_reason)
         };
         let _ = tasks::update_container(Path::new(&rzp_path), |c| {
             tasks::update_job_meta(c, &jid, status, reason);
@@ -405,11 +425,7 @@ fn run(rest: &[String]) -> i32 {
 
     let log_header =
         log::build_log_header(&rzp_path, work, job, rc, password, cmd.as_deref());
-    let task_note = if skip_note.is_empty() {
-        par2_note
-    } else {
-        format!("{}{}", skip_note, par2_note)
-    };
+    let task_note = format!("{}{}{}", skip_note, copy_note, par2_note);
     log::write_task_log(
         &rzp_path,
         &log_header,
@@ -432,13 +448,13 @@ fn run(rest: &[String]) -> i32 {
             if sync_failed {
                 Some("sync_failed")
             } else {
-                par2_reason
+                par2_reason.or(copy_reason)
             },
             &dest,
         );
     }
 
-    if ok {
+    if ok && !copy_failed {
         0
     } else {
         1

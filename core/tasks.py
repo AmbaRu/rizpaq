@@ -386,6 +386,11 @@ REASON_PAR2_FAILED = "par2_failed"
                                                                   
                                                                 
 REASON_SYNC_FAILED = "sync_failed"
+                                                                     
+                                                                       
+                                                                  
+                                                        
+REASON_COPY_FAILED = "copy_failed"
 JOB_REASONS = (
     REASON_PAR2_MISSING,
     REASON_PAR2_BROKEN,
@@ -393,6 +398,7 @@ JOB_REASONS = (
     REASON_PAR2_UNREPAIRABLE,
     REASON_PAR2_FAILED,
     REASON_SYNC_FAILED,
+    REASON_COPY_FAILED,
 )
 
                                                                 

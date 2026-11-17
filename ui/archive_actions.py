@@ -166,6 +166,7 @@ from pathlib import Path
 from PySide6.QtWidgets import QDialog, QFileDialog, QInputDialog, QMessageBox
 
 from core.parser import parse_create_stats, parse_info_stat
+from core.copy_ops import copy_archive
 from core.password_store import set_password
 from core.incomplete_archive import (
     incomplete_archive_action,
@@ -1766,28 +1767,12 @@ class ArchiveActionsMixin:
                                                                      
 
     def _copy_archive_to_folder(self, dest: str, copy_dir: str) -> str:
-        try:
-            target_dir = Path(copy_dir)
-            target_dir.mkdir(parents=True, exist_ok=True)
-        except Exception as exc:
-            return str(exc)
-        src = Path(dest)
-        if "?" in src.name:
-            files = sorted(src.parent.glob(src.name))
-        else:
-            files = [src] if src.exists() else []
-        if not files:
-            return "archive file not found"
-        errors = []
-        for f in files:
-            try:
-                dst = target_dir / f.name
-                if dst.resolve() == f.resolve():
-                    continue
-                shutil.copy2(str(f), str(dst))
-            except Exception as exc:
-                errors.append(f"{f.name}: {exc}")
-        return "; ".join(errors)
+                                                       
+                                                                      
+                                                                  
+                                          
+        ok, note = copy_archive(dest, copy_dir)
+        return "" if ok else note
 
                                                                        
 

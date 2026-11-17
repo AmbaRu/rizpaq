@@ -119,6 +119,50 @@ class TestHeadlessActions(unittest.TestCase):
         self.assertEqual(state.get("run_count"), 1)
         self.assertTrue(state.get("last_run"))
 
+    def test_scheduled_backup_makes_second_copy(self):
+        pass
+        copy_dir = self.dir / "copy"
+
+        def fake_run(cmd):
+            Path(cmd[2]).write_bytes(b"archive payload")
+            return 0, "engine output\n"
+
+        rc, calls, job_id = self._run(
+            "backup", {"copy": str(copy_dir)}, fake_run=fake_run
+        )
+        self.assertEqual(rc, 0)
+        self.assertEqual(len(calls), 1)
+        copied = copy_dir / self.dest.name
+        self.assertTrue(copied.is_file())
+        self.assertEqual(copied.read_bytes(), b"archive payload")
+        state = self._job_state(job_id)
+        self.assertEqual(state.get("last_status"), "ok")
+        self.assertIsNone(state.get("last_reason"))
+        log_text = Path(str(self.rzp) + ".log").read_text(encoding="utf-8")
+        self.assertIn("second copy", log_text)
+
+    def test_copy_failure_marks_job_error_but_keeps_backup(self):
+        pass
+        bad_target = self.dir / "not_a_folder"
+        bad_target.write_text("file", encoding="utf-8")
+
+        def fake_run(cmd):
+            Path(cmd[2]).write_bytes(b"archive payload")
+            return 0, "engine output\n"
+
+        rc, calls, job_id = self._run(
+            "backup", {"copy": str(bad_target)}, fake_run=fake_run
+        )
+        self.assertEqual(rc, 1)
+        self.assertEqual(len(calls), 1)
+        self.assertTrue(self.dest.is_file(), "архив должен остаться")
+        state = self._job_state(job_id)
+        self.assertEqual(state.get("last_status"), "error")
+        self.assertEqual(state.get("last_reason"), T.REASON_COPY_FAILED)
+        log_text = Path(str(self.rzp) + ".log").read_text(encoding="utf-8")
+        self.assertIn("second copy failed", log_text)
+        self.assertIn("Return code: 1", log_text)
+
     def test_test_action_builds_t_command(self):
         rc, calls, _ = self._run("test")
         self.assertEqual(rc, 0)

@@ -8,6 +8,8 @@
     "password.multipart_unsupported": "Zmiana hasła nie jest obsługiwana dla archiwum wieloczęściowego. Najpierw je scal.",
     "backup.reason.sync_failed": "błąd porównania",
     "backup.reason_full.sync_failed": "Nie udało się porównać archiwum ze źródłami, kopia nie została uruchomiona. Sprawdź dziennik zadania.",
+    "backup.reason.copy_failed": "nie udało się utworzyć drugiej kopii",
+    "backup.reason_full.copy_failed": "Archiwum zostało utworzone, ale druga kopia nie powstała lub nie zgadza się ze źródłem. Sprawdź folder kopii i wolne miejsce; szczegóły w dzienniku zadania.",
     "dashboard.alerts.job_silent_min": "„{job}“ nie było uruchamiane {mins} min (wg harmonogramu)",
     "dashboard.alerts.job_silent_hour": "„{job}“ nie było uruchamiane {hours} godz. (wg harmonogramu)",
     "scheduler.rb_continuous": "Ciągłe (przy zmianach)",

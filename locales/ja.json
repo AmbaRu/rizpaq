@@ -8,6 +8,8 @@
     "password.multipart_unsupported": "マルチボリュームアーカイブのパスワード変更には対応していません。先に統合してください。",
     "backup.reason.sync_failed": "照合に失敗",
     "backup.reason_full.sync_failed": "アーカイブとソースの照合に失敗したため、バックアップは開始されませんでした。タスクログを確認してください。",
+    "backup.reason.copy_failed": "2つ目のコピーに失敗",
+    "backup.reason_full.copy_failed": "アーカイブは作成されましたが、2つ目のコピーの作成に失敗したか、元ファイルと一致しません。コピー先フォルダーと空き容量を確認してください。詳細はタスクログにあります。",
     "dashboard.alerts.job_silent_min": "「{job}」が {mins} 分間実行されていません（スケジュール済み）",
     "dashboard.alerts.job_silent_hour": "「{job}」が {hours} 時間実行されていません（スケジュール済み）",
     "scheduler.rb_continuous": "連続（変更時）",

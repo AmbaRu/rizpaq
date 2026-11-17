@@ -93,6 +93,7 @@ from pathlib import Path
                                                                       
               
 from core.password_store import get_password, set_password
+from core.copy_ops import copy_archive
 from core.incomplete_archive import (
     incomplete_archive_action,
     incomplete_repair_plan,
@@ -108,6 +109,7 @@ from core.tasks import (
     ACTION_TEST,
     ContainerLockBusy,
     PAR2_REASON_BY_STATE,
+    REASON_COPY_FAILED,
     REASON_SYNC_FAILED,
     TEST_MODE_SYNC,
     _now,
@@ -1362,6 +1364,40 @@ def _headless_task(rest: list) -> int:
             except OSError:
                 pass
 
+                                                     
+     
+                                                                       
+                                                                 
+                                                        
+     
+                                                                     
+                                                             
+     
+                                                                      
+                                                                       
+                                                                    
+                                    
+    copy_failed = False
+    copy_note = ""
+    copy_reason = None
+    copy_dir = str(settings.get("copy") or "").strip()
+    if action == ACTION_BACKUP and ok and not skip_run and copy_dir:
+        copy_ok, copy_text = copy_archive(dest, copy_dir)
+        if copy_ok:
+            if copy_text:
+                copy_note = f"\n[rizpaq] second copy: {copy_text}\n"
+        else:
+            copy_failed = True
+            copy_reason = REASON_COPY_FAILED
+            copy_note = (
+                f"\n[rizpaq] second copy failed: {copy_text}\n"
+            )
+                                                                        
+                                                                   
+                                                                    
+                              
+            rc = 1
+
     if rename_note:
         log = rename_note + (log or "")
 
@@ -1372,7 +1408,7 @@ def _headless_task(rest: list) -> int:
     busy = (
         (not ok) and (not skip_run) and looks_like_busy_error(log or "")
     )
-    if ok:
+    if ok and not copy_failed:
         status = "ok"
     elif busy:
         status = "busy"
@@ -1396,11 +1432,12 @@ def _headless_task(rest: list) -> int:
     try:
         def _mutate(c: dict) -> None:
                                                                    
-                                                                 
                                                                       
-                                         
+                                                                
+                                                                      
             update_job_meta(c, job_id, status,
-                            reason=(notify_reason or par2_reason))
+                            reason=(notify_reason or par2_reason
+                                    or copy_reason))
 
         try:
             update_container(rzp_path, _mutate)
@@ -1461,7 +1498,8 @@ def _headless_task(rest: list) -> int:
                                                    
     log_header = _build_log_header(rzp_path, work, job, rc,
                                    password, cmd=cmd)
-    task_note = (skip_note + (par2_note or "")) if skip_note else par2_note
+    task_note = (skip_note + (copy_note or "")
+                 + (par2_note or ""))
     _write_task_log(rzp_path, log_header, log, log_mode, rc, busy=busy,
                     note=task_note)
 
@@ -1482,9 +1520,10 @@ def _headless_task(rest: list) -> int:
              
     if not (skip_run and ok):
         _notify_task_result(work, job, status,
-                            (notify_reason or par2_reason), dest)
+                            (notify_reason or par2_reason or copy_reason),
+                            dest)
 
-    return 0 if ok else 1
+    return 0 if (ok and not copy_failed) else 1
 
 
 def _notify_task_result(work: dict, job: dict, status: str,

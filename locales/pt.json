@@ -8,6 +8,8 @@
     "password.multipart_unsupported": "A alteração da senha não é suportada para um arquivo multivolume. Consolide-o primeiro.",
     "backup.reason.sync_failed": "falha na comparação",
     "backup.reason_full.sync_failed": "Não foi possível comparar o arquivo com as fontes e o backup não foi iniciado. Veja o log da tarefa.",
+    "backup.reason.copy_failed": "falha na segunda cópia",
+    "backup.reason_full.copy_failed": "O arquivo foi criado, mas a segunda cópia falhou ou não corresponde à origem. Verifique a pasta de cópia e o espaço livre; consulte o registro da tarefa.",
     "dashboard.alerts.job_silent_min": "«{job}» não é executado há {mins} minutos (agendado)",
     "dashboard.alerts.job_silent_hour": "«{job}» não é executado há {hours} horas (agendado)",
     "scheduler.rb_continuous": "Contínuo (com alterações)",

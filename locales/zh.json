@@ -8,6 +8,8 @@
     "password.multipart_unsupported": "不支持修改多卷压缩包的密码。请先合并分卷。",
     "backup.reason.sync_failed": "对比失败",
     "backup.reason_full.sync_failed": "无法将压缩包与来源进行对比，备份未启动。请查看任务日志。",
+    "backup.reason.copy_failed": "第二副本失败",
+    "backup.reason_full.copy_failed": "归档已创建，但第二副本创建失败或与源文件不一致。请检查副本文件夹和可用空间；详情见任务日志。",
     "dashboard.alerts.job_silent_min": "“{job}” 已有 {mins} 分钟未运行（按计划）",
     "dashboard.alerts.job_silent_hour": "“{job}” 已有 {hours} 小时未运行（按计划）",
     "scheduler.rb_continuous": "连续（有变化时）",

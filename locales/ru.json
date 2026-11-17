@@ -8,6 +8,8 @@
     "password.multipart_unsupported": "Смена пароля не поддерживается для многотомного архива. Сначала склейте его командой «Консолидация».",
     "backup.reason.sync_failed": "сверка не удалась",
     "backup.reason_full.sync_failed": "Сверка архива с источниками не выполнена — бэкап не запускался. Причина в логе задания.",
+    "backup.reason.copy_failed": "вторая копия не создалась",
+    "backup.reason_full.copy_failed": "Архив создан, но вторая копия не создалась или не совпала с источником. Проверьте папку копии и свободное место; причина в логе задания.",
     "dashboard.alerts.job_silent_min": "«{job}» не запускалось {mins} мин. (по расписанию)",
     "dashboard.alerts.job_silent_hour": "«{job}» не запускалось {hours} ч. (по расписанию)",
     "scheduler.rb_continuous": "Непрерывно (при изменениях)",

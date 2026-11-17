@@ -8,6 +8,8 @@
     "password.multipart_unsupported": "Das Ändern des Passworts wird für ein mehrteiliges Archiv nicht unterstützt. Führen Sie zuerst die Konsolidierung aus.",
     "backup.reason.sync_failed": "Abgleich fehlgeschlagen",
     "backup.reason_full.sync_failed": "Der Archivabgleich mit den Quellen ist fehlgeschlagen, die Sicherung wurde nicht gestartet. Siehe Aufgabenprotokoll.",
+    "backup.reason.copy_failed": "zweite Kopie fehlgeschlagen",
+    "backup.reason_full.copy_failed": "Das Archiv wurde erstellt, aber die zweite Kopie ist fehlgeschlagen oder stimmt nicht mit der Quelle überein. Prüfen Sie den Kopierordner und den freien Speicherplatz; Einzelheiten im Aufgabenprotokoll.",
     "dashboard.alerts.job_silent_min": "„{job}“ lief seit {mins} Minuten nicht (geplant)",
     "dashboard.alerts.job_silent_hour": "„{job}“ lief seit {hours} Stunden nicht (geplant)",
     "scheduler.rb_continuous": "Kontinuierlich (bei Änderungen)",
