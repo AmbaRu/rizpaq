@@ -863,6 +863,13 @@
     "create.warn_title": "Archiv mit Warnungen erstellt",
     "create.warn_text": "Das Archiv \"{name}\" wurde erstellt, aber das Programm hat Warnungen gemeldet: Einige Dateien wurden möglicherweise übersprungen (durch ein anderes Programm gesperrt, Zugriff verweigert). Details stehen im Protokoll.",
     "create.warn_status": "{name}: mit Warnungen erstellt",
-    "create.done.warnings": "Mit Warnungen abgeschlossen"
+    "create.done.warnings": "Mit Warnungen abgeschlossen",
+    "scheduler.conflict_title": "Zeitplan-Konflikt",
+    "scheduler.conflict_text": "Andere Aufgaben schreiben in dasselbe Archiv und ihre Laufzeiten überschneiden sich:\n{items}\n\nGleichzeitiges Schreiben in dasselbe Archiv ist nicht erlaubt. Zeitplan trotzdem speichern?",
+    "scheduler.conflict_item": "{work} → {job}",
+    "scheduler.stale_title": "Veraltete Planeraufgaben",
+    "scheduler.stale_text": "Es wurden Aufgaben gefunden, die auf die Python-Quellen statt auf die installierte Anwendung verweisen: {count}.\n{items}\n\nFür die aktuelle Anwendung neu erstellen?",
+    "scheduler.stale_recreate_ok": "Neu erstellte Aufgaben: {count}.",
+    "scheduler.stale_recreate_fail": "Aufgaben konnten nicht neu erstellt werden: {count}. Prüfen Sie den Taskplaner manuell."
   }
 }

@@ -2038,6 +2038,9 @@ class BackupPage(QWidget):
             allow_skip_unchanged=(
                 str(job.get("action") or "").strip().lower() != ACTION_TEST
             ),
+            container=self._container,
+            work=work,
+            job=job,
         )
         if dlg.exec() != QDialog.Accepted:
             return

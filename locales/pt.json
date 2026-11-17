@@ -863,6 +863,13 @@
     "create.warn_title": "Arquivo criado com avisos",
     "create.warn_text": "O arquivo \"{name}\" foi criado, mas o motor relatou avisos: alguns arquivos podem ter sido ignorados (bloqueados por outro programa, acesso negado). Veja o log para detalhes.",
     "create.warn_status": "{name}: criado com avisos",
-    "create.done.warnings": "Concluído com avisos"
+    "create.done.warnings": "Concluído com avisos",
+    "scheduler.conflict_title": "Conflito de agendamento",
+    "scheduler.conflict_text": "Outros trabalhos gravam no mesmo arquivo e os seus horários de execução sobrepõem-se:\n{items}\n\nNão é permitido gravar no mesmo arquivo ao mesmo tempo. Guardar o agendamento mesmo assim?",
+    "scheduler.conflict_item": "{work} → {job}",
+    "scheduler.stale_title": "Tarefas desatualizadas do Agendador de Tarefas",
+    "scheduler.stale_text": "Foram encontradas tarefas que apontam para os fontes do Python em vez do programa instalado: {count}.\n{items}\n\nRecriá-las para o programa atual?",
+    "scheduler.stale_recreate_ok": "Tarefas recriadas: {count}.",
+    "scheduler.stale_recreate_fail": "Falha ao recriar tarefas: {count}. Verifique o Agendador de Tarefas manualmente."
   }
 }

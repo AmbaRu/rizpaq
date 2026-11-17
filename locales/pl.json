@@ -863,6 +863,13 @@
     "create.warn_title": "Archiwum utworzone z ostrzeżeniami",
     "create.warn_text": "Archiwum „{name}” zostało utworzone, ale silnik zgłosił ostrzeżenia: część plików mogła zostać pominięta (zablokowane przez inny program, brak dostępu). Szczegóły w dzienniku.",
     "create.warn_status": "{name}: utworzono z ostrzeżeniami",
-    "create.done.warnings": "Zakończono z ostrzeżeniami"
+    "create.done.warnings": "Zakończono z ostrzeżeniami",
+    "scheduler.conflict_title": "Konflikt harmonogramów",
+    "scheduler.conflict_text": "Inne zadania zapisują do tego samego archiwum i ich czasy uruchomienia nakładają się:\n{items}\n\nRównoczesny zapis do tego samego archiwum jest niedozwolony. Zapisać mimo to harmonogram?",
+    "scheduler.conflict_item": "{work} → {job}",
+    "scheduler.stale_title": "Przestarzałe zadania Harmonogramu zadań",
+    "scheduler.stale_text": "Znaleziono zadania wskazujące na źródła Python zamiast zainstalowanego programu: {count}.\n{items}\n\nOdtworzyć je dla bieżącego programu?",
+    "scheduler.stale_recreate_ok": "Odtworzone zadania: {count}.",
+    "scheduler.stale_recreate_fail": "Nie udało się odtworzyć zadań: {count}. Sprawdź ręcznie Harmonogram zadań."
   }
 }

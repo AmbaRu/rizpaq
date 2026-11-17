@@ -863,6 +863,13 @@
     "create.warn_title": "Archivo creado con advertencias",
     "create.warn_text": "El archivo «{name}» se creó, pero el motor informó de advertencias: es posible que se hayan omitido algunos archivos (bloqueados por otro programa, acceso denegado). Consulte el registro para más detalles.",
     "create.warn_status": "{name}: creado con advertencias",
-    "create.done.warnings": "Completado con advertencias"
+    "create.done.warnings": "Completado con advertencias",
+    "scheduler.conflict_title": "Conflicto de programación",
+    "scheduler.conflict_text": "Otras tareas escriben en el mismo archivo y sus horarios de ejecución se solapan:\n{items}\n\nNo se permite escribir en el mismo archivo al mismo tiempo. ¿Guardar la programación de todos modos?",
+    "scheduler.conflict_item": "{work} → {job}",
+    "scheduler.stale_title": "Tareas obsoletas del Programador de tareas",
+    "scheduler.stale_text": "Se encontraron tareas que apuntan a las fuentes de Python en lugar del programa instalado: {count}.\n{items}\n\n¿Recrearlas para el programa actual?",
+    "scheduler.stale_recreate_ok": "Tareas recreadas: {count}.",
+    "scheduler.stale_recreate_fail": "No se pudieron recrear tareas: {count}. Compruebe el Programador de tareas manualmente."
   }
 }

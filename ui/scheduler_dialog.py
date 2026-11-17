@@ -51,11 +51,17 @@ class ScheduleDialog(QDialog):
     pass
 
     def __init__(self, parent=None, initial_schedule=None,
-                 allow_skip_unchanged=True):
+                 allow_skip_unchanged=True, container=None, work=None, job=None):
         super().__init__(parent)
         self.setWindowTitle(tr("scheduler.title"))
         self.resize(540, 560)
         self._result = None
+                                                                      
+                                                                        
+                                                                        
+        self._container = container
+        self._work = work
+        self._job = job
                                                                    
                                                                 
         self._allow_skip = bool(allow_skip_unchanged)
@@ -386,6 +392,16 @@ class ScheduleDialog(QDialog):
             and self._skip_changed_cb.isChecked()
         ):
             schedule["skip_unchanged"] = True
+
+        try:
+            from ui.schedule_warning import confirm_schedule_conflicts
+
+            if not confirm_schedule_conflicts(
+                self, self._container, self._work, self._job, schedule
+            ):
+                return
+        except Exception:
+            pass
 
         self._result = schedule
         self.accept()

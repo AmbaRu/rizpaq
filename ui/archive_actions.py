@@ -2504,6 +2504,30 @@ class ArchiveActionsMixin:
 
         work_fields, job_fields = self._split_settings_work_job(settings)
 
+                                                                          
+                                                                     
+        schedule_new = settings.get("schedule")
+        if schedule_new:
+            try:
+                from ui.schedule_warning import confirm_schedule_conflicts
+
+                pseudo_work = {
+                    "dest": str(work_fields.get("dest") or ""),
+                    "title": str(work_fields.get("title") or ""),
+                }
+                pseudo_job = {
+                    "id": str(work_id or ""),
+                    "title": str(job_fields.get("title") or ""),
+                    "action": str(job_fields.get("action") or "backup"),
+                }
+                container_new, _ = self._load_container()
+                if not confirm_schedule_conflicts(
+                    self, container_new, pseudo_work, pseudo_job, schedule_new
+                ):
+                    return False
+            except Exception:
+                pass
+
                                                                
                                                                
         result = {"work": None, "job": None, "error": None}
@@ -2643,6 +2667,23 @@ class ArchiveActionsMixin:
                 self, tr("task.edit_title"), tr("task.no_tasks_dir")
             )
             return False
+
+                                                                          
+                                                                        
+                                                                 
+        schedule_now = settings.get("schedule")
+        work_before = find_work(container, str(work_id))
+        found_before = find_job(container, str(job_id))
+        if schedule_now and work_before is not None and found_before is not None:
+            try:
+                from ui.schedule_warning import confirm_schedule_conflicts
+
+                if not confirm_schedule_conflicts(
+                    self, container, work_before, found_before[1], schedule_now
+                ):
+                    return False
+            except Exception:
+                pass
 
                                                                         
                                                                       

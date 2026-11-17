@@ -863,6 +863,13 @@
     "create.warn_title": "存档已创建，但有警告",
     "create.warn_text": "存档“{name}”已创建，但引擎报告了警告：部分文件可能被跳过（被其他程序占用、没有访问权限）。详情见日志。",
     "create.warn_status": "{name}：已创建，但有警告",
-    "create.done.warnings": "已完成，但有警告"
+    "create.done.warnings": "已完成，但有警告",
+    "scheduler.conflict_title": "计划冲突",
+    "scheduler.conflict_text": "其他作业正在写入同一归档，且运行时间重叠：\n{items}\n\n不允许同时写入同一归档。仍要保存计划吗？",
+    "scheduler.conflict_item": "{work} → {job}",
+    "scheduler.stale_title": "过时的计划任务",
+    "scheduler.stale_text": "发现指向 Python 源代码而非已安装程序的任务：{count}。\n{items}\n\n是否为当前程序重新创建它们？",
+    "scheduler.stale_recreate_ok": "已重新创建的任务：{count}。",
+    "scheduler.stale_recreate_fail": "无法重新创建任务：{count}。请手动检查计划任务程序。"
   }
 }

@@ -505,3 +505,75 @@ def compute_sync_actions(
         "remove": remove_list,
         "disable": disable_list,
     }
+
+
+                                                                             
+                                                             
+                                                                             
+
+def is_stale_runner_command(command: str) -> bool:
+    pass
+
+
+
+
+
+
+
+
+    text = (command or "").strip().lower()
+    if "--task" not in text:
+        return False
+    has_python = "python.exe" in text or "pythonw.exe" in text
+    has_source = "main.py" in text or "\\main.py" in text
+    return has_python and has_source
+
+
+def list_rizpaq_tasks_with_command() -> List[Dict[str, str]]:
+    pass
+
+
+
+
+
+
+    if os.name != "nt":
+        return []
+    cmd = [_schtasks_bin(), "/query", "/fo", "CSV", "/v", "/nh"]
+    result = _run_schtasks(cmd)
+    if result is None or result.returncode != 0:
+        return []
+    try:
+        stdout = _decode_schtasks_output(result.stdout).lstrip("\ufeff")
+        tasks = []
+        for row in csv.reader(io.StringIO(stdout)):
+            if len(row) < 3:
+                continue
+            name = row[1].strip().lstrip("\\")
+            if not name.startswith(TASK_PREFIX):
+                continue
+            command = ""
+            for field in row:
+                if "--task" in field and (".exe" in field.lower() or ".py" in field.lower()):
+                    command = field.strip()
+                    break
+            tasks.append({
+                "name": name,
+                "status": row[4].strip() if len(row) > 4 else "",
+                "next_run": row[2].strip() if len(row) > 2 else "",
+                "command": command,
+            })
+        return tasks
+    except Exception:
+        return []
+
+
+def find_stale_runner_tasks() -> List[Dict[str, str]]:
+    pass
+    if os.name != "nt":
+        return []
+    try:
+        tasks = list_rizpaq_tasks_with_command()
+    except Exception:
+        return []
+    return [t for t in tasks if is_stale_runner_command(t.get("command", ""))]

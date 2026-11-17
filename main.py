@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+                      
 
 
 
@@ -277,6 +277,16 @@ def _report_fatal(error_text: str) -> None:
             pass
 
 
+def _check_stale_scheduler(window) -> None:
+    pass
+    try:
+        from ui.stale_scheduler import check_on_startup
+
+        check_on_startup(window)
+    except Exception:
+        pass
+
+
 def main():
     args = sys.argv[1:]
 
@@ -454,6 +464,13 @@ def main():
                                                                      
         try:
             QTimer.singleShot(800, window.show_startup_digest)
+        except Exception:
+            pass
+
+                                                                  
+                                                                           
+        try:
+            QTimer.singleShot(1200, lambda: _check_stale_scheduler(window))
         except Exception:
             pass
 

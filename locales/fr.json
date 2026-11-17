@@ -863,6 +863,13 @@
     "create.warn_title": "Archive créée avec des avertissements",
     "create.warn_text": "L'archive « {name} » a été créée, mais le moteur a signalé des avertissements : certains fichiers ont peut-être été ignorés (verrouillés par un autre programme, accès refusé). Voir le journal pour les détails.",
     "create.warn_status": "{name} : créée avec des avertissements",
-    "create.done.warnings": "Terminé avec des avertissements"
+    "create.done.warnings": "Terminé avec des avertissements",
+    "scheduler.conflict_title": "Conflit de planification",
+    "scheduler.conflict_text": "D'autres tâches écrivent dans la même archive et leurs heures d'exécution se chevauchent :\n{items}\n\nL'écriture simultanée dans la même archive n'est pas autorisée. Enregistrer la planification quand même ?",
+    "scheduler.conflict_item": "{work} → {job}",
+    "scheduler.stale_title": "Tâches obsolètes du Planificateur de tâches",
+    "scheduler.stale_text": "Des tâches pointant vers les sources Python au lieu du programme installé ont été trouvées : {count}.\n{items}\n\nLes recréer pour le programme actuel ?",
+    "scheduler.stale_recreate_ok": "Tâches recréées : {count}.",
+    "scheduler.stale_recreate_fail": "Impossible de recréer les tâches : {count}. Vérifiez le Planificateur de tâches manuellement."
   }
 }

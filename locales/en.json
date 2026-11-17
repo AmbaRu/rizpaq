@@ -863,6 +863,13 @@
     "create.warn_title": "Archive created with warnings",
     "create.warn_text": "Archive \"{name}\" was created, but the engine reported warnings: some files may have been skipped (locked by another program, access denied). See the log for details.",
     "create.warn_status": "{name}: created with warnings",
-    "create.done.warnings": "Completed with warnings"
+    "create.done.warnings": "Completed with warnings",
+    "scheduler.conflict_title": "Schedule conflict",
+    "scheduler.conflict_text": "Other jobs write to the same archive and their run times overlap:\n{items}\n\nWriting to the same archive at the same time is not allowed. Save the schedule anyway?",
+    "scheduler.conflict_item": "{work} → {job}",
+    "scheduler.stale_title": "Outdated scheduler tasks",
+    "scheduler.stale_text": "Found tasks pointing to Python sources instead of the installed program: {count}.\n{items}\n\nRecreate them for the current program?",
+    "scheduler.stale_recreate_ok": "Recreated tasks: {count}.",
+    "scheduler.stale_recreate_fail": "Failed to recreate tasks: {count}. Check Task Scheduler manually."
   }
 }

@@ -863,6 +863,13 @@
     "create.warn_title": "Archivio creato con avvisi",
     "create.warn_text": "L'archivio \"{name}\" è stato creato, ma il motore ha segnalato avvisi: alcuni file potrebbero essere stati saltati (bloccati da un altro programma, accesso negato). I dettagli sono nel log.",
     "create.warn_status": "{name}: creato con avvisi",
-    "create.done.warnings": "Completato con avvisi"
+    "create.done.warnings": "Completato con avvisi",
+    "scheduler.conflict_title": "Conflitto di pianificazione",
+    "scheduler.conflict_text": "Altri processi scrivono nello stesso archivio e i loro orari di esecuzione si sovrappongono:\n{items}\n\nLa scrittura simultanea nello stesso archivio non è consentita. Salvare comunque la pianificazione?",
+    "scheduler.conflict_item": "{work} → {job}",
+    "scheduler.stale_title": "Attività obsolete dell'Utilità di pianificazione",
+    "scheduler.stale_text": "Sono state trovate attività che puntano alle sorgenti Python invece che al programma installato: {count}.\n{items}\n\nRicrearle per il programma attuale?",
+    "scheduler.stale_recreate_ok": "Attività ricreate: {count}.",
+    "scheduler.stale_recreate_fail": "Impossibile ricreare le attività: {count}. Controllare manualmente l'Utilità di pianificazione."
   }
 }
