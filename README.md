@@ -174,6 +174,10 @@ instant, and nothing you were doing is lost.
   seconds and no noticeable pause at all.
 - **Versions** — restore a file, a folder, or the entire archive as of any
   earlier moment.
+- **Restore by date or all versions** for the whole archive — "Archive →
+  Extract → Restore by date / all versions…". Files deleted since the chosen
+  date and multipart sets are handled, and a non-empty destination asks
+  before writing.
 - **Compare two versions** — what was added, changed, removed, with sizes and
   dates side by side.
 - **Seven check modes** — full (blocks and CRC-32), all versions with
@@ -332,6 +336,22 @@ instant, and nothing you were doing is lost.
   "second copy failed" and exit code 1, while the backup itself is not
   cancelled: the archive, PAR2, the index and the password are still
   processed, and the previous whole copy stays in place.
+
+### Command reference and point-in-time restore (3.0.5)
+- **zpaqfranz command reference, offline.** "Help → zpaqfranz command
+  reference…" opens a searchable window with the commands of the bundled
+  engine (v65.20) and their help text. Copy an entry to the clipboard or
+  open the full guide in a browser. The data ships with Rizpaq
+  (`zpaqfranz-commands.md` and `zpaqfranz-help-builtin-ru.txt`), so search
+  works without internet; if those files are missing, the window offers
+  the online wiki instead.
+- **Restore the whole archive as of a date, or every version.** "Archive →
+  Extract → Restore by date / all versions…" has two modes: the state at a
+  chosen moment (including files deleted since, multipart sets included),
+  or all versions unpacked into numbered folders 0001, 0002, … . Data is
+  staged in a temporary folder, and extracting into a non-empty destination
+  asks for confirmation first. The familiar single-folder version
+  extraction is still there.
 
 ### Archive protection (PAR2)
 - Every archive can carry a **PAR2 recovery set** — protection files kept
@@ -657,6 +677,10 @@ ZPAQ**. Один клик: старый RAR, набитый дублями, пр
   вообще».
 - **Версии** — восстановить файл, папку или весь архив на любой
   момент в прошлом.
+- **Восстановление на дату или всех версий** для всего архива —
+  «Архив → Распаковка → Восстановить на дату / все версии…»: учитываются
+  позже удалённые файлы и многотомники, а распаковка в непустую папку
+  требует подтверждения.
 - **Сравнение двух версий** — что добавлено, изменено, удалено,
   с размерами и датами рядом.
 - **Семь режимов проверки** — от блоков до параноидального, сверка
@@ -816,6 +840,20 @@ ZPAQ**. Один клик: старый RAR, набитый дублями, пр
   причиной «вторая копия не создалась» и кодом возврата 1, но сам бэкап не
   отменяется: архив, PAR2, индекс и пароль выполняются, а прежняя целая
   копия остаётся на месте.
+
+### Справочник команд и восстановление на дату (3.0.5)
+- **Справочник команд zpaqfranz без интернета.** «Справка → Справочник
+  команд zpaqfranz…» открывает окно с поиском по командам встроенного
+  движка (v65.20) и текстом справки по каждой. Запись можно скопировать
+  в буфер или открыть полный справочник в браузере. Данные идут в комплекте
+  (`zpaqfranz-commands.md` и `zpaqfranz-help-builtin-ru.txt`), поэтому поиск
+  работает офлайн; если файлов нет, предлагается онлайн-вика.
+- **Восстановление всего архива на дату или всех версий.** «Архив →
+  Распаковка → Восстановить на дату / все версии…» — два режима: состояние
+  на выбранный момент (включая позже удалённые файлы и многотомники) или
+  все версии в пронумерованных папках 0001, 0002, … . Данные идут через
+  временную папку, а распаковка в непустую папку сначала спрашивает
+  подтверждение. Привычное извлечение версии одной папки осталось на месте.
 
 ### Защита архива (PAR2)
 - У любого архива может быть **PAR2-набор восстановления** — файлы

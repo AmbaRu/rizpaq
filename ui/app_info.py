@@ -3,7 +3,7 @@
 
 
 APP_NAME = "Rizpaq"
-APP_VERSION = "3.0.4"
+APP_VERSION = "3.0.5"
                                                                       
                                                                          
                                                           
