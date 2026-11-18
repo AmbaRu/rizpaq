@@ -14,6 +14,7 @@ from workers.extract_workers import (
     ExtractRevisionWorker,
 )
 from workers.stale_worker import StaleTaskWorker
+from workers.mail_report_worker import MailReportWorker
 
 __all__ = [
     "ZpaqWorker",
@@ -28,4 +29,5 @@ __all__ = [
     "ExtractSalvageWorker",
     "ExtractRevisionWorker",
     "StaleTaskWorker",
+    "MailReportWorker",
 ]

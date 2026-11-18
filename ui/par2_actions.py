@@ -579,6 +579,13 @@ class Par2ActionsMixin:
                 self.log_output(f"[par2] {log}")
             except Exception:
                 pass
+                                                                       
+                                                                          
+                                 
+            try:
+                self._append_deferred_mail_log("[PAR2]\n%s" % log)
+            except Exception:
+                pass
 
         if ok and not cancelled and recorded_size is not None:
             self._save_par2_marker(job_context, recorded_size)
@@ -604,6 +611,10 @@ class Par2ActionsMixin:
         elif verdict_key == "par2.create_failed":
             verdict_args["error"] = _last_line(log)
 
+                                                                    
+                                                                
+                                                                       
+                                                                   
         deferred = "par2" in (getattr(self, "_report_gate", None) or ())
         if cancelled:
             par2_status = "cancelled"
@@ -620,8 +631,8 @@ class Par2ActionsMixin:
                 detail = tr("par2.verify_size",
                              size=format_size(recorded_size))
             try:
-                dialog.finish_verdict(verdict_ok, tr(verdict_key), log,
-                                      detail)
+                dialog.finish_verdict(verdict_ok, tr(verdict_key),
+                                      log, detail)
             except Exception as exc:
                 try:
                     self.log_output(
@@ -630,6 +641,10 @@ class Par2ActionsMixin:
                 except Exception:
                     pass
         elif dialog is not None:
+                                                                     
+                                                                   
+                                                                       
+                                                                  
             try:
                 if deferred:
                     dialog.finish(True if cancelled else verdict_ok,
@@ -649,10 +664,15 @@ class Par2ActionsMixin:
                         "par2.create_failed", error=_last_line(log)),
                         stay=True)
             except Exception:
+                                                                      
+                                       
                 pass
 
         if cancelled:
             self._par2_note(tr("par2.cancelled"), archive_path)
+                                                                  
+                                                                    
+                                                 
         elif ok and skipped:
             self._par2_note(tr("par2.create_skipped"), archive_path)
         elif ok:
@@ -668,6 +688,9 @@ class Par2ActionsMixin:
             )
 
         if deferred:
+            appender = getattr(self, "_append_deferred_mail_log", None)
+            if appender is not None:
+                appender("[par2] status: %s" % par2_status)
             rep = getattr(self, "_create_report", None) or getattr(
                 self, "_pending_create_report", None)
             if rep is not None:

@@ -230,6 +230,7 @@ from core.zpaq_cli import looks_like_busy_error, resolve_checksize
                                                                  
                                                             
 from core import mail_report
+from workers.mail_report_worker import MailReportWorker
 
 from ui.archive_check_dialog import ArchiveCheckDialog
 from ui.archive_create_dialog import ArchiveCreateDialog
@@ -2926,9 +2927,23 @@ class ArchiveActionsMixin:
             return
         self._edit_job(selected["work_id"], selected["job_id"])
 
-                                                                                 
+    def _job_mail_customer(self, job_context, archive: str) -> str:
+        pass
+        customer = ""
+        try:
+            container, _path = self._load_container()
+            found = find_job(
+                container or {},
+                str(job_context.get("job_id") or ""),
+            )
+            if found is not None:
+                _work, job = found
+                customer = str(job.get("title") or job.get("name") or "")
+        except Exception:
+            customer = ""
+        return customer or Path(str(archive or "")).stem
 
-    def _job_mail_args(self, job_context, archive: str) -> list:
+    def _job_mail_plan(self, job_context, archive: str, settings) -> tuple:
         pass
 
 
@@ -2937,12 +2952,8 @@ class ArchiveActionsMixin:
 
 
 
-
-
-
-
         if not job_context:
-            return []
+            return [], ""
         try:
             cfg = getattr(self, "_cfg", None)
             if cfg is None:
@@ -2951,25 +2962,99 @@ class ArchiveActionsMixin:
                 cfg = config_mod.load()
             mail = mail_report.from_settings(cfg)
             if not mail.ready():
-                return []
-            customer = ""
-            try:
-                container, _path = self._load_container()
-                found = find_job(
-                    container or {},
-                    str(job_context.get("job_id") or ""),
-                )
-                if found is not None:
-                    _work, job = found
-                    customer = str(
-                        job.get("title") or job.get("name") or ""
-                    )
-            except Exception:
-                customer = ""
-            customer = customer or Path(str(archive or "")).stem
-            return mail_report.report_args(mail, customer)
+                return [], ""
+            customer = self._job_mail_customer(job_context, archive)
+            if settings.get("par2_enabled"):
+                return [], customer
+            return mail_report.report_args(mail, customer), ""
         except Exception:
-            return []
+            return [], ""
+
+    def _job_mail_args(self, job_context, archive: str) -> list:
+        pass
+        args, _deferred = self._job_mail_plan(job_context, archive, {})
+        return args
+
+    def _queue_deferred_mail(self, ctx: dict, dest: str, output: str,
+                             rc: int, ok: bool) -> None:
+        pass
+        if not ctx.get("mail_deferred") or bool(ctx.get("cancelled")):
+            return
+        self._mail_pending = {
+            "dest": dest,
+            "rc": rc,
+            "output": output or "",
+            "customer": str(ctx.get("mail_customer") or Path(dest).name),
+            "ok": bool(ok),
+            "warnings": rc == 1,
+            "extra": [],
+        }
+
+    def _append_deferred_mail_log(self, text: str) -> None:
+        pass
+        pending = getattr(self, "_mail_pending", None)
+        if pending is not None and text:
+            pending["extra"].append(str(text))
+
+    def _flush_deferred_mail(self) -> None:
+        pass
+        if getattr(self, "_mail_worker", None) is not None:
+            return
+        pending = getattr(self, "_mail_pending", None)
+        if not pending:
+            return
+        self._mail_pending = None
+        try:
+            cfg = getattr(self, "_cfg", None)
+            if cfg is None:
+                from core import config as config_mod
+
+                cfg = config_mod.load()
+            mail = mail_report.from_settings(cfg)
+            if not mail.ready():
+                return
+        except Exception:
+            return
+
+        lines = [
+            "Archive: %s" % pending["dest"],
+            "Return code: %s" % pending["rc"],
+            "",
+            pending["output"],
+        ]
+        lines.extend(pending["extra"])
+        subject = mail_report.subject_for(
+            pending["customer"], pending["ok"], pending["warnings"]
+        )
+        worker = MailReportWorker(
+            getattr(self, "zpaq_bin", "zpaqfranz"), mail, subject,
+            "\n".join(lines), pending["customer"], self,
+        )
+        worker.done.connect(self._on_deferred_mail_done)
+        worker.finished.connect(lambda w=worker: self._cleanup_worker(w))
+        worker.finished.connect(self._on_deferred_mail_finished)
+        self._mail_worker = worker
+        self._workers.append(worker)
+        worker.start()
+
+    def _on_deferred_mail_done(self, rc: int, output: str) -> None:
+        if rc == 0 and not mail_report.mail_not_sent(output):
+            self.log_output("[rizpaq] email report sent\n")
+            return
+        last = ""
+        for line in str(output or "").strip().splitlines():
+            if line.strip():
+                last = line.strip()
+        self.log_output(
+            "[rizpaq] email report NOT sent: %s\n" % (last or rc)
+        )
+
+    def _on_deferred_mail_finished(self) -> None:
+        self._mail_worker = None
+                                                                   
+        self._flush_deferred_mail()
+
+                                                                                 
 
     def _run_create_from_settings(self, settings: dict, job_context=None):
         pass
@@ -3093,8 +3178,11 @@ class ArchiveActionsMixin:
             cmd += ["-key", password]
 
                                                                     
-                                                          
-        mail_args = self._job_mail_args(job_context, dest)
+                                                                        
+                                                             
+        mail_args, deferred_customer = self._job_mail_plan(
+            job_context, dest, settings
+        )
         if mail_args:
             cmd += mail_args
 
@@ -3118,6 +3206,9 @@ class ArchiveActionsMixin:
                 "job_context": dict(job_context) if job_context else None,
                                                                         
                 "mail": bool(mail_args),
+                                                                     
+                "mail_deferred": bool(deferred_customer),
+                "mail_customer": deferred_customer,
                                                                     
                                                                      
                                                               
@@ -3253,6 +3344,10 @@ class ArchiveActionsMixin:
         if getattr(self, "_report_gate", None):
             return
 
+                                                                       
+                                                       
+        self._flush_deferred_mail()
+
         rep = getattr(self, "_create_report", None) or getattr(
             self, "_pending_create_report", None
         )
@@ -3328,6 +3423,10 @@ class ArchiveActionsMixin:
             self._update_job_meta_after_run(
                 job_context, job_status, rc=rc, output=output)
 
+                                                                       
+                                                                     
+        self._queue_deferred_mail(ctx, dest, output, rc, ok_create)
+
                                                                     
                                                                  
                                                              
@@ -3379,6 +3478,10 @@ class ArchiveActionsMixin:
                 self.log_output(
                     "[rizpaq] zpaqfranz finished with warnings (rc=1); "
                     "some files may have been skipped\n")
+                self._append_deferred_mail_log(
+                    "[rizpaq] zpaqfranz finished with warnings (rc=1); "
+                    "some files may have been skipped"
+                )
                 QMessageBox.warning(
                     self,
                     tr("create.warn_title"),
@@ -3457,8 +3560,14 @@ class ArchiveActionsMixin:
                         tr("create.copy_title"),
                         tr("create.copy_error", dir=copy_dir, error=_esc(err)),
                     )
+                    self._append_deferred_mail_log(
+                        "[rizpaq] second copy failed: %s" % err
+                    )
                 else:
                     self.statusBar().showMessage(tr("create.copy_done", dir=copy_dir))
+                    self._append_deferred_mail_log(
+                        "[rizpaq] second copy: %s" % copy_dir
+                    )
 
             if test_after:
                                                                      
@@ -3491,6 +3600,7 @@ class ArchiveActionsMixin:
                 tr("create.busy_text", name=name),
             )
             self._cleanup_transcode_temp_dir()
+            self._flush_deferred_mail()
             return
 
                                          
@@ -3503,6 +3613,7 @@ class ArchiveActionsMixin:
         self._handle_incomplete_archive(
             dest, bool(ctx.get("is_update")), output, password)
         self._cleanup_transcode_temp_dir()
+        self._flush_deferred_mail()
 
     def _update_job_meta_after_run(self, job_context: dict, status: str,
                                    reason: str = None, rc=None, output=None):

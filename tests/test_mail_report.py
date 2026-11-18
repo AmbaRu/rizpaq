@@ -222,7 +222,7 @@ class TestAddressValidation(unittest.TestCase):
         self.assertFalse(mail_report.looks_like_address("two@@x.ru"))
 
 
-class TestHeadlessAppend(unittest.TestCase):
+class TestHeadlessMailPlan(unittest.TestCase):
     pass
 
     def _settings(self, **kwargs):
@@ -236,58 +236,157 @@ class TestHeadlessAppend(unittest.TestCase):
             setattr(cfg, key, value)
         return cfg
 
-    def test_backup_gets_mail_args(self):
-        from core.headless import _append_mail_report
+    def test_backup_gets_inline_mail(self):
+        from core.headless import _mail_plan
 
-        cmd = ["zpaqfranz", "a", "x.zpaq", "D:/src"]
         with mock.patch("core.config.load", return_value=self._settings()):
-            ok = _append_mail_report(
-                cmd, "backup", {"title": "Nightly"}, "x.zpaq", {}
+            args, deferred, mail = _mail_plan(
+                {}, "backup", {"title": "Nightly"}, "x.zpaq"
             )
-        self.assertTrue(ok)
-        self.assertIn("-mailfull", cmd)
-        self.assertEqual(cmd[cmd.index("-customer") + 1], "Nightly")
+        self.assertIn("-mailfull", args)
+        self.assertEqual(args[args.index("-customer") + 1], "Nightly")
+        self.assertEqual(deferred, "")
+        self.assertTrue(mail.ready())
 
-    def test_test_action_gets_mail_args(self):
-        from core.headless import _append_mail_report
+    def test_par2_defers_mail(self):
+        from core.headless import _mail_plan
 
-        cmd = ["zpaqfranz", "t", "x.zpaq"]
         with mock.patch("core.config.load", return_value=self._settings()):
-            self.assertTrue(
-                _append_mail_report(cmd, "test", {}, "x.zpaq", {})
+            args, deferred, mail = _mail_plan(
+                {"par2_enabled": True}, "backup", {"title": "Nightly"},
+                "x.zpaq",
             )
+        self.assertEqual(args, [])
+        self.assertEqual(deferred, "Nightly")
+        self.assertTrue(mail.ready())
+
+    def test_test_action_never_defers(self):
+        from core.headless import _mail_plan
+
+        settings = {"par2_enabled": True}
+        with mock.patch("core.config.load", return_value=self._settings()):
+            args, deferred, _mail = _mail_plan(
+                settings, "test", {}, "x.zpaq"
+            )
+        self.assertIn("-mailfull", args)
+        self.assertEqual(deferred, "")
 
     def test_other_actions_untouched(self):
-        from core.headless import _append_mail_report
+        from core.headless import _mail_plan
 
         for action in ("crop", "sfx", "password", "consolidate", "info"):
-            cmd = ["zpaqfranz", action, "x.zpaq"]
             with mock.patch("core.config.load", return_value=self._settings()):
-                self.assertFalse(
-                    _append_mail_report(cmd, action, {}, "x.zpaq", {})
+                args, deferred, _mail = _mail_plan(
+                    {}, action, {}, "x.zpaq"
                 )
-            self.assertEqual(cmd, ["zpaqfranz", action, "x.zpaq"])
+            self.assertEqual(args, [])
+            self.assertEqual(deferred, "")
 
     def test_disabled_adds_nothing(self):
-        from core.headless import _append_mail_report
+        from core.headless import _mail_plan
 
-        cmd = ["zpaqfranz", "a", "x.zpaq", "D:/src"]
         cfg = self._settings(mail_report_enabled=False)
         with mock.patch("core.config.load", return_value=cfg):
-            self.assertFalse(
-                _append_mail_report(cmd, "backup", {}, "x.zpaq", {})
+            self.assertEqual(
+                _mail_plan({}, "backup", {}, "x.zpaq"), ([], "", None)
             )
-        self.assertEqual(cmd, ["zpaqfranz", "a", "x.zpaq", "D:/src"])
 
     def test_config_error_does_not_break_job(self):
-        from core.headless import _append_mail_report
+        from core.headless import _mail_plan
 
-        cmd = ["zpaqfranz", "a", "x.zpaq", "D:/src"]
         with mock.patch("core.config.load", side_effect=OSError("boom")):
-            self.assertFalse(
-                _append_mail_report(cmd, "backup", {}, "x.zpaq", {})
+            self.assertEqual(
+                _mail_plan({}, "backup", {}, "x.zpaq"), ([], "", None)
             )
-        self.assertEqual(cmd, ["zpaqfranz", "a", "x.zpaq", "D:/src"])
+
+    def test_deferred_mail_body_has_whole_backup(self):
+        from core.headless import _send_deferred_mail
+
+        calls = {}
+
+        def fake_send(zpaq_bin, mail, subject, body, customer=""):
+            calls.update(
+                zpaq_bin=zpaq_bin, subject=subject, body=body,
+                customer=customer,
+            )
+            return 0, "e-mail sent"
+
+        with mock.patch(
+            "core.mail_report.send_log_email", side_effect=fake_send
+        ):
+            note = _send_deferred_mail(
+                "zpaqfranz", _mail(), {"title": "Nightly"}, "x.zpaq",
+                0, True, "ARCHIVE LOG", "second copy", "PAR2 LOG",
+            )
+        self.assertEqual(calls["subject"], "OK Nightly FULL")
+        self.assertEqual(calls["customer"], "Nightly")
+        self.assertIn("ARCHIVE LOG", calls["body"])
+        self.assertIn("second copy", calls["body"])
+        self.assertIn("PAR2 LOG", calls["body"])
+        self.assertIn("Return code: 0", calls["body"])
+        self.assertIn("email report sent", note)
+
+    def test_deferred_mail_error_subject(self):
+        from core.headless import _send_deferred_mail
+
+        calls = {}
+
+        def fake_send(zpaq_bin, mail, subject, body, customer=""):
+            calls["subject"] = subject
+            return 1, "e-mail NOT sent"
+
+        with mock.patch(
+            "core.mail_report.send_log_email", side_effect=fake_send
+        ):
+            note = _send_deferred_mail(
+                "zpaqfranz", _mail(), {}, "x.zpaq", 2, False, "ERROR"
+            )
+        self.assertEqual(calls["subject"], "ERROR x FULL")
+        self.assertIn("NOT sent", note)
+
+
+class TestLogEmail(unittest.TestCase):
+    pass
+
+    def test_command_shape(self):
+        cmd = mail_report.log_email_cmd(
+            "zpaqfranz", _mail(user="u", password="pw"),
+            "OK Job FULL", "F:/log.txt", "Job",
+        )
+        self.assertEqual(cmd[:3], ["zpaqfranz", "work", "email"])
+        self.assertIn("-mailbodyfile", cmd)
+        self.assertEqual(cmd[cmd.index("-mailbodyfile") + 1], "F:/log.txt")
+        self.assertIn("-customer", cmd)
+        self.assertEqual(cmd[cmd.index("-customer") + 1], "Job")
+        self.assertEqual(cmd[cmd.index("-mailsubject") + 1], "OK Job FULL")
+        self.assertNotIn("-mailfull", cmd)
+
+    def test_subject_states(self):
+        self.assertEqual(mail_report.subject_for("Job", True), "OK Job FULL")
+        self.assertEqual(
+            mail_report.subject_for("Job", True, True), "WARNING Job FULL"
+        )
+        self.assertEqual(
+            mail_report.subject_for("Job", False), "ERROR Job FULL"
+        )
+        self.assertEqual(mail_report.subject_for("", True), "OK FULL")
+
+    def test_temp_body_file_removed(self):
+        seen = {}
+
+        def fake_run(cmd):
+            path = cmd[cmd.index("-mailbodyfile") + 1]
+            seen["path"] = path
+            seen["text"] = Path(path).read_text(encoding="utf-8")
+            return 0, "sent"
+
+        with mock.patch("core.zpaq_cli.run_zpaq", side_effect=fake_run):
+            rc, out = mail_report.send_log_email(
+                "zpaqfranz", _mail(), "OK FULL", "full\nlog"
+            )
+        self.assertEqual((rc, out), (0, "sent"))
+        self.assertEqual(seen["text"], "full\nlog")
+        self.assertFalse(Path(seen["path"]).exists())
 
 
 class TestUiJobMailArgs(unittest.TestCase):
@@ -300,6 +399,14 @@ class TestUiJobMailArgs(unittest.TestCase):
         stub = Stub()
         stub._cfg = cfg
         stub._load_container = lambda: (container, None)
+        from ui.archive_actions import ArchiveActionsMixin
+
+        stub._job_mail_plan = lambda c, a, s: (
+            ArchiveActionsMixin._job_mail_plan(stub, c, a, s)
+        )
+        stub._job_mail_customer = lambda c, a: (
+            ArchiveActionsMixin._job_mail_customer(stub, c, a)
+        )
         return stub
 
     def _cfg(self, **kwargs):
@@ -341,6 +448,41 @@ class TestUiJobMailArgs(unittest.TestCase):
         )
         self.assertEqual(args, [])
 
+    def test_par2_job_defers_email(self):
+        container = {
+            "works": [{
+                "id": "w1",
+                "jobs": [{"id": "j1", "title": "Nightly"}],
+            }]
+        }
+        from ui.archive_actions import ArchiveActionsMixin
+
+        args, customer = ArchiveActionsMixin._job_mail_plan(
+            self._stub(self._cfg(), container),
+            {"work_id": "w1", "job_id": "j1"},
+            "F:/a.zpaq",
+            {"par2_enabled": True},
+        )
+        self.assertEqual(args, [])
+        self.assertEqual(customer, "Nightly")
+
+    def test_plain_job_keeps_inline_email(self):
+        container = {"works": [{
+            "id": "w1", "jobs": [{"id": "j1", "title": "Nightly"}]
+        }]}
+        from ui.archive_actions import ArchiveActionsMixin
+
+        args, customer = ArchiveActionsMixin._job_mail_plan(
+            self._stub(self._cfg(), container),
+            {"work_id": "w1", "job_id": "j1"},
+            "F:/a.zpaq",
+            {},
+        )
+        self.assertIn("-mailfull", args)
+                                                                    
+                                 
+        self.assertEqual(customer, "")
+
     def test_job_without_title_uses_archive_name(self):
         container = {"works": [{"id": "w1", "jobs": [{"id": "j1"}]}]}
         args = self._method()(
@@ -361,11 +503,23 @@ class TestUiJobMailArgs(unittest.TestCase):
         self.assertEqual(args, [])
 
     def test_container_error_is_not_fatal(self):
+        from ui.archive_actions import ArchiveActionsMixin
+
         class Bad:
             _cfg = None
 
             def _load_container(self):
                 raise OSError("no container")
+
+            def _job_mail_customer(self, ctx, archive):
+                return ArchiveActionsMixin._job_mail_customer(
+                    self, ctx, archive
+                )
+
+            def _job_mail_plan(self, ctx, archive, settings):
+                return ArchiveActionsMixin._job_mail_plan(
+                    self, ctx, archive, settings
+                )
 
         with mock.patch("core.config.load", side_effect=OSError("no cfg")):
             args = self._method()(

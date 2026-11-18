@@ -1335,17 +1335,22 @@ def _headless_task(rest: list) -> int:
             cmd = _build_create_cmd(zpaq, settings, srcs, dest, password)
 
                                                             
+         
+                                                                         
+                                                                         
+                                                                        
+                                        
+        mail_args, deferred_mail, mail_cfg = _mail_plan(
+            settings, action, job, dest
+        )
+        mail_on = False
         if not skip_run and not par2_mode:
             if cmd is not None:
+                if mail_args:
                                                                      
-                                                                   
-                                                                        
-                                                                    
-                                                                   
-                                                                  
-                mail_on = _append_mail_report(
-                    cmd, action, job, dest, settings
-                )
+                                                   
+                    cmd.extend(mail_args)
+                    mail_on = True
                 rc, log = run_zpaq(cmd)
                                                                       
                                                                      
@@ -1525,11 +1530,26 @@ def _headless_task(rest: list) -> int:
         except Exception:
             pass
 
+                                                         
+     
+                                                                   
+                                                                    
+                                                                         
+                                                                           
+                                                                
+                                                           
+    mail_note = ""
+    if deferred_mail and action == ACTION_BACKUP and not skip_run:
+        mail_note = _send_deferred_mail(
+            zpaq, mail_cfg, job, dest, rc, ok, log or "",
+            copy_note or "", par2_note or "",
+        )
+
                                                    
     log_header = _build_log_header(rzp_path, work, job, rc,
                                    password, cmd=cmd)
     task_note = (skip_note + (copy_note or "")
-                 + (par2_note or ""))
+                 + (par2_note or "") + mail_note)
     _write_task_log(rzp_path, log_header, log, log_mode, rc, busy=busy,
                     note=task_note)
 
@@ -1556,8 +1576,7 @@ def _headless_task(rest: list) -> int:
     return 0 if (ok and not copy_failed) else 1
 
 
-def _append_mail_report(cmd: list, action: str, job: dict, dest: str,
-                        settings: dict) -> bool:
+def _mail_plan(settings: dict, action: str, job: dict, dest: str) -> tuple:
     pass
 
 
@@ -1565,28 +1584,86 @@ def _append_mail_report(cmd: list, action: str, job: dict, dest: str,
 
 
 
-    if action not in (ACTION_BACKUP, ACTION_TEST) or not cmd:
-        return False
+
+
+
+
+
+
+
+
+
+
     try:
         from core import config as config_mod
         from core import mail_report
 
         mail = mail_report.from_settings(config_mod.load())
-        if not mail.ready():
-            return False
-        title = str(
+    except Exception:
+        return [], "", None
+    if not mail.ready():
+        return [], "", None
+    if action not in (ACTION_BACKUP, ACTION_TEST):
+        return [], "", None
+    title = str(
+        (job or {}).get("title")
+        or (job or {}).get("name")
+        or Path(str(dest or "")).stem
+        or ""
+    ).strip()
+    if action == ACTION_BACKUP and settings.get("par2_enabled"):
+        return [], title, mail
+    return mail_report.report_args(mail, title), "", mail
+
+
+def _send_deferred_mail(zpaq: str, mail, job: dict, dest: str, rc: int,
+                        ok: bool, log: str, copy_note: str = "",
+                        par2_note: str = "") -> str:
+    pass
+
+
+
+
+
+
+
+
+
+
+    try:
+        from core import mail_report
+
+        customer = str(
             (job or {}).get("title")
             or (job or {}).get("name")
             or Path(str(dest or "")).stem
             or ""
         ).strip()
-        args = mail_report.report_args(mail, title)
-        if not args:
-            return False
-        cmd.extend(args)
-        return True
-    except Exception:
-        return False
+        subject = mail_report.subject_for(customer, ok, warnings=(rc == 1))
+        parts = [
+            "Archive: %s" % dest,
+            "Return code: %s" % rc,
+            "",
+            str(log or ""),
+        ]
+        if copy_note:
+            parts.append(str(copy_note))
+        if par2_note:
+            parts.append(str(par2_note))
+        rc_mail, out = mail_report.send_log_email(
+            zpaq, mail, subject, "\n".join(parts), customer
+        )
+        if rc_mail == 0 and not mail_report.mail_not_sent(out):
+            return "\n[rizpaq] email report sent\n"
+        last = ""
+        for line in str(out or "").strip().splitlines():
+            if line.strip():
+                last = line.strip()
+        return "\n[rizpaq] email report NOT sent: %s\n" % (last or rc_mail)
+    except Exception as exc:
+        return "\n[rizpaq] email report failed: %s: %s\n" % (
+            type(exc).__name__, exc
+        )
 
 
 def _notify_task_result(work: dict, job: dict, status: str,
