@@ -353,6 +353,27 @@ instant, and nothing you were doing is lost.
   asks for confirmation first. The familiar single-folder version
   extraction is still there.
 
+### Email reports and other 3.1.0 changes
+- **Reports on email, sent by zpaqfranz itself.** "Settings → Email
+  Reports…" configures SMTP (server, port, STARTTLS/SSL, user, password,
+  sender, recipient, customer name). A full report with file names is sent
+  after backup and verification jobs, scheduled or started by hand;
+  "Send test email" checks the settings immediately. If the SMTP server is
+  unreachable, the job is still successful and the reason stays in its log.
+  The password is stored in plain text in the settings file — just like the
+  Telegram token — and the dialog says so.
+- **One letter for the whole backup.** If the job also builds a PAR2 set,
+  the report is sent once after all stages with the archiving log, the
+  second-copy result and the PAR2 log together. Without PAR2 it is sent
+  immediately after the archive command.
+- **Free-space check no longer blocks appending.** A new archive still
+  requires the full size of the sources plus 5%; appending to an existing
+  archive requires at least 1 GB, so an incremental backup can no longer
+  be rejected for demanding the full size of all files. Already saved jobs
+  work without editing the container.
+- **Tooltips are translated** into all ten languages; the start-up probe of
+  Windows Scheduler runs in the background, and conflicting jobs only warn.
+
 ### Archive protection (PAR2)
 - Every archive can carry a **PAR2 recovery set** — protection files kept
   right next to the archive. The `par2` engine is bundled.
@@ -854,6 +875,27 @@ ZPAQ**. Один клик: старый RAR, набитый дублями, пр
   все версии в пронумерованных папках 0001, 0002, … . Данные идут через
   временную папку, а распаковка в непустую папку сначала спрашивает
   подтверждение. Привычное извлечение версии одной папки осталось на месте.
+
+### Отчёты на почту и другие изменения 3.1.0
+- **Отчёты отправляет сам zpaqfranz.** «Настройки → Отчёты на почту…»:
+  сервер, порт, STARTTLS/SSL, пользователь, пароль, отправитель,
+  получатель и имя задания. Полный журнал с именами файлов уходит после
+  заданий бэкапа и проверки — по расписанию или вручную; кнопка
+  «Отправить тестовое письмо» проверяет настройки сразу. Если SMTP
+  недоступен, задание остаётся успешным, а причина пишется в его журнал.
+  Пароль хранится в открытом виде рядом с токеном Telegram — диалог об
+  этом предупреждает.
+- **Одно письмо на весь бэкап.** Если задание ещё создаёт набор PAR2,
+  письмо уходит один раз после всех этапов: лог архивации, вторая копия
+  и PAR2 — в одном сообщении. Без PAR2 письмо уходит сразу после команды
+  архивации.
+- **Проверка свободного места больше не мешает дозаписи.** Новый архив
+  по-прежнему требует размер исходников плюс 5%, а дозапись в существующий —
+  минимум 1 ГБ. Инкрементальный бэкап не отказывается только потому, что
+  требовал полный размер всех файлов. Уже сохранённые задания работают без
+  правки контейнера.
+- **Подсказки переведены** на все десять языков; опрос Планировщика при
+  старте идёт в фоне, а пересекающиеся задания только предупреждают.
 
 ### Защита архива (PAR2)
 - У любого архива может быть **PAR2-набор восстановления** — файлы
