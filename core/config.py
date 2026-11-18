@@ -146,6 +146,21 @@ class Settings:
     notify_mode: str = "off"
     notify_telegram_token: str = ""
     notify_telegram_chat_id: str = ""
+                                                                      
+                                                                    
+                                                                
+                                                                    
+                                                                       
+                                                 
+    mail_report_enabled: bool = False
+    mail_smtp_server: str = ""
+    mail_smtp_port: int = 0                                          
+    mail_smtp_tls: str = "starttls"                       
+    mail_smtp_user: str = ""
+    mail_smtp_password: str = ""
+    mail_from: str = ""
+    mail_to: str = ""
+    mail_customer: str = ""
 
 
                                                                              
@@ -479,6 +494,22 @@ def _from_dict(data: dict) -> Settings:
         data.get("notify_telegram_token")) or ""
     s.notify_telegram_chat_id = _coerce_str(
         data.get("notify_telegram_chat_id")) or ""
+                                                                    
+                                                                 
+                                                                 
+                                        
+    s.mail_report_enabled = _coerce_bool(
+        data.get("mail_report_enabled"), False)
+    s.mail_smtp_server = _coerce_str(data.get("mail_smtp_server")) or ""
+    port = _coerce_int_or_none(data.get("mail_smtp_port"))
+    s.mail_smtp_port = port if port is not None and 0 <= port <= 65535 else 0
+    tls = (_coerce_str(data.get("mail_smtp_tls")) or "starttls").lower()
+    s.mail_smtp_tls = tls if tls in ("starttls", "ssl") else "starttls"
+    s.mail_smtp_user = _coerce_str(data.get("mail_smtp_user")) or ""
+    s.mail_smtp_password = _coerce_str(data.get("mail_smtp_password")) or ""
+    s.mail_from = _coerce_str(data.get("mail_from")) or ""
+    s.mail_to = _coerce_str(data.get("mail_to")) or ""
+    s.mail_customer = _coerce_str(data.get("mail_customer")) or ""
     return s
 
 

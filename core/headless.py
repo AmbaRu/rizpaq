@@ -1337,6 +1337,15 @@ def _headless_task(rest: list) -> int:
                                                             
         if not skip_run and not par2_mode:
             if cmd is not None:
+                                                                     
+                                                                   
+                                                                        
+                                                                    
+                                                                   
+                                                                  
+                mail_on = _append_mail_report(
+                    cmd, action, job, dest, settings
+                )
                 rc, log = run_zpaq(cmd)
                                                                       
                                                                      
@@ -1345,7 +1354,17 @@ def _headless_task(rest: list) -> int:
                                                                       
                                                                        
                             
-                ok = rc == 0 or (rc == 1 and action == ACTION_BACKUP)
+                 
+                                                                      
+                                                                        
+                                                                       
+                                                                
+                from core import mail_report as _mail_mod
+
+                rc_eff = _mail_mod.effective_rc(rc, log, mail_on)
+                ok = rc_eff == 0 or (
+                    rc_eff == 1 and action == ACTION_BACKUP
+                )
                                                                               
     finally:
         if tmp_dir:
@@ -1535,6 +1554,39 @@ def _headless_task(rest: list) -> int:
                             dest)
 
     return 0 if (ok and not copy_failed) else 1
+
+
+def _append_mail_report(cmd: list, action: str, job: dict, dest: str,
+                        settings: dict) -> bool:
+    pass
+
+
+
+
+
+
+    if action not in (ACTION_BACKUP, ACTION_TEST) or not cmd:
+        return False
+    try:
+        from core import config as config_mod
+        from core import mail_report
+
+        mail = mail_report.from_settings(config_mod.load())
+        if not mail.ready():
+            return False
+        title = str(
+            (job or {}).get("title")
+            or (job or {}).get("name")
+            or Path(str(dest or "")).stem
+            or ""
+        ).strip()
+        args = mail_report.report_args(mail, title)
+        if not args:
+            return False
+        cmd.extend(args)
+        return True
+    except Exception:
+        return False
 
 
 def _notify_task_result(work: dict, job: dict, status: str,

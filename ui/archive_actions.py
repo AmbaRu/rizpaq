@@ -227,6 +227,10 @@ from core.headless import _build_log_header, _write_task_log, sync_log_is_fatal
                                            
 from core.zpaq_cli import looks_like_busy_error, resolve_checksize
 
+                                                                 
+                                                            
+from core import mail_report
+
 from ui.archive_check_dialog import ArchiveCheckDialog
 from ui.archive_create_dialog import ArchiveCreateDialog
 from ui.archive_done_dialog import ArchiveDoneDialog
@@ -704,6 +708,14 @@ class ArchiveActionsMixin:
         if pw:
             cmd += ["-key", pw]
 
+                                                                    
+                                                                       
+                                                                
+                                                                 
+        mail_args = self._job_mail_args(job_context, arc)
+        if mail_args:
+            cmd += mail_args
+
         self.log_command(cmd)
 
         dlg = TestProgressDialog(
@@ -728,6 +740,9 @@ class ArchiveActionsMixin:
                                                                     
                                                                  
                 "mode": mode,
+                                                                     
+                                                                    
+                "mail": bool(mail_args),
             },
         )
         worker.result.connect(self._on_test_result)
@@ -769,6 +784,11 @@ class ArchiveActionsMixin:
                 shutil.rmtree(tmp, ignore_errors=True)
             except Exception:
                 pass
+
+                                                                       
+                                                                    
+                                                                 
+        rc = mail_report.effective_rc(rc, output, bool(ctx.get("mail")))
 
                                                                        
                                                                    
@@ -2908,6 +2928,49 @@ class ArchiveActionsMixin:
 
                                                                                  
 
+    def _job_mail_args(self, job_context, archive: str) -> list:
+        pass
+
+
+
+
+
+
+
+
+
+
+
+        if not job_context:
+            return []
+        try:
+            cfg = getattr(self, "_cfg", None)
+            if cfg is None:
+                from core import config as config_mod
+
+                cfg = config_mod.load()
+            mail = mail_report.from_settings(cfg)
+            if not mail.ready():
+                return []
+            customer = ""
+            try:
+                container, _path = self._load_container()
+                found = find_job(
+                    container or {},
+                    str(job_context.get("job_id") or ""),
+                )
+                if found is not None:
+                    _work, job = found
+                    customer = str(
+                        job.get("title") or job.get("name") or ""
+                    )
+            except Exception:
+                customer = ""
+            customer = customer or Path(str(archive or "")).stem
+            return mail_report.report_args(mail, customer)
+        except Exception:
+            return []
+
     def _run_create_from_settings(self, settings: dict, job_context=None):
         pass
 
@@ -3029,6 +3092,12 @@ class ArchiveActionsMixin:
         if password:
             cmd += ["-key", password]
 
+                                                                    
+                                                          
+        mail_args = self._job_mail_args(job_context, dest)
+        if mail_args:
+            cmd += mail_args
+
         self.log_command(cmd)
 
         archive_name = Path(dest).name
@@ -3047,6 +3116,8 @@ class ArchiveActionsMixin:
                 "copy": settings.get("copy") or "",
                 "params_rows": settings.get("params_rows") or [],
                 "job_context": dict(job_context) if job_context else None,
+                                                                        
+                "mail": bool(mail_args),
                                                                     
                                                                      
                                                               

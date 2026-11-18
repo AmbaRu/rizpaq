@@ -280,6 +280,12 @@ class MenuActionsMixin:
         act_notify.setStatusTip(tr("tip.notify"))
         act_notify.triggered.connect(self._on_open_notify_dialog)
 
+                                                                          
+                                                              
+        act_mail = m_settings.addAction(tr("menu.settings.mail_report"))
+        act_mail.setStatusTip(tr("tip.mail_report"))
+        act_mail.triggered.connect(self._on_open_mail_report_dialog)
+
                                                                              
         m_help = mb.addMenu(tr("menu.help"))
 
@@ -364,6 +370,49 @@ class MenuActionsMixin:
             return
         for name in ("notify_mode", "notify_telegram_token",
                      "notify_telegram_chat_id"):
+            try:
+                setattr(self._cfg, name, getattr(saved, name))
+            except Exception:
+                pass
+
+    def _on_open_mail_report_dialog(self):
+        pass
+
+
+
+
+
+
+        from PySide6.QtWidgets import QDialog
+
+        from ui.mail_report_dialog import MailReportDialog
+
+        try:
+            from core import config as config_mod
+            cfg = config_mod.load()
+        except Exception:
+            cfg = None
+
+        dlg = MailReportDialog(
+            cfg, zpaq_bin=getattr(self, "zpaq_bin", ""), parent=self
+        )
+        if dlg.exec() != QDialog.Accepted:
+            return
+
+        saved = dlg.saved_settings()
+        if saved is None:
+            return
+        for name in (
+            "mail_report_enabled",
+            "mail_smtp_server",
+            "mail_smtp_port",
+            "mail_smtp_tls",
+            "mail_smtp_user",
+            "mail_smtp_password",
+            "mail_from",
+            "mail_to",
+            "mail_customer",
+        ):
             try:
                 setattr(self._cfg, name, getattr(saved, name))
             except Exception:

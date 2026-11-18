@@ -70,7 +70,8 @@ def decode_bytes(data: bytes) -> str:
 
 
                                                                     
-_PASSWORD_VALUE_FLAGS = ("-key",)
+                                                                         
+_PASSWORD_VALUE_FLAGS = ("-key", "-mailpassword")
                                                                       
 _PASSWORD_INLINE_PREFIX = "-p"
 _MASK = "***"
@@ -89,7 +90,7 @@ def mask_secrets(cmd: list, password: Optional[str] = None) -> list:
 
 
     args = list(cmd or [])
-    if not password:
+    if not args:
         return args
 
     masked: list = []
@@ -109,14 +110,15 @@ def mask_secrets(cmd: list, password: Optional[str] = None) -> list:
                                                                              
                                                                 
         if (
-            isinstance(arg, str)
+            password
+            and isinstance(arg, str)
             and arg.startswith(_PASSWORD_INLINE_PREFIX)
             and arg[len(_PASSWORD_INLINE_PREFIX):] == password
         ):
             masked.append(_PASSWORD_INLINE_PREFIX + _MASK)
             continue
 
-        masked.append(_MASK if arg == password else arg)
+        masked.append(_MASK if password and arg == password else arg)
 
     return masked
 
