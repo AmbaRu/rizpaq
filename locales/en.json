@@ -395,7 +395,6 @@
     "progress.title_file": "EXTRACT FILE",
     "progress.title_folder": "EXTRACT FOLDER",
     "progress.par2_stage": "Creating PAR2 set: {name}",
-    "progress.par2_running": "Protecting the archive: reading it, writing redundancy files",
     "rename.exists": "The name '{name}' is already taken.",
     "rename.failed": "Could not rename: {error}",
     "rename.invalid": "Invalid file name.",
@@ -943,6 +942,15 @@
     "mail.field.from": "from address",
     "mail.field.to": "recipient",
     "mail.error.address": "The {field} does not look like an email address",
-    "mail.error.no_engine": "The zpaqfranz engine was not found, so the test email cannot be sent."
+    "mail.error.no_engine": "The zpaqfranz engine was not found, so the test email cannot be sent.",
+    "progress.par2_phase_start": "Preparing…",
+    "progress.par2_phase_reading": "Reading archive and computing blocks",
+    "progress.par2_phase_writing": "Writing recovery packets",
+    "progress.par2_phase_verification": "Writing verification packets",
+    "progress.par2_phase_done": "Set complete",
+    "progress.par2_read": "Read:",
+    "progress.par2_written": "Written:",
+    "progress.par2_blocks": "Blocks:",
+    "progress.par2_redundancy": "Redundancy:"
   }
 }

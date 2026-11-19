@@ -60,10 +60,12 @@
 from __future__ import annotations
 
 import os
+import threading
 
 from PySide6.QtCore import QThread, Signal
 
 from core import par2_ops
+from core.par2_progress import Par2Progress
 
 
 class Par2CreateWorker(QThread):
@@ -74,6 +76,10 @@ class Par2CreateWorker(QThread):
                                                                     
                                                                 
     line_received = Signal(str)
+                                                                        
+                                                                        
+    percent = Signal(int)
+    progress = Signal(dict)
 
     def __init__(
         self,
@@ -82,15 +88,29 @@ class Par2CreateWorker(QThread):
         options: dict = None,
         unchanged_size=None,
         parent=None,
+        archive_size=None,
     ):
         super().__init__(parent)
         self._bin_path = bin_path
         self._archive_path = str(archive_path)
         self._options = dict(options or {})
         self._unchanged_size = unchanged_size
+        if archive_size is None:
+            try:
+                archive_size = os.path.getsize(self._archive_path)
+            except OSError:
+                archive_size = 0
+        self._archive_size = int(archive_size or 0)
+        redundancy = self._opt("redundancy", 5)
+        try:
+            redundancy = int(redundancy)
+        except (TypeError, ValueError):
+            redundancy = None
+        self._tracker = Par2Progress(self._archive_size, redundancy)
 
         self._cancel = False
         self._proc = None
+        self._stop_poller = threading.Event()
 
                                                                              
 
@@ -126,6 +146,29 @@ class Par2CreateWorker(QThread):
                                                                     
                                                                     
                                                                       
+        if getattr(self, "_stop_poller", None) is None:
+            self._stop_poller = threading.Event()
+        if getattr(self, "_tracker", None) is None:
+            size = getattr(self, "_archive_size", 0)
+            self._tracker = Par2Progress(size, 5)
+        self._stop_poller.clear()
+        poller = threading.Thread(target=self._poll_progress, daemon=True)
+        poller.start()
+
+        def on_line(text):
+            self.line_received.emit(text)
+            if self._tracker.feed(text):
+                snap = self._tracker.snapshot()
+                try:
+                    self.progress.emit(snap)
+                    if snap["percent"] is not None:
+                        self.percent.emit(snap["percent"])
+                except RuntimeError:
+                                                                       
+                                                                     
+                                         
+                    pass
+
         try:
             res = par2_ops.refresh_par2_set(
                 self._bin_path,
@@ -138,7 +181,7 @@ class Par2CreateWorker(QThread):
                 skip_if_unchanged=self._unchanged_size is not None,
                 unchanged_size=self._unchanged_size,
                 register=self._register_proc,
-                on_line=self.line_received.emit,
+                on_line=on_line,
             )
             result.update(
                 ok=bool(res.ok),
@@ -159,7 +202,27 @@ class Par2CreateWorker(QThread):
                                            
             result["ok"] = False
 
+        self._stop_poller.set()
+        try:
+            poller.join(timeout=2.0)
+        except Exception:
+            pass
+        try:
+            self.progress.emit(self._tracker.snapshot())
+        except RuntimeError:
+            pass
         self.done.emit(result)
+
+    def _poll_progress(self):
+        pass
+
+
+
+        while not self._stop_poller.wait(1.0):
+            try:
+                self.progress.emit(self._tracker.snapshot())
+            except Exception:
+                pass
 
                                                                             
 

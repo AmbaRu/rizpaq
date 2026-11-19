@@ -415,7 +415,6 @@
     "progress.title_file": "ファイルの展開",
     "progress.title_folder": "フォルダの展開",
     "progress.par2_stage": "PAR2セットを作成中: {name}",
-    "progress.par2_running": "アーカイブを保護中：読み込みと冗長データの書き込み",
     "rename.exists": "名前 '{name}' は既に使用されています。",
     "rename.failed": "名前を変更できませんでした：{error}",
     "rename.invalid": "無効なファイル名です。",
@@ -943,6 +942,15 @@
     "mail.field.from": "差出人アドレス",
     "mail.field.to": "宛先",
     "mail.error.address": "「{field}」はメールアドレスの形式ではありません",
-    "mail.error.no_engine": "zpaqfranz エンジンが見つからないため、テストメールを送信できません。"
+    "mail.error.no_engine": "zpaqfranz エンジンが見つからないため、テストメールを送信できません。",
+    "progress.par2_phase_start": "準備中…",
+    "progress.par2_phase_reading": "アーカイブを読み込み、ブロックを計算中",
+    "progress.par2_phase_writing": "回復パケットを書き込み中",
+    "progress.par2_phase_verification": "検証パケットを書き込み中",
+    "progress.par2_phase_done": "セット完了",
+    "progress.par2_read": "読み込み:",
+    "progress.par2_written": "書き込み:",
+    "progress.par2_blocks": "ブロック:",
+    "progress.par2_redundancy": "冗長性:"
   }
 }

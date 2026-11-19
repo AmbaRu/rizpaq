@@ -395,7 +395,6 @@
     "progress.title_file": "ИЗВЛЕЧЕНИЕ ФАЙЛА",
     "progress.title_folder": "ИЗВЛЕЧЕНИЕ ПАПКИ",
     "progress.par2_stage": "Создание набора PAR2: {name}",
-    "progress.par2_running": "Архив защищается: читается архив, пишутся файлы избыточности",
     "rename.exists": "Имя '{name}' уже занято.",
     "rename.failed": "Не удалось переименовать: {error}",
     "rename.invalid": "Недопустимое имя файла.",
@@ -943,6 +942,15 @@
     "mail.field.from": "адрес отправителя",
     "mail.field.to": "получатель",
     "mail.error.address": "Поле «{field}» не похоже на адрес почты",
-    "mail.error.no_engine": "Движок zpaqfranz не найден, поэтому тестовое письмо отправить нельзя."
+    "mail.error.no_engine": "Движок zpaqfranz не найден, поэтому тестовое письмо отправить нельзя.",
+    "progress.par2_phase_start": "Подготовка…",
+    "progress.par2_phase_reading": "Чтение архива и расчёт блоков",
+    "progress.par2_phase_writing": "Запись файлов восстановления",
+    "progress.par2_phase_verification": "Запись контрольных блоков",
+    "progress.par2_phase_done": "Набор готов",
+    "progress.par2_read": "Прочитано:",
+    "progress.par2_written": "Записано:",
+    "progress.par2_blocks": "Блоков:",
+    "progress.par2_redundancy": "Избыточность:"
   }
 }

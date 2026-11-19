@@ -415,7 +415,6 @@
     "progress.title_file": "EXTRACTION DE FICHIER",
     "progress.title_folder": "EXTRACTION DE DOSSIER",
     "progress.par2_stage": "Création du jeu PAR2 : {name}",
-    "progress.par2_running": "Protection de l'archive : lecture et écriture de la redondance",
     "rename.exists": "Le nom '{name}' est déjà utilisé.",
     "rename.failed": "Impossible de renommer : {error}",
     "rename.invalid": "Nom de fichier invalide.",
@@ -943,6 +942,15 @@
     "mail.field.from": "adresse d'expédition",
     "mail.field.to": "destinataire",
     "mail.error.address": "Le champ « {field} » ne ressemble pas à une adresse e-mail",
-    "mail.error.no_engine": "Le moteur zpaqfranz est introuvable, l'e-mail de test ne peut pas être envoyé."
+    "mail.error.no_engine": "Le moteur zpaqfranz est introuvable, l'e-mail de test ne peut pas être envoyé.",
+    "progress.par2_phase_start": "Préparation…",
+    "progress.par2_phase_reading": "Lecture de l'archive et calcul des blocs",
+    "progress.par2_phase_writing": "Écriture des paquets de récupération",
+    "progress.par2_phase_verification": "Écriture des paquets de vérification",
+    "progress.par2_phase_done": "Jeu terminé",
+    "progress.par2_read": "Lu :",
+    "progress.par2_written": "Écrit :",
+    "progress.par2_blocks": "Blocs :",
+    "progress.par2_redundancy": "Redondance :"
   }
 }

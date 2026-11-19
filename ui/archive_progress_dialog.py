@@ -36,7 +36,8 @@ class ArchiveProgressDialog(OperationProgressDialog):
         if not stay:
             self.accept()
 
-    def begin_par2_stage(self, archive_name: str) -> None:
+    def begin_par2_stage(self, archive_name: str, size=None,
+                         redundancy=None) -> None:
         pass
 
 
@@ -54,6 +55,15 @@ class ArchiveProgressDialog(OperationProgressDialog):
 
         self.next_stage(
             tr("progress.par2_stage", name=archive_name),
-            tr("progress.par2_running"),
+            tr("progress.par2_phase_start"),
         )
-        self.hide_info_fields(keep=("elapsed",))
+        self.hide_info_fields(
+            keep=("size", "speed", "elapsed", "eta")
+        )
+        self.show_par2_fields(True)
+        self.set_indeterminate(True)
+        self.update_info({
+            "bytes_total": size,
+            "redundancy": redundancy,
+            "files_total": 1,
+        })

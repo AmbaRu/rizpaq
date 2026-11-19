@@ -50,6 +50,7 @@ from ui.par2_verify_dialog import (
 )
 
 from core.container_lock import ContainerLockBusy
+from core.par2_progress import format_speed
 from core.tasks import (
     PAR2_REASON_BY_STATE,
     REASON_PAR2_FAILED,
@@ -396,6 +397,7 @@ class Par2ActionsMixin:
                 lambda r, c=job_context: self._on_par2_done(c, r, dlg)
             )
             worker.finished.connect(lambda w=worker: self._cleanup_worker(w))
+            self._wire_par2_live(worker, dlg, archive_path, options)
 
             dlg.show()
             self._workers.append(worker)
@@ -417,6 +419,58 @@ class Par2ActionsMixin:
         pass
         if getattr(self, "_par2_create_dialog", None) is dialog:
             self._par2_create_dialog = None
+
+    def _par2_live_update(self, dialog, snap: dict) -> None:
+        pass
+        if dialog is None:
+            return
+        phase = str(snap.get("phase") or "starting")
+        phase_text = {
+            "start": tr("progress.par2_phase_start"),
+            "reading": tr("progress.par2_phase_reading"),
+            "writing": tr("progress.par2_phase_writing"),
+            "verification": tr("progress.par2_phase_verification"),
+            "done": tr("progress.par2_phase_done"),
+        }
+        status = phase_text.get(phase, tr("progress.par2_phase_start"))
+        old_phase = getattr(dialog, "_par2_last_phase", None)
+        if old_phase != phase:
+            dialog._par2_last_phase = phase
+            dialog.set_indeterminate(
+                phase in ("starting", "writing", "verification")
+            )
+        if phase == "writing" and snap.get("write_speed"):
+            status += " · " + format_speed(snap["write_speed"])
+        dialog.set_status(status)
+        dialog.update_info({
+            "bytes_total": snap.get("size"),
+            "read": snap.get("read"),
+            "written": snap.get("written"),
+            "blocks": snap.get("blocks"),
+            "redundancy": snap.get("redundancy"),
+            "speed": format_speed(snap.get("speed")),
+            "eta": snap.get("eta"),
+        })
+
+    def _wire_par2_live(self, worker, dialog, archive_path: str,
+                        options: dict) -> None:
+        pass
+        if dialog is None:
+            return
+        try:
+            dialog.hide_info_fields(keep=("size", "speed", "elapsed", "eta"))
+            dialog.show_par2_fields(True)
+            dialog.update_info({
+                "bytes_total": os.path.getsize(archive_path),
+                "redundancy": int(options.get("redundancy") or 0) or None,
+            })
+        except Exception:
+            pass
+        worker.percent.connect(dialog.set_percent)
+        worker.progress.connect(
+            lambda snap, d=dialog: self._par2_live_update(d, snap)
+        )
+        worker.line_received.connect(dialog.append_output)
 
     def _start_par2_worker(
         self,
@@ -490,8 +544,14 @@ class Par2ActionsMixin:
                                                                      
                                                                      
                 try:
-                    dialog.begin_par2_stage(Path(archive_path).name)
-                    worker.line_received.connect(dialog.append_output)
+                    dialog.begin_par2_stage(
+                        Path(archive_path).name,
+                        size=os.path.getsize(archive_path),
+                        redundancy=options.get("redundancy"),
+                    )
+                    self._wire_par2_live(
+                        worker, dialog, archive_path, options
+                    )
                 except Exception:
                     pass
 

@@ -415,7 +415,6 @@
     "progress.title_file": "EXTRAÇÃO DE ARQUIVO",
     "progress.title_folder": "EXTRAÇÃO DE PASTA",
     "progress.par2_stage": "Criando conjunto PAR2: {name}",
-    "progress.par2_running": "Protegendo o arquivo: lendo e gravando redundância",
     "rename.exists": "O nome '{name}' já está em uso.",
     "rename.failed": "Não foi possível renomear: {error}",
     "rename.invalid": "Nome de arquivo inválido.",
@@ -943,6 +942,15 @@
     "mail.field.from": "endereço do remetente",
     "mail.field.to": "destinatário",
     "mail.error.address": "O campo «{field}» não parece um endereço de e-mail",
-    "mail.error.no_engine": "O motor zpaqfranz não foi encontrado, por isso o e-mail de teste não pode ser enviado."
+    "mail.error.no_engine": "O motor zpaqfranz não foi encontrado, por isso o e-mail de teste não pode ser enviado.",
+    "progress.par2_phase_start": "A preparar…",
+    "progress.par2_phase_reading": "A ler o arquivo e a calcular blocos",
+    "progress.par2_phase_writing": "A gravar pacotes de recuperação",
+    "progress.par2_phase_verification": "A gravar pacotes de verificação",
+    "progress.par2_phase_done": "Conjunto pronto",
+    "progress.par2_read": "Lido:",
+    "progress.par2_written": "Gravado:",
+    "progress.par2_blocks": "Blocos:",
+    "progress.par2_redundancy": "Redundância:"
   }
 }

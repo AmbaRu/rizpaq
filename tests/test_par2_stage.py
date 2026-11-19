@@ -26,7 +26,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from PySide6.QtCore import QThread, Signal              
-from PySide6.QtWidgets import QApplication, QDialog, QWidget 
+from PySide6.QtWidgets import QApplication, QDialog, QWidget              
 
 _APP = QApplication.instance() or QApplication(sys.argv)
 
@@ -161,12 +161,19 @@ class TestDialogStage(unittest.TestCase):
                                                
         self.assertEqual(dlg._btn.text(), tr("progress.cancel"))
 
-    def test_info_fields_hidden_but_elapsed(self):
+    def test_live_fields_visible(self):
+        pass
         dlg = self.dlg
         dlg.begin_par2_stage("backup.zpaq")
         self.assertFalse(dlg._files_label.isVisible())
-        self.assertFalse(dlg._speed_label.isVisible())
+        self.assertFalse(dlg._dirs_label.isVisible())
+        self.assertTrue(dlg._speed_label.isVisible())
         self.assertTrue(dlg._elapsed_label.isVisible())
+        self.assertTrue(dlg._eta_label.isVisible())
+        self.assertTrue(dlg._read_label.isVisible())
+        self.assertTrue(dlg._written_label.isVisible())
+        self.assertTrue(dlg._blocks_label.isVisible())
+        self.assertTrue(dlg._redundancy_label.isVisible())
 
     def test_final_verdict_stays_open(self):
         pass
@@ -234,6 +241,8 @@ class _StageHost(QWidget):
     def _save_par2_marker(self, job_context, size):
         pass
 
+                                                                       
+                                                                 
     def _report_stage_done(self, stage):
         self.report_stages.append(stage)
         gate = getattr(self, "_report_gate", None)
@@ -333,6 +342,7 @@ class TestWiring(unittest.TestCase):
             "recorded_size": 100, "archive_path": str(self.arch),
             "skipped": False,
         }, dlg)
+                                                            
         self.assertEqual(dlg.result(), QDialog.DialogCode.Accepted)
         self.assertEqual(host._create_report["par2"]["status"], "ok")
         self.assertEqual(host._create_report["par2"]["size"], 100)
@@ -367,10 +377,9 @@ class TestWiring(unittest.TestCase):
             def _load_info(self, *a, **k):
                 raise AssertionError("отчёт запрошен раньше времени")
 
-        ArchiveActionsMixin._request_create_report(Host())
+        ArchiveActionsMixin._request_create_report(Host())             
 
     def test_gate_releases_only_after_last_stage(self):
-        pass
         from ui.archive_actions import ArchiveActionsMixin
 
         class Host:
@@ -422,7 +431,6 @@ class TestDoneReportPar2Row(unittest.TestCase):
             dlg.deleteLater()
 
     def test_updated_archive_ok(self):
-        pass
         texts = self._texts({
             "dest": "backup.zpaq", "is_update": True, "ok": True,
             "par2": {"status": "ok"},
@@ -431,7 +439,6 @@ class TestDoneReportPar2Row(unittest.TestCase):
         self.assertIn(tr("create.done.par2_ok"), texts)
 
     def test_new_archive_created(self):
-        pass
         texts = self._texts({
             "dest": "backup.zpaq", "is_update": False, "ok": True,
             "par2": {"status": "ok"},
@@ -439,7 +446,6 @@ class TestDoneReportPar2Row(unittest.TestCase):
         self.assertIn(tr("create.done.par2_created"), texts)
 
     def test_failed_shows_error(self):
-        pass
         texts = self._texts({
             "dest": "backup.zpaq", "is_update": True, "ok": True,
             "par2": {"status": "failed", "error": "boom"},
@@ -448,7 +454,6 @@ class TestDoneReportPar2Row(unittest.TestCase):
             tr("create.done.par2_failed", error="boom"), texts)
 
     def test_no_par2_row_without_par2(self):
-        pass
         texts = self._texts({
             "dest": "backup.zpaq", "is_update": True, "ok": True,
         })

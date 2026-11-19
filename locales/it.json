@@ -415,7 +415,6 @@
     "progress.title_file": "ESTRAZIONE FILE",
     "progress.title_folder": "ESTRAZIONE CARTELLA",
     "progress.par2_stage": "Creazione del set PAR2: {name}",
-    "progress.par2_running": "Protezione dell'archivio: lettura e scrittura ridondanza",
     "rename.exists": "Il nome '{name}' è già in uso.",
     "rename.failed": "Impossibile rinominare: {error}",
     "rename.invalid": "Nome file non valido.",
@@ -943,6 +942,15 @@
     "mail.field.from": "indirizzo mittente",
     "mail.field.to": "destinatario",
     "mail.error.address": "Il campo «{field}» non sembra un indirizzo e-mail",
-    "mail.error.no_engine": "Il motore zpaqfranz non è stato trovato: impossibile inviare l'e-mail di prova."
+    "mail.error.no_engine": "Il motore zpaqfranz non è stato trovato: impossibile inviare l'e-mail di prova.",
+    "progress.par2_phase_start": "Preparazione…",
+    "progress.par2_phase_reading": "Lettura dell'archivio e calcolo dei blocchi",
+    "progress.par2_phase_writing": "Scrittura dei pacchetti di recupero",
+    "progress.par2_phase_verification": "Scrittura dei pacchetti di verifica",
+    "progress.par2_phase_done": "Set pronto",
+    "progress.par2_read": "Letti:",
+    "progress.par2_written": "Scritti:",
+    "progress.par2_blocks": "Blocchi:",
+    "progress.par2_redundancy": "Ridondanza:"
   }
 }

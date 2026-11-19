@@ -43,10 +43,10 @@ from ui.presentation import format_size
                                                                
 
 PROGRESS_WINDOW_MIN_WIDTH = 620
-PROGRESS_WINDOW_MIN_HEIGHT = 280
+PROGRESS_WINDOW_MIN_HEIGHT = 300
 
 PROGRESS_WINDOW_WIDTH = 680
-PROGRESS_WINDOW_HEIGHT = 320
+PROGRESS_WINDOW_HEIGHT = 390
 
 
 _PROGRESS_LINE_RE = re.compile(r"\d{1,3}(?:[.,]\d+)?\s*%")
@@ -198,6 +198,10 @@ class OperationProgressDialog(QDialog):
         self._speed_label = QLabel("—")
         self._elapsed_label = QLabel("0s")
         self._eta_label = QLabel("—")
+        self._read_label = QLabel("—")
+        self._written_label = QLabel("—")
+        self._blocks_label = QLabel("—")
+        self._redundancy_label = QLabel("—")
 
         for w in (
             self._files_label,
@@ -206,6 +210,10 @@ class OperationProgressDialog(QDialog):
             self._speed_label,
             self._elapsed_label,
             self._eta_label,
+            self._read_label,
+            self._written_label,
+            self._blocks_label,
+            self._redundancy_label,
         ):
             w.setObjectName("opFieldValue")
 
@@ -219,6 +227,7 @@ class OperationProgressDialog(QDialog):
                                                                       
                                                          
             self._info_pairs.append((lbl, value_widget))
+            return lbl, value_widget
 
                        
         add_pair(0, 0, tr("create.progress_files"), self._files_label)
@@ -231,6 +240,20 @@ class OperationProgressDialog(QDialog):
                            
         add_pair(2, 0, tr("create.progress_elapsed"), self._elapsed_label)
         add_pair(2, 2, tr("create.progress_eta"), self._eta_label)
+
+        self._par2_pairs = {
+            "read": add_pair(3, 0, tr("progress.par2_read"),
+                             self._read_label),
+            "written": add_pair(3, 2, tr("progress.par2_written"),
+                                self._written_label),
+            "blocks": add_pair(4, 0, tr("progress.par2_blocks"),
+                               self._blocks_label),
+            "redundancy": add_pair(4, 2, tr("progress.par2_redundancy"),
+                                   self._redundancy_label),
+        }
+        for lbl, val in self._par2_pairs.values():
+            lbl.setVisible(False)
+            val.setVisible(False)
 
         grid.setColumnStretch(1, 1)
         grid.setColumnStretch(3, 1)
@@ -318,6 +341,13 @@ class OperationProgressDialog(QDialog):
         self._speed_label.setText("—")
         self._elapsed_label.setText("0s")
         self._eta_label.setText("—")
+        self._read_label.setText("—")
+        self._written_label.setText("—")
+        self._blocks_label.setText("—")
+        self._redundancy_label.setText("—")
+        for lbl, val in self._par2_pairs.values():
+            lbl.setVisible(False)
+            val.setVisible(False)
 
         self._current.setText(
             _elide_mid(status or tr("progress.preparing"), 160)
@@ -442,6 +472,50 @@ class OperationProgressDialog(QDialog):
                 self._size_label.setText(format_size(int(bytes_total)))
             except Exception:
                 self._size_label.setText(str(bytes_total))
+
+        read = info.get("read")
+        if read is not None:
+            try:
+                self._read_label.setText(format_size(int(read)))
+            except Exception:
+                self._read_label.setText(str(read))
+
+        written = info.get("written")
+        if written is not None:
+            try:
+                self._written_label.setText(format_size(int(written)))
+            except Exception:
+                self._written_label.setText(str(written))
+
+        blocks = info.get("blocks")
+        if blocks is not None:
+            self._blocks_label.setText(str(blocks))
+
+        redundancy = info.get("redundancy")
+        if redundancy is not None:
+            self._redundancy_label.setText("%s%%" % redundancy)
+
+    def set_status(self, text: str) -> None:
+        pass
+        if self._finished:
+            return
+        self._current.setText(_elide_mid(str(text or ""), 160))
+
+    def set_indeterminate(self, on: bool) -> None:
+        pass
+        if self._finished:
+            return
+        if on:
+            self._bar.setRange(0, 0)
+            self._pct_label.setText("")
+        else:
+            self._bar.setRange(0, 100)
+
+    def show_par2_fields(self, show: bool = True) -> None:
+        pass
+        for lbl, val in self._par2_pairs.values():
+            lbl.setVisible(bool(show))
+            val.setVisible(bool(show))
 
     def hide_info_fields(self, keep=()) -> None:
         pass

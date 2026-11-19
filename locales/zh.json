@@ -415,7 +415,6 @@
     "progress.title_file": "文件提取",
     "progress.title_folder": "文件夹提取",
     "progress.par2_stage": "正在创建 PAR2 集：{name}",
-    "progress.par2_running": "正在保护存档：读取存档并写入冗余文件",
     "rename.exists": "名称 '{name}' 已被使用。",
     "rename.failed": "无法重命名：{error}",
     "rename.invalid": "无效的文件名。",
@@ -943,6 +942,15 @@
     "mail.field.from": "发件人地址",
     "mail.field.to": "收件人",
     "mail.error.address": "“{field}”看起来不是电子邮件地址",
-    "mail.error.no_engine": "未找到 zpaqfranz 引擎，无法发送测试邮件。"
+    "mail.error.no_engine": "未找到 zpaqfranz 引擎，无法发送测试邮件。",
+    "progress.par2_phase_start": "准备中…",
+    "progress.par2_phase_reading": "正在读取归档并计算区块",
+    "progress.par2_phase_writing": "正在写入恢复包",
+    "progress.par2_phase_verification": "正在写入校验包",
+    "progress.par2_phase_done": "恢复集已完成",
+    "progress.par2_read": "已读取:",
+    "progress.par2_written": "已写入:",
+    "progress.par2_blocks": "区块:",
+    "progress.par2_redundancy": "冗余度:"
   }
 }
