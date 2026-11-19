@@ -52,6 +52,7 @@ from ui.par2_verify_dialog import (
 from core.container_lock import ContainerLockBusy
 from core.tasks import (
     PAR2_REASON_BY_STATE,
+    REASON_PAR2_FAILED,
     _now,
     update_container,
     update_job_meta,
@@ -686,6 +687,23 @@ class Par2ActionsMixin:
                 tr("par2.create_failed", error=_last_line(log)),
                 archive_path,
             )
+
+                                                                
+                                                              
+        pending_meta = getattr(self, "_pending_job_meta", None)
+        if pending_meta is not None:
+            self._pending_job_meta = None
+            final_ok = par2_status in ("ok", "skipped")
+            try:
+                self._update_job_meta_after_run(
+                    pending_meta["job_context"],
+                    "ok" if final_ok else "error",
+                    reason=None if final_ok else REASON_PAR2_FAILED,
+                    rc=pending_meta["rc"],
+                    output=pending_meta["output"],
+                )
+            except Exception:
+                pass
 
         if deferred:
             appender = getattr(self, "_append_deferred_mail_log", None)

@@ -110,6 +110,7 @@ from core.tasks import (
     ContainerLockBusy,
     PAR2_REASON_BY_STATE,
     REASON_COPY_FAILED,
+    REASON_PAR2_FAILED,
     REASON_SYNC_FAILED,
     TEST_MODE_SYNC,
     _now,
@@ -849,8 +850,9 @@ def _headless_par2_verify(dest: str) -> tuple:
 
 
 def _headless_par2(rzp_path: str, work: dict, job: dict,
-                    dest: str, settings: dict) -> str:
+                    dest: str, settings: dict) -> tuple:
     pass
+
 
 
 
@@ -872,7 +874,7 @@ def _headless_par2(rzp_path: str, work: dict, job: dict,
 
     par2_bin = par2_ops.find_par2()
     if not par2_bin:
-        return header + "par2.exe не найден, набор не создан\n"
+        return False, header + "par2.exe не найден, набор не создан\n"
 
     options = settings.get("par2_options")
     options = dict(options) if isinstance(options, dict) else {}
@@ -893,13 +895,13 @@ def _headless_par2(rzp_path: str, work: dict, job: dict,
             unchanged_size=known_size,
         )
     except Exception as exc:
-        return header + f"ошибка набора: {type(exc).__name__}: {exc}\n"
+        return False, header + f"ошибка набора: {type(exc).__name__}: {exc}\n"
 
     if not res.ok:
                                                                        
                                                           
         tail = (res.log or "").strip().splitlines()
-        return header + "набор НЕ создан: " + (
+        return False, header + "набор НЕ создан: " + (
             tail[-1][:200] if tail else "причина неизвестна"
         ) + "\n"
 
@@ -922,8 +924,8 @@ def _headless_par2(rzp_path: str, work: dict, job: dict,
                 pass
 
     if "не изменился" in (res.log or ""):
-        return header + "архив не изменился, набор остался в силе\n"
-    return header + f"набор создан, защищает {res.recorded_size} байт\n"
+        return True, header + "архив не изменился, набор остался в силе\n"
+    return True, header + f"набор создан, защищает {res.recorded_size} байт\n"
 
 
 def _write_task_log(rzp_path: str, header: str, log: str,
@@ -1436,54 +1438,10 @@ def _headless_task(rest: list) -> int:
     if rename_note:
         log = rename_note + (log or "")
 
-                                                             
-                                                                   
+                                                                    
                                                                       
-                                                                  
-    busy = (
-        (not ok) and (not skip_run) and looks_like_busy_error(log or "")
-    )
-    if ok and not copy_failed:
-        status = "ok"
-    elif busy:
-        status = "busy"
-    else:
-        status = "error"
-
-                                                  
-                                                          
-                                                                 
-                                
-     
-                                                            
-                                                                 
-                                                              
-                                                                   
-                                               
-     
-                                                                     
-                                                               
-                                                                  
-    try:
-        def _mutate(c: dict) -> None:
-                                                                   
-                                                                      
-                                                                
-                                                                      
-            update_job_meta(c, job_id, status,
-                            reason=(notify_reason or par2_reason
-                                    or copy_reason))
-
-        try:
-            update_container(rzp_path, _mutate)
-        except ContainerLockBusy:
-                                                                
-                                                                 
-                                                              
-                                              
-            pass
-    except Exception:
-        pass
+                                                                    
+                                                                          
 
                                                                       
                                                             
@@ -1510,7 +1468,13 @@ def _headless_task(rest: list) -> int:
                                                                   
                                                                     
                     
-        par2_note = _headless_par2(rzp_path, work, job, dest, settings)
+        par2_ok, par2_note = _headless_par2(
+            rzp_path, work, job, dest, settings
+        )
+        if not par2_ok:
+            par2_reason = REASON_PAR2_FAILED
+    else:
+        par2_ok = True
 
                                                            
      
@@ -1545,6 +1509,42 @@ def _headless_task(rest: list) -> int:
             copy_note or "", par2_note or "",
         )
 
+                                                              
+     
+                                                                   
+                                                                     
+                                                                   
+                                                                 
+                                                                     
+                                                        
+    busy = (
+        (not ok) and (not skip_run) and looks_like_busy_error(log or "")
+    )
+    if ok and not copy_failed and par2_ok:
+        status = "ok"
+    elif busy:
+        status = "busy"
+    else:
+        status = "error"
+
+                                                                
+                                                                   
+                                                                
+                                         
+    try:
+        def _mutate(c: dict) -> None:
+            update_job_meta(
+                c, job_id, status,
+                reason=(notify_reason or par2_reason or copy_reason),
+            )
+
+        try:
+            update_container(rzp_path, _mutate)
+        except ContainerLockBusy:
+            pass
+    except Exception:
+        pass
+
                                                    
     log_header = _build_log_header(rzp_path, work, job, rc,
                                    password, cmd=cmd)
@@ -1573,7 +1573,7 @@ def _headless_task(rest: list) -> int:
                             (notify_reason or par2_reason or copy_reason),
                             dest)
 
-    return 0 if (ok and not copy_failed) else 1
+    return 0 if (ok and not copy_failed and par2_ok) else 1
 
 
 def _mail_plan(settings: dict, action: str, job: dict, dest: str) -> tuple:

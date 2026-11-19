@@ -188,6 +188,7 @@ from core.tasks import (
     CONTAINER_NAME,
     ContainerLockBusy,
     JOB_FIELDS,
+    REASON_PAR2_FAILED,
     add_job,
     add_work,
     container_path,
@@ -3075,6 +3076,7 @@ class ArchiveActionsMixin:
                                                                         
                                                                      
         self._report_gate = None
+        self._pending_job_meta = None
 
         srcs = settings.get("sources") or []
         if not srcs:
@@ -3209,6 +3211,9 @@ class ArchiveActionsMixin:
                                                                      
                 "mail_deferred": bool(deferred_customer),
                 "mail_customer": deferred_customer,
+                                                                         
+                                                              
+                "par2_job": bool(settings.get("par2_enabled")),
                                                                     
                                                                      
                                                               
@@ -3419,7 +3424,14 @@ class ArchiveActionsMixin:
         else:
             job_status = "error"
 
-        if job_context and job_status:
+                                                                     
+                                                                  
+                                                     
+        wait_par2 = bool(
+            job_context and ctx.get("par2_job") and ok_create
+            and not cancelled
+        )
+        if job_context and job_status and not wait_par2:
             self._update_job_meta_after_run(
                 job_context, job_status, rc=rc, output=output)
 
@@ -3509,6 +3521,21 @@ class ArchiveActionsMixin:
                 )
             except Exception:
                 started_par2 = False
+            if wait_par2:
+                if started_par2:
+                                                                         
+                    self._pending_job_meta = {
+                        "job_context": job_context,
+                        "rc": rc,
+                        "output": output,
+                    }
+                else:
+                                                                        
+                                                                            
+                    self._update_job_meta_after_run(
+                        job_context, "error",
+                        reason=REASON_PAR2_FAILED, rc=rc, output=output,
+                    )
                                                                         
                                                                     
                                                                     
