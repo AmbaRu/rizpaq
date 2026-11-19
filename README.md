@@ -353,6 +353,11 @@ instant, and nothing you were doing is lost.
   asks for confirmation first. The familiar single-folder version
   extraction is still there.
 
+### Live PAR2 progress (3.1.2)
+- The PAR2 creation window shows percentage, phase, read/written bytes,
+  speeds, ETA, block counts and redundancy. Counters update every second
+  even while par2 is silent.
+
 ### Protection status (3.1.1)
 - A backup job with PAR2 enabled is marked complete only after the
   recovery set is created (or confirmed still valid). If the set fails,
@@ -880,6 +885,11 @@ ZPAQ**. Один клик: старый RAR, набитый дублями, пр
   все версии в пронумерованных папках 0001, 0002, … . Данные идут через
   временную папку, а распаковка в непустую папку сначала спрашивает
   подтверждение. Привычное извлечение версии одной папки осталось на месте.
+
+### Живой прогресс PAR2 (3.1.2)
+- Окно создания набора показывает процент, фазу, прочитано/записано,
+  скорость, ETA, блоки и избыточность. Счётчики обновляются раз в секунду,
+  даже когда par2 молчит.
 
 ### Статус защиты (3.1.1)
 - Задание с включённым PAR2 считается завершённым только после создания
