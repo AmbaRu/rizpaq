@@ -353,6 +353,11 @@ instant, and nothing you were doing is lost.
   asks for confirmation first. The familiar single-folder version
   extraction is still there.
 
+### Protection status (3.1.1)
+- A backup job with PAR2 enabled is marked complete only after the
+  recovery set is created (or confirmed still valid). If the set fails,
+  the job shows "Error" with the reason `par2_failed`.
+
 ### Email reports and other 3.1.0 changes
 - **Reports on email, sent by zpaqfranz itself.** "Settings → Email
   Reports…" configures SMTP (server, port, STARTTLS/SSL, user, password,
@@ -875,6 +880,11 @@ ZPAQ**. Один клик: старый RAR, набитый дублями, пр
   все версии в пронумерованных папках 0001, 0002, … . Данные идут через
   временную папку, а распаковка в непустую папку сначала спрашивает
   подтверждение. Привычное извлечение версии одной папки осталось на месте.
+
+### Статус защиты (3.1.1)
+- Задание с включённым PAR2 считается завершённым только после создания
+  набора (или подтверждения, что он ещё в силе). При отказе набора задание
+  показывает «Ошибка» с причиной `par2_failed`.
 
 ### Отчёты на почту и другие изменения 3.1.0
 - **Отчёты отправляет сам zpaqfranz.** «Настройки → Отчёты на почту…»:
