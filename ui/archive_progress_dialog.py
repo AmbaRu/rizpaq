@@ -21,6 +21,7 @@ class ArchiveProgressDialog(OperationProgressDialog):
         self.setModal(True)
 
         self.begin(title, tr("progress.preparing"))
+        self.enable_system_load(True)
 
     def finish(self, ok: bool, name: str = "", stay: bool = False) -> None:
         pass
@@ -61,6 +62,7 @@ class ArchiveProgressDialog(OperationProgressDialog):
             keep=("size", "speed", "elapsed", "eta")
         )
         self.show_par2_fields(True)
+        self.enable_system_load(True)
         self.set_indeterminate(True)
         self.update_info({
             "bytes_total": size,

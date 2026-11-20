@@ -951,6 +951,9 @@
     "progress.par2_read": "Прочитано:",
     "progress.par2_written": "Записано:",
     "progress.par2_blocks": "Блоков:",
-    "progress.par2_redundancy": "Избыточность:"
+    "progress.par2_redundancy": "Избыточность:",
+    "progress.sys_cpu": "Процессор:",
+    "progress.sys_disk": "Диск (чт/зап):",
+    "progress.sys_memory": "Память:"
   }
 }

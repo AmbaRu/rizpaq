@@ -175,6 +175,14 @@ class TestDialogStage(unittest.TestCase):
         self.assertTrue(dlg._blocks_label.isVisible())
         self.assertTrue(dlg._redundancy_label.isVisible())
 
+    def test_system_load_fields_visible(self):
+        dlg = self.dlg
+        dlg.begin_par2_stage("backup.zpaq")
+        self.assertTrue(dlg._cpu_label.isVisible())
+        self.assertTrue(dlg._disk_label.isVisible())
+        self.assertTrue(dlg._memory_label.isVisible())
+        self.assertIsNotNone(dlg._sys_sampler)
+
     def test_final_verdict_stays_open(self):
         pass
         dlg = self.dlg

@@ -951,6 +951,9 @@
     "progress.par2_read": "Read:",
     "progress.par2_written": "Written:",
     "progress.par2_blocks": "Blocks:",
-    "progress.par2_redundancy": "Redundancy:"
+    "progress.par2_redundancy": "Redundancy:",
+    "progress.sys_cpu": "CPU:",
+    "progress.sys_disk": "Disk (read/write):",
+    "progress.sys_memory": "Memory:"
   }
 }

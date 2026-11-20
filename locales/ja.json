@@ -951,6 +951,9 @@
     "progress.par2_read": "読み込み:",
     "progress.par2_written": "書き込み:",
     "progress.par2_blocks": "ブロック:",
-    "progress.par2_redundancy": "冗長性:"
+    "progress.par2_redundancy": "冗長性:",
+    "progress.sys_cpu": "CPU:",
+    "progress.sys_disk": "ディスク(読/書):",
+    "progress.sys_memory": "メモリ:"
   }
 }

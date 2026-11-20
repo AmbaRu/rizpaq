@@ -34,6 +34,11 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
 )
 
+from core.system_load import (
+    SystemLoadSampler,
+    format_percent,
+    format_rate,
+)
 from ui.i18n import tr
 from ui.presentation import format_size
 
@@ -46,7 +51,7 @@ PROGRESS_WINDOW_MIN_WIDTH = 620
 PROGRESS_WINDOW_MIN_HEIGHT = 300
 
 PROGRESS_WINDOW_WIDTH = 680
-PROGRESS_WINDOW_HEIGHT = 390
+PROGRESS_WINDOW_HEIGHT = 460
 
 
 _PROGRESS_LINE_RE = re.compile(r"\d{1,3}(?:[.,]\d+)?\s*%")
@@ -120,6 +125,8 @@ class OperationProgressDialog(QDialog):
         self._start_time = 0.0
         self._last_pct = 0
         self._engine_eta = ""
+        self._sys_sampler = None
+        self._sys_enabled = False
 
                                                                   
         self._auto_close_on_ok = False
@@ -202,6 +209,9 @@ class OperationProgressDialog(QDialog):
         self._written_label = QLabel("—")
         self._blocks_label = QLabel("—")
         self._redundancy_label = QLabel("—")
+        self._cpu_label = QLabel("—")
+        self._disk_label = QLabel("—")
+        self._memory_label = QLabel("—")
 
         for w in (
             self._files_label,
@@ -214,6 +224,9 @@ class OperationProgressDialog(QDialog):
             self._written_label,
             self._blocks_label,
             self._redundancy_label,
+            self._cpu_label,
+            self._disk_label,
+            self._memory_label,
         ):
             w.setObjectName("opFieldValue")
 
@@ -252,6 +265,16 @@ class OperationProgressDialog(QDialog):
                                    self._redundancy_label),
         }
         for lbl, val in self._par2_pairs.values():
+            lbl.setVisible(False)
+            val.setVisible(False)
+
+        self._sys_pairs = {
+            "cpu": add_pair(5, 0, tr("progress.sys_cpu"), self._cpu_label),
+            "disk": add_pair(5, 2, tr("progress.sys_disk"), self._disk_label),
+            "memory": add_pair(6, 0, tr("progress.sys_memory"),
+                               self._memory_label),
+        }
+        for lbl, val in self._sys_pairs.values():
             lbl.setVisible(False)
             val.setVisible(False)
 
@@ -495,6 +518,36 @@ class OperationProgressDialog(QDialog):
         if redundancy is not None:
             self._redundancy_label.setText("%s%%" % redundancy)
 
+    def enable_system_load(self, enabled: bool = True) -> None:
+        pass
+
+
+
+        for lbl, val in self._sys_pairs.values():
+            lbl.setVisible(bool(enabled))
+            val.setVisible(bool(enabled))
+        if enabled:
+            if self._sys_sampler is None:
+                self._sys_sampler = SystemLoadSampler()
+            self._sys_enabled = True
+            self._refresh_system_load()
+        else:
+            self._sys_enabled = False
+
+    def _refresh_system_load(self) -> None:
+        sampler = self._sys_sampler
+        if sampler is None:
+            return
+        data = sampler.sample()
+        self._cpu_label.setText(format_percent(data.get("cpu")))
+        self._memory_label.setText(format_percent(data.get("memory")))
+        disk = "%s / %s · %s" % (
+            format_rate(data.get("disk_read")),
+            format_rate(data.get("disk_write")),
+            format_percent(data.get("disk_busy")),
+        )
+        self._disk_label.setText(disk)
+
     def set_status(self, text: str) -> None:
         pass
         if self._finished:
@@ -594,6 +647,10 @@ class OperationProgressDialog(QDialog):
         self._finished = True
         self._timer.stop()
         self._close_timer.stop()
+        self._sys_enabled = False
+        if self._sys_sampler is not None:
+            self._sys_sampler.close()
+            self._sys_sampler = None
 
         self._bar.setRange(0, 100)
 
@@ -627,6 +684,9 @@ class OperationProgressDialog(QDialog):
 
         elapsed = int(time.monotonic() - self._start_time)
         self._elapsed_label.setText(_fmt_time(elapsed))
+
+        if self._sys_enabled:
+            self._refresh_system_load()
 
         if not self._engine_eta:
             self._update_eta()

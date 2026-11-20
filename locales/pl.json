@@ -951,6 +951,9 @@
     "progress.par2_read": "Odczytano:",
     "progress.par2_written": "Zapisano:",
     "progress.par2_blocks": "Bloki:",
-    "progress.par2_redundancy": "Nadmiar:"
+    "progress.par2_redundancy": "Nadmiar:",
+    "progress.sys_cpu": "Procesor:",
+    "progress.sys_disk": "Dysk (odczyt/zapis):",
+    "progress.sys_memory": "Pamięć:"
   }
 }

@@ -58,6 +58,7 @@ class Par2OperationDialog(OperationProgressDialog):
 
         self.hide_info_fields(keep=("elapsed",))
         self.begin(window_title, status)
+        self.enable_system_load(True)
 
     def append_log(self, log: str) -> None:
         pass
