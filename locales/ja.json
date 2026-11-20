@@ -954,6 +954,7 @@
     "progress.par2_redundancy": "冗長性:",
     "progress.sys_cpu": "CPU:",
     "progress.sys_disk": "ディスク(読/書):",
-    "progress.sys_memory": "メモリ:"
+    "progress.sys_memory": "メモリ:",
+    "progress.sys_group": "システム (リアルタイム)"
   }
 }

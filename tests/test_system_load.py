@@ -1,6 +1,7 @@
 
 from __future__ import annotations
 
+import sys
 import unittest
 
 from core.system_load import SystemLoadSampler, format_percent, format_rate
@@ -38,6 +39,22 @@ class TestSampler(unittest.TestCase):
         sampler.close()
         sampler.close()
         self.assertEqual(sampler.sample()["cpu"], None)
+
+    @unittest.skipUnless(sys.platform == "win32", "PDH — только Windows")
+    def test_real_counters_return_values(self):
+        pass
+        import time
+
+        sampler = SystemLoadSampler()
+        try:
+            sampler.sample()
+            time.sleep(1.1)
+            data = sampler.sample()
+            self.assertIsNotNone(data["cpu"])
+            self.assertIsNotNone(data["disk_read"])
+            self.assertGreaterEqual(data["memory"], 0)
+        finally:
+            sampler.close()
 
 
 if __name__ == "__main__":

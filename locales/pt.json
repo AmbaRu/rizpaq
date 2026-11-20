@@ -954,6 +954,7 @@
     "progress.par2_redundancy": "Redundância:",
     "progress.sys_cpu": "CPU:",
     "progress.sys_disk": "Disco (leitura/escrita):",
-    "progress.sys_memory": "Memória:"
+    "progress.sys_memory": "Memória:",
+    "progress.sys_group": "Sistema (em tempo real)"
   }
 }

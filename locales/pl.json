@@ -954,6 +954,7 @@
     "progress.par2_redundancy": "Nadmiar:",
     "progress.sys_cpu": "Procesor:",
     "progress.sys_disk": "Dysk (odczyt/zapis):",
-    "progress.sys_memory": "Pamięć:"
+    "progress.sys_memory": "Pamięć:",
+    "progress.sys_group": "System (na żywo)"
   }
 }

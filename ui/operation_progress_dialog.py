@@ -25,6 +25,7 @@ from PySide6.QtCore import Qt, QTimer, Signal
 from PySide6.QtWidgets import (
     QDialog,
     QGridLayout,
+    QGroupBox,
     QHBoxLayout,
     QLabel,
     QPlainTextEdit,
@@ -268,20 +269,38 @@ class OperationProgressDialog(QDialog):
             lbl.setVisible(False)
             val.setVisible(False)
 
-        self._sys_pairs = {
-            "cpu": add_pair(5, 0, tr("progress.sys_cpu"), self._cpu_label),
-            "disk": add_pair(5, 2, tr("progress.sys_disk"), self._disk_label),
-            "memory": add_pair(6, 0, tr("progress.sys_memory"),
-                               self._memory_label),
-        }
-        for lbl, val in self._sys_pairs.values():
-            lbl.setVisible(False)
-            val.setVisible(False)
-
         grid.setColumnStretch(1, 1)
         grid.setColumnStretch(3, 1)
 
         layout.addLayout(grid)
+
+                                                                        
+                                                       
+        self._sys_group = QGroupBox(tr("progress.sys_group"))
+        sys_grid = QGridLayout(self._sys_group)
+        sys_grid.setContentsMargins(8, 6, 8, 6)
+        sys_grid.setSpacing(5)
+
+        def add_sys_pair(row, col, label_text, value_widget):
+            lbl = QLabel(label_text)
+            lbl.setObjectName("opFieldLabel")
+            value_widget.setObjectName("opFieldValue")
+            sys_grid.addWidget(lbl, row, col, Qt.AlignRight)
+            sys_grid.addWidget(value_widget, row, col + 1)
+            return lbl, value_widget
+
+        self._sys_pairs = {
+            "cpu": add_sys_pair(0, 0, tr("progress.sys_cpu"),
+                                self._cpu_label),
+            "disk": add_sys_pair(0, 2, tr("progress.sys_disk"),
+                                 self._disk_label),
+            "memory": add_sys_pair(1, 0, tr("progress.sys_memory"),
+                                   self._memory_label),
+        }
+        sys_grid.setColumnStretch(1, 1)
+        sys_grid.setColumnStretch(3, 1)
+        self._sys_group.setVisible(False)
+        layout.addWidget(self._sys_group)
 
                                 
         self._current = QLabel("")
@@ -523,9 +542,7 @@ class OperationProgressDialog(QDialog):
 
 
 
-        for lbl, val in self._sys_pairs.values():
-            lbl.setVisible(bool(enabled))
-            val.setVisible(bool(enabled))
+        self._sys_group.setVisible(bool(enabled))
         if enabled:
             if self._sys_sampler is None:
                 self._sys_sampler = SystemLoadSampler()

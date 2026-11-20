@@ -954,6 +954,7 @@
     "progress.par2_redundancy": "冗余度:",
     "progress.sys_cpu": "处理器:",
     "progress.sys_disk": "磁盘(读/写):",
-    "progress.sys_memory": "内存:"
+    "progress.sys_memory": "内存:",
+    "progress.sys_group": "系统(实时)"
   }
 }

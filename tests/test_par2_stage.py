@@ -178,6 +178,7 @@ class TestDialogStage(unittest.TestCase):
     def test_system_load_fields_visible(self):
         dlg = self.dlg
         dlg.begin_par2_stage("backup.zpaq")
+        self.assertTrue(dlg._sys_group.isVisible())
         self.assertTrue(dlg._cpu_label.isVisible())
         self.assertTrue(dlg._disk_label.isVisible())
         self.assertTrue(dlg._memory_label.isVisible())

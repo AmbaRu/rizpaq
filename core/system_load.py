@@ -34,12 +34,21 @@ _COUNTERS = {
 }
 
 
-class _PDH_FMT_COUNTERVALUE(ctypes.Structure):
+class _PDH_VALUE_UNION(ctypes.Union):
+                                                                       
+                                                                          
+                                                     
     _fields_ = [
-        ("CStatus", wintypes.DWORD),
         ("longValue", ctypes.c_long),
         ("largeValue", ctypes.c_longlong),
         ("doubleValue", ctypes.c_double),
+    ]
+
+
+class _PDH_FMT_COUNTERVALUE(ctypes.Structure):
+    _fields_ = [
+        ("CStatus", wintypes.DWORD),
+        ("value", _PDH_VALUE_UNION),
     ]
 
 
@@ -115,6 +124,9 @@ class SystemLoadSampler:
                 return
             self._pdh = pdh
             self._query = query
+                                                                      
+                                       
+            pdh.PdhCollectQueryData(query)
             self._ready = True
         except Exception:
             self._ready = False
@@ -141,7 +153,7 @@ class SystemLoadSampler:
                     handle, PDH_FMT_DOUBLE, None, ctypes.byref(value)
                 )
                 if status == PDH_STATUS_OK and value.CStatus == PDH_STATUS_OK:
-                    result[key] = float(value.doubleValue)
+                    result[key] = float(value.value.doubleValue)
         except Exception:
             pass
         return result
