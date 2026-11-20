@@ -353,6 +353,11 @@ instant, and nothing you were doing is lost.
   asks for confirmation first. The familiar single-folder version
   extraction is still there.
 
+### Live system readings (3.1.3)
+- A separate "System (live)" group in the backup/PAR2 progress window
+  shows CPU, memory and disk read/write with busy percentage, refreshed
+  once a second. The PDH counter layout bug that showed zeros is fixed.
+
 ### Live PAR2 progress (3.1.2)
 - The PAR2 creation window shows percentage, phase, read/written bytes,
   speeds, ETA, block counts and redundancy. Counters update every second
@@ -885,6 +890,11 @@ ZPAQ**. Один клик: старый RAR, набитый дублями, пр
   все версии в пронумерованных папках 0001, 0002, … . Данные идут через
   временную папку, а распаковка в непустую папку сначала спрашивает
   подтверждение. Привычное извлечение версии одной папки осталось на месте.
+
+### Живые показатели системы (3.1.3)
+- Отдельная рамка «Система (сейчас)» в окне бэкапа/PAR2: процессор,
+  память, чтение/запись диска и его занятость, обновление раз в секунду.
+  Исправлена структура счётчика PDH, из-за которой цифры были нулями.
 
 ### Живой прогресс PAR2 (3.1.2)
 - Окно создания набора показывает процент, фазу, прочитано/записано,
