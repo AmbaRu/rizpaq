@@ -353,6 +353,10 @@ instant, and nothing you were doing is lost.
   asks for confirmation first. The familiar single-folder version
   extraction is still there.
 
+### Restore drill (3.1.4)
+- A "File restore (drill)" check mode extracts a random small file and
+  compares its hash with the source, proving the archive is restorable.
+
 ### Live system readings (3.1.3)
 - A separate "System (live)" group in the backup/PAR2 progress window
   shows CPU, memory and disk read/write with busy percentage, refreshed
@@ -890,6 +894,10 @@ ZPAQ**. Один клик: старый RAR, набитый дублями, пр
   все версии в пронумерованных папках 0001, 0002, … . Данные идут через
   временную папку, а распаковка в непустую папку сначала спрашивает
   подтверждение. Привычное извлечение версии одной папки осталось на месте.
+
+### Автотест восстановления (3.1.4)
+- Режим проверки «Восстановление файла (автотест)» распаковывает случайный
+  файл и сравнивает хеш с исходником — доказательство восстановимости архива.
 
 ### Живые показатели системы (3.1.3)
 - Отдельная рамка «Система (сейчас)» в окне бэкапа/PAR2: процессор,
