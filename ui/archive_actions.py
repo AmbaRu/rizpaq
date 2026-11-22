@@ -232,6 +232,7 @@ from core.zpaq_cli import looks_like_busy_error, resolve_checksize
                                                             
 from core import mail_report
 from workers.mail_report_worker import MailReportWorker
+from workers.restore_drill_worker import RestoreDrillWorker
 
 from ui.archive_check_dialog import ArchiveCheckDialog
 from ui.archive_create_dialog import ArchiveCreateDialog
@@ -602,6 +603,62 @@ class ArchiveActionsMixin:
         )
         return [folder] if folder else []
 
+    def _start_restore_drill(self, archive, password=None, sources=None,
+                             job_context=None):
+        pass
+        srcs = list(sources or [])
+        if not srcs and job_context:
+            try:
+                container, _path = self._load_container()
+                found = find_work(container or {},
+                                  str(job_context.get("work_id") or ""))
+                if found is not None:
+                    srcs = list(found.get("sources") or [])
+            except Exception:
+                srcs = []
+
+        dlg = TestProgressDialog(
+            Path(archive).name, tr("check.mode_restore"), self
+        )
+        self._test_progress_dialog = dlg
+        worker = RestoreDrillWorker(
+            self.zpaq_bin, archive, password, srcs,
+            {"job_context": dict(job_context) if job_context else None},
+            self,
+        )
+        worker.done.connect(self._on_restore_drill_done)
+        worker.finished.connect(lambda w=worker: self._cleanup_worker(w))
+        self._workers.append(worker)
+        dlg.show()
+        worker.start()
+
+    def _on_restore_drill_done(self, result):
+        ok = bool(result.get("ok"))
+        log = str(result.get("log") or "")
+        archive = str(result.get("archive") or "")
+        ctx = result.get("job_context")
+        self.log_output(log)
+        if ctx:
+            self._update_job_meta_after_run(
+                ctx, "ok" if ok else "error", rc=0 if ok else 1, output=log
+            )
+        dlg = getattr(self, "_test_progress_dialog", None)
+        if dlg is not None:
+            self._test_progress_dialog = None
+            dlg.finish(ok, Path(archive).name)
+            if ok:
+                dlg.accept()
+        if ok:
+            QMessageBox.information(
+                self, tr("restore.title"),
+                tr("restore.ok", name=Path(archive).name),
+            )
+        else:
+            QMessageBox.warning(
+                self, tr("restore.title"),
+                tr("restore.fail", reason=log[-400:]),
+            )
+
     def _on_test_archive(
         self,
         path=None,
@@ -679,6 +736,12 @@ class ArchiveActionsMixin:
                 pass
         else:
             pw = self._cache(arc).get("password")
+
+        if str(mode) == "restore":
+            self._start_restore_drill(
+                arc, pw, sources, job_context=job_context
+            )
+            return
 
         cmd = [self.zpaq_bin, "t", arc]
         tmp = None

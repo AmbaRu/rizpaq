@@ -961,6 +961,12 @@
     "mail.heartbeat_header": "バックアップの問題 ({now})",
     "mail.heartbeat_none": "問題は見つかりませんでした",
     "about.report_bug": "バグを報告",
-    "about.report_copied": "レポートをコピーしました。GitHub の新しい Issue に貼り付けてください。"
+    "about.report_copied": "レポートをコピーしました。GitHub の新しい Issue に貼り付けてください。",
+    "menu.test.restore": "ファイル復元をテスト",
+    "check.mode_restore": "ファイル復元(テスト)",
+    "tip.restore": "ランダムなファイルを展開して元のハッシュと比較し、バックアップが本当に復元できることを確認します",
+    "restore.title": "復元チェック",
+    "restore.ok": "ファイル {name} を復元し、ハッシュが一致しました",
+    "restore.fail": "復元に失敗しました: {reason}"
   }
 }

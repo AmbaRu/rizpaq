@@ -961,6 +961,12 @@
     "mail.heartbeat_header": "Problèmes de sauvegarde ({now})",
     "mail.heartbeat_none": "Aucun problème détecté",
     "about.report_bug": "Signaler un bug",
-    "about.report_copied": "Le rapport est copié. Collez-le dans un nouveau ticket GitHub."
+    "about.report_copied": "Le rapport est copié. Collez-le dans un nouveau ticket GitHub.",
+    "menu.test.restore": "Tester la restauration d'un fichier",
+    "check.mode_restore": "Restaurer un fichier (test)",
+    "tip.restore": "Extraire un fichier aléatoire et comparer son empreinte avec l'original : preuve que la sauvegarde est restaurable",
+    "restore.title": "Vérification de restauration",
+    "restore.ok": "Fichier {name} restauré, empreinte identique",
+    "restore.fail": "Restauration échouée : {reason}"
   }
 }

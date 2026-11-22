@@ -961,6 +961,12 @@
     "mail.heartbeat_header": "Backup problems ({now})",
     "mail.heartbeat_none": "No problems found",
     "about.report_bug": "Report a bug",
-    "about.report_copied": "The report is copied to the clipboard. Paste it into a new GitHub issue."
+    "about.report_copied": "The report is copied to the clipboard. Paste it into a new GitHub issue.",
+    "menu.test.restore": "Test file restore",
+    "check.mode_restore": "File restore (drill)",
+    "tip.restore": "Extract a random file and compare its hash with the source — proof that the backup can actually be restored",
+    "restore.title": "Restore check",
+    "restore.ok": "File {name} restored, hash matches",
+    "restore.fail": "Restore check failed: {reason}"
   }
 }

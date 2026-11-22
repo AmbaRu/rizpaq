@@ -961,6 +961,12 @@
     "mail.heartbeat_header": "Backup-Probleme ({now})",
     "mail.heartbeat_none": "Keine Probleme gefunden",
     "about.report_bug": "Fehler melden",
-    "about.report_copied": "Der Bericht wurde kopiert. Bitte in ein neues GitHub-Issue einfügen."
+    "about.report_copied": "Der Bericht wurde kopiert. Bitte in ein neues GitHub-Issue einfügen.",
+    "menu.test.restore": "Dateiwiederherstellung testen",
+    "check.mode_restore": "Datei wiederherstellen (Test)",
+    "tip.restore": "Eine zufällige Datei extrahieren und den Hash mit dem Original vergleichen — Beweis, dass das Backup wirklich wiederherstellbar ist",
+    "restore.title": "Wiederherstellung prüfen",
+    "restore.ok": "Datei {name} wiederhergestellt, Hash stimmt",
+    "restore.fail": "Wiederherstellung fehlgeschlagen: {reason}"
   }
 }

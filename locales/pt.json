@@ -961,6 +961,12 @@
     "mail.heartbeat_header": "Problemas de cópia de segurança ({now})",
     "mail.heartbeat_none": "Nenhum problema encontrado",
     "about.report_bug": "Comunicar um erro",
-    "about.report_copied": "O relatório foi copiado. Cole-o num novo issue no GitHub."
+    "about.report_copied": "O relatório foi copiado. Cole-o num novo issue no GitHub.",
+    "menu.test.restore": "Testar restauro de ficheiro",
+    "check.mode_restore": "Restaurar ficheiro (teste)",
+    "tip.restore": "Extrair um ficheiro aleatório e comparar o hash com o original — prova de que a cópia de segurança é restaurável",
+    "restore.title": "Verificação de restauro",
+    "restore.ok": "Ficheiro {name} restaurado, hash correspondente",
+    "restore.fail": "Falha no restauro: {reason}"
   }
 }

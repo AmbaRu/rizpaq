@@ -40,6 +40,7 @@ TEST_MODES_UI = (
     ("par2", "menu.test.par2", "par2.test_mode"),
     ("verify_fs", "menu.test.verify_fs", "check.mode_verify_fs"),
     ("sync", "menu.test.sync", "check.mode_sync"),
+    ("restore", "menu.test.restore", "check.mode_restore"),
 )
 
                                                                  
@@ -57,6 +58,7 @@ TEST_MODE_TIPS = {
     "par2": "tip.par2_verify",
     "verify_fs": "tip.verify_fs",
     "sync": "tip.sync",
+    "restore": "tip.restore",
 }
 
 

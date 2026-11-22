@@ -1229,6 +1229,10 @@ def _headless_task(rest: list) -> int:
     par2_mode = (action == ACTION_TEST
                  and str(settings.get("test_mode") or "").strip().lower()
                  == "par2")
+    restore_mode = (
+        action == ACTION_TEST
+        and str(settings.get("test_mode") or "").strip().lower() == "restore"
+    )
     par2_note = ""
     par2_reason = None                                                
     try:
@@ -1239,6 +1243,16 @@ def _headless_task(rest: list) -> int:
             rc = pre_rc
             log = pre_log
             ok = (pre_rc == 0)
+        elif restore_mode:
+                                                                          
+                                                                        
+            from core import restore_drill
+
+            cmd = None
+            ok, log = restore_drill.run_restore_drill(
+                zpaq, dest, password, srcs
+            )
+            rc = 0 if ok else 1
         elif par2_mode:
                                                                    
                                                                   

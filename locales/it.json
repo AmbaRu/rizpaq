@@ -961,6 +961,12 @@
     "mail.heartbeat_header": "Problemi di backup ({now})",
     "mail.heartbeat_none": "Nessun problema trovato",
     "about.report_bug": "Segnala un bug",
-    "about.report_copied": "Il report è stato copiato. Incollalo in una nuova issue su GitHub."
+    "about.report_copied": "Il report è stato copiato. Incollalo in una nuova issue su GitHub.",
+    "menu.test.restore": "Prova di ripristino file",
+    "check.mode_restore": "Ripristina file (prova)",
+    "tip.restore": "Estrarre un file casuale e confrontare l'hash con l'originale: dimostra che il backup è davvero ripristinabile",
+    "restore.title": "Verifica ripristino",
+    "restore.ok": "File {name} ripristinato, hash corrispondente",
+    "restore.fail": "Ripristino non riuscito: {reason}"
   }
 }

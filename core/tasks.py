@@ -157,6 +157,7 @@ __all__ = [
     "TEST_MODE_VERIFY",
     "TEST_MODE_PARANOID",
     "TEST_MODE_PAR2",
+    "TEST_MODE_RESTORE",
     "TEST_MODES",
     "JOB_STATUS_OK",
     "JOB_STATUS_ERROR",
@@ -338,6 +339,11 @@ TEST_MODE_VERIFY_FS = "verify_fs"
                                                                     
                                                         
 TEST_MODE_SYNC = "sync"
+                                                                         
+                                                                        
+                                                                      
+                                                             
+TEST_MODE_RESTORE = "restore"
 TEST_MODES = (
     TEST_MODE_FULL,
     TEST_MODE_CHECKSUM,
@@ -346,6 +352,7 @@ TEST_MODES = (
     TEST_MODE_PAR2,
     TEST_MODE_VERIFY_FS,
     TEST_MODE_SYNC,
+    TEST_MODE_RESTORE,
 )
 
                                                  

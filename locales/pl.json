@@ -961,6 +961,12 @@
     "mail.heartbeat_header": "Problemy z kopią zapasową ({now})",
     "mail.heartbeat_none": "Nie znaleziono problemów",
     "about.report_bug": "Zgłoś błąd",
-    "about.report_copied": "Raport skopiowano. Wklej go do nowego issue na GitHubie."
+    "about.report_copied": "Raport skopiowano. Wklej go do nowego issue na GitHubie.",
+    "menu.test.restore": "Test odzyskiwania pliku",
+    "check.mode_restore": "Odzyskaj plik (test)",
+    "tip.restore": "Wyodrębnij losowy plik i porównaj jego hash z oryginałem — dowód, że kopia zapasowa rzeczywiście się odtwarza",
+    "restore.title": "Sprawdzenie odzyskiwania",
+    "restore.ok": "Plik {name} odzyskany, hash zgodny",
+    "restore.fail": "Odzyskiwanie nie udało się: {reason}"
   }
 }

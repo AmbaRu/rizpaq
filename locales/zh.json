@@ -961,6 +961,12 @@
     "mail.heartbeat_header": "备份问题 ({now})",
     "mail.heartbeat_none": "未发现问题",
     "about.report_bug": "报告错误",
-    "about.report_copied": "报告已复制，请粘贴到 GitHub 的新 Issue 中。"
+    "about.report_copied": "报告已复制，请粘贴到 GitHub 的新 Issue 中。",
+    "menu.test.restore": "测试文件恢复",
+    "check.mode_restore": "文件恢复(自测)",
+    "tip.restore": "解压一个随机文件并与原始哈希比对，证明备份确实可以恢复",
+    "restore.title": "恢复检查",
+    "restore.ok": "文件 {name} 已恢复，哈希匹配",
+    "restore.fail": "恢复失败: {reason}"
   }
 }
