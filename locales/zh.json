@@ -955,6 +955,12 @@
     "progress.sys_cpu": "处理器:",
     "progress.sys_disk": "磁盘(读/写):",
     "progress.sys_memory": "内存:",
-    "progress.sys_group": "系统(实时)"
+    "progress.sys_group": "系统(实时)",
+    "mail.heartbeat": "每天通过邮件发送问题摘要",
+    "mail.heartbeat_subject": "Rizpaq: {count} 条警告",
+    "mail.heartbeat_header": "备份问题 ({now})",
+    "mail.heartbeat_none": "未发现问题",
+    "about.report_bug": "报告错误",
+    "about.report_copied": "报告已复制，请粘贴到 GitHub 的新 Issue 中。"
   }
 }

@@ -178,6 +178,9 @@ class MainWindow(
                                                                  
         self._pending_info_path: Optional[str] = None
         self._pending_create_report: Optional[dict] = None
+                                                                  
+                                                                       
+                                                                    
         self._create_report: Optional[dict] = None
         self._report_gate: Optional[set] = None
 
@@ -387,6 +390,69 @@ class MainWindow(
 
         try:
             show_if_needed(self)
+        except Exception:
+            pass
+
+    def check_heartbeat(self):
+        pass
+
+
+
+
+
+
+
+        try:
+            from datetime import datetime
+
+            from core import config as config_mod
+            from core import heartbeat, mail_report, notify
+            from workers import MailReportWorker
+
+            cfg = getattr(self, "_cfg", None) or config_mod.load()
+            if not getattr(cfg, "mail_report_enabled", False):
+                return
+            if not getattr(cfg, "mail_heartbeat_enabled", False):
+                return
+            if not heartbeat.should_send():
+                return
+            lines = heartbeat.build_report(cfg.tasks_dir)
+            if not lines:
+                return
+            mail = mail_report.from_settings(cfg)
+            if not mail.ready():
+                return
+            body = "\n".join([
+                notify.tr(
+                    "mail.heartbeat_header",
+                    now=datetime.now().strftime("%d.%m.%Y %H:%M"),
+                ),
+                "",
+            ] + lines)
+            subject = notify.tr("mail.heartbeat_subject", count=len(lines))
+            worker = MailReportWorker(
+                getattr(self, "zpaq_bin", "zpaqfranz"), mail, subject,
+                body, getattr(cfg, "mail_customer", ""), self,
+            )
+            worker.done.connect(self._on_heartbeat_done)
+            worker.finished.connect(lambda w=worker: self._cleanup_worker(w))
+            self._workers.append(worker)
+            worker.start()
+        except Exception:
+            pass
+
+    def _on_heartbeat_done(self, rc: int, output: str) -> None:
+        pass
+        try:
+            if rc == 0:
+                from core import heartbeat
+
+                heartbeat.mark_sent()
+                self.log_output("[rizpaq] problem digest sent\n")
+            else:
+                self.log_output(
+                    "[rizpaq] problem digest NOT sent: %s\n" % output
+                )
         except Exception:
             pass
 

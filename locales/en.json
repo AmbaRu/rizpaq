@@ -955,6 +955,12 @@
     "progress.sys_cpu": "CPU:",
     "progress.sys_disk": "Disk (read/write):",
     "progress.sys_memory": "Memory:",
-    "progress.sys_group": "System (live)"
+    "progress.sys_group": "System (live)",
+    "mail.heartbeat": "Email a daily problem digest",
+    "mail.heartbeat_subject": "Rizpaq: {count} warnings",
+    "mail.heartbeat_header": "Backup problems ({now})",
+    "mail.heartbeat_none": "No problems found",
+    "about.report_bug": "Report a bug",
+    "about.report_copied": "The report is copied to the clipboard. Paste it into a new GitHub issue."
   }
 }

@@ -34,9 +34,12 @@
 from __future__ import annotations
 
 import os
+import platform
 import time
 from pathlib import Path
 
+from PySide6.QtCore import QUrl
+from PySide6.QtGui import QDesktopServices
 from PySide6.QtWidgets import QApplication, QMessageBox
 
 from ui import skins
@@ -90,7 +93,77 @@ class WindowShellMixin:
             f"{tr('about.ui')}"
             "</p>"
         )
-        QMessageBox.about(self, title, text)
+        msg = QMessageBox(self)
+        msg.setWindowTitle(title)
+        msg.setText(text)
+        bug_btn = msg.addButton(tr("about.report_bug"), QMessageBox.ActionRole)
+        msg.addButton(QMessageBox.Ok)
+        bug_btn.clicked.connect(self._on_report_bug)
+        msg.exec()
+
+    def _bug_report_text(self) -> str:
+        pass
+        lines = [
+            "Rizpaq %s" % APP_VERSION_FULL,
+            "OS: %s" % platform.platform(),
+            "Python: %s" % platform.python_version(),
+        ]
+        try:
+            from core import config as config_mod
+            from core.system_load import (
+                SystemLoadSampler, format_percent, format_rate,
+            )
+
+            cfg = config_mod.load()
+            sampler = SystemLoadSampler()
+            data = sampler.sample()
+            sampler.close()
+            lines.append(
+                "CPU %s | RAM %s | Disk %s read / %s write" % (
+                    format_percent(data.get("cpu")),
+                    format_percent(data.get("memory")),
+                    format_rate(data.get("disk_read")),
+                    format_rate(data.get("disk_write")),
+                )
+            )
+            tasks_dir = getattr(cfg, "tasks_dir", "") or ""
+        except Exception as exc:
+            tasks_dir = ""
+            lines.append("System load: unavailable (%s)" % exc)
+
+        paths = []
+        if tasks_dir:
+            paths.append(("task log", Path(tasks_dir) / "tasks.rzp.log"))
+        try:
+            from core import config as config_mod
+
+            paths.append((
+                "error log",
+                config_mod.default_path().parent / "rizpaq_error.log",
+            ))
+        except Exception:
+            pass
+        for label, path in paths:
+            try:
+                text = path.read_text(encoding="utf-8", errors="replace")
+                lines.append("\n--- %s (%s) ---" % (label, path))
+                lines.extend(text.splitlines()[-40:])
+            except Exception:
+                pass
+        return "\n".join(lines)
+
+    def _on_report_bug(self) -> None:
+        pass
+        try:
+            QApplication.clipboard().setText(self._bug_report_text())
+            QDesktopServices.openUrl(
+                QUrl("https://github.com/AmbaRu/rizpaq/issues/new")
+            )
+            QMessageBox.information(
+                self, tr("about.report_bug"), tr("about.report_copied")
+            )
+        except Exception:
+            pass
 
                                                                          
 

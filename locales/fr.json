@@ -955,6 +955,12 @@
     "progress.sys_cpu": "Processeur :",
     "progress.sys_disk": "Disque (lecture/écriture) :",
     "progress.sys_memory": "Mémoire :",
-    "progress.sys_group": "Système (en direct)"
+    "progress.sys_group": "Système (en direct)",
+    "mail.heartbeat": "Recevoir un résumé quotidien des problèmes",
+    "mail.heartbeat_subject": "Rizpaq : {count} avertissements",
+    "mail.heartbeat_header": "Problèmes de sauvegarde ({now})",
+    "mail.heartbeat_none": "Aucun problème détecté",
+    "about.report_bug": "Signaler un bug",
+    "about.report_copied": "Le rapport est copié. Collez-le dans un nouveau ticket GitHub."
   }
 }

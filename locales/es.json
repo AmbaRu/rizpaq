@@ -955,6 +955,12 @@
     "progress.sys_cpu": "CPU:",
     "progress.sys_disk": "Disco (lectura/escritura):",
     "progress.sys_memory": "Memoria:",
-    "progress.sys_group": "Sistema (en vivo)"
+    "progress.sys_group": "Sistema (en vivo)",
+    "mail.heartbeat": "Enviar un resumen diario de problemas",
+    "mail.heartbeat_subject": "Rizpaq: {count} avisos",
+    "mail.heartbeat_header": "Problemas de copia de seguridad ({now})",
+    "mail.heartbeat_none": "No se encontraron problemas",
+    "about.report_bug": "Informar de un error",
+    "about.report_copied": "El informe está copiado. Péguelo en un nuevo issue de GitHub."
   }
 }

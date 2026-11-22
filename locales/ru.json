@@ -955,6 +955,12 @@
     "progress.sys_cpu": "Процессор:",
     "progress.sys_disk": "Диск (чт/зап):",
     "progress.sys_memory": "Память:",
-    "progress.sys_group": "Система (сейчас)"
+    "progress.sys_group": "Система (сейчас)",
+    "mail.heartbeat": "Присылать сводку проблем на почту (раз в день)",
+    "mail.heartbeat_subject": "Rizpaq: предупреждений — {count}",
+    "mail.heartbeat_header": "Проблемы резервного копирования ({now})",
+    "mail.heartbeat_none": "Проблем не обнаружено",
+    "about.report_bug": "Сообщить об ошибке",
+    "about.report_copied": "Отчёт скопирован в буфер обмена. Приложите его к новой Issue на GitHub."
   }
 }

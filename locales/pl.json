@@ -955,6 +955,12 @@
     "progress.sys_cpu": "Procesor:",
     "progress.sys_disk": "Dysk (odczyt/zapis):",
     "progress.sys_memory": "Pamięć:",
-    "progress.sys_group": "System (na żywo)"
+    "progress.sys_group": "System (na żywo)",
+    "mail.heartbeat": "Wysyłaj codzienny raport problemów e-mailem",
+    "mail.heartbeat_subject": "Rizpaq: ostrzeżeń — {count}",
+    "mail.heartbeat_header": "Problemy z kopią zapasową ({now})",
+    "mail.heartbeat_none": "Nie znaleziono problemów",
+    "about.report_bug": "Zgłoś błąd",
+    "about.report_copied": "Raport skopiowano. Wklej go do nowego issue na GitHubie."
   }
 }

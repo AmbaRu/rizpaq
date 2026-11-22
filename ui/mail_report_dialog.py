@@ -72,6 +72,9 @@ class MailReportDialog(QDialog):
         self._enabled = QCheckBox(tr("mail.enabled"))
         lay.addWidget(self._enabled)
 
+        self._heartbeat = QCheckBox(tr("mail.heartbeat"))
+        lay.addWidget(self._heartbeat)
+
         form = QFormLayout()
 
         self._server = QLineEdit()
@@ -154,6 +157,9 @@ class MailReportDialog(QDialog):
     def _load(self, settings) -> None:
         mail = mail_report.from_settings(settings)
         self._enabled.setChecked(mail.enabled)
+        self._heartbeat.setChecked(
+            bool(getattr(settings, "mail_heartbeat_enabled", False))
+        )
         self._server.setText(mail.server)
         self._port.setValue(mail.port)
         index = self._tls.findData(mail.tls)
@@ -204,6 +210,7 @@ class MailReportDialog(QDialog):
             mail_from=mail.from_addr,
             mail_to=mail.to,
             mail_customer=mail.customer,
+            mail_heartbeat_enabled=self._heartbeat.isChecked(),
         )
         self.accept()
 

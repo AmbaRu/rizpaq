@@ -161,6 +161,9 @@ class Settings:
     mail_from: str = ""
     mail_to: str = ""
     mail_customer: str = ""
+                                                                         
+                                                                      
+    mail_heartbeat_enabled: bool = False
 
 
                                                                              
@@ -510,6 +513,8 @@ def _from_dict(data: dict) -> Settings:
     s.mail_from = _coerce_str(data.get("mail_from")) or ""
     s.mail_to = _coerce_str(data.get("mail_to")) or ""
     s.mail_customer = _coerce_str(data.get("mail_customer")) or ""
+    s.mail_heartbeat_enabled = _coerce_bool(
+        data.get("mail_heartbeat_enabled"), False)
     return s
 
 

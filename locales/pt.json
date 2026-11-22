@@ -955,6 +955,12 @@
     "progress.sys_cpu": "CPU:",
     "progress.sys_disk": "Disco (leitura/escrita):",
     "progress.sys_memory": "Memória:",
-    "progress.sys_group": "Sistema (em tempo real)"
+    "progress.sys_group": "Sistema (em tempo real)",
+    "mail.heartbeat": "Receber um resumo diário de problemas",
+    "mail.heartbeat_subject": "Rizpaq: {count} avisos",
+    "mail.heartbeat_header": "Problemas de cópia de segurança ({now})",
+    "mail.heartbeat_none": "Nenhum problema encontrado",
+    "about.report_bug": "Comunicar um erro",
+    "about.report_copied": "O relatório foi copiado. Cole-o num novo issue no GitHub."
   }
 }

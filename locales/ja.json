@@ -955,6 +955,12 @@
     "progress.sys_cpu": "CPU:",
     "progress.sys_disk": "ディスク(読/書):",
     "progress.sys_memory": "メモリ:",
-    "progress.sys_group": "システム (リアルタイム)"
+    "progress.sys_group": "システム (リアルタイム)",
+    "mail.heartbeat": "問題の日次サマリーをメールで受け取る",
+    "mail.heartbeat_subject": "Rizpaq: 警告 {count} 件",
+    "mail.heartbeat_header": "バックアップの問題 ({now})",
+    "mail.heartbeat_none": "問題は見つかりませんでした",
+    "about.report_bug": "バグを報告",
+    "about.report_copied": "レポートをコピーしました。GitHub の新しい Issue に貼り付けてください。"
   }
 }

@@ -412,6 +412,7 @@ class MenuActionsMixin:
             "mail_from",
             "mail_to",
             "mail_customer",
+            "mail_heartbeat_enabled",
         ):
             try:
                 setattr(self._cfg, name, getattr(saved, name))

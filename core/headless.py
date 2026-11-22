@@ -1573,6 +1573,19 @@ def _headless_task(rest: list) -> int:
                             (notify_reason or par2_reason or copy_reason),
                             dest)
 
+                                                                        
+                                                                      
+                                                                     
+                               
+    try:
+        from core import heartbeat as _heartbeat
+
+        _heartbeat.send_if_needed(
+            zpaq, None, os.path.dirname(str(rzp_path or ""))
+        )
+    except Exception:
+        pass
+
     return 0 if (ok and not copy_failed and par2_ok) else 1
 
 

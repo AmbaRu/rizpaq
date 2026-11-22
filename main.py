@@ -464,6 +464,10 @@ def main():
                                                                      
         try:
             QTimer.singleShot(800, window.show_startup_digest)
+            try:
+                QTimer.singleShot(1600, window.check_heartbeat)
+            except Exception:
+                pass
         except Exception:
             pass
 
