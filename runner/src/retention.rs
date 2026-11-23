@@ -133,6 +133,21 @@ mod tests {
     use super::*;
 
     #[test]
+    fn rename_replaces_existing_archive() {
+        let dir = std::env::temp_dir().join(format!(
+            "rizpaq_retention_rename_{}", std::process::id()
+        ));
+        let _ = std::fs::create_dir_all(&dir);
+        let arc = dir.join("a.zpaq");
+        let temp = dir.join("t.zpaq");
+        std::fs::write(&arc, b"old").unwrap();
+        std::fs::write(&temp, b"new").unwrap();
+        std::fs::rename(&temp, &arc).unwrap();
+        assert_eq!(std::fs::read(&arc).unwrap(), b"new");
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    #[test]
     fn builds_commands_and_validates_policy() {
         assert!(valid_policy("7d4w12my"));
         assert!(valid_policy("10last"));
