@@ -44,6 +44,39 @@ class TestRunner(unittest.TestCase):
         self.assertIn("extra archive", log)
         self.assertIn("log F:/one.zpaq", log)
 
+    def test_par2_result_is_unpacked(self):
+        pass
+        from unittest import mock
+
+        with mock.patch(
+            "core.headless._headless_par2", return_value=(True, "par2 created")
+        ):
+            ok, log = extra_dests.run_extra_dests(
+                "zpaq", {"par2_enabled": True}, ["D:/src"],
+                ["F:/one.zpaq"],
+                build_cmd=lambda *a: ["zpaq", "a", a[3]],
+                runner=lambda cmd: (0, "archived"),
+                work={"title": "W"}, rzp_path="C:/tasks.rzp",
+            )
+        self.assertTrue(ok)
+        self.assertIn("par2 created", log)
+
+    def test_par2_failure_marks_job_failed(self):
+        from unittest import mock
+
+        with mock.patch(
+            "core.headless._headless_par2", return_value=(False, "no free space")
+        ):
+            ok, log = extra_dests.run_extra_dests(
+                "zpaq", {"par2_enabled": True}, ["D:/src"],
+                ["F:/one.zpaq"],
+                build_cmd=lambda *a: ["zpaq", "a", a[3]],
+                runner=lambda cmd: (0, "archived"),
+                work={"title": "W"}, rzp_path="C:/tasks.rzp",
+            )
+        self.assertFalse(ok)
+        self.assertIn("no free space", log)
+
     def test_exception_from_build_is_reported(self):
         def bad_build(*a, **kw):
             raise RuntimeError("boom")

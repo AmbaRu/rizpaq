@@ -98,10 +98,18 @@ def run_extra_dests(
             try:
                 from core.headless import _headless_par2
 
-                note = _headless_par2(
+                                                                         
+                                                                          
+                                                                   
+                                                                 
+                par2_ok, note = _headless_par2(
                     rzp_path, work, {}, dest, settings
                 )
-                parts.append(note)
+                parts.append(note or "")
+                if not par2_ok:
+                    ok = False
+                    step_ok = False
+                    parts.append("[extra par2] FAIL: PAR2 set not created")
             except Exception as exc:
                 ok = False
                 step_ok = False
