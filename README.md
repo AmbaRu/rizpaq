@@ -353,6 +353,15 @@ instant, and nothing you were doing is lost.
   asks for confirmation first. The familiar single-folder version
   extraction is still there.
 
+### What's new in 3.1.7
+- One job can write the same version to several archives, with a second
+  copy and PAR2 for each; the job succeeds only when all are done.
+- The dashboard exports a standalone HTML report.
+- Scheduled jobs use a Rust runner with the same mail, extra-archive and
+  restore-drill behaviour as the GUI.
+- An optional daily Task Scheduler watchdog reports missed backups by email
+  even if the app is never opened.
+
 ### Archive growth chart (3.1.6)
 - The dashboard draws a 30-day archive-size line and the current
   compression ratio from the stored history.
@@ -902,6 +911,15 @@ ZPAQ**. Один клик: старый RAR, набитый дублями, пр
   все версии в пронумерованных папках 0001, 0002, … . Данные идут через
   временную папку, а распаковка в непустую папку сначала спрашивает
   подтверждение. Привычное извлечение версии одной папки осталось на месте.
+
+### Что нового в 3.1.7
+- Одно задание может записать одну версию в несколько архивов — со второй
+  копией и PAR2 для каждого; задание успешно только когда готовы все.
+- Дашборд экспортирует самостоятельный HTML-отчёт.
+- Задания по расписанию выполняются Rust-раннером с той же почтой,
+  дополнительными архивами и пробой восстановления, что и в GUI.
+- Необязательная ежедневная задача Планировщика сообщает о пропущенных
+  бэкапах по почте, даже если программу не открывают.
 
 ### График роста архива (3.1.6)
 - Дашборд рисует линию размера архива за 30 дней и текущий коэффициент
