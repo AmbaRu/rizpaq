@@ -76,6 +76,7 @@ from PySide6.QtWidgets import (
     QLineEdit,
     QListWidget,
     QMessageBox,
+    QPlainTextEdit,
     QPushButton,
     QVBoxLayout,
 )
@@ -142,6 +143,17 @@ class ArchiveWorkDialog(QDialog):
         dest_row.addWidget(self._dest_edit, 1)
         dest_row.addWidget(br_btn)
         form.addRow(tr("create.destination"), dest_row)
+
+                                                                      
+                                                                 
+        self._extra_dests = QPlainTextEdit()
+        self._extra_dests.setPlaceholderText("F:/second.zpaq")
+        self._extra_dests.setToolTip(tr("tip.extra_dests"))
+        self._extra_dests.setFixedHeight(64)
+        self._extra_dests.setPlainText(
+            "\n".join(str(d) for d in (self._work.get("extra_dests") or []))
+        )
+        form.addRow(tr("create.extra_dests"), self._extra_dests)
 
                              
         self._comment_edit = QLineEdit(str(self._work.get("comment") or ""))
@@ -344,6 +356,11 @@ class ArchiveWorkDialog(QDialog):
             "work_title": self._title_edit.text().strip(),
             "sources": self._collect_sources(),
             "dest": self._dest_edit.text().strip(),
+            "extra_dests": [
+                line.strip()
+                for line in self._extra_dests.toPlainText().splitlines()
+                if line.strip()
+            ],
             "comment": self._comment_edit.text().strip(),
             "only_masks": self._split_masks(self._only_edit.text()),
             "not_masks": self._split_masks(self._not_edit.text()),

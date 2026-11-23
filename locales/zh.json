@@ -970,6 +970,8 @@
     "restore.fail": "恢复失败: {reason}",
     "dashboard.gauge.forecast": "按当前速度，约{days}天后空间将用尽",
     "dashboard.card.size_trend": "归档增长",
-    "dashboard.card.size_saving": "压缩: 缩小 {ratio} 倍"
+    "dashboard.card.size_saving": "压缩: 缩小 {ratio} 倍",
+    "create.extra_dests": "附加归档:",
+    "tip.extra_dests": "同一任务写入的其他归档，每行一个路径"
   }
 }

@@ -970,6 +970,8 @@
     "restore.fail": "Odzyskiwanie nie udało się: {reason}",
     "dashboard.gauge.forecast": "Przy obecnym tempie miejsca zabraknie za ~{days} dni",
     "dashboard.card.size_trend": "Wzrost archiwum",
-    "dashboard.card.size_saving": "Kompresja: {ratio}× mniejsze"
+    "dashboard.card.size_saving": "Kompresja: {ratio}× mniejsze",
+    "create.extra_dests": "Dodatkowe archiwa:",
+    "tip.extra_dests": "Więcej archiwów tego samego zadania, jedna ścieżka w wierszu"
   }
 }

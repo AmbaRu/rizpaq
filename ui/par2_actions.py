@@ -750,20 +750,31 @@ class Par2ActionsMixin:
 
                                                                 
                                                               
-        pending_meta = getattr(self, "_pending_job_meta", None)
-        if pending_meta is not None:
-            self._pending_job_meta = None
-            final_ok = par2_status in ("ok", "skipped")
-            try:
-                self._update_job_meta_after_run(
-                    pending_meta["job_context"],
-                    "ok" if final_ok else "error",
-                    reason=None if final_ok else REASON_PAR2_FAILED,
-                    rc=pending_meta["rc"],
-                    output=pending_meta["output"],
+        pending_extra = getattr(self, "_pending_extra", None)
+        if pending_extra is not None:
+            self._pending_extra = None
+            starter = getattr(self, "_start_extra_dests", None)
+            if starter is not None:
+                starter(
+                    pending_extra["ctx"], pending_extra["rc"],
+                    pending_extra["output"],
+                    par2_ok=par2_status in ("ok", "skipped"),
                 )
-            except Exception:
-                pass
+        else:
+            pending_meta = getattr(self, "_pending_job_meta", None)
+            if pending_meta is not None:
+                self._pending_job_meta = None
+                final_ok = par2_status in ("ok", "skipped")
+                try:
+                    self._update_job_meta_after_run(
+                        pending_meta["job_context"],
+                        "ok" if final_ok else "error",
+                        reason=None if final_ok else REASON_PAR2_FAILED,
+                        rc=pending_meta["rc"],
+                        output=pending_meta["output"],
+                    )
+                except Exception:
+                    pass
 
         if deferred:
             appender = getattr(self, "_append_deferred_mail_log", None)

@@ -970,6 +970,8 @@
     "restore.fail": "Wiederherstellung fehlgeschlagen: {reason}",
     "dashboard.gauge.forecast": "Bei aktuellem Tempo ist der Speicher in ~{days} Tagen voll",
     "dashboard.card.size_trend": "Archivwachstum",
-    "dashboard.card.size_saving": "Kompression: {ratio}× kleiner"
+    "dashboard.card.size_saving": "Kompression: {ratio}× kleiner",
+    "create.extra_dests": "Weitere Archive:",
+    "tip.extra_dests": "Weitere Archive derselben Aufgabe, ein Pfad pro Zeile"
   }
 }

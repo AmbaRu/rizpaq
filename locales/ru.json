@@ -970,6 +970,8 @@
     "restore.fail": "Восстановление не прошло: {reason}",
     "dashboard.gauge.forecast": "При текущем темпе место закончится через ~{days} дн.",
     "dashboard.card.size_trend": "Рост архива",
-    "dashboard.card.size_saving": "Экономия: в {ratio} раза"
+    "dashboard.card.size_saving": "Экономия: в {ratio} раза",
+    "create.extra_dests": "Доп. архивы:",
+    "tip.extra_dests": "Ещё архивы, которые пишет это же задание; по пути на строку"
   }
 }

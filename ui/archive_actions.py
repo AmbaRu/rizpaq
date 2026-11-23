@@ -233,6 +233,7 @@ from core.zpaq_cli import looks_like_busy_error, resolve_checksize
 from core import mail_report
 from workers.mail_report_worker import MailReportWorker
 from workers.restore_drill_worker import RestoreDrillWorker
+from workers.extra_dests_worker import ExtraDestsWorker
 
 from ui.archive_check_dialog import ArchiveCheckDialog
 from ui.archive_create_dialog import ArchiveCreateDialog
@@ -276,6 +277,7 @@ _CREATE_LOG_LIMIT = 20000
 _WORK_FIELDS = (
     "sources",
     "dest",
+    "extra_dests",
     "only_masks",
     "not_masks",
     "comment",
@@ -2504,6 +2506,7 @@ class ArchiveActionsMixin:
         work_fields = {
             "sources": list(settings.get("sources") or []),
             "dest": settings.get("dest") or "",
+            "extra_dests": list(settings.get("extra_dests") or []),
             "only_masks": list(settings.get("only_masks") or []),
             "not_masks": list(settings.get("not_masks") or []),
             "comment": settings.get("comment") or "",
@@ -3060,6 +3063,67 @@ class ArchiveActionsMixin:
         if pending is not None and text:
             pending["extra"].append(str(text))
 
+    def _start_extra_dests(self, ctx: dict, rc: int, output: str,
+                           par2_ok: bool) -> None:
+        pass
+        job_context = ctx.get("job_context")
+        dests = ctx.get("extra_dests") or []
+        if not job_context or not dests:
+            return
+        work = None
+        try:
+            container, _path = self._load_container()
+            found = find_work(
+                container or {}, str(job_context.get("work_id") or "")
+            )
+            if found is not None:
+                work = found
+        except Exception:
+            work = None
+
+        self._pending_extra = {
+            "ctx": dict(ctx),
+            "job_context": dict(job_context),
+            "rc": rc,
+            "output": output,
+            "par2_ok": bool(par2_ok),
+        }
+        worker = ExtraDestsWorker(
+            self.zpaq_bin,
+            ctx.get("create_settings") or {},
+            (ctx.get("create_settings") or {}).get("sources") or [],
+            dests,
+            (ctx.get("create_settings") or {}).get("password"),
+            work=work,
+            rzp_path="",
+            parent=self,
+        )
+        worker.done.connect(self._on_extra_dests_done)
+        worker.finished.connect(lambda w=worker: self._cleanup_worker(w))
+        self._workers.append(worker)
+        self._extra_worker = worker
+        worker.start()
+
+    def _on_extra_dests_done(self, result: dict) -> None:
+        pass
+        pending = getattr(self, "_pending_extra", None)
+        if pending is None:
+            return
+        self._pending_extra = None
+        log = str(result.get("log") or "")
+        self.log_output(log)
+        self._append_deferred_mail_log(log)
+        final_ok = bool(result.get("ok")) and bool(pending["par2_ok"])
+        try:
+            self._update_job_meta_after_run(
+                pending["job_context"],
+                "ok" if final_ok else "error",
+                rc=pending["rc"],
+                output=(pending["output"] or "") + "\n" + log,
+            )
+        except Exception:
+            pass
+
     def _flush_deferred_mail(self) -> None:
         pass
         if getattr(self, "_mail_worker", None) is not None:
@@ -3140,6 +3204,7 @@ class ArchiveActionsMixin:
                                                                      
         self._report_gate = None
         self._pending_job_meta = None
+        self._pending_extra = None
 
         srcs = settings.get("sources") or []
         if not srcs:
@@ -3277,6 +3342,9 @@ class ArchiveActionsMixin:
                                                                          
                                                               
                 "par2_job": bool(settings.get("par2_enabled")),
+                                                                            
+                "extra_dests": list(settings.get("extra_dests") or []),
+                "create_settings": dict(settings),
                                                                     
                                                                      
                                                               
@@ -3494,7 +3562,11 @@ class ArchiveActionsMixin:
             job_context and ctx.get("par2_job") and ok_create
             and not cancelled
         )
-        if job_context and job_status and not wait_par2:
+        wait_extra = bool(
+            job_context and ctx.get("extra_dests") and ok_create
+            and not cancelled
+        )
+        if job_context and job_status and not wait_par2 and not wait_extra:
             self._update_job_meta_after_run(
                 job_context, job_status, rc=rc, output=output)
 
@@ -3599,6 +3671,18 @@ class ArchiveActionsMixin:
                         job_context, "error",
                         reason=REASON_PAR2_FAILED, rc=rc, output=output,
                     )
+            if wait_extra:
+                if started_par2:
+                                                                
+                    self._pending_extra = {
+                        "ctx": dict(ctx),
+                        "job_context": job_context,
+                        "rc": rc,
+                        "output": output,
+                        "par2_ok": None,
+                    }
+                else:
+                    self._start_extra_dests(ctx, rc, output, par2_ok=True)
                                                                         
                                                                     
                                                                     

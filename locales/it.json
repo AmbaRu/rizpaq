@@ -970,6 +970,8 @@
     "restore.fail": "Ripristino non riuscito: {reason}",
     "dashboard.gauge.forecast": "Al ritmo attuale lo spazio finirà tra ~{days} giorni",
     "dashboard.card.size_trend": "Crescita dell'archivio",
-    "dashboard.card.size_saving": "Compressione: {ratio}× più piccolo"
+    "dashboard.card.size_saving": "Compressione: {ratio}× più piccolo",
+    "create.extra_dests": "Archivi aggiuntivi:",
+    "tip.extra_dests": "Altri archivi della stessa attività, un percorso per riga"
   }
 }

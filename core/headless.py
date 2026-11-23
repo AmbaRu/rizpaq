@@ -1508,6 +1508,36 @@ def _headless_task(rest: list) -> int:
         except Exception:
             pass
 
+                                                                       
+    extra_ok = True
+    extra_note = ""
+    if (
+        ok and not skip_run and action == ACTION_BACKUP
+        and settings.get("extra_dests")
+    ):
+        try:
+            from core import extra_dests
+
+            dests = extra_dests.prepare_dests(
+                dest, settings.get("extra_dests")
+            )
+            if dests:
+                extra_ok, extra_log = extra_dests.run_extra_dests(
+                    zpaq, settings, srcs, dests, password,
+                    build_cmd=_build_create_cmd,
+                    runner=run_zpaq,
+                    work=work,
+                    rzp_path=rzp_path,
+                )
+                extra_note = extra_log
+                log = (log or "") + extra_log
+        except Exception as exc:
+            extra_ok = False
+            extra_note = "\n[extra archives] FAIL: %s: %s" % (
+                type(exc).__name__, exc
+            )
+            log = (log or "") + extra_note
+
                                                          
      
                                                                    
@@ -1534,7 +1564,7 @@ def _headless_task(rest: list) -> int:
     busy = (
         (not ok) and (not skip_run) and looks_like_busy_error(log or "")
     )
-    if ok and not copy_failed and par2_ok:
+    if ok and not copy_failed and par2_ok and extra_ok:
         status = "ok"
     elif busy:
         status = "busy"
@@ -1563,7 +1593,7 @@ def _headless_task(rest: list) -> int:
     log_header = _build_log_header(rzp_path, work, job, rc,
                                    password, cmd=cmd)
     task_note = (skip_note + (copy_note or "")
-                 + (par2_note or "") + mail_note)
+                 + (par2_note or "") + extra_note + mail_note)
     _write_task_log(rzp_path, log_header, log, log_mode, rc, busy=busy,
                     note=task_note)
 
@@ -1600,7 +1630,7 @@ def _headless_task(rest: list) -> int:
     except Exception:
         pass
 
-    return 0 if (ok and not copy_failed and par2_ok) else 1
+    return 0 if (ok and not copy_failed and par2_ok and extra_ok) else 1
 
 
 def _mail_plan(settings: dict, action: str, job: dict, dest: str) -> tuple:

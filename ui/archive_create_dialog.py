@@ -74,7 +74,7 @@ from PySide6.QtCore import QThread, Qt, Signal
 from PySide6.QtWidgets import (
     QCheckBox, QComboBox, QDialog, QDialogButtonBox, QFileDialog,
     QFormLayout, QGridLayout, QGroupBox, QHBoxLayout, QInputDialog,
-    QLabel, QLineEdit, QListWidget, QMessageBox, QPushButton,
+    QLabel, QLineEdit, QListWidget, QMessageBox, QPlainTextEdit, QPushButton,
     QRadioButton, QScrollArea, QSpinBox, QTabWidget, QVBoxLayout,
     QWidget,
 )
@@ -282,6 +282,12 @@ class ArchiveCreateDialog(QDialog):
         dest_row.addWidget(dt_btn)
         dest_row.addWidget(br_btn)
         form.addRow(tr("create.destination"), dest_row)
+
+        self._extra_dests = QPlainTextEdit()
+        self._extra_dests.setPlaceholderText("F:/second.zpaq")
+        self._extra_dests.setToolTip(tr("tip.extra_dests"))
+        self._extra_dests.setFixedHeight(64)
+        form.addRow(tr("create.extra_dests"), self._extra_dests)
 
         self._note_label = QLabel("")
         self._note_label.setWordWrap(True)
@@ -1006,6 +1012,11 @@ class ArchiveCreateDialog(QDialog):
 
         s = {
             "sources": sources, "dest": dest, "password": p1 or None,
+            "extra_dests": [
+                line.strip()
+                for line in self._extra_dests.toPlainText().splitlines()
+                if line.strip()
+            ],
                                                                    
                                       
             "work_title": work_title,

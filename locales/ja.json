@@ -970,6 +970,8 @@
     "restore.fail": "復元に失敗しました: {reason}",
     "dashboard.gauge.forecast": "現在のペースでは約{days}日で容量が不足します",
     "dashboard.card.size_trend": "アーカイブの成長",
-    "dashboard.card.size_saving": "圧縮: {ratio}倍小さい"
+    "dashboard.card.size_saving": "圧縮: {ratio}倍小さい",
+    "create.extra_dests": "追加アーカイブ:",
+    "tip.extra_dests": "同じタスクが書く別のアーカイブ。1行に1パス"
   }
 }

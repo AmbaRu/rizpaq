@@ -214,6 +214,9 @@ WORK_FIELDS = (
     "title",
     "sources",
     "dest",
+                                                                          
+                                                                        
+    "extra_dests",
     "password_b64",
     "only_masks",
     "not_masks",
@@ -634,6 +637,10 @@ def _normalise_work(w: dict) -> Optional[dict]:
         "modified": _normalize_date(str(w.get("modified") or _now())),
         "sources": [str(s) for s in (w.get("sources") or []) if str(s).strip()],
         "dest": str(w.get("dest") or ""),
+        "extra_dests": [
+            str(d).strip() for d in (w.get("extra_dests") or [])
+            if str(d).strip()
+        ],
         "password_b64": w.get("password_b64") or None,
         "only_masks": [str(m) for m in (w.get("only_masks") or [])],
         "not_masks": [str(m) for m in (w.get("not_masks") or [])],
@@ -864,6 +871,7 @@ def add_work(
     only_masks: Optional[List[str]] = None,
     not_masks: Optional[List[str]] = None,
     comment: str = "",
+    extra_dests: Optional[List[str]] = None,
 ) -> dict:
     pass
 
@@ -879,6 +887,7 @@ def add_work(
         "modified": now,
         "sources": [str(s) for s in (sources or []) if str(s).strip()],
         "dest": str(dest or ""),
+        "extra_dests": [str(d).strip() for d in (extra_dests or []) if str(d).strip()],
         "password_b64": _encode_password(password),
         "only_masks": [str(m) for m in (only_masks or [])],
         "not_masks": [str(m) for m in (not_masks or [])],
@@ -1090,6 +1099,7 @@ def job_to_runnable_settings(work: dict, job: dict) -> dict:
     settings: Dict[str, Any] = {
         "sources": list(work.get("sources") or []),
         "dest": work.get("dest") or "",
+        "extra_dests": list(work.get("extra_dests") or []),
         "password": _decode_password(work.get("password_b64")),
         "only_masks": list(work.get("only_masks") or []),
         "not_masks": list(work.get("not_masks") or []),
