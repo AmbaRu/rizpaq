@@ -972,6 +972,16 @@
     "dashboard.card.size_trend": "Croissance de l'archive",
     "dashboard.card.size_saving": "Compression : {ratio}× plus petit",
     "create.extra_dests": "Archives supplémentaires :",
-    "tip.extra_dests": "Autres archives de la même tâche, un chemin par ligne"
+    "tip.extra_dests": "Autres archives de la même tâche, un chemin par ligne",
+    "dashboard.btn.export_html": "Exporter le rapport",
+    "dashboard.report.title": "Rapport de sauvegarde — Rizpaq",
+    "dashboard.card.archives": "Archives",
+    "dashboard.col.work": "Tâche",
+    "dashboard.col.archive": "Archive",
+    "dashboard.col.files": "Fichiers",
+    "dashboard.col.versions": "Versions",
+    "dashboard.col.date": "Date",
+    "dashboard.col.code": "Code",
+    "dashboard.no_data": "Aucune donnée"
   }
 }

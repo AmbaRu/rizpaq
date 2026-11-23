@@ -972,6 +972,16 @@
     "dashboard.card.size_trend": "归档增长",
     "dashboard.card.size_saving": "压缩: 缩小 {ratio} 倍",
     "create.extra_dests": "附加归档:",
-    "tip.extra_dests": "同一任务写入的其他归档，每行一个路径"
+    "tip.extra_dests": "同一任务写入的其他归档，每行一个路径",
+    "dashboard.btn.export_html": "导出报告",
+    "dashboard.report.title": "备份报告 — Rizpaq",
+    "dashboard.card.archives": "归档",
+    "dashboard.col.work": "工作",
+    "dashboard.col.archive": "归档",
+    "dashboard.col.files": "文件数",
+    "dashboard.col.versions": "版本数",
+    "dashboard.col.date": "日期",
+    "dashboard.col.code": "代码",
+    "dashboard.no_data": "无数据"
   }
 }

@@ -972,6 +972,16 @@
     "dashboard.card.size_trend": "アーカイブの成長",
     "dashboard.card.size_saving": "圧縮: {ratio}倍小さい",
     "create.extra_dests": "追加アーカイブ:",
-    "tip.extra_dests": "同じタスクが書く別のアーカイブ。1行に1パス"
+    "tip.extra_dests": "同じタスクが書く別のアーカイブ。1行に1パス",
+    "dashboard.btn.export_html": "レポートを書き出す",
+    "dashboard.report.title": "バックアップレポート — Rizpaq",
+    "dashboard.card.archives": "アーカイブ",
+    "dashboard.col.work": "ワーク",
+    "dashboard.col.archive": "アーカイブ",
+    "dashboard.col.files": "ファイル数",
+    "dashboard.col.versions": "バージョン数",
+    "dashboard.col.date": "日時",
+    "dashboard.col.code": "コード",
+    "dashboard.no_data": "データなし"
   }
 }

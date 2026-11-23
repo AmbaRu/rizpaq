@@ -972,6 +972,16 @@
     "dashboard.card.size_trend": "Crecimiento del archivo",
     "dashboard.card.size_saving": "Compresión: {ratio}× menor",
     "create.extra_dests": "Archivos adicionales:",
-    "tip.extra_dests": "Más archivos de la misma tarea, una ruta por línea"
+    "tip.extra_dests": "Más archivos de la misma tarea, una ruta por línea",
+    "dashboard.btn.export_html": "Exportar informe",
+    "dashboard.report.title": "Informe de copias de seguridad — Rizpaq",
+    "dashboard.card.archives": "Archivos",
+    "dashboard.col.work": "Trabajo",
+    "dashboard.col.archive": "Archivo",
+    "dashboard.col.files": "Archivos",
+    "dashboard.col.versions": "Versiones",
+    "dashboard.col.date": "Fecha",
+    "dashboard.col.code": "Código",
+    "dashboard.no_data": "Sin datos"
   }
 }

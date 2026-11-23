@@ -54,11 +54,12 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Optional
 
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QColor
+from PySide6.QtCore import QUrl, Qt
+from PySide6.QtGui import QColor, QDesktopServices
 from PySide6.QtWidgets import (
     QAbstractItemView,
     QButtonGroup,
+    QFileDialog,
     QFrame,
     QHBoxLayout,
     QHeaderView,
@@ -72,7 +73,7 @@ from PySide6.QtWidgets import (
 )
 
 from core.archive_index import load_entries
-from core import archive_index, dashboard_alerts, disk_forecast, size_trend
+from core import archive_index, dashboard_alerts, disk_forecast, report_html, size_trend
 from core.par2_ops import par2_main_name
 from core.run_history import RunEntry, load_history
 from core.tasks import (
@@ -711,8 +712,11 @@ class DashboardPage(QWidget):
         self._btn_open.clicked.connect(self._on_open_archive)
         self._btn_check_all = QPushButton(tr("dashboard.btn.check_all"))
         self._btn_check_all.clicked.connect(self._on_check_all)
+        self._btn_export = QPushButton(tr("dashboard.btn.export_html"))
+        self._btn_export.clicked.connect(self._on_export_html)
         footer.addWidget(self._btn_open)
         footer.addStretch()
+        footer.addWidget(self._btn_export)
         footer.addWidget(self._btn_check_all)
         return footer
 
@@ -724,6 +728,7 @@ class DashboardPage(QWidget):
         self._alerts = []
         self._alert_works = set()
         self._streaks = {}
+        self._size_series = []
 
         host = self._host
         tasks_dir = None
@@ -1214,11 +1219,11 @@ class DashboardPage(QWidget):
                 continue
             samples = archive_index.load_size_history(dest)
             if samples:
-                self._size_trend.set_series(
-                    size_trend.build_series(samples)
-                )
+                self._size_series = size_trend.build_series(samples)
+                self._size_trend.set_series(self._size_series)
                 break
         else:
+            self._size_series = []
             self._size_trend.set_series([])
 
         self._lbl_saving.setText("")
@@ -1379,6 +1384,95 @@ class DashboardPage(QWidget):
         if row is None or not row.archive_path:
             return
         self._enter_archive(row.archive_path)
+
+    def _on_export_html(self):
+        pass
+        try:
+            from pathlib import Path
+
+            alerts = []
+            for alert in self._alerts:
+                text_key = getattr(alert, "text_key", "")
+                params = getattr(alert, "params", None) or {}
+                alerts.append(
+                    tr(text_key, **params) if text_key else str(alert)
+                )
+
+            archives = []
+            for row in self._rows:
+                archives.append({
+                    "work": row.work_title,
+                    "job": row.job_title,
+                    "archive": row.archive_path,
+                    "size": row.archive_size,
+                    "files": row.archive_files,
+                    "versions": row.versions,
+                    "status": row.last_status or "",
+                    "reason": row.last_reason or "",
+                })
+
+            runs = []
+            for entry in self._history[:50]:
+                when = (
+                    entry.ts_dt.strftime("%d.%m.%Y %H:%M")
+                    if getattr(entry, "ts_dt", None) else entry.ts
+                )
+                runs.append({
+                    "date": when,
+                    "work": entry.work_title,
+                    "job": entry.job_title,
+                    "status": entry.status or "",
+                    "rc": entry.rc,
+                })
+
+            payload = {
+                "title": tr("dashboard.report.title"),
+                "generated": datetime.now().strftime("%d.%m.%Y %H:%M"),
+                "summary": {
+                    "works": len({r.work_id for r in self._rows}),
+                    "jobs": len(self._rows),
+                    "ok": sum(1 for r in self._rows
+                              if r.last_status == "ok"),
+                    "error": sum(1 for r in self._rows
+                                 if r.last_status == "error"),
+                    "archives": sum(1 for r in self._rows if r.archive_path),
+                },
+                "alerts": alerts,
+                "archives": archives,
+                "runs": runs,
+                "trend": self._trend_series(),
+                "size": list(getattr(self, "_size_series", []) or []),
+                "labels": {
+                    "alerts": tr("dashboard.card.alerts"),
+                    "archives": tr("dashboard.card.archives"),
+                    "runs": tr("dashboard.feed.title"),
+                    "trend": tr("dashboard.card.trend"),
+                    "size": tr("dashboard.card.size_trend"),
+                    "work": tr("dashboard.col.work"),
+                    "job": tr("dashboard.col.job"),
+                    "archive": tr("dashboard.col.archive"),
+                    "size_col": tr("table.header.size"),
+                    "files": tr("dashboard.col.files"),
+                    "versions": tr("dashboard.col.versions"),
+                    "status": tr("dashboard.col.status"),
+                    "date": tr("dashboard.col.date"),
+                    "rc": tr("dashboard.col.code"),
+                    "none": tr("dashboard.no_data"),
+                },
+            }
+            text = report_html.render_dashboard_html(payload)
+            path, _filter = QFileDialog.getSaveFileName(
+                self, tr("dashboard.btn.export_html"),
+                "rizpaq-report.html", "HTML (*.html)",
+            )
+            if not path:
+                return
+            Path(path).write_text(text, encoding="utf-8")
+            QDesktopServices.openUrl(QUrl.fromLocalFile(path))
+        except Exception as exc:
+            QMessageBox.warning(
+                self, tr("dashboard.btn.export_html"), str(exc)
+            )
 
     def _on_check_all(self):
         pass

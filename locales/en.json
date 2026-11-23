@@ -972,6 +972,16 @@
     "dashboard.card.size_trend": "Archive growth",
     "dashboard.card.size_saving": "Compression: {ratio}× smaller",
     "create.extra_dests": "Extra archives:",
-    "tip.extra_dests": "More archives written by the same job, one path per line"
+    "tip.extra_dests": "More archives written by the same job, one path per line",
+    "dashboard.btn.export_html": "Export report",
+    "dashboard.report.title": "Backup report — Rizpaq",
+    "dashboard.card.archives": "Archives",
+    "dashboard.col.work": "Work",
+    "dashboard.col.archive": "Archive",
+    "dashboard.col.files": "Files",
+    "dashboard.col.versions": "Versions",
+    "dashboard.col.date": "Date",
+    "dashboard.col.code": "Code",
+    "dashboard.no_data": "No data"
   }
 }
