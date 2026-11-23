@@ -24,7 +24,7 @@ fn parse_listing(text: &str) -> Vec<Candidate> {
             (parts[2], String::new(), parts[4], parts[5], parts[3], parts[1])
         };
         let size: i64 = size_s.trim().parse().unwrap_or(0);
-        let path = path.trim().to_string();
+        let path = path.trim().trim_end_matches('#').to_string();
         let attr = attr.trim().to_uppercase();
         let ratio = ratio.trim().to_lowercase();
         if path.is_empty()
@@ -81,7 +81,11 @@ fn extract_cmd(
         cmd.push(entry.version.clone());
     }
     cmd.push("-to".to_string());
-    cmd.push(target.to_string_lossy().into_owned());
+    let mut target = target.to_string_lossy().into_owned();
+    if !target.ends_with(['/', '\\']) {
+        target.push(std::path::MAIN_SEPARATOR);
+    }
+    cmd.push(target);
     cmd
 }
 
@@ -100,6 +104,15 @@ pub fn run_restore_drill(
     if candidates.is_empty() {
         return (true, "[restore] no suitable files to test".to_string());
     }
+    let latest = candidates
+        .iter()
+        .map(|c| c.version.parse::<u64>().unwrap_or(0))
+        .max()
+        .unwrap_or(0);
+    let candidates: Vec<Candidate> = candidates
+        .into_iter()
+        .filter(|c| c.version.parse::<u64>().unwrap_or(0) == latest)
+        .collect();
     let pick = (std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
         .map(|d| d.as_secs())
@@ -171,6 +184,21 @@ mod tests {
     use super::*;
 
     #[test]
+    fn extract_cmd_targets_a_folder() {
+        let entry = Candidate {
+            path: "dir/file.txt".to_string(),
+            size: 10,
+            version: "2".to_string(),
+        };
+        let target = Path::new("D:/tmp");
+        let cmd = extract_cmd("zpaq", "F:/a.zpaq", None, &entry, target);
+        assert_eq!(cmd[cmd.len() - 1], format!("D:/tmp{}", std::path::MAIN_SEPARATOR));
+        let with_sep = Path::new("D:/tmp/");
+        let cmd2 = extract_cmd("zpaq", "F:/a.zpaq", None, &entry, with_sep);
+        assert_eq!(cmd2[cmd2.len() - 1], "D:/tmp/");
+    }
+
+    #[test]
     fn parses_csv_listing_and_filters() {
         let text = "2026-01-01 00:00:00\tA\t100\t1,0\t2\t+\tdir/file.txt\n\
                     2026-01-01 00:00:00\tD\t0\tdir\t2\t+\tfolder/\n\
@@ -180,5 +208,8 @@ mod tests {
         assert_eq!(found.len(), 1);
         assert_eq!(found[0].path, "dir/file.txt");
         assert_eq!(found[0].version, "2");
+        let marked =
+            "#2026-01-01 00:00:00\tA\t100\t1,0\t2\t+\tdir/file.txt#\n";
+        assert_eq!(parse_listing(marked)[0].path, "dir/file.txt");
     }
 }

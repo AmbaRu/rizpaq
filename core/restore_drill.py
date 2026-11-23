@@ -84,6 +84,14 @@ def pick_entry(entries: list, choose: Optional[Callable] = None):
 def extract_cmd(zpaq_bin: str, dest: str, entry, target: str,
                 password: str = None) -> list:
     pass
+                                                                     
+                                                                            
+                                                                       
+                                                                          
+                                                
+    target = str(target)
+    if not target.endswith(("\\", "/")):
+        target += os.sep
     cmd = [str(zpaq_bin), "x", str(dest)]
     if password:
         cmd += ["-key", password]

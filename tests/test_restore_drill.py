@@ -1,6 +1,7 @@
 
 from __future__ import annotations
 
+import os
 import unittest
 from pathlib import Path
 from unittest import mock
@@ -49,11 +50,20 @@ class TestExtractCmd(unittest.TestCase):
             "zpaqfranz", "F:/a.zpaq", _entry("dir/file.txt", version=7),
             "D:/tmp", "secret",
         )
+                                                                         
+                                                                      
         self.assertEqual(
             cmd,
             ["zpaqfranz", "x", "F:/a.zpaq", "-key", "secret",
-             "dir/file.txt", "-until", "7", "-to", "D:/tmp"],
+             "dir/file.txt", "-until", "7", "-to", "D:/tmp" + os.sep],
         )
+
+    def test_target_with_separator_is_unchanged(self):
+        for target in ("D:/tmp/", "D:/tmp\\"):
+            cmd = restore_drill.extract_cmd(
+                "zpaq", "F:/a.zpaq", _entry("x.txt"), target
+            )
+            self.assertEqual(cmd[-1], target)
 
 
 class TestHashing(unittest.TestCase):
