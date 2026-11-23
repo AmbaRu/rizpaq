@@ -353,6 +353,10 @@ instant, and nothing you were doing is lost.
   asks for confirmation first. The familiar single-folder version
   extraction is still there.
 
+### Archive growth chart (3.1.6)
+- The dashboard draws a 30-day archive-size line and the current
+  compression ratio from the stored history.
+
 ### Disk fill forecast (3.1.5)
 - The dashboard keeps archive size samples and estimates how many days are
   left before the disk is full.
@@ -898,6 +902,10 @@ ZPAQ**. Один клик: старый RAR, набитый дублями, пр
   все версии в пронумерованных папках 0001, 0002, … . Данные идут через
   временную папку, а распаковка в непустую папку сначала спрашивает
   подтверждение. Привычное извлечение версии одной папки осталось на месте.
+
+### График роста архива (3.1.6)
+- Дашборд рисует линию размера архива за 30 дней и текущий коэффициент
+  сжатия по сохранённой истории.
 
 ### Прогноз заполнения диска (3.1.5)
 - Дашборд хранит замеры размера архива и оценивает, через сколько дней
