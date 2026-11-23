@@ -989,6 +989,7 @@
     "mail.heartbeat_task_status": "Tarea programada: {state}",
     "mail.heartbeat_task_on": "creada",
     "mail.heartbeat_task_off": "no creada",
-    "mail.heartbeat_task_failed": "No se pudo cambiar la tarea programada. Pueden hacer falta permisos de administrador."
+    "mail.heartbeat_task_failed": "No se pudo cambiar la tarea programada. Pueden hacer falta permisos de administrador.",
+    "drag.extract_failed": "No se pudieron extraer los archivos para arrastrar: {reason}"
   }
 }

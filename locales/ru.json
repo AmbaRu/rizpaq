@@ -989,6 +989,7 @@
     "mail.heartbeat_task_status": "Задача Планировщика: {state}",
     "mail.heartbeat_task_on": "создана",
     "mail.heartbeat_task_off": "не создана",
-    "mail.heartbeat_task_failed": "Не удалось изменить задачу Планировщика. Возможно, нужны права администратора."
+    "mail.heartbeat_task_failed": "Не удалось изменить задачу Планировщика. Возможно, нужны права администратора.",
+    "drag.extract_failed": "Не удалось извлечь файлы для перетаскивания: {reason}"
   }
 }

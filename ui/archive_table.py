@@ -129,7 +129,13 @@ def _extract_for_drag(zpaq_bin, archive_path, password, targets,
         for pat in chunk:
             cmd += ["-only", pat]
 
-        cmd += ["-to", temp_dir, "-noeta", "-force"]
+                                                                     
+                                                                
+                                                                      
+                                                                     
+                                                    
+        to_dir = temp_dir if temp_dir.endswith(("\\", "/")) else temp_dir + os.sep
+        cmd += ["-to", to_dir, "-noeta", "-force"]
 
         left = deadline - time.monotonic()
         if left <= 0:
@@ -139,7 +145,17 @@ def _extract_for_drag(zpaq_bin, archive_path, password, targets,
             break
 
         try:
-            subprocess.run(cmd, capture_output=True, timeout=max(1.0, left))
+            completed = subprocess.run(
+                cmd, capture_output=True, timeout=max(1.0, left)
+            )
+            if completed.returncode > 1:
+                tail = (completed.stdout or b"").decode(
+                    "utf-8", errors="replace"
+                ).strip().splitlines()[-1:]
+                notes["failed_chunks"] = notes.get("failed_chunks", 0) + 1
+                notes["error"] = tail[0] if tail else (
+                    "engine rc=%s" % completed.returncode
+                )
         except subprocess.TimeoutExpired:
                                                                              
                                                                       
@@ -284,6 +300,13 @@ class ArchiveTable(QTableWidget):
                     tr("drag.error_title"),
                     tr("drag.extract_timeout",
                        seconds=notes.get("timeout") or 0),
+                )
+            elif notes.get("failed_chunks"):
+                QMessageBox.warning(
+                    self,
+                    tr("drag.error_title"),
+                    tr("drag.extract_failed",
+                       reason=notes.get("error") or "engine error"),
                 )
             return
 

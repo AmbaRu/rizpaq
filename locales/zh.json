@@ -989,6 +989,7 @@
     "mail.heartbeat_task_status": "计划任务: {state}",
     "mail.heartbeat_task_on": "已创建",
     "mail.heartbeat_task_off": "未创建",
-    "mail.heartbeat_task_failed": "无法修改计划任务，可能需要管理员权限。"
+    "mail.heartbeat_task_failed": "无法修改计划任务，可能需要管理员权限。",
+    "drag.extract_failed": "无法提取拖拽所需文件：{reason}"
   }
 }

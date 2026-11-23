@@ -989,6 +989,7 @@
     "mail.heartbeat_task_status": "Geplante Aufgabe: {state}",
     "mail.heartbeat_task_on": "erstellt",
     "mail.heartbeat_task_off": "nicht erstellt",
-    "mail.heartbeat_task_failed": "Die geplante Aufgabe konnte nicht geändert werden. Möglicherweise sind Administratorrechte nötig."
+    "mail.heartbeat_task_failed": "Die geplante Aufgabe konnte nicht geändert werden. Möglicherweise sind Administratorrechte nötig.",
+    "drag.extract_failed": "Dateien für den Drag-Vorgang konnten nicht extrahiert werden: {reason}"
   }
 }

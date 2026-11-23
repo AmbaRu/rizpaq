@@ -989,6 +989,7 @@
     "mail.heartbeat_task_status": "Tâche planifiée : {state}",
     "mail.heartbeat_task_on": "créée",
     "mail.heartbeat_task_off": "non créée",
-    "mail.heartbeat_task_failed": "Impossible de modifier la tâche planifiée. Des droits administrateur peuvent être nécessaires."
+    "mail.heartbeat_task_failed": "Impossible de modifier la tâche planifiée. Des droits administrateur peuvent être nécessaires.",
+    "drag.extract_failed": "Impossible d'extraire les fichiers à glisser : {reason}"
   }
 }

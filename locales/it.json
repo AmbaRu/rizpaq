@@ -989,6 +989,7 @@
     "mail.heartbeat_task_status": "Attività pianificata: {state}",
     "mail.heartbeat_task_on": "creata",
     "mail.heartbeat_task_off": "non creata",
-    "mail.heartbeat_task_failed": "Impossibile modificare l'attività pianificata. Potrebbero servire i diritti di amministratore."
+    "mail.heartbeat_task_failed": "Impossibile modificare l'attività pianificata. Potrebbero servire i diritti di amministratore.",
+    "drag.extract_failed": "Impossibile estrarre i file per il trascinamento: {reason}"
   }
 }

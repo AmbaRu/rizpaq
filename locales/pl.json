@@ -989,6 +989,7 @@
     "mail.heartbeat_task_status": "Zadanie: {state}",
     "mail.heartbeat_task_on": "utworzone",
     "mail.heartbeat_task_off": "nieutworzone",
-    "mail.heartbeat_task_failed": "Nie udało się zmienić zadania. Można być potrzebne uprawnienia administratora."
+    "mail.heartbeat_task_failed": "Nie udało się zmienić zadania. Można być potrzebne uprawnienia administratora.",
+    "drag.extract_failed": "Nie udało się wyodrębnić plików do przeciągnięcia: {reason}"
   }
 }

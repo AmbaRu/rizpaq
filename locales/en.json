@@ -989,6 +989,7 @@
     "mail.heartbeat_task_status": "Scheduled task: {state}",
     "mail.heartbeat_task_on": "registered",
     "mail.heartbeat_task_off": "not registered",
-    "mail.heartbeat_task_failed": "Could not change the scheduled task. Administrator rights may be required."
+    "mail.heartbeat_task_failed": "Could not change the scheduled task. Administrator rights may be required.",
+    "drag.extract_failed": "Could not extract files for dragging: {reason}"
   }
 }

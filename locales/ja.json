@@ -989,6 +989,7 @@
     "mail.heartbeat_task_status": "タスク: {state}",
     "mail.heartbeat_task_on": "作成済み",
     "mail.heartbeat_task_off": "未作成",
-    "mail.heartbeat_task_failed": "タスクを変更できませんでした。管理者権限が必要な可能性があります。"
+    "mail.heartbeat_task_failed": "タスクを変更できませんでした。管理者権限が必要な可能性があります。",
+    "drag.extract_failed": "ドラッグ用ファイルを展開できませんでした: {reason}"
   }
 }
