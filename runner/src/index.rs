@@ -7,7 +7,7 @@ use std::path::Path;
 
 const INDEX_FILENAME: &str = "archive_index.sqlite";
 
-const SCHEMA_VERSION: i64 = 2;
+const SCHEMA_VERSION: i64 = 3;
 
 const LIST_FLAGS: &[&str] = &[
     "-all", "-terse", "-csv", "\t", "-csvhf", "#", "-utf", "-noeta",
@@ -195,10 +195,20 @@ fn migrate_if_needed(conn: &rusqlite::Connection) {
             mtime_ns       INTEGER NOT NULL DEFAULT 0,
             discovered_at  INTEGER NOT NULL DEFAULT 0,
             missing        INTEGER NOT NULL DEFAULT 0
-        );",
+        );
+        CREATE TABLE IF NOT EXISTS size_history (
+            id             INTEGER PRIMARY KEY AUTOINCREMENT,
+            path           TEXT NOT NULL,
+            ts             INTEGER NOT NULL,
+            size           INTEGER NOT NULL,
+            entries_count  INTEGER NOT NULL DEFAULT 0
+        );
+        CREATE INDEX IF NOT EXISTS idx_size_history_path ON size_history(path, ts);",
     );
     if ok.is_ok() {
-        let _ = conn.execute("PRAGMA user_version = 2", []);
+        let _ = conn.execute(
+            &format!("PRAGMA user_version = {}", SCHEMA_VERSION), [],
+        );
     }
 }
 
@@ -275,7 +285,34 @@ fn store_fresh_listing(path: &str, entries: &[IndexEntry]) -> usize {
         return 0;
     }
     store_entries(path, mtime_ns, size, entries);
+    record_size(path, size, entries.len());
     entries.len()
+}
+
+fn record_size(path: &str, size: i64, entries_count: usize) {
+    let Some(db_path) = index_path() else { return };
+    let Ok(mut conn) = rusqlite::Connection::open(&db_path) else { return };
+    let _ = conn.execute(
+        "PRAGMA busy_timeout=3000", [],
+    );
+    migrate_if_needed(&conn);
+    let ts = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|d| d.as_secs() as i64)
+        .unwrap_or(0);
+    let tx = conn.transaction();
+    if let Ok(tx) = tx {
+        let _ = tx.execute(
+            "DELETE FROM size_history WHERE path = ?1 AND ts = ?2",
+            params![path, ts],
+        );
+        let _ = tx.execute(
+            "INSERT INTO size_history (path, ts, size, entries_count) \
+             VALUES (?1, ?2, ?3, ?4)",
+            params![path, ts, size, entries_count as i64],
+        );
+        let _ = tx.commit();
+    }
 }
 
 pub fn refresh_index_sync(zpaq_bin: &str, path: &str, password: Option<&str>) -> usize {

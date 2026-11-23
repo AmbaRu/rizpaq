@@ -52,10 +52,10 @@ def _human_size(value: Optional[int]) -> str:
         n = float(value or 0)
     except (TypeError, ValueError):
         return "—"
-    for unit, mult in (("ГБ", 1 << 30), ("МБ", 1 << 20), ("КБ", 1 << 10)):
+    for unit, mult in (("GB", 1 << 30), ("MB", 1 << 20), ("KB", 1 << 10)):
         if n >= mult:
             return "%.1f %s" % (n / mult, unit)
-    return "%d Б" % int(n)
+    return "%d B" % int(n)
 
 
 def _table(headers, rows) -> str:

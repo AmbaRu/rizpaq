@@ -60,10 +60,20 @@ class TestPar2Outdated(unittest.TestCase):
         dest = tmp / "a.zpaq"
         dest.write_bytes(b"x" * 1000)
         Path(str(dest) + ".par2").write_bytes(b"x" * 16)
-        w = _work(dest=str(dest), par2_size=2000, jobs=[_job()])
+        w = _work(dest=str(dest), par2_size=1000, jobs=[_job()])
         kinds = [a.kind for a in DA.collect_alerts(
             {"works": [w]}, [])]
         self.assertNotIn("par2_outdated", kinds)
+
+    def test_outdated_when_shrunk_after_retention(self):
+        tmp = Path(tempfile.mkdtemp(prefix="alerts_shrink_"))
+        dest = tmp / "a.zpaq"
+        dest.write_bytes(b"x" * 1000)
+        Path(str(dest) + ".par2").write_bytes(b"x" * 16)
+        w = _work(dest=str(dest), par2_size=2000, jobs=[_job()])
+        kinds = [a.kind for a in DA.collect_alerts(
+            {"works": [w]}, [])]
+        self.assertIn("par2_outdated", kinds)
 
     def test_no_set_no_outdated(self):
         tmp = Path(tempfile.mkdtemp(prefix="alerts_ns_"))
@@ -246,6 +256,7 @@ class TestIsOutdated(unittest.TestCase):
         self.assertFalse(DA.is_set_outdated(0, 100))
         self.assertFalse(DA.is_set_outdated(100, 100))
         self.assertTrue(DA.is_set_outdated(100, 101))
+        self.assertTrue(DA.is_set_outdated(101, 100))
 
 
 class TestFreeBytes(unittest.TestCase):

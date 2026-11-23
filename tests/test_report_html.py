@@ -39,7 +39,7 @@ class TestReportHtml(unittest.TestCase):
         }
         text = report_html.render_dashboard_html(payload)
         for needle in ("Report", "ARCH", "RUNS", "All", "F:/All.zpaq",
-                       "1.0 ГБ", "2.0 ГБ", 'class="error"'):
+                       "1.0 GB", "2.0 GB", 'class="error"'):
             self.assertIn(needle, text)
 
     def test_empty_sections(self):

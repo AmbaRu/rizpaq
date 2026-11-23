@@ -121,9 +121,16 @@ def free_bytes(path: str) -> Optional[int]:
 
 def is_set_outdated(par2_size, current_size) -> bool:
     pass
+
+
+
+
+
+
+
     try:
         return bool(par2_size) and bool(current_size) \
-            and int(current_size) > int(par2_size)
+            and int(current_size) != int(par2_size)
     except Exception:
         return False
 
