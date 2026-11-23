@@ -353,6 +353,13 @@ instant, and nothing you were doing is lost.
   asks for confirmation first. The familiar single-folder version
   extraction is still there.
 
+### What's new in 3.1.9
+- Safe version retention: dry run with `repack -test`, then write to a
+  temporary archive, verify it and only then replace the original.
+- Fixed extra archives with PAR2, drag-out extraction, and post-write
+  verification in scheduled jobs; Rust runner now matches Python for PAR2
+  failures, `-nolfast` and extra destinations.
+
 ### What's new in 3.1.8
 - Fixed the restore drill: the extraction folder needed a trailing path
   separator, otherwise zpaqfranz treated it as a file name and a healthy
@@ -917,6 +924,13 @@ ZPAQ**. Один клик: старый RAR, набитый дублями, пр
   все версии в пронумерованных папках 0001, 0002, … . Данные идут через
   временную папку, а распаковка в непустую папку сначала спрашивает
   подтверждение. Привычное извлечение версии одной папки осталось на месте.
+
+### Что нового в 3.1.9
+- Безопасная ретенция версий: сухой прогон `repack -test`, запись во
+  временный архив, проверка и только затем замена оригинала.
+- Исправлены доп. архивы с PAR2, перетаскивание файлов и проверка после
+  записи в заданиях; Rust-раннер сравнялся с Python по ошибкам PAR2,
+  флагу `-nolfast` и дополнительным архивам.
 
 ### Что нового в 3.1.8
 - Исправлена проба восстановления: папка извлечения требовала завершающего
