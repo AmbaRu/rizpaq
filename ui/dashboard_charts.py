@@ -316,3 +316,73 @@ class RunTrend(QWidget):
                 painter.drawText(
                     QPointF(x + (slot - tw) / 2, area.bottom() + 16), label)
             x += slot
+
+
+class SizeTrend(QWidget):
+    pass
+
+
+
+
+
+
+
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._series: list = []
+        self.setMinimumHeight(120)
+
+    def set_series(self, series: list) -> None:
+        self._series = list(series)[-30:]
+        self.update()
+
+    def paintEvent(self, event) -> None:
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing)
+        fm = QFontMetrics(self.font())
+        painter.setFont(self.font())
+
+        if not self._series:
+            painter.setPen(QColor(skins.color("TEXT_MUTED")))
+            painter.drawText(self.rect(), Qt.AlignCenter, tr(
+                "dashboard.trend.empty"))
+            return
+
+        area = self.rect().adjusted(6, 10, -6, -22)
+        sizes = [int(size or 0) for _, size in self._series]
+        low, high = min(sizes), max(sizes)
+        span = max(1, high - low)
+
+        grid = QPen(QColor(skins.color("PROGRESS_TRACK")), 1)
+        painter.setPen(grid)
+        for frac in (0.25, 0.5, 0.75):
+            y = area.top() + area.height() * frac
+            painter.drawLine(QPointF(area.left(), y),
+                             QPointF(area.right(), y))
+
+        n = len(self._series)
+        step = area.width() / max(1, n - 1)
+        points = []
+        for i, (_label, size) in enumerate(self._series):
+            x = area.left() + step * i
+            y = area.bottom() - area.height() * (int(size or 0) - low) / span
+            points.append(QPointF(x, y))
+
+        line = QPen(QColor(skins.color("ACCENT")), 2)
+        painter.setPen(line)
+        for first, second in zip(points, points[1:]):
+            painter.drawLine(first, second)
+        for point in points:
+            painter.drawEllipse(point, 2.5, 2.5)
+
+        label_pen = QColor(skins.color("TEXT_MUTED"))
+        label_step = max(1, n // 6)
+        painter.setPen(label_pen)
+        for i, (label, _size) in enumerate(self._series):
+            if i % label_step == 0 or i == n - 1:
+                x = area.left() + step * i
+                tw = fm.horizontalAdvance(label)
+                painter.drawText(
+                    QPointF(x - tw / 2, area.bottom() + 16), label
+                )

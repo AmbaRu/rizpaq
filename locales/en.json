@@ -968,6 +968,8 @@
     "restore.title": "Restore check",
     "restore.ok": "File {name} restored, hash matches",
     "restore.fail": "Restore check failed: {reason}",
-    "dashboard.gauge.forecast": "At the current rate, disk space will run out in ~{days} days"
+    "dashboard.gauge.forecast": "At the current rate, disk space will run out in ~{days} days",
+    "dashboard.card.size_trend": "Archive growth",
+    "dashboard.card.size_saving": "Compression: {ratio}× smaller"
   }
 }

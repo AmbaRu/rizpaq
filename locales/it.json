@@ -968,6 +968,8 @@
     "restore.title": "Verifica ripristino",
     "restore.ok": "File {name} ripristinato, hash corrispondente",
     "restore.fail": "Ripristino non riuscito: {reason}",
-    "dashboard.gauge.forecast": "Al ritmo attuale lo spazio finirà tra ~{days} giorni"
+    "dashboard.gauge.forecast": "Al ritmo attuale lo spazio finirà tra ~{days} giorni",
+    "dashboard.card.size_trend": "Crescita dell'archivio",
+    "dashboard.card.size_saving": "Compressione: {ratio}× più piccolo"
   }
 }

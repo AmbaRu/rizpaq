@@ -72,7 +72,7 @@ from PySide6.QtWidgets import (
 )
 
 from core.archive_index import load_entries
-from core import archive_index, dashboard_alerts, disk_forecast
+from core import archive_index, dashboard_alerts, disk_forecast, size_trend
 from core.par2_ops import par2_main_name
 from core.run_history import RunEntry, load_history
 from core.tasks import (
@@ -86,6 +86,7 @@ from ui import skins
 from ui.dashboard_charts import (
     Par2Gauge,
     RunTrend,
+    SizeTrend,
     StatusDonut,
     segment_color,
 )
@@ -348,6 +349,9 @@ class DashboardPage(QWidget):
         charts.addWidget(self._make_card(
             tr("dashboard.card.trend"), self._build_trend_card(), 4,
             cap_key="dashboard.card.trend"))
+        charts.addWidget(self._make_card(
+            tr("dashboard.card.size_trend"), self._build_size_trend_card(), 4,
+            cap_key="dashboard.card.size_trend"))
         root.addLayout(charts)
 
                                                                           
@@ -569,6 +573,22 @@ class DashboardPage(QWidget):
             self._trend_legend.append((lbl, key_caption))
         legend.addStretch()
         lay.addLayout(legend)
+        return page
+
+    def _build_size_trend_card(self) -> QWidget:
+        pass
+        page = QWidget()
+        lay = QVBoxLayout(page)
+        lay.setContentsMargins(0, 0, 0, 0)
+        lay.setSpacing(4)
+
+        self._size_trend = SizeTrend()
+        lay.addWidget(self._size_trend, stretch=1)
+
+        self._lbl_saving = QLabel("")
+        self._lbl_saving.setStyleSheet(
+            f"color: {skins.color('TEXT_MUTED')};")
+        lay.addWidget(self._lbl_saving)
         return page
 
                                                                                                 
@@ -1185,6 +1205,41 @@ class DashboardPage(QWidget):
                                                                         
                                                                
         self._trend.set_series(self._trend_series())
+
+                                                                       
+                                                                       
+        for row in self._rows:
+            dest = row.archive_path
+            if not dest:
+                continue
+            samples = archive_index.load_size_history(dest)
+            if samples:
+                self._size_trend.set_series(
+                    size_trend.build_series(samples)
+                )
+                break
+        else:
+            self._size_trend.set_series([])
+
+        self._lbl_saving.setText("")
+        for row in self._rows:
+            if not row.archive_path or not row.archive_size:
+                continue
+            try:
+                entries = archive_index.load_entries(row.archive_path) or []
+                logical = sum(
+                    int(e.size or 0) for e in entries
+                    if not getattr(e, "is_dir", False)
+                )
+                ratio = size_trend.saving_text(logical, row.archive_size)
+                if ratio:
+                    self._lbl_saving.setText(tr(
+                        "dashboard.card.size_saving",
+                        ratio="%.1f" % ratio,
+                    ))
+                    break
+            except Exception:
+                continue
 
     def _trend_series(self) -> list:
         pass

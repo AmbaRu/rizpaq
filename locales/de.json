@@ -968,6 +968,8 @@
     "restore.title": "Wiederherstellung prüfen",
     "restore.ok": "Datei {name} wiederhergestellt, Hash stimmt",
     "restore.fail": "Wiederherstellung fehlgeschlagen: {reason}",
-    "dashboard.gauge.forecast": "Bei aktuellem Tempo ist der Speicher in ~{days} Tagen voll"
+    "dashboard.gauge.forecast": "Bei aktuellem Tempo ist der Speicher in ~{days} Tagen voll",
+    "dashboard.card.size_trend": "Archivwachstum",
+    "dashboard.card.size_saving": "Kompression: {ratio}× kleiner"
   }
 }

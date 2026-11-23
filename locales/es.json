@@ -968,6 +968,8 @@
     "restore.title": "Comprobación de restauración",
     "restore.ok": "Archivo {name} restaurado, el hash coincide",
     "restore.fail": "La restauración falló: {reason}",
-    "dashboard.gauge.forecast": "Al ritmo actual, el espacio se agotará en ~{days} días"
+    "dashboard.gauge.forecast": "Al ritmo actual, el espacio se agotará en ~{days} días",
+    "dashboard.card.size_trend": "Crecimiento del archivo",
+    "dashboard.card.size_saving": "Compresión: {ratio}× menor"
   }
 }

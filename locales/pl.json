@@ -968,6 +968,8 @@
     "restore.title": "Sprawdzenie odzyskiwania",
     "restore.ok": "Plik {name} odzyskany, hash zgodny",
     "restore.fail": "Odzyskiwanie nie udało się: {reason}",
-    "dashboard.gauge.forecast": "Przy obecnym tempie miejsca zabraknie za ~{days} dni"
+    "dashboard.gauge.forecast": "Przy obecnym tempie miejsca zabraknie za ~{days} dni",
+    "dashboard.card.size_trend": "Wzrost archiwum",
+    "dashboard.card.size_saving": "Kompresja: {ratio}× mniejsze"
   }
 }

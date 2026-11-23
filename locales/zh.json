@@ -968,6 +968,8 @@
     "restore.title": "恢复检查",
     "restore.ok": "文件 {name} 已恢复，哈希匹配",
     "restore.fail": "恢复失败: {reason}",
-    "dashboard.gauge.forecast": "按当前速度，约{days}天后空间将用尽"
+    "dashboard.gauge.forecast": "按当前速度，约{days}天后空间将用尽",
+    "dashboard.card.size_trend": "归档增长",
+    "dashboard.card.size_saving": "压缩: 缩小 {ratio} 倍"
   }
 }

@@ -968,6 +968,8 @@
     "restore.title": "Проверка восстановления",
     "restore.ok": "Файл {name} восстановлен, хеш совпал",
     "restore.fail": "Восстановление не прошло: {reason}",
-    "dashboard.gauge.forecast": "При текущем темпе место закончится через ~{days} дн."
+    "dashboard.gauge.forecast": "При текущем темпе место закончится через ~{days} дн.",
+    "dashboard.card.size_trend": "Рост архива",
+    "dashboard.card.size_saving": "Экономия: в {ratio} раза"
   }
 }
