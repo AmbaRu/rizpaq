@@ -353,6 +353,13 @@ instant, and nothing you were doing is lost.
   asks for confirmation first. The familiar single-folder version
   extraction is still there.
 
+### What's new in 3.1.10
+- Multipart archives can now be joined into one archive with `m ... -verify`;
+  the old `consolidate` command never worked. Original volumes are kept.
+- PAR2 sets are flagged as outdated after a retention shrink too.
+- Scheduled jobs (Rust runner) now record archive size history, so the
+  growth chart and disk forecast finally get data.
+
 ### What's new in 3.1.9
 - Safe version retention: dry run with `repack -test`, then write to a
   temporary archive, verify it and only then replace the original.
@@ -924,6 +931,13 @@ ZPAQ**. Один клик: старый RAR, набитый дублями, пр
   все версии в пронумерованных папках 0001, 0002, … . Данные идут через
   временную папку, а распаковка в непустую папку сначала спрашивает
   подтверждение. Привычное извлечение версии одной папки осталось на месте.
+
+### Что нового в 3.1.10
+- Разбитый архив теперь склеивается в один командой `m ... -verify`; старая
+  команда `consolidate` не работала. Исходные тома сохраняются.
+- Набор PAR2 помечается устаревшим и после уменьшения архива ретенцией.
+- Задания по расписанию (Rust-раннер) теперь пишут историю размеров — график
+  роста и прогноз диска получают данные.
 
 ### Что нового в 3.1.9
 - Безопасная ретенция версий: сухой прогон `repack -test`, запись во
