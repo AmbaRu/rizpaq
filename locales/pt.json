@@ -982,6 +982,13 @@
     "dashboard.col.versions": "Versões",
     "dashboard.col.date": "Data",
     "dashboard.col.code": "Código",
-    "dashboard.no_data": "Sem dados"
+    "dashboard.no_data": "Sem dados",
+    "mail.heartbeat_task_create": "Criar tarefa diária de vigilância",
+    "mail.heartbeat_task_remove": "Remover tarefa diária de vigilância",
+    "mail.heartbeat_hour": "Hora:",
+    "mail.heartbeat_task_status": "Tarefa agendada: {state}",
+    "mail.heartbeat_task_on": "criada",
+    "mail.heartbeat_task_off": "não criada",
+    "mail.heartbeat_task_failed": "Não foi possível alterar a tarefa agendada. Podem ser necessários direitos de administrador."
   }
 }

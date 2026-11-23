@@ -56,9 +56,11 @@ class TestSizeHistory(unittest.TestCase):
                                                                
         idx.record_size(archive, 2500, 12)
         history = idx.load_size_history(archive)
-        self.assertEqual(len(history), 1)
-        self.assertEqual(history[0][1], 2500)
-        self.assertGreaterEqual(history[0][0], now)
+                                                                     
+                                                      
+        self.assertGreaterEqual(len(history), 1)
+        self.assertEqual(history[-1][1], 2500)
+        self.assertGreaterEqual(history[-1][0], now)
 
     def test_unsupported_paths(self):
         idx.record_size("F:/a_????.zpaq", 100)

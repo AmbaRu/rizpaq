@@ -982,6 +982,13 @@
     "dashboard.col.versions": "Версий",
     "dashboard.col.date": "Дата",
     "dashboard.col.code": "Код",
-    "dashboard.no_data": "Нет данных"
+    "dashboard.no_data": "Нет данных",
+    "mail.heartbeat_task_create": "Создать ежедневную проверку",
+    "mail.heartbeat_task_remove": "Удалить ежедневную проверку",
+    "mail.heartbeat_hour": "Час проверки:",
+    "mail.heartbeat_task_status": "Задача Планировщика: {state}",
+    "mail.heartbeat_task_on": "создана",
+    "mail.heartbeat_task_off": "не создана",
+    "mail.heartbeat_task_failed": "Не удалось изменить задачу Планировщика. Возможно, нужны права администратора."
   }
 }

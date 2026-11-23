@@ -29,7 +29,7 @@ from PySide6.QtWidgets import (
 )
 
 from core import config as config_mod
-from core import mail_report
+from core import mail_report, scheduler
 from ui.i18n import tr
 from ui.qt_compat import PASSWORD_ECHO
 
@@ -74,6 +74,20 @@ class MailReportDialog(QDialog):
 
         self._heartbeat = QCheckBox(tr("mail.heartbeat"))
         lay.addWidget(self._heartbeat)
+
+        watch_row = QHBoxLayout()
+        self._hb_task_btn = QPushButton()
+        self._hb_task_btn.clicked.connect(self._on_heartbeat_task)
+        watch_row.addWidget(self._hb_task_btn)
+        watch_row.addWidget(QLabel(tr("mail.heartbeat_hour")))
+        self._hb_hour = QSpinBox()
+        self._hb_hour.setRange(0, 23)
+        self._hb_hour.setValue(9)
+        watch_row.addWidget(self._hb_hour)
+        self._hb_task_status = QLabel("")
+        watch_row.addWidget(self._hb_task_status, 1)
+        lay.addLayout(watch_row)
+        self._refresh_heartbeat_task()
 
         form = QFormLayout()
 
@@ -231,6 +245,40 @@ class MailReportDialog(QDialog):
         return ""
 
                                                                            
+
+    def _refresh_heartbeat_task(self) -> None:
+        pass
+        registered = False
+        try:
+            registered = scheduler.is_heartbeat_task_scheduled()
+        except Exception:
+            pass
+        self._hb_task_btn.setText(
+            tr("mail.heartbeat_task_remove" if registered
+               else "mail.heartbeat_task_create")
+        )
+        self._hb_task_status.setText(tr(
+            "mail.heartbeat_task_status",
+            state=tr("mail.heartbeat_task_on" if registered
+                     else "mail.heartbeat_task_off"),
+        ))
+
+    def _on_heartbeat_task(self) -> None:
+        pass
+        try:
+            registered = scheduler.is_heartbeat_task_scheduled()
+            if registered:
+                ok = scheduler.remove_heartbeat_task()
+            else:
+                ok = scheduler.create_heartbeat_task(self._hb_hour.value())
+            if not ok:
+                QMessageBox.warning(
+                    self, tr("mail.heartbeat"),
+                    tr("mail.heartbeat_task_failed"),
+                )
+        except Exception as exc:
+            QMessageBox.warning(self, tr("mail.heartbeat"), str(exc))
+        self._refresh_heartbeat_task()
 
     def _on_test(self) -> None:
         if self._worker is not None:

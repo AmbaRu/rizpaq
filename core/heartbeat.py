@@ -94,6 +94,35 @@ def build_report(tasks_dir: Optional[str] = None) -> list:
     return lines
 
 
+def run_cli() -> int:
+    pass
+
+
+
+
+
+
+    try:
+        cfg = config_mod.load()
+        zpaq = str(getattr(cfg, "zpaq_path", "") or "")
+        if not zpaq or not Path(zpaq).is_file():
+            zpaq = "zpaqfranz"
+        rc, out = send_if_needed(zpaq, cfg, cfg.tasks_dir)
+        if rc != 0:
+            try:
+                from core.config import write_error_log
+
+                write_error_log(
+                    "heartbeat: email report failed: %s" % out,
+                    name="rizpaq_error.log",
+                )
+            except Exception:
+                pass
+        return 0 if rc == 0 else 1
+    except Exception:
+        return 1
+
+
 def send_if_needed(zpaq_bin: str, cfg=None, tasks_dir: Optional[str] = None,
                    force: bool = False) -> tuple:
     pass

@@ -982,6 +982,13 @@
     "dashboard.col.versions": "Versionen",
     "dashboard.col.date": "Datum",
     "dashboard.col.code": "Code",
-    "dashboard.no_data": "Keine Daten"
+    "dashboard.no_data": "Keine Daten",
+    "mail.heartbeat_task_create": "Tägliche Überwachung anlegen",
+    "mail.heartbeat_task_remove": "Tägliche Überwachung entfernen",
+    "mail.heartbeat_hour": "Uhrzeit:",
+    "mail.heartbeat_task_status": "Geplante Aufgabe: {state}",
+    "mail.heartbeat_task_on": "erstellt",
+    "mail.heartbeat_task_off": "nicht erstellt",
+    "mail.heartbeat_task_failed": "Die geplante Aufgabe konnte nicht geändert werden. Möglicherweise sind Administratorrechte nötig."
   }
 }

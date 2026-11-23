@@ -982,6 +982,13 @@
     "dashboard.col.versions": "Wersje",
     "dashboard.col.date": "Data",
     "dashboard.col.code": "Kod",
-    "dashboard.no_data": "Brak danych"
+    "dashboard.no_data": "Brak danych",
+    "mail.heartbeat_task_create": "Utwórz codzienny nadzór",
+    "mail.heartbeat_task_remove": "Usuń codzienny nadzór",
+    "mail.heartbeat_hour": "Godzina:",
+    "mail.heartbeat_task_status": "Zadanie: {state}",
+    "mail.heartbeat_task_on": "utworzone",
+    "mail.heartbeat_task_off": "nieutworzone",
+    "mail.heartbeat_task_failed": "Nie udało się zmienić zadania. Można być potrzebne uprawnienia administratora."
   }
 }

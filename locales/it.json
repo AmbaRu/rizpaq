@@ -982,6 +982,13 @@
     "dashboard.col.versions": "Versioni",
     "dashboard.col.date": "Data",
     "dashboard.col.code": "Codice",
-    "dashboard.no_data": "Nessun dato"
+    "dashboard.no_data": "Nessun dato",
+    "mail.heartbeat_task_create": "Crea attività di controllo giornaliera",
+    "mail.heartbeat_task_remove": "Rimuovi attività di controllo",
+    "mail.heartbeat_hour": "Ora:",
+    "mail.heartbeat_task_status": "Attività pianificata: {state}",
+    "mail.heartbeat_task_on": "creata",
+    "mail.heartbeat_task_off": "non creata",
+    "mail.heartbeat_task_failed": "Impossibile modificare l'attività pianificata. Potrebbero servire i diritti di amministratore."
   }
 }

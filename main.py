@@ -310,6 +310,12 @@ def main():
         rc = _headless_task(list(args[1:]))
         sys.exit(rc)
 
+    if args and str(args[0]).strip() == "--heartbeat":
+                                                                    
+        from core.heartbeat import run_cli
+
+        sys.exit(run_cli())
+
                                                                                
     try:
         from PySide6.QtGui import QFont, QIcon

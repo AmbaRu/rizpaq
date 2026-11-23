@@ -982,6 +982,13 @@
     "dashboard.col.versions": "Versiones",
     "dashboard.col.date": "Fecha",
     "dashboard.col.code": "Código",
-    "dashboard.no_data": "Sin datos"
+    "dashboard.no_data": "Sin datos",
+    "mail.heartbeat_task_create": "Crear tarea diaria de vigilancia",
+    "mail.heartbeat_task_remove": "Quitar tarea diaria de vigilancia",
+    "mail.heartbeat_hour": "Hora:",
+    "mail.heartbeat_task_status": "Tarea programada: {state}",
+    "mail.heartbeat_task_on": "creada",
+    "mail.heartbeat_task_off": "no creada",
+    "mail.heartbeat_task_failed": "No se pudo cambiar la tarea programada. Pueden hacer falta permisos de administrador."
   }
 }

@@ -136,6 +136,55 @@ def _exec_cmd_for(rzp_path, job_id: str, if_changed: bool = False) -> str:
     return f'{rizpaq} --task "{rzp_path}" --job "{job_id}"{changed}'
 
 
+                                                                    
+                                                                     
+HEARTBEAT_TASK_NAME = TASK_PREFIX + "Heartbeat"
+
+
+def heartbeat_cmd() -> str:
+    pass
+    if getattr(sys, "frozen", False):
+        return '"%s" --heartbeat' % sys.executable
+    here = Path(__file__).resolve().parent.parent
+    return '"%s" "%s" --heartbeat' % (sys.executable, here / "main.py")
+
+
+def create_heartbeat_task(hour: int = 9) -> bool:
+    pass
+    if os.name != "nt":
+        return False
+    try:
+        hour = max(0, min(23, int(hour)))
+    except (TypeError, ValueError):
+        hour = 9
+    cmd = [
+        _schtasks_bin(), "/create", "/tn", HEARTBEAT_TASK_NAME,
+        "/tr", heartbeat_cmd(), "/sc", "DAILY",
+        "/st", "%02d:00" % hour, "/f",
+    ]
+    result = _run_schtasks(cmd)
+    return bool(result and result.returncode == 0)
+
+
+def remove_heartbeat_task() -> bool:
+    pass
+    if os.name != "nt":
+        return False
+    cmd = [_schtasks_bin(), "/delete", "/tn", HEARTBEAT_TASK_NAME, "/f"]
+    result = _run_schtasks(cmd)
+    return bool(result and result.returncode == 0)
+
+
+def is_heartbeat_task_scheduled() -> bool:
+    pass
+    if os.name != "nt":
+        return False
+    result = _run_schtasks(
+        [_schtasks_bin(), "/query", "/tn", HEARTBEAT_TASK_NAME]
+    )
+    return bool(result and result.returncode == 0)
+
+
 def create_scheduled_task(
     rzp_path,
     work: dict,

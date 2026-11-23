@@ -982,6 +982,13 @@
     "dashboard.col.versions": "Versions",
     "dashboard.col.date": "Date",
     "dashboard.col.code": "Code",
-    "dashboard.no_data": "Aucune donnée"
+    "dashboard.no_data": "Aucune donnée",
+    "mail.heartbeat_task_create": "Créer la tâche de surveillance",
+    "mail.heartbeat_task_remove": "Supprimer la tâche de surveillance",
+    "mail.heartbeat_hour": "Heure :",
+    "mail.heartbeat_task_status": "Tâche planifiée : {state}",
+    "mail.heartbeat_task_on": "créée",
+    "mail.heartbeat_task_off": "non créée",
+    "mail.heartbeat_task_failed": "Impossible de modifier la tâche planifiée. Des droits administrateur peuvent être nécessaires."
   }
 }

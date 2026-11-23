@@ -982,6 +982,13 @@
     "dashboard.col.versions": "Versions",
     "dashboard.col.date": "Date",
     "dashboard.col.code": "Code",
-    "dashboard.no_data": "No data"
+    "dashboard.no_data": "No data",
+    "mail.heartbeat_task_create": "Create daily watchdog task",
+    "mail.heartbeat_task_remove": "Remove daily watchdog task",
+    "mail.heartbeat_hour": "Check hour:",
+    "mail.heartbeat_task_status": "Scheduled task: {state}",
+    "mail.heartbeat_task_on": "registered",
+    "mail.heartbeat_task_off": "not registered",
+    "mail.heartbeat_task_failed": "Could not change the scheduled task. Administrator rights may be required."
   }
 }

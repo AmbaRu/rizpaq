@@ -982,6 +982,13 @@
     "dashboard.col.versions": "版本数",
     "dashboard.col.date": "日期",
     "dashboard.col.code": "代码",
-    "dashboard.no_data": "无数据"
+    "dashboard.no_data": "无数据",
+    "mail.heartbeat_task_create": "创建每日监控任务",
+    "mail.heartbeat_task_remove": "删除每日监控任务",
+    "mail.heartbeat_hour": "时间:",
+    "mail.heartbeat_task_status": "计划任务: {state}",
+    "mail.heartbeat_task_on": "已创建",
+    "mail.heartbeat_task_off": "未创建",
+    "mail.heartbeat_task_failed": "无法修改计划任务，可能需要管理员权限。"
   }
 }
