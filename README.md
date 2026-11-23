@@ -353,6 +353,10 @@ instant, and nothing you were doing is lost.
   asks for confirmation first. The familiar single-folder version
   extraction is still there.
 
+### Disk fill forecast (3.1.5)
+- The dashboard keeps archive size samples and estimates how many days are
+  left before the disk is full.
+
 ### Restore drill (3.1.4)
 - A "File restore (drill)" check mode extracts a random small file and
   compares its hash with the source, proving the archive is restorable.
@@ -894,6 +898,10 @@ ZPAQ**. Один клик: старый RAR, набитый дублями, пр
   все версии в пронумерованных папках 0001, 0002, … . Данные идут через
   временную папку, а распаковка в непустую папку сначала спрашивает
   подтверждение. Привычное извлечение версии одной папки осталось на месте.
+
+### Прогноз заполнения диска (3.1.5)
+- Дашборд хранит замеры размера архива и оценивает, через сколько дней
+  закончится место.
 
 ### Автотест восстановления (3.1.4)
 - Режим проверки «Восстановление файла (автотест)» распаковывает случайный
