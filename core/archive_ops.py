@@ -6,9 +6,7 @@
 
 from __future__ import annotations
 
-from typing import Optional
 
-from .models import ArchiveEntry
 
 
 def slice_at_version(entries: list, n: int) -> list:

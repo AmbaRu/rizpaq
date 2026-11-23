@@ -87,7 +87,9 @@ def render_dashboard_html(payload: dict) -> str:
     summary = payload.get("summary") or {}
     parts = [
         "<!DOCTYPE html>",
-        '<html lang="ru"><head><meta charset="utf-8">',
+        '<html lang="%s"><head><meta charset="utf-8">' % (
+            _esc(str(payload.get("lang") or "ru")[:20]),
+        ),
         "<title>%s</title><style>%s</style></head><body>" % (
             _esc(payload.get("title") or "Rizpaq"), _CSS,
         ),

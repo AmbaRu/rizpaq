@@ -70,12 +70,12 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-from PySide6.QtCore import QThread, Qt, Signal
+from PySide6.QtCore import QThread, Signal
 from PySide6.QtWidgets import (
     QCheckBox, QComboBox, QDialog, QDialogButtonBox, QFileDialog,
     QFormLayout, QGridLayout, QGroupBox, QHBoxLayout, QInputDialog,
     QLabel, QLineEdit, QListWidget, QMessageBox, QPlainTextEdit, QPushButton,
-    QRadioButton, QScrollArea, QSpinBox, QTabWidget, QVBoxLayout,
+    QScrollArea, QTabWidget, QVBoxLayout,
     QWidget,
 )
 

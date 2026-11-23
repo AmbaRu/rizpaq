@@ -39,7 +39,7 @@ from pathlib import Path
 from typing import Optional
 
 from PySide6.QtCore import QTimer
-from PySide6.QtGui import QFont, QKeySequence, QShortcut
+from PySide6.QtGui import QKeySequence, QShortcut
 from PySide6.QtWidgets import QMainWindow
 
 from ui.app_info import APP_NAME, APP_VERSION_FULL

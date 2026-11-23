@@ -17,16 +17,14 @@ from __future__ import annotations
 
 from pathlib import Path, PurePosixPath
 
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
     QFrame,
     QHBoxLayout,
     QLabel,
     QPushButton,
-    QWidget,
 )
 
-from ui.i18n import tr
 
 
 class _CrumbButton(QPushButton):

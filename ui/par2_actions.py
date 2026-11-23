@@ -56,7 +56,6 @@ from core.tasks import (
     REASON_PAR2_FAILED,
     _now,
     update_container,
-    update_job_meta,
     update_work,
 )
 from ui.presentation import format_size

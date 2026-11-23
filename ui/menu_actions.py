@@ -21,7 +21,7 @@
 from __future__ import annotations
 
 from PySide6.QtGui import QActionGroup
-from PySide6.QtWidgets import QFileDialog, QMessageBox
+from PySide6.QtWidgets import QFileDialog
 
 from ui.i18n import available_languages, current_language, tr
 from ui.test_modes import menu_entries as test_mode_entries

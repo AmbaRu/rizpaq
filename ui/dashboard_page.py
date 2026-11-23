@@ -92,7 +92,7 @@ from ui.dashboard_charts import (
     segment_color,
 )
 from ui.dashboard_feed import RunFeed
-from ui.i18n import tr
+from ui.i18n import current_language, tr
 
                                                                              
                                                                    
@@ -1427,6 +1427,7 @@ class DashboardPage(QWidget):
 
             payload = {
                 "title": tr("dashboard.report.title"),
+                "lang": current_language(),
                 "generated": datetime.now().strftime("%d.%m.%Y %H:%M"),
                 "summary": {
                     "works": len({r.work_id for r in self._rows}),

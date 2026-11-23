@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import os
 from datetime import datetime, timedelta
-from typing import Iterable, Optional
+from typing import Optional
 
 HORIZON_DAYS = 8
 TOLERANCE_MINUTES = 10

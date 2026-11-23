@@ -14,6 +14,8 @@
 from __future__ import annotations
 
 import json
+import os
+import tempfile
 from datetime import date, datetime
 from pathlib import Path
 from typing import Optional
@@ -46,11 +48,23 @@ def mark_sent() -> None:
     try:
         path = state_path()
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(
-            json.dumps({"last_date": str(date.today())}, ensure_ascii=False)
-            + "\n",
-            encoding="utf-8",
+                                                                       
+                                                                       
+        fd, tmp = tempfile.mkstemp(
+            prefix=".mail_heartbeat_", suffix=".json", dir=str(path.parent)
         )
+        try:
+            with os.fdopen(fd, "w", encoding="utf-8") as stream:
+                stream.write(json.dumps(
+                    {"last_date": str(date.today())}, ensure_ascii=False
+                ) + "\n")
+            os.replace(tmp, path)
+        except Exception:
+            try:
+                os.unlink(tmp)
+            except OSError:
+                pass
+            raise
     except Exception:
         pass
 

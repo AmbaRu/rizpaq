@@ -125,6 +125,10 @@ def _read_until_exit(proc, cancelled):
         if cancelled():
             try:
                 proc.kill()
+                try:
+                    proc.wait(timeout=5)
+                except Exception:
+                    pass
             except Exception:
                 pass
             drain()
@@ -151,6 +155,10 @@ def _read_until_exit(proc, cancelled):
             )
             try:
                 proc.kill()
+                try:
+                    proc.wait(timeout=5)
+                except Exception:
+                    pass
             except Exception:
                 pass
             drain()

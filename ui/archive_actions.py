@@ -160,7 +160,6 @@ import os
 import shutil
 import tempfile
 from collections import defaultdict
-from datetime import datetime
 from pathlib import Path
 
 from PySide6.QtWidgets import QDialog, QFileDialog, QInputDialog, QMessageBox
@@ -192,7 +191,6 @@ from core.tasks import (
     add_job,
     add_work,
     container_path,
-    empty_container,
     find_job,
     find_work,
     job_to_runnable_settings,
@@ -263,7 +261,6 @@ from ui.qt_compat import (
 from ui.test_progress_dialog import TestProgressDialog
 from workers import (
     ExtractFolderBatchWorker,
-    Par2CreateWorker,
     ScheduleCreateWorker,
     StreamingListWorker,
     ZpaqWorker,
