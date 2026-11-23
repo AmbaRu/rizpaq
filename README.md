@@ -353,6 +353,12 @@ instant, and nothing you were doing is lost.
   asks for confirmation first. The familiar single-folder version
   extraction is still there.
 
+### What's new in 3.1.8
+- Fixed the restore drill: the extraction folder needed a trailing path
+  separator, otherwise zpaqfranz treated it as a file name and a healthy
+  archive was reported as a failed drill (GUI/Python since 3.1.4, Rust
+  runner since 3.1.7).
+
 ### What's new in 3.1.7
 - One job can write the same version to several archives, with a second
   copy and PAR2 for each; the job succeeds only when all are done.
@@ -911,6 +917,11 @@ ZPAQ**. Один клик: старый RAR, набитый дублями, пр
   все версии в пронумерованных папках 0001, 0002, … . Данные идут через
   временную папку, а распаковка в непустую папку сначала спрашивает
   подтверждение. Привычное извлечение версии одной папки осталось на месте.
+
+### Что нового в 3.1.8
+- Исправлена проба восстановления: папка извлечения требовала завершающего
+  разделителя, иначе zpaqfranz принимал её за имя файла и здоровый архив
+  объявлялся провалившим пробу (GUI/Python — с 3.1.4, Rust-раннер — с 3.1.7).
 
 ### Что нового в 3.1.7
 - Одно задание может записать одну версию в несколько архивов — со второй
