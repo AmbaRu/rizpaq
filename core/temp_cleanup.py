@@ -60,6 +60,9 @@ TEMP_PREFIXES: Tuple[str, ...] = (
     "rizpaq_batch_",                                                        
     "rizpaq_link_",                                                          
     "rizpaq_task_test_",                                                      
+    "rizpaq_task_verify_",                                           
+    "rizpaq_restore_",                                                  
+    "rizpaq_restore2_",                                              
     "zpaq_gui_ex_",                                                
     "zpaq_gui_batch_",                                            
 )

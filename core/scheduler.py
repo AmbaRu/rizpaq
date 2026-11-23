@@ -476,6 +476,10 @@ def find_orphan_tasks(container: dict) -> List[Dict[str, str]]:
         return []
 
     known = set(container_task_map(container).keys())
+                                                                        
+                                                                      
+                                                   
+    known.add(HEARTBEAT_TASK_NAME)
     return [t for t in tasks if t.get("name") not in known]
 
 
@@ -546,7 +550,7 @@ def compute_sync_actions(
 
     remove_list = [
         t for name, t in by_name.items()
-        if name not in seen_names
+        if name not in seen_names and name != HEARTBEAT_TASK_NAME
     ]
 
     return {

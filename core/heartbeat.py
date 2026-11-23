@@ -120,7 +120,10 @@ def run_cli() -> int:
         cfg = config_mod.load()
         zpaq = str(getattr(cfg, "zpaq_path", "") or "")
         if not zpaq or not Path(zpaq).is_file():
-            zpaq = "zpaqfranz"
+                                                                         
+                                                                         
+                                                            
+            zpaq = str(os.environ.get("ZPAQ_BIN") or "zpaqfranz")
         rc, out = send_if_needed(zpaq, cfg, cfg.tasks_dir)
         if rc != 0:
             try:

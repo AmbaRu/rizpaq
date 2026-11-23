@@ -556,7 +556,22 @@ class StreamingZpaqThread(QThread):
             if line_buf.strip():
                 self.line_received.emit(_decode_line(line_buf))
 
-            rc = p.wait()
+                                                                     
+                                                                       
+                                                                          
+                                                            
+            try:
+                rc = p.wait(timeout=5)
+            except Exception:
+                try:
+                    if p.stdout is not None:
+                        p.stdout.close()
+                except Exception:
+                    pass
+                try:
+                    rc = p.wait(timeout=5)
+                except Exception:
+                    rc = -1
 
                                                                         
                                                                       

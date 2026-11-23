@@ -54,7 +54,8 @@ from PySide6.QtCore import Qt
                                                                  
                                                                     
                                            
-_OPTION_FLAGS = ("--create", "--test", "--extract", "--extract-here", "--task")
+_OPTION_FLAGS = ("--create", "--test", "--extract", "--extract-here",
+                 "--task", "--heartbeat")
 
                                                                     
 _VALUE_FLAGS = ("--dest",)
