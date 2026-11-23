@@ -2,7 +2,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use rizpaq_task::{
-    cfg, cmdline, copy, engine, errlog, index, log, naming, notify, par2, pwstore, tasks, util,
+    cfg, cmdline, copy, engine, errlog, index, log, mail, naming, notify, par2, pwstore, restore, tasks, util,
 };
 use serde_json::Value;
 use std::path::{Path, PathBuf};
@@ -291,6 +291,10 @@ fn run(rest: &[String]) -> i32 {
     }
 
     let par2_mode = action == ACTION_TEST && test_mode == "par2";
+    let restore_mode = action == ACTION_TEST && test_mode == "restore";
+    let mut extra_ok = true;
+    let mut extra_note = String::new();
+    let mut mail_note = String::new();
 
     let mut tmp_dir: Option<PathBuf> = None;
     let mut cmd: Option<Vec<String>> = None;
@@ -304,6 +308,11 @@ fn run(rest: &[String]) -> i32 {
         rc = pre_rc.unwrap_or(1);
         log_out = pre_log;
         ok = rc == 0;
+    } else if restore_mode {
+        let (r, l) = restore::run_restore_drill(&zpaq, &dest, password, &srcs);
+        rc = if r { 0 } else { 1 };
+        log_out = l;
+        ok = r;
     } else if par2_mode {
         let (r, l, state) = par2::headless_par2_verify(&dest);
         rc = r;
@@ -423,9 +432,100 @@ fn run(rest: &[String]) -> i32 {
         index::refresh_index_sync(&zpaq, &dest, password);
     }
 
+    if ok && !skip_run && action == ACTION_BACKUP {
+        if let Some(arr) = settings.get("extra_dests").and_then(Value::as_array) {
+            let mut seen: Vec<String> = vec![dest.clone()];
+            for raw in arr {
+                let extra = tasks::py_str(raw).trim().to_string();
+                if extra.is_empty() || seen.contains(&extra) {
+                    continue;
+                }
+                seen.push(extra.clone());
+                let extra_cmd =
+                    cmdline::build_create_cmd(&zpaq, &settings, &srcs, &extra, password);
+                let (r, l) = engine::run_engine(&extra_cmd);
+                let step_ok = r == 0 || r == 1;
+                extra_ok = extra_ok && step_ok;
+                let block = format!("\n[extra archive] {}\n{}\n", extra, l);
+                extra_note.push_str(&block);
+                log_out.push_str(&block);
+
+                if step_ok && !copy_dir.is_empty() {
+                    let (copy_ok, copy_text) = copy::copy_archive(&extra, &copy_dir);
+                    let note = format!(
+                        "[extra copy] {}: {}\n",
+                        if copy_ok { "OK" } else { "FAIL" }, copy_text
+                    );
+                    extra_note.push_str(&note);
+                    log_out.push_str(&note);
+                    if !copy_ok {
+                        extra_ok = false;
+                        continue;
+                    }
+                }
+                if step_ok && tasks::py_truthy(settings.get("par2_enabled")) {
+                    let note = par2::headless_par2_create(
+                        &rzp_path, work, &extra, &settings,
+                    );
+                    extra_note.push_str(&note);
+                    log_out.push_str(&note);
+                }
+                if step_ok {
+                    index::refresh_index_sync(&zpaq, &extra, password);
+                }
+            }
+        }
+    }
+
+    if !skip_run && (action == ACTION_BACKUP || action == ACTION_TEST) {
+        if let Some(mail) = cfg::mail_config() {
+            if mail.ready() {
+                let job_title = tasks::py_str(job.get("title").unwrap_or(&Value::Null));
+                let customer = if mail.customer.is_empty() {
+                    job_title.clone()
+                } else {
+                    mail.customer.clone()
+                };
+                let state = if ok && extra_ok && !copy_failed {
+                    "OK"
+                } else {
+                    "ERROR"
+                };
+                let subject = format!("{} {} FULL", state, customer);
+                let body = format!(
+                    "Archive: {}\nStatus: {}\n\n{}{}{}{}",
+                    dest,
+                    state,
+                    log_out,
+                    copy_note,
+                    par2_note,
+                    extra_note
+                );
+                let (sent, out) = mail::send_text_report(
+                    &zpaq, &mail, &subject, &body,
+                );
+                mail_note = if sent {
+                    "\n[rizpaq] email report sent\n".to_string()
+                } else {
+                    format!("\n[rizpaq] email report NOT sent: {}\n", out)
+                };
+            }
+        }
+    }
+
+    let status = if ok && !copy_failed && extra_ok {
+        "ok"
+    } else if busy {
+        "busy"
+    } else {
+        "error"
+    };
+
     let log_header =
         log::build_log_header(&rzp_path, work, job, rc, password, cmd.as_deref());
-    let task_note = format!("{}{}{}", skip_note, copy_note, par2_note);
+    let task_note = format!(
+        "{}{}{}{}{}", skip_note, copy_note, par2_note, extra_note, mail_note
+    );
     log::write_task_log(
         &rzp_path,
         &log_header,
@@ -454,7 +554,7 @@ fn run(rest: &[String]) -> i32 {
         );
     }
 
-    if ok && !copy_failed {
+    if ok && !copy_failed && extra_ok {
         0
     } else {
         1

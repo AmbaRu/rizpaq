@@ -87,6 +87,64 @@ pub fn notify_config() -> Option<NotifyConfig> {
     })
 }
 
+#[derive(Clone)]
+pub struct MailConfig {
+    pub enabled: bool,
+    pub server: String,
+    pub port: String,
+    pub tls: String,
+    pub user: String,
+    pub password: String,
+    pub from: String,
+    pub to: String,
+    pub customer: String,
+    pub heartbeat: bool,
+}
+
+impl MailConfig {
+    pub fn ready(&self) -> bool {
+        self.enabled
+            && !self.server.is_empty()
+            && !self.from.is_empty()
+            && !self.to.is_empty()
+    }
+}
+
+pub fn mail_config() -> Option<MailConfig> {
+    let v = load_config()?;
+    let get = |key: &str| -> String {
+        v.get(key)
+            .and_then(Value::as_str)
+            .unwrap_or("")
+            .trim()
+            .to_string()
+    };
+    let tls = get("mail_smtp_tls").to_lowercase();
+    let tls = if tls == "ssl" { "ssl" } else { "starttls" }.to_string();
+    Some(MailConfig {
+        enabled: v
+            .get("mail_report_enabled")
+            .and_then(Value::as_bool)
+            .unwrap_or(false),
+        server: get("mail_smtp_server"),
+        port: get("mail_smtp_port"),
+        tls,
+        user: get("mail_smtp_user"),
+        password: v
+            .get("mail_smtp_password")
+            .and_then(Value::as_str)
+            .unwrap_or("")
+            .to_string(),
+        from: get("mail_from"),
+        to: get("mail_to"),
+        customer: get("mail_customer"),
+        heartbeat: v
+            .get("mail_heartbeat_enabled")
+            .and_then(Value::as_bool)
+            .unwrap_or(false),
+    })
+}
+
 pub fn config_zpaq_path() -> Option<PathBuf> {
     let v = load_config()?;
     let s = v.get("zpaq_path")?.as_str()?.trim().to_string();
