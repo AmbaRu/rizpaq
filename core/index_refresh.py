@@ -30,7 +30,7 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-from core.archive_index import store_entries
+from core.archive_index import record_size, store_entries
 from core.parser import ParseReport, parse_csv_line_reported
 from core.zpaq_cli import run_zpaq
 
@@ -73,6 +73,7 @@ def store_fresh_listing(path: str, entries: list) -> int:
         return 0
     try:
         store_entries(str(path), stamp[0], stamp[1], entries)
+        record_size(str(path), stamp[1], len(entries))
     except Exception:
         return 0
     return len(entries)

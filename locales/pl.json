@@ -967,6 +967,7 @@
     "tip.restore": "Wyodrębnij losowy plik i porównaj jego hash z oryginałem — dowód, że kopia zapasowa rzeczywiście się odtwarza",
     "restore.title": "Sprawdzenie odzyskiwania",
     "restore.ok": "Plik {name} odzyskany, hash zgodny",
-    "restore.fail": "Odzyskiwanie nie udało się: {reason}"
+    "restore.fail": "Odzyskiwanie nie udało się: {reason}",
+    "dashboard.gauge.forecast": "Przy obecnym tempie miejsca zabraknie za ~{days} dni"
   }
 }

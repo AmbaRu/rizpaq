@@ -967,6 +967,7 @@
     "tip.restore": "Eine zufällige Datei extrahieren und den Hash mit dem Original vergleichen — Beweis, dass das Backup wirklich wiederherstellbar ist",
     "restore.title": "Wiederherstellung prüfen",
     "restore.ok": "Datei {name} wiederhergestellt, Hash stimmt",
-    "restore.fail": "Wiederherstellung fehlgeschlagen: {reason}"
+    "restore.fail": "Wiederherstellung fehlgeschlagen: {reason}",
+    "dashboard.gauge.forecast": "Bei aktuellem Tempo ist der Speicher in ~{days} Tagen voll"
   }
 }

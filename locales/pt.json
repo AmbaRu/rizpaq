@@ -967,6 +967,7 @@
     "tip.restore": "Extrair um ficheiro aleatório e comparar o hash com o original — prova de que a cópia de segurança é restaurável",
     "restore.title": "Verificação de restauro",
     "restore.ok": "Ficheiro {name} restaurado, hash correspondente",
-    "restore.fail": "Falha no restauro: {reason}"
+    "restore.fail": "Falha no restauro: {reason}",
+    "dashboard.gauge.forecast": "No ritmo atual, o espaço esgotará em ~{days} dias"
   }
 }

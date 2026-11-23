@@ -126,7 +126,10 @@ INDEX_FILENAME = "archive_index.sqlite"
                                                       
                                                                       
                            
-SCHEMA_VERSION = 2
+                                                                       
+                                                                         
+                                                   
+SCHEMA_VERSION = 3
 
                        
  
@@ -196,6 +199,18 @@ _SCHEMA_STATEMENTS = (
         missing        INTEGER NOT NULL DEFAULT 0
     )
     """,
+                                                                         
+                                                                         
+    """
+    CREATE TABLE IF NOT EXISTS size_history (
+        id             INTEGER PRIMARY KEY AUTOINCREMENT,
+        path           TEXT NOT NULL,
+        ts             INTEGER NOT NULL,
+        size           INTEGER NOT NULL,
+        entries_count  INTEGER NOT NULL DEFAULT 0
+    )
+    """,
+    "CREATE INDEX IF NOT EXISTS idx_size_history_path ON size_history(path, ts)",
 )
 
                                                          
@@ -642,6 +657,60 @@ def _under_root(path: str, root: str) -> bool:
     if not r.endswith(os.sep):
         r += os.sep
     return p.startswith(r)
+
+
+def record_size(path: str, size: int, entries_count: int = 0) -> None:
+    pass
+
+
+
+
+
+
+
+    if not _is_supported(path):
+        return
+    p = str(path)
+    now = int(time.time())
+    with _lock:
+        try:
+            conn = _get_connection()
+        except Exception:
+            return
+        try:
+            with conn:
+                conn.execute(
+                    "DELETE FROM size_history WHERE path = ? AND ts = ?",
+                    (p, now),
+                )
+                conn.execute(
+                    "INSERT INTO size_history "
+                    "(path, ts, size, entries_count) VALUES (?, ?, ?, ?)",
+                    (p, now, int(size or 0), int(entries_count or 0)),
+                )
+        except Exception:
+            pass
+
+
+def load_size_history(path: str, limit: int = 400) -> list:
+    pass
+
+
+
+    if not _is_supported(path):
+        return []
+    with _lock:
+        try:
+            conn = _get_connection()
+            rows = conn.execute(
+                "SELECT ts, size, entries_count FROM size_history "
+                "WHERE path = ? ORDER BY ts ASC",
+                (str(path),),
+            ).fetchall()
+        except Exception:
+            return []
+    result = [(int(r[0]), int(r[1]), int(r[2] or 0)) for r in rows]
+    return result[-max(1, int(limit)):]
 
 
 def catalog_upsert(path: str, size: int, mtime_ns: int) -> None:

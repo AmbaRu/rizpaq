@@ -967,6 +967,7 @@
     "tip.restore": "ランダムなファイルを展開して元のハッシュと比較し、バックアップが本当に復元できることを確認します",
     "restore.title": "復元チェック",
     "restore.ok": "ファイル {name} を復元し、ハッシュが一致しました",
-    "restore.fail": "復元に失敗しました: {reason}"
+    "restore.fail": "復元に失敗しました: {reason}",
+    "dashboard.gauge.forecast": "現在のペースでは約{days}日で容量が不足します"
   }
 }

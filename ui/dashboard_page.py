@@ -72,7 +72,7 @@ from PySide6.QtWidgets import (
 )
 
 from core.archive_index import load_entries
-from core import dashboard_alerts
+from core import archive_index, dashboard_alerts, disk_forecast
 from core.par2_ops import par2_main_name
 from core.run_history import RunEntry, load_history
 from core.tasks import (
@@ -537,8 +537,9 @@ class DashboardPage(QWidget):
                                                                     
                                                                 
         self._lbl_free = QLabel()
+        self._lbl_forecast = QLabel()
         for lbl in (self._lbl_par2, self._lbl_files, self._lbl_volume,
-                    self._lbl_free):
+                    self._lbl_free, self._lbl_forecast):
             lbl.setStyleSheet(f"color: {skins.color('TEXT_MUTED')};")
             lay.addWidget(lbl)
         return page
@@ -1159,6 +1160,27 @@ class DashboardPage(QWidget):
                 "dashboard.gauge.free", free=_format_size(min(frees))))
         else:
             self._lbl_free.setText("")
+
+                                                                       
+                                                                           
+                                                                     
+        forecasts = []
+        for dest in dests:
+            try:
+                samples = archive_index.load_size_history(dest)
+                growth = disk_forecast.daily_growth(samples)
+                free = dashboard_alerts.free_bytes(dest)
+                days = disk_forecast.days_to_full(free, growth)
+                if days is not None:
+                    forecasts.append(days)
+            except Exception:
+                continue
+        if forecasts:
+            self._lbl_forecast.setText(tr(
+                "dashboard.gauge.forecast", days=min(forecasts)
+            ))
+        else:
+            self._lbl_forecast.setText("")
 
                                                                         
                                                                

@@ -967,6 +967,7 @@
     "tip.restore": "Extraire un fichier aléatoire et comparer son empreinte avec l'original : preuve que la sauvegarde est restaurable",
     "restore.title": "Vérification de restauration",
     "restore.ok": "Fichier {name} restauré, empreinte identique",
-    "restore.fail": "Restauration échouée : {reason}"
+    "restore.fail": "Restauration échouée : {reason}",
+    "dashboard.gauge.forecast": "Au rythme actuel, l'espace sera épuisé dans ~{days} jours"
   }
 }

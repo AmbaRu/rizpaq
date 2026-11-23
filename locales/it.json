@@ -967,6 +967,7 @@
     "tip.restore": "Estrarre un file casuale e confrontare l'hash con l'originale: dimostra che il backup è davvero ripristinabile",
     "restore.title": "Verifica ripristino",
     "restore.ok": "File {name} ripristinato, hash corrispondente",
-    "restore.fail": "Ripristino non riuscito: {reason}"
+    "restore.fail": "Ripristino non riuscito: {reason}",
+    "dashboard.gauge.forecast": "Al ritmo attuale lo spazio finirà tra ~{days} giorni"
   }
 }

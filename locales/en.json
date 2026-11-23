@@ -967,6 +967,7 @@
     "tip.restore": "Extract a random file and compare its hash with the source — proof that the backup can actually be restored",
     "restore.title": "Restore check",
     "restore.ok": "File {name} restored, hash matches",
-    "restore.fail": "Restore check failed: {reason}"
+    "restore.fail": "Restore check failed: {reason}",
+    "dashboard.gauge.forecast": "At the current rate, disk space will run out in ~{days} days"
   }
 }
