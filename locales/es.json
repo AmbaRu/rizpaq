@@ -632,8 +632,6 @@
     "menu.test.verify": "Comprobar el archivo ( cotejar con los originales)",
     "menu.test.par2": "Comprobar el archivo (PAR2)",
     "menu.test.verify_fs": "Comprobar archivo (con el sistema de archivos)",
-    "crop.fail": "No se pudo recortar el archivo: {name}",
-    "crop.title": "Recortar archivo",
     "par2.verify_running": "comprobando…",
     "par2.verify_failed": "la comprobación no empezó: {error}",
     "par2.verify_size": "el conjunto protege {size}",
@@ -815,9 +813,6 @@
     "salvage.done_text": "Datos rescatados en la carpeta:\n{dest}",
     "salvage.partial_title": "Se salvó parte de los datos",
     "salvage.partial_text": "El archivo está dañado: se salvó todo lo legible. Carpeta de resultado:\n{dest}\n\nDetalles en el registro de abajo.",
-    "crop.dialog_title": "Recortar versiones del archivo",
-    "crop.confirm_text": "¿Recortar las versiones antiguas del archivo «{name}»?\n\nEsto elimina definitivamente las versiones antiguas y no se puede deshacer. ¿Continuar?",
-    "crop.ok": "Archivo recortado: {name}",
     "consolidate.dialog_title": "Consolidar archivo multivolumen",
     "consolidate.confirm_text": "¿Consolidar el archivo «{name}»?\n\nEsto reescribe el archivo uniendo todas las partes en una sola. ¿Continuar?",
     "consolidate.ok": "Archivo consolidado: {name}",
@@ -990,6 +985,15 @@
     "mail.heartbeat_task_on": "creada",
     "mail.heartbeat_task_off": "no creada",
     "mail.heartbeat_task_failed": "No se pudo cambiar la tarea programada. Pueden hacer falta permisos de administrador.",
-    "drag.extract_failed": "No se pudieron extraer los archivos para arrastrar: {reason}"
+    "drag.extract_failed": "No se pudieron extraer los archivos para arrastrar: {reason}",
+    "retention.title": "Retención de versiones",
+    "retention.multipart": "La retención no admite archivos multiparte; use un único .zpaq.",
+    "retention.policy_prompt": "Política de retención (7d4w12my = 7 días/4 semanas/12 meses/años; 10last = últimas 10):",
+    "retention.bad_policy": "Política no válida. Se permiten dígitos, d/w/m/y/h, comas y guiones.",
+    "retention.confirm": "¿Conservar las versiones de «{name}» con la política {policy}?\n\nPrimero se mostrará una vista previa. El original se sustituye solo tras verificar el archivo nuevo.",
+    "retention.apply_question": "¿Aplicar esta política? Las versiones no seleccionadas se eliminarán permanentemente.",
+    "retention.preview_failed": "No se pudo previsualizar:",
+    "retention.ok": "Retención completada: {name}",
+    "retention.fail": "Error en la retención: {name}"
   }
 }

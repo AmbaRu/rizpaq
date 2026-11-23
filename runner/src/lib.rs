@@ -15,5 +15,6 @@ pub mod par2;
 pub mod proc;
 pub mod pwstore;
 pub mod restore;
+pub mod retention;
 pub mod tasks;
 pub mod util;

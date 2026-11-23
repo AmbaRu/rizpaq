@@ -632,8 +632,6 @@
     "menu.test.verify": "Verifica archivio (confronto con le sorgenti)",
     "menu.test.par2": "Verifica archivio (PAR2)",
     "menu.test.verify_fs": "Verifica archivio (rispetto al file system)",
-    "crop.fail": "Ritaglio dell'archivio non riuscito: {name}",
-    "crop.title": "Ritaglia archivio",
     "par2.verify_running": "verifica in corso…",
     "par2.verify_failed": "la verifica non è iniziata: {error}",
     "par2.verify_size": "il set protegge {size}",
@@ -815,9 +813,6 @@
     "salvage.done_text": "Dati recuperati nella cartella:\n{dest}",
     "salvage.partial_title": "Salvata una parte dei dati",
     "salvage.partial_text": "L'archivio è danneggiato: è stato salvato tutto il leggibile. Cartella dei risultati:\n{dest}\n\nDettagli nel registro sotto.",
-    "crop.dialog_title": "Ritaglia le versioni dell'archivio",
-    "crop.confirm_text": "Ritagliare le vecchie versioni dell'archivio «{name}»?\n\nLe vecchie versioni vengono rimosse definitivamente e l'operazione non è reversibile. Continuare?",
-    "crop.ok": "Archivio ritagliato: {name}",
     "consolidate.dialog_title": "Consolida archivio multivolume",
     "consolidate.confirm_text": "Consolidare l'archivio «{name}»?\n\nL'archivio viene riscritto unendo tutte le parti in un unico file. Continuare?",
     "consolidate.ok": "Archivio consolidato: {name}",
@@ -990,6 +985,15 @@
     "mail.heartbeat_task_on": "creata",
     "mail.heartbeat_task_off": "non creata",
     "mail.heartbeat_task_failed": "Impossibile modificare l'attività pianificata. Potrebbero servire i diritti di amministratore.",
-    "drag.extract_failed": "Impossibile estrarre i file per il trascinamento: {reason}"
+    "drag.extract_failed": "Impossibile estrarre i file per il trascinamento: {reason}",
+    "retention.title": "Conservazione delle versioni",
+    "retention.multipart": "La conservazione non supporta archivi multifile: usare un solo .zpaq.",
+    "retention.policy_prompt": "Politica di conservazione (7d4w12my = 7 giorni/4 settimane/12 mesi/anni; 10last = ultime 10):",
+    "retention.bad_policy": "Politica non valida. Consentiti cifre, d/w/m/y/h, virgole e trattini.",
+    "retention.confirm": "Conservare le versioni di «{name}» con la politica {policy}?\n\nPrima verrà mostrata un'anteprima. L'originale viene sostituito solo dopo la verifica del nuovo archivio.",
+    "retention.apply_question": "Applicare la politica? Le versioni non selezionate verranno eliminate definitivamente.",
+    "retention.preview_failed": "Anteprima non riuscita:",
+    "retention.ok": "Conservazione completata: {name}",
+    "retention.fail": "Conservazione non riuscita: {name}"
   }
 }

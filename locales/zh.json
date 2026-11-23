@@ -632,11 +632,6 @@
     "menu.test.verify": "校验档案（与原始数据比对）",
     "menu.test.par2": "校验档案（PAR2）",
     "menu.test.verify_fs": "验证归档（与文件系统比对）",
-    "crop.dialog_title": "裁剪归档版本",
-    "crop.confirm_text": "裁剪归档“{name}”的旧版本？\n\n旧版本将被永久删除，且无法撤销。是否继续？",
-    "crop.ok": "归档已裁剪：{name}",
-    "crop.fail": "裁剪归档失败：{name}",
-    "crop.title": "裁剪归档",
     "par2.verify_running": "正在校验…",
     "par2.verify_failed": "校验未能开始：{error}",
     "par2.verify_size": "恢复文件覆盖 {size}",
@@ -990,6 +985,15 @@
     "mail.heartbeat_task_on": "已创建",
     "mail.heartbeat_task_off": "未创建",
     "mail.heartbeat_task_failed": "无法修改计划任务，可能需要管理员权限。",
-    "drag.extract_failed": "无法提取拖拽所需文件：{reason}"
+    "drag.extract_failed": "无法提取拖拽所需文件：{reason}",
+    "retention.title": "版本保留",
+    "retention.multipart": "不支持多卷归档，请使用单个 .zpaq 文件。",
+    "retention.policy_prompt": "保留策略（7d4w12my = 7天/4周/12月/年；10last = 最近10个）：",
+    "retention.bad_policy": "策略无效。只允许数字、d/w/m/y/h、逗号和连字符。",
+    "retention.confirm": "按策略 {policy} 保留归档「{name}」的版本？\n\n将先显示不写入的预览。只有在验证新归档后才会替换原文件。",
+    "retention.apply_question": "应用此策略？未选中的版本将被永久删除。",
+    "retention.preview_failed": "预览失败：",
+    "retention.ok": "保留完成：{name}",
+    "retention.fail": "保留失败：{name}"
   }
 }

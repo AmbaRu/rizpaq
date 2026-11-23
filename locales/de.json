@@ -632,8 +632,6 @@
     "menu.test.verify": "Archiv prüfen (Abgleich mit Quellen)",
     "menu.test.par2": "Archiv prüfen (PAR2)",
     "menu.test.verify_fs": "Archiv prüfen (gegen Dateisystem)",
-    "crop.fail": "Archiv konnte nicht beschnitten werden: {name}",
-    "crop.title": "Archiv beschneiden",
     "par2.verify_running": "Prüfung läuft…",
     "par2.verify_failed": "Prüfung konnte nicht starten: {error}",
     "par2.verify_size": "Der Satz schützt {size}",
@@ -815,9 +813,6 @@
     "salvage.done_text": "Daten gerettet nach:\n{dest}",
     "salvage.partial_title": "Teil der Daten gerettet",
     "salvage.partial_text": "Das Archiv ist beschädigt: alles Lesbare wurde gerettet. Ergebnisordner:\n{dest}\n\nDetails im Protokoll unten.",
-    "crop.dialog_title": "Archivversionen beschneiden",
-    "crop.confirm_text": "Alte Versionen des Archivs „{name}“ beschneiden?\n\nDie alten Versionen werden endgültig entfernt. Fortfahren?",
-    "crop.ok": "Archiv beschnitten: {name}",
     "consolidate.dialog_title": "Mehrteilearchiv zusammenführen",
     "consolidate.confirm_text": "Archiv „{name}“ zusammenführen?\n\nDas Archiv wird neu geschrieben und alle Teile in eine Datei übernommen. Fortfahren?",
     "consolidate.ok": "Archiv zusammengeführt: {name}",
@@ -990,6 +985,15 @@
     "mail.heartbeat_task_on": "erstellt",
     "mail.heartbeat_task_off": "nicht erstellt",
     "mail.heartbeat_task_failed": "Die geplante Aufgabe konnte nicht geändert werden. Möglicherweise sind Administratorrechte nötig.",
-    "drag.extract_failed": "Dateien für den Drag-Vorgang konnten nicht extrahiert werden: {reason}"
+    "drag.extract_failed": "Dateien für den Drag-Vorgang konnten nicht extrahiert werden: {reason}",
+    "retention.title": "Versionsaufbewahrung",
+    "retention.multipart": "Aufbewahrung für mehrteilige Archive wird nicht unterstützt — nur eine einzelne .zpaq-Datei.",
+    "retention.policy_prompt": "Aufbewahrungsrichtlinie (7d4w12my = 7 Tage/4 Wochen/12 Monate/Jahre; 10last = letzte 10):",
+    "retention.bad_policy": "Ungültige Richtlinie. Erlaubt sind Ziffern, d/w/m/y/h, Kommas und Bindestriche.",
+    "retention.confirm": "Versionen von «{name}» nach Richtlinie {policy} behalten?\n\nZuerst wird eine Vorschau angezeigt. Das Original wird erst nach Prüfung des neuen Archivs ersetzt.",
+    "retention.apply_question": "Diese Richtlinie anwenden? Nicht ausgewählte Versionen werden endgültig entfernt.",
+    "retention.preview_failed": "Vorschau fehlgeschlagen:",
+    "retention.ok": "Aufbewahrung abgeschlossen: {name}",
+    "retention.fail": "Aufbewahrung fehlgeschlagen: {name}"
   }
 }

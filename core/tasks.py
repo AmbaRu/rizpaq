@@ -257,6 +257,7 @@ WORK_FIELDS = (
 JOB_FIELDS = (
     "action",
     "test_mode",
+    "retention_policy",
     "level",
     "level_key",
     "hash",

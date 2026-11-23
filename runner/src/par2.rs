@@ -786,11 +786,11 @@ pub fn headless_par2_create(
     work: &Value,
     dest: &str,
     settings: &Value,
-) -> String {
+) -> (bool, String) {
     let header = "\n[par2] создание набора защиты от повреждений\n".to_string();
 
     let Some(par2_bin) = find_par2() else {
-        return header + "par2.exe не найден, набор не создан\n";
+        return (false, header + "par2.exe не найден, набор не создан\n");
     };
 
     let options = settings
@@ -806,12 +806,12 @@ pub fn headless_par2_create(
         match py_int(Some(&redundancy_raw)) {
             Some(v) => v,
             None => {
-                return header
+                return (false, header
                     + &format!(
                         "ошибка набора: ValueError: invalid literal for int() \
 with base 10: {}\n",
                         tasks::py_str(&redundancy_raw)
-                    )
+                    ))
             }
         }
     } else {
@@ -825,12 +825,12 @@ with base 10: {}\n",
             match py_int(Some(&raw)) {
                 Some(v) => opts.push((key.to_string(), Some(v))),
                 None => {
-                    return header
+                    return (false, header
                         + &format!(
                             "ошибка набора: ValueError: invalid literal for \
 int() with base 10: {}\n",
                             tasks::py_str(&raw)
-                        )
+                        ))
                 }
             }
         } else {
@@ -860,7 +860,7 @@ int() with base 10: {}\n",
             .last()
             .map(|l| l.chars().take(200).collect::<String>())
             .unwrap_or_else(|| "причина неизвестна".to_string());
-        return header + &format!("набор НЕ создан: {}\n", last);
+        return (false, header + &format!("набор НЕ создан: {}\n", last));
     }
 
     if let Some(size) = res.recorded_size {
@@ -877,13 +877,13 @@ int() with base 10: {}\n",
     }
 
     if res.log.contains("не изменился") {
-        return header + "архив не изменился, набор остался в силе\n";
+        return (true, header + "архив не изменился, набор остался в силе\n");
     }
-    header
+    (true, header
         + &format!(
             "набор создан, защищает {} байт\n",
             py_opt_int(res.recorded_size)
-        )
+        ))
 }
 
 

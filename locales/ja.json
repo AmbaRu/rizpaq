@@ -632,8 +632,6 @@
     "menu.test.verify": "アーカイブを検証（元データと照合）",
     "menu.test.par2": "アーカイブを検証（PAR2）",
     "menu.test.verify_fs": "アーカイブを検証（ファイルシステムと照合）",
-    "crop.fail": "アーカイブの切り詰めに失敗しました: {name}",
-    "crop.title": "アーカイブの切り詰め",
     "par2.verify_running": "検証中…",
     "par2.verify_failed": "検証を開始できませんでした: {error}",
     "par2.verify_size": "セットが保護する範囲: {size}",
@@ -815,9 +813,6 @@
     "salvage.done_text": "データを保存しました:\n{dest}",
     "salvage.partial_title": "データの一部が保存されました",
     "salvage.partial_text": "アーカイブは破損しています。読めたものはすべて保存しました。\n結果フォルダー:\n{dest}\n\n詳細は下のログを参照。",
-    "crop.dialog_title": "アーカイブのバージョンを切り詰める",
-    "crop.confirm_text": "アーカイブ「{name}」の古いバージョンを切り詰めますか？\n\n古いバージョンは完全に削除され、元に戻せません。続行しますか？",
-    "crop.ok": "アーカイブを切り詰めました: {name}",
     "consolidate.dialog_title": "分割アーカイブの統合",
     "consolidate.confirm_text": "アーカイブ「{name}」を統合しますか？\n\nアーカイブは書き換えられ、すべてのパートが 1 つのファイルにまとめられます。続行しますか？",
     "consolidate.ok": "アーカイブを統合しました: {name}",
@@ -990,6 +985,15 @@
     "mail.heartbeat_task_on": "作成済み",
     "mail.heartbeat_task_off": "未作成",
     "mail.heartbeat_task_failed": "タスクを変更できませんでした。管理者権限が必要な可能性があります。",
-    "drag.extract_failed": "ドラッグ用ファイルを展開できませんでした: {reason}"
+    "drag.extract_failed": "ドラッグ用ファイルを展開できませんでした: {reason}",
+    "retention.title": "バージョン保持",
+    "retention.multipart": "マルチボリュームは非対応です。単一の .zpaq を使用してください。",
+    "retention.policy_prompt": "保持ポリシー (7d4w12my = 7日/4週/12か月/年; 10last = 最新10):",
+    "retention.bad_policy": "不正なポリシーです。数字、d/w/m/y/h、カンマ、ハイフンが使えます。",
+    "retention.confirm": "「{name}」のバージョンをポリシー {policy} で保持しますか？\n\n最初に書き込みなしのプレビューを表示します。元のファイルは新しいアーカイブの検証後にのみ置換されます。",
+    "retention.apply_question": "このポリシーを適用しますか？選択されなかったバージョンは完全に削除されます。",
+    "retention.preview_failed": "プレビューに失敗しました：",
+    "retention.ok": "保持処理完了: {name}",
+    "retention.fail": "保持処理に失敗: {name}"
   }
 }

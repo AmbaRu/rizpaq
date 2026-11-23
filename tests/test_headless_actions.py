@@ -119,6 +119,20 @@ class TestHeadlessActions(unittest.TestCase):
         self.assertEqual(state.get("run_count"), 1)
         self.assertTrue(state.get("last_run"))
 
+    def test_backup_verify_after_create(self):
+        pass
+        rc, calls, job_id = self._run("backup", {"verify": "full"})
+        self.assertEqual(rc, 0)
+        self.assertEqual(len(calls), 2)
+        self.assertEqual(calls[0][1], "a")
+        self.assertEqual(calls[1][1], "t")
+        self.assertEqual(self._job_state(job_id).get("last_status"), "ok")
+
+    def test_unknown_verify_mode_is_ignored(self):
+        rc, calls, _job = self._run("backup", {"verify": "nonsense"})
+        self.assertEqual(rc, 0)
+        self.assertEqual(len(calls), 1)
+
     def test_scheduled_backup_makes_second_copy(self):
         pass
         copy_dir = self.dir / "copy"
@@ -169,12 +183,18 @@ class TestHeadlessActions(unittest.TestCase):
         self.assertEqual(calls[0][1], "t")
         self.assertEqual(calls[0][2], str(self.dest))
 
-    def test_crop_action_builds_crop_command(self):
-        rc, calls, _ = self._run("crop")
+    def test_crop_action_uses_repack_with_verify(self):
+        def fake_run(cmd):
+            if "-to" in cmd:
+                Path(cmd[cmd.index("-to") + 1]).write_bytes(b"new archive")
+            return 0, "engine output\n"
+
+        rc, calls, job_id = self._run("crop", fake_run=fake_run)
         self.assertEqual(rc, 0)
-        self.assertEqual(
-            calls[0], [ZPAQ, "crop", str(self.dest), "-kill", "-to", str(self.dest)]
-        )
+        self.assertEqual(calls[0][1], "repack")
+        self.assertIn("-to", calls[0])
+        self.assertEqual(calls[1][1], "i")
+        self.assertEqual(self._job_state(job_id).get("last_status"), "ok")
 
     def test_consolidate_action_builds_consolidate_command(self):
         rc, calls, _ = self._run("consolidate")

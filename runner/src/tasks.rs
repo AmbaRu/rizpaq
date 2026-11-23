@@ -10,6 +10,7 @@ pub const CONTAINER_VERSION: i64 = 1;
 pub const JOB_FIELDS: &[&str] = &[
     "action",
     "test_mode",
+    "retention_policy",
     "level",
     "level_key",
     "hash",
@@ -280,6 +281,11 @@ fn normalize_work(w: &Value) -> Option<Value> {
         "modified": normalize_date_value(Some(&json!(str_or(obj.get("modified"), &now_str())))),
         "sources": sources,
         "dest": str_or(obj.get("dest"), ""),
+        "extra_dests": obj
+            .get("extra_dests")
+            .and_then(Value::as_array)
+            .map(|a| a.iter().map(|v| json!(py_str(v).trim())).collect::<Vec<Value>>())
+            .unwrap_or_default(),
         "password_b64": match obj.get("password_b64") {
             Some(v) if py_truthy(Some(v)) => v.clone(),
             _ => Value::Null,
@@ -414,6 +420,14 @@ pub fn job_to_runnable_settings(work: &Value, job: &Value) -> Value {
             .unwrap_or_default()),
     );
     s.insert("dest".into(), json!(str_or(work.get("dest"), "")));
+    s.insert(
+        "extra_dests".into(),
+        json!(work
+            .get("extra_dests")
+            .and_then(Value::as_array)
+            .cloned()
+            .unwrap_or_default()),
+    );
     s.insert("password".into(), decode_password(work.get("password_b64")));
     s.insert(
         "only_masks".into(),

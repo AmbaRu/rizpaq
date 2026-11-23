@@ -632,8 +632,6 @@
     "menu.test.verify": "Sprawdź archiwum (porównanie ze źródłami)",
     "menu.test.par2": "Sprawdź archiwum (PAR2)",
     "menu.test.verify_fs": "Sprawdź archiwum (z systemem plików)",
-    "crop.fail": "Nie udało się przyciąć archiwum: {name}",
-    "crop.title": "Przycinanie archiwum",
     "par2.verify_running": "trwa sprawdzanie…",
     "par2.verify_failed": "sprawdzanie nie zostało rozpoczęte: {error}",
     "par2.verify_size": "zestaw chroni {size}",
@@ -815,9 +813,6 @@
     "salvage.done_text": "Dane uratowano w folderze:\n{dest}",
     "salvage.partial_title": "Uratowano część danych",
     "salvage.partial_text": "Archiwum jest uszkodzone: uratowano wszystko, co czytelne. Folder wynikowy:\n{dest}\n\nSzczegóły w dzienniku poniżej.",
-    "crop.dialog_title": "Przytnij wersje archiwum",
-    "crop.confirm_text": "Przyciąć stare wersje archiwum „{name}”?\n\nStare wersje zostaną trwale usunięte — tej operacji nie można cofnąć. Kontynuować?",
-    "crop.ok": "Archiwum przycięte: {name}",
     "consolidate.dialog_title": "Scal wieloczęściowe archiwum",
     "consolidate.confirm_text": "Scalić archiwum „{name}”?\n\nArchiwum zostanie zapisane od nowa, a wszystkie części połączone w jeden plik. Kontynuować?",
     "consolidate.ok": "Archiwum scalone: {name}",
@@ -990,6 +985,15 @@
     "mail.heartbeat_task_on": "utworzone",
     "mail.heartbeat_task_off": "nieutworzone",
     "mail.heartbeat_task_failed": "Nie udało się zmienić zadania. Można być potrzebne uprawnienia administratora.",
-    "drag.extract_failed": "Nie udało się wyodrębnić plików do przeciągnięcia: {reason}"
+    "drag.extract_failed": "Nie udało się wyodrębnić plików do przeciągnięcia: {reason}",
+    "retention.title": "Przechowywanie wersji",
+    "retention.multipart": "Przechowywanie nie obsługuje archiwów wieloczęściowych — użyj pojedynczego .zpaq.",
+    "retention.policy_prompt": "Polityka przechowywania (7d4w12my = 7 dni/4 tygodnie/12 miesięcy/lata; 10last = ostatnie 10):",
+    "retention.bad_policy": "Nieprawidłowa polityka. Dozwolone cyfry, d/w/m/y/h, przecinki i myślniki.",
+    "retention.confirm": "Zachować wersje «{name}» według polityki {policy}?\n\nNajpierw zostanie pokazany podgląd bez zapisu. Oryginał zostanie zastąpiony dopiero po sprawdzeniu nowego archiwum.",
+    "retention.apply_question": "Zastosować tę politykę? Wersje niezaznaczone zostaną trwale usunięte.",
+    "retention.preview_failed": "Nie udało się wyświetlić podglądu:",
+    "retention.ok": "Zakończono przechowywanie: {name}",
+    "retention.fail": "Nie udało się przechować: {name}"
   }
 }

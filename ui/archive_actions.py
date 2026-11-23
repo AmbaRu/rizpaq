@@ -230,10 +230,11 @@ from core.zpaq_cli import looks_like_busy_error, resolve_checksize
 
                                                                  
                                                             
-from core import mail_report
+from core import mail_report, retention
 from workers.mail_report_worker import MailReportWorker
 from workers.restore_drill_worker import RestoreDrillWorker
 from workers.extra_dests_worker import ExtraDestsWorker
+from workers.retention_worker import RetentionWorker
 
 from ui.archive_check_dialog import ArchiveCheckDialog
 from ui.archive_create_dialog import ArchiveCreateDialog
@@ -957,94 +958,118 @@ class ArchiveActionsMixin:
 
 
 
+
+
         arc = multipart_pattern(path or self.archive_path)
         if not arc:
             self.statusBar().showMessage(tr("status.test_only_archive"))
             return
         arc = str(arc)
-
+        if "?" in arc:
+            QMessageBox.warning(
+                self, tr("retention.title"), tr("retention.multipart")
+            )
+            return
         if not self.zpaq_available:
             QMessageBox.warning(
                 self, tr("zpaq.not_found_title"), tr("zpaq.not_found_text")
             )
             return
 
-                                             
+        policy, accepted = QInputDialog.getText(
+            self, tr("retention.title"), tr("retention.policy_prompt"),
+            text=retention.DEFAULT_POLICY,
+        )
+        policy = str(policy or "").strip()
+        if not accepted or not policy:
+            return
+        if not retention.valid_policy(policy):
+            QMessageBox.warning(
+                self, tr("retention.title"), tr("retention.bad_policy")
+            )
+            return
+
         ans = QMessageBox.question(
-            self,
-            tr("crop.dialog_title"),
-            tr("crop.confirm_text", name=Path(arc).name),
+            self, tr("retention.title"),
+            tr("retention.confirm", name=Path(arc).name, policy=policy),
             QMessageBox.Yes | QMessageBox.No,
         )
         if ans != QMessageBox.Yes:
             return
 
-        cmd = [self.zpaq_bin, "crop", arc, "-kill", "-to", arc]
-
-        self.log_command(cmd)
-
-        worker = ZpaqWorker(
-            "crop",
-            cmd,
-            {
-                "path": arc,
-                "from_create": False,
-                "job_context": dict(job_context) if job_context else None,
-            },
+        self._retention_context = dict(job_context) if job_context else None
+        self._retention_policy = policy
+        self._start_retention_worker(
+            arc, policy, apply=False, on_done=self._on_retention_preview
         )
-        worker.result.connect(self._on_crop_result)
-        try:
-            worker.percent.connect(self._crop_progress.set_percent)
-        except Exception:
-            pass
-        try:
-            worker.progress_info.connect(self._crop_progress.update_info)
-        except Exception:
-            pass
-        try:
-            worker.line_received.connect(self._crop_progress.append_output)
-        except Exception:
-            pass
 
+    def _start_retention_worker(self, arc: str, policy: str, apply: bool,
+                                on_done):
+        worker = RetentionWorker(
+            self.zpaq_bin, arc, policy, None, apply=apply, parent=self
+        )
+        worker.done.connect(on_done)
         worker.finished.connect(lambda w=worker: self._cleanup_worker(w))
         self._workers.append(worker)
         worker.start()
 
-    def _on_crop_result(self, result):
+    def _on_retention_preview(self, result: dict):
+        pass
+        text = str(result.get("text") or "")
+        if not result.get("ok"):
+            QMessageBox.warning(
+                self, tr("retention.title"),
+                tr("retention.preview_failed") + "\n\n" + text[-_TEST_TAIL:],
+            )
+            return
+        ans = QMessageBox.question(
+            self, tr("retention.title"),
+            tr("retention.apply_question") + "\n\n" + text[-_TEST_TAIL:],
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No,
+        )
+        if ans == QMessageBox.Yes:
+            self._start_retention_worker(
+                str(result.get("path") or ""),
+                self._retention_policy, apply=True,
+                on_done=self._on_retention_done,
+            )
+
+    def _on_retention_done(self, result: dict):
         pass
         try:
             self._stop_busy()
         except Exception:
             pass
+        ok = bool(result.get("ok"))
+        text = str(result.get("text") or "")
+        path = str(result.get("path") or "")
+        name = Path(path).name
+        if text:
+            self.log_output(text)
 
-        rc = result.get("rc", 1)
-        output = result.get("output", "") or ""
-        ctx = result.get("context", {})
-        path = ctx.get("path", "")
-        job_context = ctx.get("job_context")
-        name = Path(path).name if path else ""
-
+        job_context = getattr(self, "_retention_context", None)
         if job_context:
-            status = "ok" if rc == 0 else "error"
             self._update_job_meta_after_run(
-                job_context, status, rc=rc, output=output
+                job_context, "ok" if ok else "error",
+                rc=0 if ok else 1, output=text,
             )
+        self._retention_context = None
 
-        if output:
-            self.log_output(output)
-
-        if rc == 0:
-            self.statusBar().showMessage(tr("crop.ok", name=name))
+        if ok:
+            self.statusBar().showMessage(tr("retention.ok", name=name))
             QMessageBox.information(
-                self, tr("crop.title"), tr("crop.ok", name=name)
+                self, tr("retention.title"), tr("retention.ok", name=name)
             )
+            try:
+                self._on_refresh()
+            except Exception:
+                pass
         else:
-            tail = output.strip()[-_TEST_TAIL:]
-            self.statusBar().showMessage(tr("crop.fail", name=name))
+            self.statusBar().showMessage(tr("retention.fail", name=name))
             QMessageBox.warning(
-                self,
-                tr("crop.title"),
-                tr("crop.fail", name=name) + "\n\n" + tail,
+                self, tr("retention.title"),
+                tr("retention.fail", name=name) + "\n\n" + text[-_TEST_TAIL:],
             )
 
                                                                                           

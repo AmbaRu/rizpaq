@@ -2,13 +2,14 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use rizpaq_task::{
-    cfg, cmdline, copy, engine, errlog, index, log, mail, naming, notify, par2, pwstore, restore, tasks, util,
+    cfg, cmdline, copy, engine, errlog, index, log, mail, naming, notify, par2, pwstore, restore, retention, tasks, util,
 };
 use serde_json::Value;
 use std::path::{Path, PathBuf};
 
 const ACTION_TEST: &str = "test";
 const ACTION_BACKUP: &str = "backup";
+const ACTION_CROP: &str = "crop";
 
 fn main() {
     let args: Vec<String> = std::env::args_os()
@@ -25,7 +26,9 @@ fn main() {
 }
 
 fn unsupported_action(action: &str) -> bool {
-    action != ACTION_BACKUP && action != ACTION_TEST
+    action != ACTION_BACKUP
+        && action != ACTION_TEST
+        && action != ACTION_CROP
 }
 
 fn py_repr_str(s: &str) -> String {
@@ -301,7 +304,8 @@ fn run(rest: &[String]) -> i32 {
     let mut par2_note = String::new();
     let mut par2_reason: Option<&'static str> = None;
 
-    let (mut rc, mut log_out, ok): (i32, String, bool);
+    let (mut rc, mut log_out, mut ok): (i32, String, bool) =
+        (0, String::new(), false);
 
     if skip_run {
         cmd = pre_cmd;
@@ -338,6 +342,25 @@ fn run(rest: &[String]) -> i32 {
                 tmp_arg.as_deref(),
                 &srcs,
             ));
+        } else if action == ACTION_CROP {
+            let policy = tasks::py_str(
+                settings
+                    .get("retention_policy")
+                    .filter(|v| tasks::py_truthy(Some(v)))
+                    .unwrap_or(&serde_json::Value::Null),
+            );
+            let policy = if policy.trim().is_empty() {
+                retention::DEFAULT_POLICY.to_string()
+            } else {
+                policy
+            };
+            let (crop_ok, crop_text) = retention::run_apply(
+                &zpaq, &dest, &policy, password,
+            );
+            rc = if crop_ok { 0 } else { 1 };
+            log_out = crop_text;
+            ok = crop_ok;
+            cmd = None;
         } else {
             if tasks::py_truthy(settings.get("chunk")) && !dest.contains('?') {
                 let p = Path::new(&dest);
@@ -363,10 +386,12 @@ fn run(rest: &[String]) -> i32 {
             cmd = Some(cmdline::build_create_cmd(&zpaq, &settings, &srcs, &dest, password));
         }
 
-        let (r, l) = engine::run_engine(cmd.as_deref().unwrap());
-        rc = r;
-        log_out = l;
-        ok = rc == 0;
+        if let Some(c) = cmd.as_deref() {
+            let (r, l) = engine::run_engine(c);
+            rc = r;
+            log_out = l;
+            ok = rc == 0;
+        }
 
         if let Some(d) = tmp_dir {
             let _ = std::fs::remove_dir_all(d);
@@ -424,8 +449,41 @@ fn run(rest: &[String]) -> i32 {
         }
     }
 
+    let mut verify_note = String::new();
+    if ok && !skip_run && action == ACTION_BACKUP {
+        let vm = tasks::py_str(
+            settings.get("verify").unwrap_or(&Value::Null)
+        ).trim().to_lowercase();
+        if matches!(vm.as_str(), "full" | "checksum" | "verify" | "paranoid") {
+            let vtmp = if vm == "paranoid" {
+                util::make_tmp_dir("rizpaq_task_verify_")
+            } else {
+                None
+            };
+            let tmp_arg = vtmp.as_ref().map(|p| p.to_string_lossy().into_owned());
+            let vcmd = cmdline::build_test_cmd(
+                &zpaq, &dest, password, Some(&vm), tmp_arg.as_deref(), &srcs,
+            );
+            let (vrc, vout) = engine::run_engine(&vcmd);
+            verify_note = format!(
+                "\n[verify after create] mode={} rc={}\n{}\n",
+                vm, vrc, vout.trim()
+            );
+            log_out.push_str(&verify_note);
+            if let Some(d) = vtmp {
+                let _ = std::fs::remove_dir_all(d);
+            }
+        }
+    }
+
     if ok && !skip_run && action != ACTION_TEST && tasks::py_truthy(settings.get("par2_enabled")) {
-        par2_note = par2::headless_par2_create(&rzp_path, work, &dest, &settings);
+        let (par2_ok, note) =
+            par2::headless_par2_create(&rzp_path, work, &dest, &settings);
+        par2_note = note;
+        if !par2_ok {
+            ok = false;
+            par2_reason = Some("PAR2 set not created");
+        }
     }
 
     if ok && !skip_run && action != ACTION_TEST {
@@ -444,7 +502,7 @@ fn run(rest: &[String]) -> i32 {
                 let extra_cmd =
                     cmdline::build_create_cmd(&zpaq, &settings, &srcs, &extra, password);
                 let (r, l) = engine::run_engine(&extra_cmd);
-                let step_ok = r == 0 || r == 1;
+                let mut step_ok = r == 0 || r == 1;
                 extra_ok = extra_ok && step_ok;
                 let block = format!("\n[extra archive] {}\n{}\n", extra, l);
                 extra_note.push_str(&block);
@@ -464,11 +522,15 @@ fn run(rest: &[String]) -> i32 {
                     }
                 }
                 if step_ok && tasks::py_truthy(settings.get("par2_enabled")) {
-                    let note = par2::headless_par2_create(
+                    let (set_ok, note) = par2::headless_par2_create(
                         &rzp_path, work, &extra, &settings,
                     );
                     extra_note.push_str(&note);
                     log_out.push_str(&note);
+                    if !set_ok {
+                        extra_ok = false;
+                        step_ok = false;
+                    }
                 }
                 if step_ok {
                     index::refresh_index_sync(&zpaq, &extra, password);
@@ -524,7 +586,7 @@ fn run(rest: &[String]) -> i32 {
     let log_header =
         log::build_log_header(&rzp_path, work, job, rc, password, cmd.as_deref());
     let task_note = format!(
-        "{}{}{}{}{}", skip_note, copy_note, par2_note, extra_note, mail_note
+        "{}{}{}{}{}{}", skip_note, copy_note, verify_note, par2_note, extra_note, mail_note
     );
     log::write_task_log(
         &rzp_path,
@@ -629,7 +691,6 @@ mod tests {
         assert!(!unsupported_action("backup"));
         assert!(!unsupported_action("test"));
         for action in [
-            "crop",
             "consolidate",
             "sfx",
             "info",

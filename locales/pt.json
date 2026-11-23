@@ -632,8 +632,6 @@
     "menu.test.verify": "Verificar o arquivo (comparar com as origens)",
     "menu.test.par2": "Verificar o arquivo (PAR2)",
     "menu.test.verify_fs": "Verificar arquivo (com o sistema de arquivos)",
-    "crop.fail": "Falha ao cortar o arquivo: {name}",
-    "crop.title": "Cortar arquivo",
     "par2.verify_running": "a verificar…",
     "par2.verify_failed": "a verificação não começou: {error}",
     "par2.verify_size": "o conjunto protege {size}",
@@ -815,9 +813,6 @@
     "salvage.done_text": "Dados resgatados na pasta:\n{dest}",
     "salvage.partial_title": "Parte dos dados foi salva",
     "salvage.partial_text": "O arquivo está danificado: tudo o que era legível foi salvo. Pasta de resultado:\n{dest}\n\nDetalhes no registro abaixo.",
-    "crop.dialog_title": "Cortar versões do arquivo",
-    "crop.confirm_text": "Cortar as versões antigas do arquivo «{name}»?\n\nIsso remove as versões antigas de forma permanente e não pode ser desfeito. Continuar?",
-    "crop.ok": "Arquivo cortado: {name}",
     "consolidate.dialog_title": "Consolidar arquivo multivolume",
     "consolidate.confirm_text": "Consolidar o arquivo «{name}»?\n\nO arquivo será reescrito, unindo todas as partes em um único arquivo. Continuar?",
     "consolidate.ok": "Arquivo consolidado: {name}",
@@ -990,6 +985,15 @@
     "mail.heartbeat_task_on": "criada",
     "mail.heartbeat_task_off": "não criada",
     "mail.heartbeat_task_failed": "Não foi possível alterar a tarefa agendada. Podem ser necessários direitos de administrador.",
-    "drag.extract_failed": "Não foi possível extrair os ficheiros para arrastar: {reason}"
+    "drag.extract_failed": "Não foi possível extrair os ficheiros para arrastar: {reason}",
+    "retention.title": "Retenção de versões",
+    "retention.multipart": "A retenção não suporta arquivos em várias partes; use um único .zpaq.",
+    "retention.policy_prompt": "Política de retenção (7d4w12my = 7 dias/4 semanas/12 meses/anos; 10last = últimas 10):",
+    "retention.bad_policy": "Política inválida. Permitidos dígitos, d/w/m/y/h, vírgulas e hífens.",
+    "retention.confirm": "Manter as versões de «{name}» com a política {policy}?\n\nPrimeiro será mostrada uma pré-visualização. O original só é substituído após a verificação do novo arquivo.",
+    "retention.apply_question": "Aplicar esta política? As versões não selecionadas serão removidas permanentemente.",
+    "retention.preview_failed": "Não foi possível pré-visualizar:",
+    "retention.ok": "Retenção concluída: {name}",
+    "retention.fail": "Falha na retenção: {name}"
   }
 }

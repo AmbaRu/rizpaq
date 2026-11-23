@@ -632,8 +632,6 @@
     "menu.test.verify": "Vérifier l'archive (confrontation aux sources)",
     "menu.test.par2": "Vérifier l'archive (PAR2)",
     "menu.test.verify_fs": "Vérifier l'archive (par rapport au système de fichiers)",
-    "crop.fail": "Échec du rognage de l'archive : {name}",
-    "crop.title": "Rogner l'archive",
     "par2.verify_running": "vérification en cours…",
     "par2.verify_failed": "la vérification n'a pas démarré : {error}",
     "par2.verify_size": "le jeu protège {size}",
@@ -815,9 +813,6 @@
     "salvage.done_text": "Données récupérées dans :\n{dest}",
     "salvage.partial_title": "Une partie des données est sauvée",
     "salvage.partial_text": "L'archive est endommagée : tout ce qui était lisible a été récupéré. Dossier de résultat :\n{dest}\n\nDétails dans le journal ci-dessous.",
-    "crop.dialog_title": "Rogner les versions de l'archive",
-    "crop.confirm_text": "Rogner les anciennes versions de l'archive « {name} » ?\n\nLes anciennes versions sont supprimées définitivement, sans retour possible. Continuer ?",
-    "crop.ok": "Archive rognée : {name}",
     "consolidate.dialog_title": "Consolider une archive multivolume",
     "consolidate.confirm_text": "Consolider l'archive « {name} » ?\n\nL'archive est réécrite et tous ses volumes fusionnés en un seul fichier. Continuer ?",
     "consolidate.ok": "Archive consolidée : {name}",
@@ -990,6 +985,15 @@
     "mail.heartbeat_task_on": "créée",
     "mail.heartbeat_task_off": "non créée",
     "mail.heartbeat_task_failed": "Impossible de modifier la tâche planifiée. Des droits administrateur peuvent être nécessaires.",
-    "drag.extract_failed": "Impossible d'extraire les fichiers à glisser : {reason}"
+    "drag.extract_failed": "Impossible d'extraire les fichiers à glisser : {reason}",
+    "retention.title": "Rétention des versions",
+    "retention.multipart": "La rétention ne prend pas en charge les archives multiparties ; utilisez un seul .zpaq.",
+    "retention.policy_prompt": "Politique de rétention (7d4w12my = 7 jours/4 semaines/12 mois/années ; 10last = 10 dernières) :",
+    "retention.bad_policy": "Politique invalide. Chiffres, d/w/m/y/h, virgules et tirets autorisés.",
+    "retention.confirm": "Conserver les versions de « {name} » selon la politique {policy} ?\n\nUn aperçu sera affiché d'abord. L'original n'est remplacé qu'après vérification de la nouvelle archive.",
+    "retention.apply_question": "Appliquer cette politique ? Les versions non retenues seront définitivement supprimées.",
+    "retention.preview_failed": "Aperçu impossible :",
+    "retention.ok": "Rétention terminée : {name}",
+    "retention.fail": "Échec de la rétention : {name}"
   }
 }

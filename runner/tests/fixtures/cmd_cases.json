@@ -8,6 +8,7 @@
         "C:\\data"
       ],
       "dest": "D:\\backup\\arch.zpaq",
+      "extra_dests": [],
       "password": null,
       "only_masks": [],
       "not_masks": [],
@@ -16,6 +17,7 @@
       "work_title": "Работа",
       "action": "backup",
       "test_mode": "full",
+      "retention_policy": null,
       "level": null,
       "level_key": null,
       "hash": null,
@@ -41,7 +43,8 @@
       "schedule": null,
       "task_log_mode": "short",
       "par2_enabled": null,
-      "par2_options": null
+      "par2_options": null,
+      "new_password": null
     },
     "srcs": [
       "C:\\data"
@@ -53,9 +56,10 @@
       "a",
       "D:\\backup\\arch.zpaq",
       "C:\\data",
-      "-open"
+      "-open",
+      "-nolfast"
     ],
-    "expected_cmdline": "C:\\bin\\zpaqfranz.exe a D:\\backup\\arch.zpaq C:\\data -open"
+    "expected_cmdline": "C:\\bin\\zpaqfranz.exe a D:\\backup\\arch.zpaq C:\\data -open -nolfast"
   },
   {
     "kind": "create",
@@ -67,6 +71,7 @@
         "C:\\data\\photos"
       ],
       "dest": "D:\\My Backups\\docs backup.zpaq",
+      "extra_dests": [],
       "password": null,
       "only_masks": [
         "*.docx",
@@ -81,6 +86,7 @@
       "work_title": "Работа",
       "action": "backup",
       "test_mode": "full",
+      "retention_policy": null,
       "level": [
         "-m256"
       ],
@@ -108,7 +114,8 @@
       "schedule": null,
       "task_log_mode": "short",
       "par2_enabled": null,
-      "par2_options": null
+      "par2_options": null,
+      "new_password": null
     },
     "srcs": [
       "C:\\data\\docs",
@@ -123,6 +130,7 @@
       "C:\\data\\docs",
       "C:\\data\\photos",
       "-open",
+      "-nolfast",
       "-m256",
       "-comment",
       "ежедневный бэкап",
@@ -144,7 +152,7 @@
       "-chunk",
       "100m"
     ],
-    "expected_cmdline": "C:\\bin\\zpaqfranz.exe a \"D:\\My Backups\\docs backup.zpaq\" C:\\data\\docs C:\\data\\photos -open -m256 -comment \"ежедневный бэкап\" -only *.docx -only *.xlsx -not ~$* -not *.tmp -longpath -date -vss -checksize 1024 -errorlog C:\\logs\\rizpaq_err.txt -chunk 100m"
+    "expected_cmdline": "C:\\bin\\zpaqfranz.exe a \"D:\\My Backups\\docs backup.zpaq\" C:\\data\\docs C:\\data\\photos -open -nolfast -m256 -comment \"ежедневный бэкап\" -only *.docx -only *.xlsx -not ~$* -not *.tmp -longpath -date -vss -checksize 1024 -errorlog C:\\logs\\rizpaq_err.txt -chunk 100m"
   },
   {
     "kind": "create",
@@ -155,6 +163,7 @@
         "*"
       ],
       "dest": "D:\\b\\a.zpaq",
+      "extra_dests": [],
       "password": null,
       "only_masks": [],
       "not_masks": [],
@@ -163,6 +172,7 @@
       "work_title": "Работа",
       "action": "backup",
       "test_mode": "full",
+      "retention_policy": null,
       "level": null,
       "level_key": null,
       "hash": null,
@@ -188,7 +198,8 @@
       "schedule": null,
       "task_log_mode": "short",
       "par2_enabled": null,
-      "par2_options": null
+      "par2_options": null,
+      "new_password": null
     },
     "srcs": [
       "*"
@@ -200,9 +211,10 @@
       "a",
       "D:\\b\\a.zpaq",
       "*",
-      "-open"
+      "-open",
+      "-nolfast"
     ],
-    "expected_cmdline": "C:\\bin\\zpaqfranz.exe a D:\\b\\a.zpaq * -open"
+    "expected_cmdline": "C:\\bin\\zpaqfranz.exe a D:\\b\\a.zpaq * -open -nolfast"
   },
   {
     "kind": "create",
@@ -211,6 +223,7 @@
     "settings": {
       "sources": [],
       "dest": "D:\\b\\a.zpaq",
+      "extra_dests": [],
       "password": null,
       "only_masks": [],
       "not_masks": [],
@@ -219,6 +232,7 @@
       "work_title": "Работа",
       "action": "backup",
       "test_mode": "full",
+      "retention_policy": null,
       "level": null,
       "level_key": null,
       "hash": null,
@@ -244,7 +258,8 @@
       "schedule": null,
       "task_log_mode": "short",
       "par2_enabled": null,
-      "par2_options": null
+      "par2_options": null,
+      "new_password": null
     },
     "srcs": [],
     "dest": "D:\\b\\a.zpaq",
@@ -253,9 +268,10 @@
       "C:\\bin\\zpaqfranz.exe",
       "a",
       "D:\\b\\a.zpaq",
-      "-open"
+      "-open",
+      "-nolfast"
     ],
-    "expected_cmdline": "C:\\bin\\zpaqfranz.exe a D:\\b\\a.zpaq -open"
+    "expected_cmdline": "C:\\bin\\zpaqfranz.exe a D:\\b\\a.zpaq -open -nolfast"
   },
   {
     "kind": "create",
@@ -267,6 +283,7 @@
         "D:\\b b"
       ],
       "dest": "E:\\arc\\full.zpaq",
+      "extra_dests": [],
       "password": null,
       "only_masks": [],
       "not_masks": [],
@@ -275,6 +292,7 @@
       "work_title": "Работа",
       "action": "backup",
       "test_mode": "full",
+      "retention_policy": null,
       "level": null,
       "level_key": null,
       "hash": "-sha256",
@@ -300,7 +318,8 @@
       "schedule": null,
       "task_log_mode": "short",
       "par2_enabled": null,
-      "par2_options": null
+      "par2_options": null,
+      "new_password": null
     },
     "srcs": [
       "C:\\a\\",
@@ -315,6 +334,7 @@
       "C:\\a\\",
       "D:\\b b",
       "-open",
+      "-nolfast",
       "-sha256",
       "-longpath",
       "-date",
@@ -330,7 +350,7 @@
       "-sfx",
       "C:\\bin\\sfx.sfx"
     ],
-    "expected_cmdline": "C:\\bin\\zpaqfranz.exe a E:\\arc\\full.zpaq C:\\a\\ \"D:\\b b\" -open -sha256 -longpath -date -norecursion -forcewindows -xls -nochecksum -nodedup -vss -noonedrive -ignore -shutdown -sfx C:\\bin\\sfx.sfx"
+    "expected_cmdline": "C:\\bin\\zpaqfranz.exe a E:\\arc\\full.zpaq C:\\a\\ \"D:\\b b\" -open -nolfast -sha256 -longpath -date -norecursion -forcewindows -xls -nochecksum -nodedup -vss -noonedrive -ignore -shutdown -sfx C:\\bin\\sfx.sfx"
   },
   {
     "kind": "create",
@@ -341,6 +361,7 @@
         "C:\\секреты"
       ],
       "dest": "D:\\бэкап\\архив.zpaq",
+      "extra_dests": [],
       "password": "секрет123",
       "only_masks": [],
       "not_masks": [],
@@ -349,6 +370,7 @@
       "work_title": "Работа",
       "action": "backup",
       "test_mode": "full",
+      "retention_policy": null,
       "level": [
         "-m128"
       ],
@@ -376,7 +398,8 @@
       "schedule": null,
       "task_log_mode": "short",
       "par2_enabled": null,
-      "par2_options": null
+      "par2_options": null,
+      "new_password": null
     },
     "srcs": [
       "C:\\секреты"
@@ -389,11 +412,12 @@
       "D:\\бэкап\\архив.zpaq",
       "C:\\секреты",
       "-open",
+      "-nolfast",
       "-m128",
       "-key",
       "секрет123"
     ],
-    "expected_cmdline": "C:\\bin\\zpaqfranz.exe a D:\\бэкап\\архив.zpaq C:\\секреты -open -m128 -key ***"
+    "expected_cmdline": "C:\\bin\\zpaqfranz.exe a D:\\бэкап\\архив.zpaq C:\\секреты -open -nolfast -m128 -key ***"
   },
   {
     "kind": "create",
@@ -404,6 +428,7 @@
         "C:\\data"
       ],
       "dest": "D:\\b\\a.zpaq",
+      "extra_dests": [],
       "password": "pass with space",
       "only_masks": [],
       "not_masks": [],
@@ -412,6 +437,7 @@
       "work_title": "Работа",
       "action": "backup",
       "test_mode": "full",
+      "retention_policy": null,
       "level": null,
       "level_key": null,
       "hash": null,
@@ -437,7 +463,8 @@
       "schedule": null,
       "task_log_mode": "short",
       "par2_enabled": null,
-      "par2_options": null
+      "par2_options": null,
+      "new_password": null
     },
     "srcs": [
       "C:\\data"
@@ -450,10 +477,11 @@
       "D:\\b\\a.zpaq",
       "C:\\data",
       "-open",
+      "-nolfast",
       "-key",
       "pass with space"
     ],
-    "expected_cmdline": "C:\\bin\\zpaqfranz.exe a D:\\b\\a.zpaq C:\\data -open -key ***"
+    "expected_cmdline": "C:\\bin\\zpaqfranz.exe a D:\\b\\a.zpaq C:\\data -open -nolfast -key ***"
   },
   {
     "kind": "create",
@@ -464,6 +492,7 @@
         "C:\\данные"
       ],
       "dest": "D:\\архив\\отчёт 2026.zpaq",
+      "extra_dests": [],
       "password": null,
       "only_masks": [
         "*.pdf",
@@ -477,6 +506,7 @@
       "work_title": "Работа",
       "action": "backup",
       "test_mode": "full",
+      "retention_policy": null,
       "level": [
         "-m512"
       ],
@@ -504,7 +534,8 @@
       "schedule": null,
       "task_log_mode": "short",
       "par2_enabled": null,
-      "par2_options": null
+      "par2_options": null,
+      "new_password": null
     },
     "srcs": [
       "C:\\данные"
@@ -517,6 +548,7 @@
       "D:\\архив\\отчёт 2026.zpaq",
       "C:\\данные",
       "-open",
+      "-nolfast",
       "-m512",
       "-comment",
       "Комментарий с кавычками: \"цитата\" и 'одинарными'",
@@ -527,7 +559,7 @@
       "-not",
       "черновик*"
     ],
-    "expected_cmdline": "C:\\bin\\zpaqfranz.exe a \"D:\\архив\\отчёт 2026.zpaq\" C:\\данные -open -m512 -comment \"Комментарий с кавычками: \\\"цитата\\\" и 'одинарными'\" -only *.pdf -only отчёты* -not черновик*"
+    "expected_cmdline": "C:\\bin\\zpaqfranz.exe a \"D:\\архив\\отчёт 2026.zpaq\" C:\\данные -open -nolfast -m512 -comment \"Комментарий с кавычками: \\\"цитата\\\" и 'одинарными'\" -only *.pdf -only отчёты* -not черновик*"
   },
   {
     "kind": "test",

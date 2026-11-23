@@ -1288,10 +1288,20 @@ def _headless_task(rest: list) -> int:
                     tmp_dir = None
             cmd = _build_test_cmd(zpaq, dest, password, test_mode, tmp_dir, srcs)
         elif action == ACTION_CROP:
-                                                                
-                                                            
-                                                            
-            cmd = [zpaq, "crop", dest, "-kill", "-to", dest]
+                                                                             
+                                                                             
+            from core import retention as _retention
+
+            policy = str(
+                settings.get("retention_policy") or _retention.DEFAULT_POLICY
+            )
+            crop_ok, crop_text = _retention.run_apply(
+                zpaq, dest, policy, password
+            )
+            rc = 0 if crop_ok else 1
+            log = crop_text
+            ok = crop_ok
+            cmd = None
         elif action == ACTION_CONSOLIDATE:
                                                                          
                                                           
@@ -1465,6 +1475,38 @@ def _headless_task(rest: list) -> int:
         except Exception:
             pass
 
+                                                                   
+     
+                                                                      
+                                                                  
+                                                                     
+                                                     
+    verify_note = ""
+    if ok and not skip_run and action == ACTION_BACKUP:
+        verify_mode = str(settings.get("verify") or "").strip().lower()
+        if verify_mode in ("full", "checksum", "verify", "paranoid"):
+            verify_tmp = None
+            if verify_mode == "paranoid":
+                try:
+                    verify_tmp = tempfile.mkdtemp(
+                        prefix="rizpaq_task_verify_"
+                    )
+                except OSError:
+                    verify_tmp = None
+            try:
+                verify_cmd = _build_test_cmd(
+                    zpaq, dest, password, verify_mode, verify_tmp, srcs
+                )
+                verify_rc, verify_out = run_zpaq(verify_cmd)
+                verify_note = (
+                    f"\n[verify after create] mode={verify_mode} "
+                    f"rc={verify_rc}\n{(verify_out or '').strip()[-4000:]}\n"
+                )
+                log = (log or "") + verify_note
+            finally:
+                if verify_tmp:
+                    shutil.rmtree(verify_tmp, ignore_errors=True)
+
                                                                      
                                                         
      
@@ -1592,7 +1634,7 @@ def _headless_task(rest: list) -> int:
                                                    
     log_header = _build_log_header(rzp_path, work, job, rc,
                                    password, cmd=cmd)
-    task_note = (skip_note + (copy_note or "")
+    task_note = (skip_note + (copy_note or "") + verify_note
                  + (par2_note or "") + extra_note + mail_note)
     _write_task_log(rzp_path, log_header, log, log_mode, rc, busy=busy,
                     note=task_note)

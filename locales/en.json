@@ -632,11 +632,6 @@
     "menu.test.verify": "Verify archive (against sources)",
     "menu.test.par2": "Verify archive (PAR2)",
     "menu.test.verify_fs": "Verify archive (against filesystem)",
-    "crop.dialog_title": "Crop archive versions",
-    "crop.confirm_text": "Crop old versions of archive '{name}'?\n\nThis permanently removes old versions and cannot be undone. Continue?",
-    "crop.ok": "Archive cropped: {name}",
-    "crop.fail": "Archive crop failed: {name}",
-    "crop.title": "Crop archive",
     "consolidate.dialog_title": "Consolidate multipart archive",
     "consolidate.confirm_text": "Consolidate archive '{name}'?\n\nThis rewrites the archive, merging all parts into one. Continue?",
     "consolidate.ok": "Archive consolidated: {name}",
@@ -990,6 +985,15 @@
     "mail.heartbeat_task_on": "registered",
     "mail.heartbeat_task_off": "not registered",
     "mail.heartbeat_task_failed": "Could not change the scheduled task. Administrator rights may be required.",
-    "drag.extract_failed": "Could not extract files for dragging: {reason}"
+    "drag.extract_failed": "Could not extract files for dragging: {reason}",
+    "retention.title": "Archive version retention",
+    "retention.multipart": "Retention of multipart archives is not supported — use a single .zpaq file.",
+    "retention.policy_prompt": "Retention policy (7d4w12my = 7 days/4 weeks/12 months/years; 10last = last 10):",
+    "retention.bad_policy": "Invalid policy. Digits, d/w/m/y/h, commas and dashes are allowed.",
+    "retention.confirm": "Keep versions of «{name}» using policy {policy}?\n\nA dry run will be shown first. The original is replaced only after the new archive is verified.",
+    "retention.apply_question": "Apply this policy? Versions not selected will be permanently removed.",
+    "retention.preview_failed": "Dry run failed:",
+    "retention.ok": "Retention complete: {name}",
+    "retention.fail": "Retention failed: {name}"
   }
 }
