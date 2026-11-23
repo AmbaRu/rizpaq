@@ -814,7 +814,7 @@
     "salvage.partial_title": "Parte dos dados foi salva",
     "salvage.partial_text": "O arquivo está danificado: tudo o que era legível foi salvo. Pasta de resultado:\n{dest}\n\nDetalhes no registro abaixo.",
     "consolidate.dialog_title": "Consolidar arquivo multivolume",
-    "consolidate.confirm_text": "Consolidar o arquivo «{name}»?\n\nO arquivo será reescrito, unindo todas as partes em um único arquivo. Continuar?",
+    "consolidate.confirm_text": "Unir os volumes de «{name}» em «{out}»?\n\nOs volumes originais serão mantidos.",
     "consolidate.ok": "Arquivo consolidado: {name}",
     "consolidate.fail": "Falha ao consolidar o arquivo: {name}",
     "consolidate.title": "Consolidar arquivo",
@@ -994,6 +994,8 @@
     "retention.apply_question": "Aplicar esta política? As versões não selecionadas serão removidas permanentemente.",
     "retention.preview_failed": "Não foi possível pré-visualizar:",
     "retention.ok": "Retenção concluída: {name}",
-    "retention.fail": "Falha na retenção: {name}"
+    "retention.fail": "Falha na retenção: {name}",
+    "consolidate.out_prompt": "Arquivo de saída:",
+    "consolidate.not_multipart": "Selecione um arquivo em várias partes (nome com ?)."
   }
 }

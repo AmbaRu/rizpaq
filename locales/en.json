@@ -633,7 +633,7 @@
     "menu.test.par2": "Verify archive (PAR2)",
     "menu.test.verify_fs": "Verify archive (against filesystem)",
     "consolidate.dialog_title": "Consolidate multipart archive",
-    "consolidate.confirm_text": "Consolidate archive '{name}'?\n\nThis rewrites the archive, merging all parts into one. Continue?",
+    "consolidate.confirm_text": "Merge the volumes of «{name}» into «{out}»?\n\nThe original volumes will be kept.",
     "consolidate.ok": "Archive consolidated: {name}",
     "consolidate.fail": "Archive consolidation failed: {name}",
     "consolidate.title": "Consolidate archive",
@@ -994,6 +994,8 @@
     "retention.apply_question": "Apply this policy? Versions not selected will be permanently removed.",
     "retention.preview_failed": "Dry run failed:",
     "retention.ok": "Retention complete: {name}",
-    "retention.fail": "Retention failed: {name}"
+    "retention.fail": "Retention failed: {name}",
+    "consolidate.out_prompt": "Output archive:",
+    "consolidate.not_multipart": "Select a multipart archive (a name with ?); a single archive has nothing to merge."
   }
 }

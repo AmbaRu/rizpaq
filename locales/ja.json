@@ -814,7 +814,7 @@
     "salvage.partial_title": "データの一部が保存されました",
     "salvage.partial_text": "アーカイブは破損しています。読めたものはすべて保存しました。\n結果フォルダー:\n{dest}\n\n詳細は下のログを参照。",
     "consolidate.dialog_title": "分割アーカイブの統合",
-    "consolidate.confirm_text": "アーカイブ「{name}」を統合しますか？\n\nアーカイブは書き換えられ、すべてのパートが 1 つのファイルにまとめられます。続行しますか？",
+    "consolidate.confirm_text": "「{name}」のボリュームを「{out}」に結合しますか？\n\n元のボリュームは残ります。",
     "consolidate.ok": "アーカイブを統合しました: {name}",
     "consolidate.fail": "アーカイブの統合に失敗しました: {name}",
     "consolidate.title": "アーカイブの統合",
@@ -994,6 +994,8 @@
     "retention.apply_question": "このポリシーを適用しますか？選択されなかったバージョンは完全に削除されます。",
     "retention.preview_failed": "プレビューに失敗しました：",
     "retention.ok": "保持処理完了: {name}",
-    "retention.fail": "保持処理に失敗: {name}"
+    "retention.fail": "保持処理に失敗: {name}",
+    "consolidate.out_prompt": "出力アーカイブ:",
+    "consolidate.not_multipart": "マルチボリューム（名前に ? を含む）を選択してください。"
   }
 }

@@ -814,7 +814,7 @@
     "salvage.partial_title": "仅抢救出部分数据",
     "salvage.partial_text": "存档已损坏：可读取的数据均已保存。\n结果文件夹：\n{dest}\n\n详情见下方日志。",
     "consolidate.dialog_title": "合并分卷归档",
-    "consolidate.confirm_text": "合并归档“{name}”？\n\n归档将被重写，所有分卷将合并为一个文件。是否继续？",
+    "consolidate.confirm_text": "将「{name}」的分卷合并到「{out}」？\n\n原始分卷将保留。",
     "consolidate.ok": "归档已合并：{name}",
     "consolidate.fail": "合并归档失败：{name}",
     "consolidate.title": "合并归档",
@@ -994,6 +994,8 @@
     "retention.apply_question": "应用此策略？未选中的版本将被永久删除。",
     "retention.preview_failed": "预览失败：",
     "retention.ok": "保留完成：{name}",
-    "retention.fail": "保留失败：{name}"
+    "retention.fail": "保留失败：{name}",
+    "consolidate.out_prompt": "输出归档：",
+    "consolidate.not_multipart": "请选择多卷归档（名称含 ?）。"
   }
 }

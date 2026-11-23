@@ -258,6 +258,7 @@ JOB_FIELDS = (
     "action",
     "test_mode",
     "retention_policy",
+    "consolidate_output",
     "level",
     "level_key",
     "hash",

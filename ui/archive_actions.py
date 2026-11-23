@@ -1079,11 +1079,18 @@ class ArchiveActionsMixin:
 
 
 
+
+
         arc = multipart_pattern(path or self.archive_path)
         if not arc:
             self.statusBar().showMessage(tr("status.test_only_archive"))
             return
         arc = str(arc)
+        if "?" not in arc:
+            QMessageBox.warning(
+                self, tr("consolidate.title"), tr("consolidate.not_multipart")
+            )
+            return
 
         if not self.zpaq_available:
             QMessageBox.warning(
@@ -1091,17 +1098,31 @@ class ArchiveActionsMixin:
             )
             return
 
-                                                       
+        p = Path(arc)
+        stem = p.stem.replace("_????", "").replace("????", "").rstrip("_") \
+            or "merged"
+        default_out = str(p.with_name(stem + ".zpaq"))
+        out, accepted = QInputDialog.getText(
+            self, tr("consolidate.title"), tr("consolidate.out_prompt"),
+            text=default_out,
+        )
+        out = str(out or "").strip()
+        if not accepted or not out:
+            return
+
+        exists = Path(out).exists()
         ans = QMessageBox.question(
             self,
             tr("consolidate.dialog_title"),
-            tr("consolidate.confirm_text", name=Path(arc).name),
+            tr("consolidate.confirm_text", name=Path(arc).name, out=out),
             QMessageBox.Yes | QMessageBox.No,
         )
         if ans != QMessageBox.Yes:
             return
 
-        cmd = [self.zpaq_bin, "consolidate", arc, "-to", arc]
+        cmd = [self.zpaq_bin, "m", arc, out, "-verify"]
+        if exists:
+            cmd.append("-force")
 
         self.log_command(cmd)
 
@@ -1110,6 +1131,7 @@ class ArchiveActionsMixin:
             cmd,
             {
                 "path": arc,
+                "out": out,
                 "from_create": False,
                 "job_context": dict(job_context) if job_context else None,
             },
@@ -1143,8 +1165,9 @@ class ArchiveActionsMixin:
         output = result.get("output", "") or ""
         ctx = result.get("context", {})
         path = ctx.get("path", "")
+        out_path = str(ctx.get("out") or "")
         job_context = ctx.get("job_context")
-        name = Path(path).name if path else ""
+        name = Path(out_path or path).name if (out_path or path) else ""
 
         if job_context:
             status = "ok" if rc == 0 else "error"

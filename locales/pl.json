@@ -814,7 +814,7 @@
     "salvage.partial_title": "Uratowano część danych",
     "salvage.partial_text": "Archiwum jest uszkodzone: uratowano wszystko, co czytelne. Folder wynikowy:\n{dest}\n\nSzczegóły w dzienniku poniżej.",
     "consolidate.dialog_title": "Scal wieloczęściowe archiwum",
-    "consolidate.confirm_text": "Scalić archiwum „{name}”?\n\nArchiwum zostanie zapisane od nowa, a wszystkie części połączone w jeden plik. Kontynuować?",
+    "consolidate.confirm_text": "Połączyć woluminy «{name}» w «{out}»?\n\nOryginalne woluminy zostaną zachowane.",
     "consolidate.ok": "Archiwum scalone: {name}",
     "consolidate.fail": "Nie udało się scalić archiwum: {name}",
     "consolidate.title": "Scalanie archiwum",
@@ -994,6 +994,8 @@
     "retention.apply_question": "Zastosować tę politykę? Wersje niezaznaczone zostaną trwale usunięte.",
     "retention.preview_failed": "Nie udało się wyświetlić podglądu:",
     "retention.ok": "Zakończono przechowywanie: {name}",
-    "retention.fail": "Nie udało się przechować: {name}"
+    "retention.fail": "Nie udało się przechować: {name}",
+    "consolidate.out_prompt": "Archiwum wyjściowe:",
+    "consolidate.not_multipart": "Wybierz archiwum wieloczęściowe (nazwa z ?)."
   }
 }

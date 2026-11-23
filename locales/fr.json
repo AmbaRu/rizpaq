@@ -814,7 +814,7 @@
     "salvage.partial_title": "Une partie des données est sauvée",
     "salvage.partial_text": "L'archive est endommagée : tout ce qui était lisible a été récupéré. Dossier de résultat :\n{dest}\n\nDétails dans le journal ci-dessous.",
     "consolidate.dialog_title": "Consolider une archive multivolume",
-    "consolidate.confirm_text": "Consolider l'archive « {name} » ?\n\nL'archive est réécrite et tous ses volumes fusionnés en un seul fichier. Continuer ?",
+    "consolidate.confirm_text": "Fusionner les volumes de « {name} » vers « {out} » ?\n\nLes volumes d'origine sont conservés.",
     "consolidate.ok": "Archive consolidée : {name}",
     "consolidate.fail": "Échec de la consolidation de l'archive : {name}",
     "consolidate.title": "Consolider l'archive",
@@ -994,6 +994,8 @@
     "retention.apply_question": "Appliquer cette politique ? Les versions non retenues seront définitivement supprimées.",
     "retention.preview_failed": "Aperçu impossible :",
     "retention.ok": "Rétention terminée : {name}",
-    "retention.fail": "Échec de la rétention : {name}"
+    "retention.fail": "Échec de la rétention : {name}",
+    "consolidate.out_prompt": "Archive de sortie :",
+    "consolidate.not_multipart": "Sélectionnez une archive multipartie (nom avec ?)."
   }
 }

@@ -196,12 +196,19 @@ class TestHeadlessActions(unittest.TestCase):
         self.assertEqual(calls[1][1], "i")
         self.assertEqual(self._job_state(job_id).get("last_status"), "ok")
 
-    def test_consolidate_action_builds_consolidate_command(self):
+    def test_consolidate_action_uses_merge_command(self):
+        self.dest = self.dir / "multi_????.zpaq"
         rc, calls, _ = self._run("consolidate")
         self.assertEqual(rc, 0)
-        self.assertEqual(
-            calls[0], [ZPAQ, "consolidate", str(self.dest), "-to", str(self.dest)]
-        )
+        self.assertEqual(calls[0][1], "m")
+        self.assertEqual(calls[0][2], str(self.dest))
+        self.assertTrue(calls[0][3].endswith("multi.zpaq"))
+        self.assertIn("-verify", calls[0])
+
+    def test_consolidate_rejects_single_archive(self):
+        rc, calls, _ = self._run("consolidate")
+        self.assertEqual(rc, 1)
+        self.assertEqual(calls, [])
 
     def test_sfx_action_builds_sfx_command(self):
         rc, calls, _ = self._run("sfx")

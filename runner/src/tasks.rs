@@ -11,6 +11,7 @@ pub const JOB_FIELDS: &[&str] = &[
     "action",
     "test_mode",
     "retention_policy",
+    "consolidate_output",
     "level",
     "level_key",
     "hash",

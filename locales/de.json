@@ -814,7 +814,7 @@
     "salvage.partial_title": "Teil der Daten gerettet",
     "salvage.partial_text": "Das Archiv ist beschädigt: alles Lesbare wurde gerettet. Ergebnisordner:\n{dest}\n\nDetails im Protokoll unten.",
     "consolidate.dialog_title": "Mehrteilearchiv zusammenführen",
-    "consolidate.confirm_text": "Archiv „{name}“ zusammenführen?\n\nDas Archiv wird neu geschrieben und alle Teile in eine Datei übernommen. Fortfahren?",
+    "consolidate.confirm_text": "Die Teile von «{name}» zu «{out}» zusammenfügen?\n\nDie ursprünglichen Teile bleiben erhalten.",
     "consolidate.ok": "Archiv zusammengeführt: {name}",
     "consolidate.fail": "Archiv konnte nicht zusammengeführt werden: {name}",
     "consolidate.title": "Archiv zusammenführen",
@@ -994,6 +994,8 @@
     "retention.apply_question": "Diese Richtlinie anwenden? Nicht ausgewählte Versionen werden endgültig entfernt.",
     "retention.preview_failed": "Vorschau fehlgeschlagen:",
     "retention.ok": "Aufbewahrung abgeschlossen: {name}",
-    "retention.fail": "Aufbewahrung fehlgeschlagen: {name}"
+    "retention.fail": "Aufbewahrung fehlgeschlagen: {name}",
+    "consolidate.out_prompt": "Zielarchiv:",
+    "consolidate.not_multipart": "Bitte ein mehrteiliges Archiv (Name mit ?) wählen."
   }
 }

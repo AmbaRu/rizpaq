@@ -1303,9 +1303,21 @@ def _headless_task(rest: list) -> int:
             ok = crop_ok
             cmd = None
         elif action == ACTION_CONSOLIDATE:
-                                                                         
-                                                          
-            cmd = [zpaq, "consolidate", dest, "-to", dest]
+                                                                      
+                                                                       
+                          
+            if "?" not in dest:
+                rc, log, ok = 1, "concatenate requires a multipart archive\n", False
+                cmd = None
+            else:
+                p = Path(dest)
+                stem = p.stem.replace("_????", "").replace("????", "").rstrip("_") \
+                    or "merged"
+                out = str(settings.get("consolidate_output") or
+                          p.with_name(stem + ".zpaq"))
+                cmd = [zpaq, "m", dest, out, "-verify"]
+                if Path(out).exists():
+                    cmd.append("-force")
         elif action == ACTION_SFX:
                                                                     
                                                        

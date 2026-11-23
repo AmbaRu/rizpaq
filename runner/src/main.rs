@@ -10,6 +10,7 @@ use std::path::{Path, PathBuf};
 const ACTION_TEST: &str = "test";
 const ACTION_BACKUP: &str = "backup";
 const ACTION_CROP: &str = "crop";
+const ACTION_CONSOLIDATE: &str = "consolidate";
 
 fn main() {
     let args: Vec<String> = std::env::args_os()
@@ -29,6 +30,7 @@ fn unsupported_action(action: &str) -> bool {
     action != ACTION_BACKUP
         && action != ACTION_TEST
         && action != ACTION_CROP
+        && action != ACTION_CONSOLIDATE
 }
 
 fn py_repr_str(s: &str) -> String {
@@ -342,6 +344,46 @@ fn run(rest: &[String]) -> i32 {
                 tmp_arg.as_deref(),
                 &srcs,
             ));
+        } else if action == ACTION_CONSOLIDATE {
+            if !dest.contains('?') {
+                rc = 1;
+                log_out = "concatenate requires a multipart archive\n".to_string();
+                ok = false;
+                cmd = None;
+            } else {
+                let p = Path::new(&dest);
+                let stem = p
+                    .file_stem()
+                    .and_then(|s| s.to_str())
+                    .unwrap_or("merged")
+                    .replace("_????", "")
+                    .replace("????", "")
+                    .trim_end_matches('_')
+                    .to_string();
+                let stem = if stem.is_empty() { "merged".to_string() } else { stem };
+                let default_out = p.with_file_name(format!("{}.zpaq", stem));
+                let out = tasks::py_str(
+                    settings
+                        .get("consolidate_output")
+                        .filter(|v| tasks::py_truthy(Some(v)))
+                        .unwrap_or(&serde_json::Value::Null),
+                );
+                let out = if out.trim().is_empty() {
+                    default_out.to_string_lossy().into_owned()
+                } else {
+                    out
+                };
+                cmd = Some(vec![
+                    zpaq.clone(),
+                    "m".to_string(),
+                    dest.clone(),
+                    out.clone(),
+                    "-verify".to_string(),
+                ]);
+                if Path::new(&out).exists() {
+                    cmd.as_mut().unwrap().push("-force".to_string());
+                }
+            }
         } else if action == ACTION_CROP {
             let policy = tasks::py_str(
                 settings
@@ -687,11 +729,13 @@ mod tests {
     }
 
     #[test]
-    fn runner_supports_only_backup_and_test() {
+    fn runner_rejects_unported_actions() {
         assert!(!unsupported_action("backup"));
         assert!(!unsupported_action("test"));
+        assert!(!unsupported_action("crop"));
+        assert!(!unsupported_action("consolidate"));
         for action in [
-            "consolidate",
+            "sfx",
             "sfx",
             "info",
             "password",
