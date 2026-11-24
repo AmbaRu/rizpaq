@@ -42,6 +42,10 @@ pub const JOB_FIELDS: &[&str] = &[
 ];
 
 pub const JOB_STATUSES: &[&str] = &["ok", "error", "busy"];
+/// Порт JOB_REASONS из core/tasks.py: список обязан совпадать, иначе
+/// update_job_meta молча выбрасывает причину. `copy_failed` ставится
+/// основным потоком при отказе второй копии (половина правила 3-2-1):
+/// без токена дерево показывает безликую «Ошибку».
 pub const JOB_REASONS: &[&str] = &[
     "par2_missing",
     "par2_broken",
@@ -49,8 +53,12 @@ pub const JOB_REASONS: &[&str] = &[
     "par2_unrepairable",
     "par2_failed",
     "sync_failed",
+    "copy_failed",
 ];
 pub const LOG_MODES: &[&str] = &["short", "full", "none"];
+/// Порт TEST_MODES из core/tasks.py. `restore` — автотест восстановления:
+/// если токена нет, norm_test_mode превращает его в `full`, и ветка
+/// restore drill в main.rs никогда не выполняется.
 pub const TEST_MODES: &[&str] = &[
     "full",
     "checksum",
@@ -59,6 +67,7 @@ pub const TEST_MODES: &[&str] = &[
     "par2",
     "verify_fs",
     "sync",
+    "restore",
 ];
 
 pub fn now_str() -> String {

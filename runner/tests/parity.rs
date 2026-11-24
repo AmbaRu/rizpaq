@@ -134,3 +134,44 @@ fn transliteration_matches_reference() {
     assert_eq!(naming::transliterate("汉 Ω"), " ");
     assert_eq!(naming::transliterate("a_b_"), "a_b_");
 }
+
+#[test]
+fn restore_mode_and_copy_failed_reason_survive_container_roundtrip() {
+    // Python держит оба значения в TEST_MODES / JOB_REASONS. В Rust списки
+    // были короче: `restore` при чтении контейнера превращался в `full`
+    // (автотест восстановления становился недостижим), а причина
+    // `copy_failed` выбрасывалась в update_job_meta — дерево показывало
+    // безликую «Ошибку» вместо «Вторая копия не создана».
+    let raw = serde_json::json!({
+        "format": "rizpaq.tasks",
+        "works": [{
+            "id": "w1",
+            "jobs": [{
+                "id": "j1",
+                "action": "test",
+                "test_mode": "restore",
+            }],
+        }],
+    });
+    let mut container = tasks::validate(&raw).expect("валидный контейнер");
+    let work = container["works"][0].clone();
+    let job = work["jobs"][0].clone();
+    let settings = tasks::job_to_runnable_settings(&work, &job);
+    assert_eq!(
+        settings["test_mode"].as_str(),
+        Some("restore"),
+        "test_mode=restore должен доходить до раннера"
+    );
+
+    assert!(tasks::update_job_meta(
+        &mut container,
+        "j1",
+        "error",
+        Some("copy_failed")
+    ));
+    assert_eq!(
+        container["works"][0]["jobs"][0]["last_reason"].as_str(),
+        Some("copy_failed"),
+        "причина неудачной второй копии должна попадать в контейнер"
+    );
+}
