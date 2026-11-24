@@ -470,25 +470,6 @@ fn run(rest: &[String]) -> i32 {
 
     let busy = !ok && !skip_run && engine::looks_like_busy_error(&log_out);
 
-    let status = if ok && !copy_failed {
-        "ok"
-    } else if busy {
-        "busy"
-    } else {
-        "error"
-    };
-    {
-        let jid = job_id.clone();
-        let reason: Option<&str> = if sync_failed {
-            Some("sync_failed")
-        } else {
-            par2_reason.or(copy_reason)
-        };
-        let _ = tasks::update_container(Path::new(&rzp_path), |c| {
-            tasks::update_job_meta(c, &jid, status, reason);
-        });
-    }
-
     if ok && !skip_run {
         if let Some(p) = password {
             pwstore::set_password(&dest, Some(p));
@@ -529,7 +510,7 @@ fn run(rest: &[String]) -> i32 {
         par2_note = note;
         if !par2_ok {
             ok = false;
-            par2_reason = Some("PAR2 set not created");
+            par2_reason = Some("par2_failed");
         }
     }
 
@@ -630,6 +611,17 @@ fn run(rest: &[String]) -> i32 {
     } else {
         "error"
     };
+    {
+        let jid = job_id.clone();
+        let reason: Option<&str> = if sync_failed {
+            Some("sync_failed")
+        } else {
+            par2_reason.or(copy_reason)
+        };
+        let _ = tasks::update_container(Path::new(&rzp_path), |c| {
+            tasks::update_job_meta(c, &jid, status, reason);
+        });
+    }
 
     rc = log::final_rc(status, rc);
     let log_header =
