@@ -37,6 +37,10 @@ fn need_par2_for_action(action: &str) -> bool {
     action == ACTION_BACKUP || action == ACTION_CROP
 }
 
+fn engine_success(rc: i32, action: &str) -> bool {
+    rc == 0 || (rc == 1 && action == ACTION_BACKUP)
+}
+
 fn py_repr_str(s: &str) -> String {
     let mut out = String::from("'");
     for c in s.chars() {
@@ -436,7 +440,7 @@ fn run(rest: &[String]) -> i32 {
             let (r, l) = engine::run_engine(c);
             rc = r;
             log_out = l;
-            ok = rc == 0;
+            ok = engine_success(rc, &action);
         }
 
         if let Some(d) = tmp_dir {
@@ -530,7 +534,7 @@ fn run(rest: &[String]) -> i32 {
                 let extra_cmd =
                     cmdline::build_create_cmd(&zpaq, &settings, &srcs, &extra, password);
                 let (r, l) = engine::run_engine(&extra_cmd);
-                let mut step_ok = r == 0 || r == 1;
+                let mut step_ok = engine_success(r, &action);
                 extra_ok = extra_ok && step_ok;
                 let block = format!("\n[extra archive] {}\n{}\n", extra, l);
                 extra_note.push_str(&block);
