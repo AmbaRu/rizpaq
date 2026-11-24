@@ -31,6 +31,30 @@ def prepare_dests(main_dest: str, extra_dests) -> list:
     return result
 
 
+def extra_par2_work(dest: str) -> dict:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    return {"title": str(dest)}
+
+
 def run_extra_dests(
     zpaq: str,
     settings: dict,
@@ -102,8 +126,12 @@ def run_extra_dests(
                                                                           
                                                                    
                                                                  
+                 
+                                                                 
+                                                                
+                                   
                 par2_ok, note = _headless_par2(
-                    rzp_path, work, {}, dest, settings
+                    rzp_path, extra_par2_work(dest), {}, dest, settings
                 )
                 parts.append(note or "")
                 if not par2_ok:

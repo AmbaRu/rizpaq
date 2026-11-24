@@ -33,6 +33,10 @@ fn unsupported_action(action: &str) -> bool {
         && action != ACTION_CONSOLIDATE
 }
 
+fn need_par2_for_action(action: &str) -> bool {
+    action == ACTION_BACKUP || action == ACTION_CROP
+}
+
 fn py_repr_str(s: &str) -> String {
     let mut out = String::from("'");
     for c in s.chars() {
@@ -518,7 +522,8 @@ fn run(rest: &[String]) -> i32 {
         }
     }
 
-    if ok && !skip_run && action != ACTION_TEST && tasks::py_truthy(settings.get("par2_enabled")) {
+    if ok && !skip_run && need_par2_for_action(&action)
+        && tasks::py_truthy(settings.get("par2_enabled")) {
         let (par2_ok, note) =
             par2::headless_par2_create(&rzp_path, work, &dest, &settings);
         par2_note = note;
@@ -564,8 +569,9 @@ fn run(rest: &[String]) -> i32 {
                     }
                 }
                 if step_ok && tasks::py_truthy(settings.get("par2_enabled")) {
+                    let extra_work = par2::extra_par2_work(&extra);
                     let (set_ok, note) = par2::headless_par2_create(
-                        &rzp_path, work, &extra, &settings,
+                        &rzp_path, &extra_work, &extra, &settings,
                     );
                     extra_note.push_str(&note);
                     log_out.push_str(&note);
@@ -727,6 +733,14 @@ mod tests {
         for rc in [1, 3, 128, -1] {
             assert_eq!(precheck_decision(rc), "error", "rc={rc}");
         }
+    }
+
+    #[test]
+    fn par2_is_not_attempted_after_volume_merge() {
+        assert!(need_par2_for_action("backup"));
+        assert!(need_par2_for_action("crop"));
+        assert!(!need_par2_for_action("consolidate"));
+        assert!(!need_par2_for_action("test"));
     }
 
     #[test]

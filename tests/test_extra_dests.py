@@ -61,6 +61,46 @@ class TestRunner(unittest.TestCase):
         self.assertTrue(ok)
         self.assertIn("par2 created", log)
 
+    def test_par2_for_extra_never_inherits_main_work_meta(self):
+        pass
+
+
+
+
+
+        from unittest import mock
+
+        seen = []
+
+        def fake_par2(rzp, work, job, dest, settings):
+            seen.append(work)
+            return True, "par2 created"
+
+        main_work = {
+            "id": "w-main",
+            "title": "Main",
+            "par2_size": 12345,
+        }
+        with mock.patch("core.headless._headless_par2", fake_par2):
+            ok, log = extra_dests.run_extra_dests(
+                "zpaq", {"par2_enabled": True}, ["D:/src"],
+                ["F:/one.zpaq", "F:/two.zpaq"],
+                build_cmd=lambda *a: ["zpaq", "a", a[3]],
+                runner=lambda cmd: (0, "archived"),
+                work=main_work, rzp_path="C:/tasks.rzp",
+            )
+        self.assertTrue(ok)
+        self.assertEqual(len(seen), 2)
+        for work in seen:
+            self.assertNotIn("par2_size", work)
+            self.assertNotIn("id", work)
+        self.assertEqual(main_work["par2_size"], 12345)
+        self.assertEqual(main_work["id"], "w-main")
+
+    def test_extra_par2_work_is_minimal(self):
+        work = extra_dests.extra_par2_work("F:/extra.zpaq")
+        self.assertEqual(work, {"title": "F:/extra.zpaq"})
+
     def test_par2_failure_marks_job_failed(self):
         from unittest import mock
 

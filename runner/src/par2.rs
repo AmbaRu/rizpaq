@@ -781,6 +781,10 @@ pub fn headless_par2_verify(dest: &str) -> (i32, String, &'static str) {
     }
 }
 
+pub fn extra_par2_work(dest: &str) -> Value {
+    serde_json::json!({"title": dest})
+}
+
 pub fn headless_par2_create(
     rzp_path: &str,
     work: &Value,
@@ -971,6 +975,14 @@ mod tests {
         assert!(!needs_subst("C:\\backups"));
         let long = format!("C:\\{}", "длинное_имя_папки_".repeat(12));
         assert!(needs_subst(&long));
+    }
+
+    #[test]
+    fn extra_work_has_no_main_archive_meta() {
+        let w = extra_par2_work("F:/extra.zpaq");
+        assert!(w.get("par2_size").is_none());
+        assert!(w.get("id").is_none());
+        assert_eq!(tasks::py_str(w.get("title").unwrap()), "F:/extra.zpaq");
     }
 
     #[test]

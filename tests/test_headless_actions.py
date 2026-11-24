@@ -261,6 +261,28 @@ class TestHeadlessActions(unittest.TestCase):
         self.assertEqual(rc, 1)
         self.assertEqual(calls, [])
 
+    def test_consolidate_does_not_attempt_par2(self):
+        pass
+
+
+
+
+
+        self.dest = self.dir / "multi_????.zpaq"
+        calls = []
+
+        def forbidden(*a, **kw):
+            calls.append(a)
+            raise AssertionError("PAR2 не должен вызываться после слияния")
+
+        with mock.patch("core.headless._headless_par2", forbidden):
+            rc, _cmd, job_id = self._run(
+                "consolidate", {"par2_enabled": True}
+            )
+        self.assertEqual(rc, 0)
+        self.assertEqual(calls, [])
+        self.assertEqual(self._job_state(job_id).get("last_status"), "ok")
+
     def test_sfx_action_builds_sfx_command(self):
         rc, calls, _ = self._run("sfx")
         self.assertEqual(rc, 0)

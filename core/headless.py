@@ -1522,12 +1522,18 @@ def _headless_task(rest: list) -> int:
                                                                      
                                                         
      
-                                                                         
-                                                                          
-                                                                     
                                                                         
-                                                 
-    if ok and not skip_run and action != ACTION_TEST and settings.get("par2_enabled"):
+                                                                          
+                                                                        
+                                                                      
+                                                                         
+                                                                           
+     
+                                                                        
+                                                                           
+    if (ok and not skip_run
+            and action in (ACTION_BACKUP, ACTION_CROP, ACTION_PASSWORD)
+            and settings.get("par2_enabled")):
                                                                    
                                                                         
                                                                     
