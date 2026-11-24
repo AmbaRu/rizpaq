@@ -114,9 +114,12 @@ def _run_one(path: Path) -> tuple:
             (r.stdout or "") + (r.stderr or ""),
         )
     except subprocess.TimeoutExpired as exc:
-        out = (exc.stdout or b"") + (exc.stderr or b"")
-        if isinstance(out, bytes):
-            out = out.decode("utf-8", "replace")
+        parts = []
+        for chunk in (exc.stdout, exc.stderr):
+            if isinstance(chunk, bytes):
+                chunk = chunk.decode("utf-8", "replace")
+            parts.append(chunk or "")
+        out = "".join(parts)
         return False, time.monotonic() - t0, out + (
             f"\n!! TIMEOUT ({PER_FILE_TIMEOUT}s)"
         )
