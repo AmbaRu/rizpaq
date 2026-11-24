@@ -1,6 +1,75 @@
 
 use crate::tasks::{py_str, py_truthy};
 use serde_json::Value;
+use std::path::Path;
+
+const CHECK_UNITS: &[(char, u64)] = &[
+    ('k', 1 << 10), ('m', 1 << 20), ('g', 1 << 30), ('t', 1 << 40),
+];
+const APPEND_CHECK: &str = "1G";
+const APPEND_MIN_FREE: u64 = 1 << 30;
+
+fn checksize_bytes(text: &str) -> u64 {
+    let mut value = text.trim().replace(',', ".");
+    if value.is_empty() {
+        return 0;
+    }
+    let mut mult = 1u64;
+    if let Some(last) = value.chars().last() {
+        let last = last.to_ascii_lowercase();
+        for (unit, factor) in CHECK_UNITS {
+            if *unit == last {
+                mult = *factor;
+                value.pop();
+                value = value.trim().to_string();
+                break;
+            }
+        }
+    }
+    match value.parse::<f64>() {
+        Ok(n) if n.is_finite() && n >= 0.0 => (n * mult as f64) as u64,
+        _ => 0,
+    }
+}
+
+fn checksize_text(n: u64) -> String {
+    if n == 0 {
+        return String::new();
+    }
+    for (suffix, mult) in [("T", 1u64 << 40), ("G", 1 << 30), ("M", 1 << 20), ("K", 1 << 10)] {
+        if n >= mult {
+            let value = n as f64 / mult as f64;
+            if (value - value.round()).abs() < 0.01 {
+                return format!("{}{}", value.round() as u64, suffix);
+            }
+            return format!("{}{}", format!("{:.2}", value)
+                .trim_end_matches('0').trim_end_matches('.'), suffix);
+        }
+    }
+    n.to_string()
+}
+
+pub fn resolve_checksize(requested: &str, dest: &str) -> String {
+    let value = requested.trim();
+    if value.is_empty() {
+        return String::new();
+    }
+    if dest.is_empty() || dest.contains('?') || !Path::new(dest).is_file() {
+        return value.to_string();
+    }
+    let Some(free) = crate::disk::free_bytes(dest) else {
+        return value.to_string();
+    };
+    if free < APPEND_MIN_FREE {
+        return value.to_string();
+    }
+    let want = checksize_bytes(value);
+    if want > 0 && want < APPEND_MIN_FREE {
+        checksize_text(want)
+    } else {
+        APPEND_CHECK.to_string()
+    }
+}
 
 fn truthy(settings: &Value, key: &str) -> bool {
     py_truthy(settings.get(key))
@@ -77,7 +146,7 @@ pub fn build_create_cmd(
     }
     if truthy(settings, "checkspace") {
         cmd.push("-checksize".to_string());
-        cmd.push(py_value(settings, "checkspace"));
+        cmd.push(resolve_checksize(&py_value(settings, "checkspace"), dest));
     }
     if truthy(settings, "noonedrive") {
         cmd.push("-noonedrive".to_string());

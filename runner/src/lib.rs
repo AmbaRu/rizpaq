@@ -1,6 +1,7 @@
 
 pub mod cfg;
 pub mod cmdline;
+pub mod disk;
 pub mod copy;
 pub mod engine;
 pub mod enginepath;
