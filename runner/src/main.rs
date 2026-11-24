@@ -41,6 +41,14 @@ fn engine_success(rc: i32, action: &str) -> bool {
     rc == 0 || (rc == 1 && action == ACTION_BACKUP)
 }
 
+fn py_str_or_empty(v: Option<&Value>) -> String {
+    if tasks::py_truthy(v) {
+        tasks::py_str(v.unwrap())
+    } else {
+        String::new()
+    }
+}
+
 fn py_repr_str(s: &str) -> String {
     let mut out = String::from("'");
     for c in s.chars() {
@@ -240,7 +248,7 @@ fn run(rest: &[String]) -> i32 {
         return 1;
     }
 
-    let dest0 = tasks::py_str(settings.get("dest").unwrap_or(&Value::Null));
+    let dest0 = py_str_or_empty(settings.get("dest"));
     if !tasks::py_truthy(settings.get("dest")) {
         let header = log::build_log_header(&rzp_path, work, job, 1, None, None);
         log::write_task_log(&rzp_path, &header, "No destination specified in job.", "full", 1, false, "");
@@ -370,12 +378,7 @@ fn run(rest: &[String]) -> i32 {
                     .to_string();
                 let stem = if stem.is_empty() { "merged".to_string() } else { stem };
                 let default_out = p.with_file_name(format!("{}.zpaq", stem));
-                let out = tasks::py_str(
-                    settings
-                        .get("consolidate_output")
-                        .filter(|v| tasks::py_truthy(Some(v)))
-                        .unwrap_or(&serde_json::Value::Null),
-                );
+                let out = py_str_or_empty(settings.get("consolidate_output"));
                 let out = if out.trim().is_empty() {
                     default_out.to_string_lossy().into_owned()
                 } else {
@@ -393,12 +396,7 @@ fn run(rest: &[String]) -> i32 {
                 }
             }
         } else if action == ACTION_CROP {
-            let policy = tasks::py_str(
-                settings
-                    .get("retention_policy")
-                    .filter(|v| tasks::py_truthy(Some(v)))
-                    .unwrap_or(&serde_json::Value::Null),
-            );
+            let policy = py_str_or_empty(settings.get("retention_policy"));
             let policy = if policy.trim().is_empty() {
                 retention::DEFAULT_POLICY.to_string()
             } else {
@@ -451,9 +449,7 @@ fn run(rest: &[String]) -> i32 {
     let mut copy_failed = false;
     let mut copy_note = String::new();
     let mut copy_reason: Option<&'static str> = None;
-    let copy_dir = tasks::py_str(settings.get("copy").unwrap_or(&Value::Null))
-        .trim()
-        .to_string();
+    let copy_dir = py_str_or_empty(settings.get("copy")).trim().to_string();
     if action == ACTION_BACKUP && ok && !skip_run && !copy_dir.is_empty() {
         let (copy_ok, copy_text) = copy::copy_archive(&dest, &copy_dir);
         if copy_ok {
@@ -482,9 +478,7 @@ fn run(rest: &[String]) -> i32 {
 
     let mut verify_note = String::new();
     if ok && !skip_run && action == ACTION_BACKUP {
-        let vm = tasks::py_str(
-            settings.get("verify").unwrap_or(&Value::Null)
-        ).trim().to_lowercase();
+        let vm = py_str_or_empty(settings.get("verify")).trim().to_lowercase();
         if matches!(vm.as_str(), "full" | "checksum" | "verify" | "paranoid") {
             let vtmp = if vm == "paranoid" {
                 util::make_tmp_dir("rizpaq_task_verify_")
@@ -526,7 +520,7 @@ fn run(rest: &[String]) -> i32 {
         if let Some(arr) = settings.get("extra_dests").and_then(Value::as_array) {
             let mut seen: Vec<String> = vec![dest.clone()];
             for raw in arr {
-                let extra = tasks::py_str(raw).trim().to_string();
+                let extra = py_str_or_empty(Some(raw)).trim().to_string();
                 if extra.is_empty() || seen.contains(&extra) {
                     continue;
                 }
@@ -575,7 +569,7 @@ fn run(rest: &[String]) -> i32 {
     if !skip_run && (action == ACTION_BACKUP || action == ACTION_TEST) {
         if let Some(mail) = cfg::mail_config() {
             if mail.ready() {
-                let job_title = tasks::py_str(job.get("title").unwrap_or(&Value::Null));
+                let job_title = py_str_or_empty(job.get("title"));
                 let customer = if mail.customer.is_empty() {
                     job_title.clone()
                 } else {
@@ -649,8 +643,8 @@ fn run(rest: &[String]) -> i32 {
 
     if !(skip_run && ok) {
         notify::notify_job(
-            &tasks::py_str(work.get("title").unwrap_or(&Value::Null)),
-            &tasks::py_str(job.get("title").unwrap_or(&Value::Null)),
+            &py_str_or_empty(work.get("title")),
+            &py_str_or_empty(job.get("title")),
             status,
             if sync_failed {
                 Some("sync_failed")
@@ -729,6 +723,15 @@ mod tests {
         for rc in [1, 3, 128, -1] {
             assert_eq!(precheck_decision(rc), "error", "rc={rc}");
         }
+    }
+
+    #[test]
+    fn py_str_or_empty_maps_python_falsy_values() {
+        assert_eq!(py_str_or_empty(None), "");
+        assert_eq!(py_str_or_empty(Some(&serde_json::Value::Null)), "");
+        assert_eq!(py_str_or_empty(Some(&serde_json::json!(0))), "");
+        assert_eq!(py_str_or_empty(Some(&serde_json::json!(false))), "");
+        assert_eq!(py_str_or_empty(Some(&serde_json::json!("Job"))), "Job");
     }
 
     #[test]
