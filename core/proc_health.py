@@ -102,6 +102,38 @@ def effective_stall_timeout(module_default: float, module_value: float,
         return float(module_default)
 
 
+def wait_bounded(proc, timeout: float = 5.0) -> int:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+    try:
+        return proc.wait(timeout=timeout)
+    except Exception:
+        pass
+
+    try:
+        if getattr(proc, "stdout", None) is not None:
+            proc.stdout.close()
+    except Exception:
+        pass
+
+    try:
+        return proc.wait(timeout=timeout)
+    except Exception:
+        return -1
+
+
 def _cpu_seconds_windows(handle) -> float:
     pass
     try:

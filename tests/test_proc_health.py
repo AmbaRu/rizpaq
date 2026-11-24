@@ -17,6 +17,7 @@
 
 from __future__ import annotations
 
+import ast
 import os
 import subprocess
 import sys
@@ -34,6 +35,7 @@ from core.proc_health import (
     STALL_TIMEOUT_BUSY,
     Liveness,
     make_cpu_reader,
+    wait_bounded,
 )
 
                                                
@@ -456,6 +458,87 @@ class TestRunZpaqGuard(unittest.TestCase):
         rc, text = self.zc.run_zpaq(self._child(src))
         self.assertNotEqual(rc, 0)
         self.assertIn("пароль", text.lower(), text[-300:])
+
+
+class _FakePipe:
+    def __init__(self):
+        self.closed = False
+
+    def close(self):
+        self.closed = True
+
+
+class _FakeProc:
+    pass
+
+    def __init__(self, fail_first=True, fail_second=False):
+        self.stdout = _FakePipe()
+        self.calls = []
+        self._fail_first = fail_first
+        self._fail_second = fail_second
+
+    def wait(self, timeout=None):
+        self.calls.append(timeout)
+        if len(self.calls) == 1 and self._fail_first:
+            raise subprocess.TimeoutExpired("cmd", timeout)
+        if len(self.calls) == 2 and self._fail_second:
+            raise subprocess.TimeoutExpired("cmd", timeout)
+        return 7
+
+
+class TestWaitBounded(unittest.TestCase):
+    pass
+
+
+
+
+
+
+
+    def test_closes_pipe_and_retries(self):
+        proc = _FakeProc()
+        self.assertEqual(wait_bounded(proc, timeout=3), 7)
+        self.assertEqual(proc.calls, [3, 3])
+        self.assertTrue(proc.stdout.closed, "труба не закрылась после таймаута")
+
+    def test_no_retry_when_process_exits(self):
+        proc = _FakeProc(fail_first=False)
+        self.assertEqual(wait_bounded(proc, timeout=3), 7)
+        self.assertEqual(proc.calls, [3])
+        self.assertFalse(proc.stdout.closed, "трубу закрыли без нужды")
+
+    def test_gives_up_after_second_timeout(self):
+        proc = _FakeProc(fail_second=True)
+        self.assertEqual(wait_bounded(proc, timeout=3), -1)
+        self.assertEqual(proc.calls, [3, 3])
+
+    def test_every_wait_has_a_timeout(self):
+        pass
+
+
+
+
+        files = (
+            "core/zpaq_cli.py",
+            "core/proc_health.py",
+            "workers/streaming.py",
+            "workers/list_worker.py",
+        )
+        for rel in files:
+            source = (ROOT / rel).read_text(encoding="utf-8")
+            for node in ast.walk(ast.parse(source)):
+                if not isinstance(node, ast.Call):
+                    continue
+                func = node.func
+                if not isinstance(func, ast.Attribute) or func.attr != "wait":
+                    continue
+                has_timeout = bool(node.args) or any(
+                    kw.arg == "timeout" for kw in node.keywords
+                )
+                self.assertTrue(
+                    has_timeout,
+                    f"{rel}:{node.lineno}: wait() без таймаута",
+                )
 
 
 if __name__ == "__main__":

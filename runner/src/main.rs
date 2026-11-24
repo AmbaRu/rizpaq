@@ -625,6 +625,7 @@ fn run(rest: &[String]) -> i32 {
         "error"
     };
 
+    rc = log::final_rc(status, rc);
     let log_header =
         log::build_log_header(&rzp_path, work, job, rc, password, cmd.as_deref());
     let task_note = format!(

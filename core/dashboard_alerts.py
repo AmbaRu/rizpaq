@@ -87,15 +87,21 @@ class Alert:
 
 def _format_size(size: Optional[int]) -> str:
     pass
+
+
+
+
+
+
     if size is None:
         return "—"
     if size < 1024:
-        return f"{size} Б"
+        return f"{size} B"
     if size < 1024 * 1024:
-        return f"{size / 1024:.1f} КБ"
+        return f"{size / 1024:.1f} KB"
     if size < 1024 * 1024 * 1024:
-        return f"{size / (1024 * 1024):.1f} МБ"
-    return f"{size / (1024 * 1024 * 1024):.1f} ГБ"
+        return f"{size / (1024 * 1024):.1f} MB"
+    return f"{size / (1024 * 1024 * 1024):.1f} GB"
 
 
 def _parse_dt(value) -> Optional[datetime]:

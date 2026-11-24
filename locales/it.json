@@ -677,7 +677,7 @@
     "dashboard.card.alerts": "Richiede attenzione",
     "dashboard.alerts.all_ok": "Tutto in ordine",
     "dashboard.alerts.more": "e altri {n}…",
-    "dashboard.alerts.par2_outdated": "Set PAR2 obsoleto: l'archivio è cresciuto da {old} a {new}",
+    "dashboard.alerts.par2_outdated": "Set PAR2 obsoleto: la dimensione dell'archivio è cambiata da {old} a {new}",
     "dashboard.alerts.source_missing": "Sorgente non trovata: {path}",
     "dashboard.alerts.archive_missing": "Archivio non trovato: {path}",
     "dashboard.alerts.shared_dest": "Più lavori scrivono nello stesso archivio: {path}",

@@ -677,7 +677,7 @@
     "dashboard.card.alerts": "Benötigt Aufmerksamkeit",
     "dashboard.alerts.all_ok": "Alles in Ordnung",
     "dashboard.alerts.more": "und {n} weitere…",
-    "dashboard.alerts.par2_outdated": "PAR2-Satz veraltet: Archiv wuchs von {old} auf {new}",
+    "dashboard.alerts.par2_outdated": "PAR2-Satz veraltet: Archivgröße änderte sich von {old} auf {new}",
     "dashboard.alerts.source_missing": "Quelle nicht gefunden: {path}",
     "dashboard.alerts.archive_missing": "Archiv nicht gefunden: {path}",
     "dashboard.alerts.shared_dest": "Mehrere Aufträge schreiben in ein Archiv: {path}",

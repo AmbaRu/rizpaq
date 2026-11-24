@@ -8,6 +8,7 @@
 
 from __future__ import annotations
 
+import json
 import os
 import sys
 import tempfile
@@ -275,6 +276,39 @@ class TestFreeBytes(unittest.TestCase):
             self.fail(f"free_bytes raised: {exc}")
         else:
             self.assertTrue(free is None or free >= 0)
+
+
+class TestAlertWording(unittest.TestCase):
+    pass
+
+
+
+
+
+    def test_no_growth_claim_in_any_locale(self):
+        root = Path(__file__).resolve().parent.parent
+        for path in sorted((root / "locales").glob("*.json")):
+            strings = json.loads(path.read_text(encoding="utf-8"))["strings"]
+            text = strings.get("dashboard.alerts.par2_outdated", "")
+            with self.subTest(locale=path.stem):
+                self.assertIn("{old}", text)
+                self.assertIn("{new}", text)
+                self.assertNotIn("grew", text.lower())
+                self.assertNotIn("вырос", text.lower())
+                self.assertNotIn("creció", text.lower())
+                self.assertNotIn("cresceu", text.lower())
+                self.assertNotIn("cresciuto", text.lower())
+                self.assertNotIn("增长", text)
+                self.assertNotIn("増加", text)
+
+    def test_size_units_are_language_neutral(self):
+        self.assertEqual(DA._format_size(2048), "2.0 KB")
+        self.assertEqual(DA._format_size(1024 ** 2), "1.0 MB")
+
+        from ui.dashboard_page import _format_size as ui_format
+
+        self.assertEqual(ui_format(2048), "2.0 KB")
+        self.assertEqual(ui_format(1024 ** 3), "1.0 GB")
 
 
 if __name__ == "__main__":

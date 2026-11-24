@@ -701,7 +701,7 @@
     "dashboard.card.alerts": "Needs attention",
     "dashboard.alerts.all_ok": "All good",
     "dashboard.alerts.more": "and {n} more…",
-    "dashboard.alerts.par2_outdated": "PAR2 set outdated: archive grew from {old} to {new}",
+    "dashboard.alerts.par2_outdated": "PAR2 set outdated: archive size changed from {old} to {new}",
     "dashboard.alerts.source_missing": "Source not found: {path}",
     "dashboard.alerts.archive_missing": "Archive not found: {path}",
     "dashboard.alerts.shared_dest": "Several works write to one archive: {path}",

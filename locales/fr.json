@@ -677,7 +677,7 @@
     "dashboard.card.alerts": "Nécessite une attention",
     "dashboard.alerts.all_ok": "Tout est en ordre",
     "dashboard.alerts.more": "et {n} de plus…",
-    "dashboard.alerts.par2_outdated": "Jeu PAR2 obsolète : l'archive a grandi de {old} à {new}",
+    "dashboard.alerts.par2_outdated": "Jeu PAR2 obsolète : la taille de l'archive a changé de {old} à {new}",
     "dashboard.alerts.source_missing": "Source introuvable : {path}",
     "dashboard.alerts.archive_missing": "Archive introuvable : {path}",
     "dashboard.alerts.shared_dest": "Plusieurs travaux écrivent dans une même archive : {path}",

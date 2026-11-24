@@ -47,6 +47,7 @@ from core.engine_path import (
 from core.proc_health import (
     Liveness,
     make_cpu_reader,
+    wait_bounded,
 )
 
 CANCELLED_TEXT = "Operation cancelled by user"
@@ -487,10 +488,9 @@ def _run_prepared(
     while True:
         if _is_cancelled(is_cancelled):
             _kill_proc(proc)
-            try:
-                proc.wait()
-            except Exception:
-                pass
+                                                                         
+                                                                          
+            wait_bounded(proc)
             _close_pipe(proc)
             return -1, CANCELLED_TEXT + "\n"
 
@@ -563,7 +563,9 @@ def _run_prepared(
 
         time.sleep(POLL_INTERVAL)
 
-    rc = proc.wait()
+                                                                    
+                                                                       
+    rc = wait_bounded(proc)
     output = decode_bytes(b"".join(chunks))
     _close_pipe(proc)
 

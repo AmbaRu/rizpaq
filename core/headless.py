@@ -1625,6 +1625,15 @@ def _headless_task(rest: list) -> int:
     else:
         status = "error"
 
+                                                                    
+                                                                       
+                                                                  
+                                                                    
+                                                                    
+                                              
+    if status != "ok" and rc == 0:
+        rc = 1
+
                                                                 
                                                                    
                                                                 

@@ -52,11 +52,13 @@ class TestHeadlessActions(unittest.TestCase):
                                                                          
 
     def _make_container(self, action: str, extra: dict = None,
-                        password: str = None) -> str:
+                        password: str = None,
+                        work_extra: dict = None) -> str:
         container = T.empty_container("live")
         work = T.add_work(
             container, "Работа", [str(self.src)], str(self.dest),
             password=password,
+            **(work_extra or {}),
         )
         settings = {
             "title": "Задание",
@@ -68,9 +70,10 @@ class TestHeadlessActions(unittest.TestCase):
         T.save_container(self.rzp, container)
         return job["id"]
 
-    def _run(self, action: str, extra: dict = None, fake_run=None):
+    def _run(self, action: str, extra: dict = None, fake_run=None,
+             work_extra: dict = None):
         pass
-        job_id = self._make_container(action, extra)
+        job_id = self._make_container(action, extra, work_extra=work_extra)
         calls = []
 
         def fake_run_zpaq(cmd, is_cancelled=None, set_proc=None):
@@ -176,6 +179,54 @@ class TestHeadlessActions(unittest.TestCase):
         log_text = Path(str(self.rzp) + ".log").read_text(encoding="utf-8")
         self.assertIn("second copy failed", log_text)
         self.assertIn("Return code: 1", log_text)
+
+    def _fake_run_with_archive(self, cmd):
+        Path(cmd[2]).write_bytes(b"archive payload")
+        return 0, "engine output\n"
+
+    def test_par2_failure_makes_short_log_an_error(self):
+        pass
+
+
+
+
+
+
+
+        with mock.patch(
+            "core.headless._headless_par2",
+            return_value=(False, "[par2] set not created\n"),
+        ):
+            rc, _calls, job_id = self._run(
+                "backup",
+                {"par2_enabled": True, "task_log_mode": "short"},
+                fake_run=self._fake_run_with_archive,
+            )
+        self.assertEqual(rc, 1)
+        self.assertEqual(self._job_state(job_id).get("last_status"), "error")
+        log_text = Path(str(self.rzp) + ".log").read_text(encoding="utf-8")
+        self.assertIn("Status: ERROR (rc=1)", log_text)
+        self.assertNotIn("Status: OK", log_text)
+
+    def test_extra_archive_failure_makes_short_log_an_error(self):
+        pass
+        with mock.patch(
+            "core.extra_dests.prepare_dests",
+            return_value=[str(self.dir / "extra.zpaq")],
+        ), mock.patch(
+            "core.extra_dests.run_extra_dests",
+            return_value=(False, "[extra archives] FAIL\n"),
+        ):
+            rc, _calls, job_id = self._run(
+                "backup",
+                {"task_log_mode": "short"},
+                fake_run=self._fake_run_with_archive,
+                work_extra={"extra_dests": [str(self.dir / "extra.zpaq")]},
+            )
+        self.assertEqual(rc, 1)
+        self.assertEqual(self._job_state(job_id).get("last_status"), "error")
+        log_text = Path(str(self.rzp) + ".log").read_text(encoding="utf-8")
+        self.assertIn("Status: ERROR (rc=1)", log_text)
 
     def test_test_action_builds_t_command(self):
         rc, calls, _ = self._run("test")

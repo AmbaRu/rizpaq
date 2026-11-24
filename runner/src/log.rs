@@ -171,3 +171,29 @@ pub fn write_task_log(
         let _ = f.write_all(buf.as_bytes());
     }
 }
+
+pub fn final_rc(status: &str, rc: i32) -> i32 {
+    if status != "ok" && rc == 0 {
+        1
+    } else {
+        rc
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn failure_after_engine_raises_zero_rc() {
+        assert_eq!(final_rc("error", 0), 1);
+        assert_eq!(final_rc("busy", 0), 1);
+    }
+
+    #[test]
+    fn success_and_real_engine_codes_are_untouched() {
+        assert_eq!(final_rc("ok", 0), 0);
+        assert_eq!(final_rc("ok", 1), 1);
+        assert_eq!(final_rc("error", 2), 2);
+    }
+}

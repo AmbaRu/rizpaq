@@ -677,7 +677,7 @@
     "dashboard.card.alerts": "Wymaga uwagi",
     "dashboard.alerts.all_ok": "Wszystko w porządku",
     "dashboard.alerts.more": "i jeszcze {n}…",
-    "dashboard.alerts.par2_outdated": "Zestaw PAR2 przestarzały: archiwum urosło z {old} do {new}",
+    "dashboard.alerts.par2_outdated": "Zestaw PAR2 przestarzały: rozmiar archiwum zmienił się z {old} na {new}",
     "dashboard.alerts.source_missing": "Nie znaleziono źródła: {path}",
     "dashboard.alerts.archive_missing": "Nie znaleziono archiwum: {path}",
     "dashboard.alerts.shared_dest": "Kilka prac zapisuje do jednego archiwum: {path}",

@@ -677,7 +677,7 @@
     "dashboard.card.alerts": "需要关注",
     "dashboard.alerts.all_ok": "一切正常",
     "dashboard.alerts.more": "还有 {n} 条…",
-    "dashboard.alerts.par2_outdated": "PAR2 集已过时：存档从 {old} 增长到 {new}",
+    "dashboard.alerts.par2_outdated": "PAR2 集已过时：存档大小从 {old} 变为 {new}",
     "dashboard.alerts.source_missing": "找不到源：{path}",
     "dashboard.alerts.archive_missing": "找不到存档：{path}",
     "dashboard.alerts.shared_dest": "多个工作写入同一存档：{path}",

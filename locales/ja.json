@@ -677,7 +677,7 @@
     "dashboard.card.alerts": "要注意",
     "dashboard.alerts.all_ok": "すべて正常",
     "dashboard.alerts.more": "他 {n} 件…",
-    "dashboard.alerts.par2_outdated": "PAR2セットが古くなりました: アーカイブが {old} から {new} へ増加",
+    "dashboard.alerts.par2_outdated": "PAR2セットが古くなりました: アーカイブのサイズが {old} から {new} に変化しました",
     "dashboard.alerts.source_missing": "ソースが見つかりません: {path}",
     "dashboard.alerts.archive_missing": "アーカイブが見つかりません: {path}",
     "dashboard.alerts.shared_dest": "複数のワークが同じアーカイブに書き込んでいます: {path}",

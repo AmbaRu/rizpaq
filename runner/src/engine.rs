@@ -217,7 +217,7 @@ fn run_prepared(cmd: &[String], cwd: Option<&str>) -> (i32, String) {
     };
 
     let result = pump(&mut child, &reader);
-    let _ = child.wait();
+    wait_up_to(&mut child, std::time::Duration::from_secs(5));
     result
 }
 
@@ -334,4 +334,28 @@ fn password_prompt_message() -> String {
 
 fn effective_stall_timeout() -> f64 {
     crate::cfg::engine_stall_timeout(DEFAULT_STALL_TIMEOUT)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn wait_up_to_reaps_a_finished_child() {
+        let mut child = Command::new("cmd")
+            .args(["/c", "exit 0"])
+            .creation_flags(CREATE_NO_WINDOW)
+            .spawn()
+            .expect("cmd.exe must exist on Windows");
+        let started = std::time::Instant::now();
+        wait_up_to(&mut child, std::time::Duration::from_secs(5));
+        assert!(
+            child.try_wait().unwrap().is_some(),
+            "wait_up_to should reap the child"
+        );
+        assert!(
+            started.elapsed() < std::time::Duration::from_secs(5),
+            "wait_up_to should return as soon as the child exits"
+        );
+    }
 }

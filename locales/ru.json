@@ -677,7 +677,7 @@
     "dashboard.card.alerts": "Требует внимания",
     "dashboard.alerts.all_ok": "Всё в порядке",
     "dashboard.alerts.more": "и ещё {n}…",
-    "dashboard.alerts.par2_outdated": "Набор PAR2 устарел: архив вырос с {old} до {new}",
+    "dashboard.alerts.par2_outdated": "Набор PAR2 устарел: размер архива изменился с {old} до {new}",
     "dashboard.alerts.source_missing": "Источник не найден: {path}",
     "dashboard.alerts.archive_missing": "Архив не найден: {path}",
     "dashboard.alerts.shared_dest": "Несколько работ пишут в один архив: {path}",

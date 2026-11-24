@@ -58,7 +58,12 @@ from PySide6.QtCore import QThread, Signal
 
 from core.engine_path import EnginePathError, drop_substitutes, rewrite_cmd
 from core.parser import ParseReport, parse_csv_line_reported
-from core.proc_health import Liveness, effective_stall_timeout, make_cpu_reader
+from core.proc_health import (
+    Liveness,
+    effective_stall_timeout,
+    make_cpu_reader,
+    wait_bounded,
+)
 from core.zpaq_cli import decode_bytes
 
                                                               
@@ -305,7 +310,9 @@ class StreamingListWorker(QThread):
                 if entry is not None:
                     entries.append(entry)
 
-            rc = p.wait()
+                                                                    
+                                                                  
+            rc = wait_bounded(p)
         finally:
             try:
                 if p.stdout is not None:

@@ -67,6 +67,7 @@ from core.proc_health import (
     Liveness,
     effective_stall_timeout,
     make_cpu_reader,
+    wait_bounded,
 )
 
 from PySide6.QtCore import QThread, Signal
@@ -557,21 +558,9 @@ class StreamingZpaqThread(QThread):
                 self.line_received.emit(_decode_line(line_buf))
 
                                                                      
-                                                                       
-                                                                          
-                                                            
-            try:
-                rc = p.wait(timeout=5)
-            except Exception:
-                try:
-                    if p.stdout is not None:
-                        p.stdout.close()
-                except Exception:
-                    pass
-                try:
-                    rc = p.wait(timeout=5)
-                except Exception:
-                    rc = -1
+                                                                         
+                                                                  
+            rc = wait_bounded(p)
 
                                                                         
                                                                       

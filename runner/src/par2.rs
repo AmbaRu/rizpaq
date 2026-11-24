@@ -248,7 +248,7 @@ fn run_capture(cmd: &[String], timeout: Duration) -> Option<i32> {
         }
         if Instant::now() >= deadline {
             child.kill().ok();
-            let _ = child.wait();
+            engine::wait_up_to(&mut child, Duration::from_secs(5));
             return None;
         }
         std::thread::sleep(Duration::from_millis(20));
