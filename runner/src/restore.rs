@@ -23,7 +23,7 @@ fn parse_listing(text: &str) -> Vec<Candidate> {
         } else {
             (parts[2], String::new(), parts[4], parts[5], parts[3], parts[1])
         };
-        let size: i64 = size_s.trim().parse().unwrap_or(0);
+        let size = index::parse_size(size_s);
         let path = path.trim().trim_end_matches('#').to_string();
         let attr = attr.trim().to_uppercase();
         let ratio = ratio.trim().to_lowercase();
@@ -211,5 +211,17 @@ mod tests {
         let marked =
             "#2026-01-01 00:00:00\tA\t100\t1,0\t2\t+\tdir/file.txt#\n";
         assert_eq!(parse_listing(marked)[0].path, "dir/file.txt");
+    }
+
+    #[test]
+    fn parses_csv_listing_with_thousands_separators() {
+        let text = "2026-06-12 20:25:10\tD\t39.551.238\tdir\t1\t#\td:/1000/folder/#\n\
+                    2026-06-12 20:25:10\tA\t9.396\t0.00\t1\t+\td:/1000/errors.xlsx#\n\
+                    2026-06-12 20:25:10\tA\t4.371\t0.00\t1\t+\td:/1000/data.json#\n";
+        let found = parse_listing(text);
+        assert_eq!(found.len(), 2);
+        assert_eq!(found[0].path, "d:/1000/errors.xlsx");
+        assert_eq!(found[0].size, 9396);
+        assert_eq!(found[1].size, 4371);
     }
 }
