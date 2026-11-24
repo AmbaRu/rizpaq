@@ -87,6 +87,26 @@ pub fn notify_config() -> Option<NotifyConfig> {
     })
 }
 
+fn clean_port(value: Option<&Value>) -> String {
+    let parsed = match value {
+        Some(Value::Number(n)) => {
+            if let Some(i) = n.as_i64() {
+                Some(i)
+            } else if let Some(u) = n.as_u64() {
+                i64::try_from(u).ok()
+            } else {
+                n.as_f64().map(|f| f as i64)
+            }
+        }
+        Some(Value::String(s)) => s.trim().parse::<i64>().ok(),
+        _ => None,
+    };
+    match parsed {
+        Some(p) if (1..=65535).contains(&p) => p.to_string(),
+        _ => String::new(),
+    }
+}
+
 #[derive(Clone)]
 pub struct MailConfig {
     pub enabled: bool,
@@ -127,7 +147,7 @@ pub fn mail_config() -> Option<MailConfig> {
             .and_then(Value::as_bool)
             .unwrap_or(false),
         server: get("mail_smtp_server"),
-        port: get("mail_smtp_port"),
+        port: clean_port(v.get("mail_smtp_port")),
         tls,
         user: get("mail_smtp_user"),
         password: v
