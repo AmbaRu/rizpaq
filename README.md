@@ -353,6 +353,10 @@ instant, and nothing you were doing is lost.
   asks for confirmation first. The familiar single-folder version
   extraction is still there.
 
+### What's new in 3.1.12
+- Opening a password-protected archive no longer hides the password prompt behind the "operation in progress" notice.
+- Job logs contain the `Command:` line again (with the password masked); damaged task containers no longer crash the backup page.
+
 ### What's new in 3.1.10
 - Multipart archives can now be joined into one archive with `m ... -verify`;
   the old `consolidate` command never worked. Original volumes are kept.
@@ -931,6 +935,10 @@ ZPAQ**. Один клик: старый RAR, набитый дублями, пр
   все версии в пронумерованных папках 0001, 0002, … . Данные идут через
   временную папку, а распаковка в непустую папку сначала спрашивает
   подтверждение. Привычное извлечение версии одной папки осталось на месте.
+
+### Что нового в 3.1.12
+- При открытии архива с паролем окно запроса пароля больше не перекрывается окошком «идёт операция».
+- В журнал задания снова попадает строка `Command:` (с замаскированным паролем); повреждённый контейнер заданий больше не валит панель бэкапа.
 
 ### Что нового в 3.1.10
 - Разбитый архив теперь склеивается в один командой `m ... -verify`; старая
