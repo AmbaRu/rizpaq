@@ -479,12 +479,18 @@ class ArchiveLoaderMixin:
             soft_warn = rc == 1
             if rc != 0:
                 if looks_like_password_error(tail):
-                    pw, ok = QInputDialog.getText(
-                        self,
-                        tr("dialog.password.required_title"),
-                        tr("dialog.password.required_text", name=Path(path).name),
-                        PASSWORD_ECHO,
-                    )
+                                                                          
+                                                                             
+                                                                        
+                                                                   
+                    with self._modal_dialog():
+                        pw, ok = QInputDialog.getText(
+                            self,
+                            tr("dialog.password.required_title"),
+                            tr("dialog.password.required_text",
+                               name=Path(path).name),
+                            PASSWORD_ECHO,
+                        )
                     if ok and pw:
                         self._cache(path)["password"] = pw
                         if make_active and path == self.archive_path:
@@ -496,9 +502,10 @@ class ArchiveLoaderMixin:
                     if make_active and path == self.archive_path:
                         self.navigate_fs(Path(path).parent)
                     self._refresh_status_for_current_mode()
-                    QMessageBox.critical(
-                        self, tr("archive.error.open_title"), tail or ""
-                    )
+                    with self._modal_dialog():
+                        QMessageBox.critical(
+                            self, tr("archive.error.open_title"), tail or ""
+                        )
                     return
 
             if not entries:
@@ -511,11 +518,12 @@ class ArchiveLoaderMixin:
                 if make_active and path == self.archive_path:
                     self.navigate_fs(Path(path).parent)
                 self._refresh_status_for_current_mode()
-                QMessageBox.warning(
-                    self,
-                    tr("archive.error.no_data_title"),
-                    tr("archive.error.no_data_text"),
-                )
+                with self._modal_dialog():
+                    QMessageBox.warning(
+                        self,
+                        tr("archive.error.no_data_title"),
+                        tr("archive.error.no_data_text"),
+                    )
                 return
 
                                                                         
@@ -528,11 +536,12 @@ class ArchiveLoaderMixin:
             if soft_warn:
                                                                       
                                                                           
-                QMessageBox.warning(
-                    self,
-                    tr("archive.warn.damaged_title"),
-                    tr("archive.warn.damaged_text", name=Path(path).name),
-                )
+                with self._modal_dialog():
+                    QMessageBox.warning(
+                        self,
+                        tr("archive.warn.damaged_title"),
+                        tr("archive.warn.damaged_text", name=Path(path).name),
+                    )
         finally:
             self._stop_busy()
 

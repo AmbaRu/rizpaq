@@ -1068,7 +1068,7 @@ def _headless_task(rest: list) -> int:
 
 
 
-    from core.zpaq_cli import run_zpaq, safe_cmdline
+    from core.zpaq_cli import run_zpaq
 
                              
     rzp_path, job_id = _parse_task_args(rest)
@@ -1835,6 +1835,7 @@ def _build_log_header(rzp_path: str, work: dict, job: dict,
 
 
     from core.tasks import job_to_runnable_settings                                
+    from core.zpaq_cli import safe_cmdline
 
     lines = [
         f"--- Rizpaq task run {datetime.now()} ---",

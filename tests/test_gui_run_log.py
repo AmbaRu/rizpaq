@@ -16,7 +16,6 @@
 
 import tempfile
 import unittest
-from pathlib import Path
 
 from core import tasks as T
 from core.run_history import log_path_for, parse_log
@@ -106,6 +105,20 @@ class TestGuiRunLog(unittest.TestCase):
         ArchiveActionsMixin._write_run_log_record(
             host, "Z:/несуществующий/путь.rzp", self.job_id, "ok", 0, None)
         self.assertEqual(self._entries(), [])
+
+    def test_header_includes_masked_command(self):
+                                                                          
+                                                                      
+        found = T.find_job(self.container, self.job_id)
+        work, job = found
+        from core.headless import _build_log_header
+        cmd = ["zpaq.exe", "a", "F:/Dasha.zpaq", "D:/Dasha", "-key", "s3cret"]
+        header = _build_log_header(str(self.path), work, job, 0,
+                                   password="s3cret", cmd=cmd)
+        self.assertIn("Command:", header)
+        self.assertIn("zpaq.exe", header)
+        self.assertNotIn("s3cret", header)
+        self.assertIn("***", header)
 
     def test_gui_and_headless_records_coexist(self):
                                                                 

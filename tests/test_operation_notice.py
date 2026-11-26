@@ -183,6 +183,46 @@ class TestNoticeBasics(unittest.TestCase):
         self.assertTrue(self.n.is_visible_notice(), "повторный show не должен гасить окно")
 
 
+class TestNoticeSuspendForDialog(unittest.TestCase):
+    pass
+
+    def setUp(self):
+        self.n = OperationNotice(cancel_enabled=True)
+        self.addCleanup(self.n.hide_notice)
+
+    def test_visible_notice_is_hidden_and_restored(self):
+        self.n.show_notice("Чтение архива")
+        _pump(NOTICE_DELAY_MS + 50)
+        self.assertTrue(self.n.isVisible())
+
+        state = self.n.suspend_for_dialog()
+        self.assertFalse(self.n.isVisible(), "диалог перекрыт окошком")
+        self.assertTrue(self.n.is_visible_notice())
+
+        self.n.resume_after_dialog(state)
+        self.assertTrue(self.n.isVisible(), "индикатор не вернулся после диалога")
+
+    def test_pending_notice_is_shown_after_dialog(self):
+        self.n.show_notice("Чтение архива")
+        state = self.n.suspend_for_dialog()
+        _pump(NOTICE_DELAY_MS * 2)
+        self.assertFalse(self.n.isVisible(), "окно появилось поверх диалога")
+
+        self.n.resume_after_dialog(state)
+        _pump(NOTICE_DELAY_MS + 50)
+        self.assertTrue(
+            self.n.isVisible(), "после диалога отложенное окно не появилось"
+        )
+
+    def test_hide_notice_during_dialog_wins(self):
+        self.n.show_notice("Чтение архива")
+        _pump(NOTICE_DELAY_MS + 50)
+        state = self.n.suspend_for_dialog()
+        self.n.hide_notice()
+        self.n.resume_after_dialog(state)
+        self.assertFalse(self.n.isVisible())
+
+
 class TestNoticeCancel(unittest.TestCase):
     def test_cancel_emits_signal(self):
         n = OperationNotice(cancel_enabled=True)

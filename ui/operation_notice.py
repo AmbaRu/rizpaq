@@ -76,6 +76,8 @@ class OperationNotice(QWidget):
         super().__init__(parent)
 
         self._shown = False
+        self._pending = False                                        
+        self._generation = 0                                                  
         self._step_text = ""
         self._elapsed_base = time.monotonic()
 
@@ -182,6 +184,7 @@ class OperationNotice(QWidget):
         self._on_tick()
 
         if not self._shown:
+            self._pending = True
             self._delay_timer.start(NOTICE_DELAY_MS)
 
     def update_step(self, text: str) -> None:
@@ -203,9 +206,49 @@ class OperationNotice(QWidget):
         pass
         self._delay_timer.stop()
         self._tick_timer.stop()
+        self._pending = False
+        self._generation += 1
         if self._shown:
             self._shown = False
             self.hide()
+
+    def suspend_for_dialog(self) -> tuple:
+        pass
+
+
+
+
+
+
+
+
+
+
+        state = (self._shown, self._pending, self._generation)
+        self._delay_timer.stop()
+        self._pending = False
+        if self._shown:
+            self.hide()
+        return state
+
+    def resume_after_dialog(self, state) -> None:
+        pass
+        parts = state if isinstance(state, tuple) else (False, False, -1)
+        was_shown, was_pending, generation = (
+            parts + (False, False, -1)
+        )[:3]
+                                                                         
+                                                            
+        if generation != self._generation:
+            return
+        if was_shown:
+            self.show()
+            self.raise_()
+        elif was_pending:
+                                                                         
+                                                                 
+            self._pending = True
+            self._delay_timer.start(NOTICE_DELAY_MS)
 
                                                                           
 
@@ -213,6 +256,7 @@ class OperationNotice(QWidget):
         if self._shown:
             return
         self._shown = True
+        self._pending = False
         self._center_on_screen()
         self.show()
         self.raise_()

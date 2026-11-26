@@ -146,6 +146,65 @@ class TestContainerRobustness(_TmpDir):
         self.assertEqual(len(c["works"]), 1)
         self.assertEqual(c["works"][0]["id"], "w1")
 
+    def test_wrong_field_types_do_not_raise(self):
+        pass
+
+
+
+
+
+        self.write_raw(json.dumps({
+            "format": T.CONTAINER_FORMAT,
+            "version": 1,
+            "works": [{
+                "id": "w1",
+                "title": "Работа",
+                "sources": 5,
+                "extra_dests": {"x": 1},
+                "only_masks": 7,
+                "not_masks": False,
+                "jobs": [{"id": "j1", "run_count": "abc"}],
+            }],
+        }))
+        c = T.load_container(self.path)
+        self.assertEqual(len(c["works"]), 1)
+        w = c["works"][0]
+        self.assertEqual(w["sources"], [])
+        self.assertEqual(w["extra_dests"], [])
+        self.assertEqual(w["only_masks"], [])
+        self.assertEqual(w["not_masks"], [])
+        self.assertEqual(w["jobs"][0]["run_count"], 0)
+
+    def test_run_count_special_numbers(self):
+        pass
+        for raw, expected in (
+            ("12", 12),
+            (True, 1),
+            (2.9, 2),
+            (float("nan"), 0),
+            (float("inf"), 0),
+        ):
+            with self.subTest(value=raw):
+                self.write_raw(json.dumps({
+                    "format": T.CONTAINER_FORMAT,
+                    "version": 1,
+                    "works": [{
+                        "id": "w1",
+                        "jobs": [{"id": "j1", "run_count": raw}],
+                    }],
+                }))
+                c = T.load_container(self.path)
+                self.assertEqual(c["works"][0]["jobs"][0]["run_count"], expected)
+
+    def test_jobs_not_list_is_ignored(self):
+        self.write_raw(json.dumps({
+            "format": T.CONTAINER_FORMAT,
+            "version": 1,
+            "works": [{"id": "w1", "jobs": 5}],
+        }))
+        c = T.load_container(self.path)
+        self.assertEqual(c["works"][0]["jobs"], [])
+
     def test_work_without_id_is_dropped(self):
         pass
         self.write_raw(json.dumps({

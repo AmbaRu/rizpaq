@@ -17,6 +17,7 @@
 
 from __future__ import annotations
 
+from contextlib import contextmanager
 from pathlib import Path
 
 from PySide6.QtWidgets import QApplication, QFileDialog, QMessageBox
@@ -176,6 +177,40 @@ class AppServicesMixin:
             self._notice.cancelRequested.connect(self._on_notice_cancel)
         except Exception:
             self._notice = None
+
+    def _suspend_notice_for_dialog(self):
+        pass
+
+
+
+
+
+
+        try:
+            notice = getattr(self, "_notice", None)
+            if notice is not None:
+                return notice.suspend_for_dialog()
+        except Exception:
+            pass
+        return (False, False)
+
+    def _resume_notice_after_dialog(self, state) -> None:
+        pass
+        try:
+            notice = getattr(self, "_notice", None)
+            if notice is not None:
+                notice.resume_after_dialog(state)
+        except Exception:
+            pass
+
+    @contextmanager
+    def _modal_dialog(self):
+        pass
+        state = self._suspend_notice_for_dialog()
+        try:
+            yield
+        finally:
+            self._resume_notice_after_dialog(state)
 
     def _on_notice_cancel(self) -> None:
         pass

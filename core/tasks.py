@@ -625,6 +625,46 @@ def _validate(data: Any) -> Optional[dict]:
     return out
 
 
+def _list_value(value) -> list:
+    pass
+
+
+
+
+
+
+
+    return list(value) if isinstance(value, (list, tuple)) else []
+
+
+def _norm_run_count(value) -> int:
+    pass
+
+
+
+
+
+
+    if not value:
+        return 0
+    if isinstance(value, bool):
+        return 1 if value else 0
+    if isinstance(value, int):
+        return value
+    if isinstance(value, float):
+                                                                        
+        try:
+            return int(value)
+        except (ValueError, OverflowError):
+            return 0
+    if isinstance(value, str):
+        try:
+            return int(value.strip() or 0)
+        except ValueError:
+            return 0
+    return 0
+
+
 def _normalise_work(w: dict) -> Optional[dict]:
     wid = w.get("id")
     if not isinstance(wid, str) or not wid:
@@ -637,15 +677,15 @@ def _normalise_work(w: dict) -> Optional[dict]:
         "title": str(w.get("title") or "").strip() or "Работа",
         "created": _normalize_date(str(w.get("created") or _now())),
         "modified": _normalize_date(str(w.get("modified") or _now())),
-        "sources": [str(s) for s in (w.get("sources") or []) if str(s).strip()],
+        "sources": [str(s) for s in _list_value(w.get("sources")) if str(s).strip()],
         "dest": str(w.get("dest") or ""),
         "extra_dests": [
-            str(d).strip() for d in (w.get("extra_dests") or [])
+            str(d).strip() for d in _list_value(w.get("extra_dests"))
             if str(d).strip()
         ],
         "password_b64": w.get("password_b64") or None,
-        "only_masks": [str(m) for m in (w.get("only_masks") or [])],
-        "not_masks": [str(m) for m in (w.get("not_masks") or [])],
+        "only_masks": [str(m) for m in _list_value(w.get("only_masks"))],
+        "not_masks": [str(m) for m in _list_value(w.get("not_masks"))],
         "comment": str(w.get("comment") or ""),
                                                                       
                                                          
@@ -654,7 +694,7 @@ def _normalise_work(w: dict) -> Optional[dict]:
         "jobs": [],
     }
 
-    for j in w.get("jobs") or []:
+    for j in _list_value(w.get("jobs")):
         if not isinstance(j, dict):
             continue
         job = _normalise_job(j)
@@ -682,7 +722,7 @@ def _normalise_job(j: dict) -> Optional[dict]:
                                                             
                                                                      
         "last_reason": _norm_reason(j.get("last_reason")),
-        "run_count": int(j.get("run_count") or 0),
+        "run_count": _norm_run_count(j.get("run_count")),
         "schedule": j.get("schedule") if isinstance(j.get("schedule"), dict) else None,
         "task_log_mode": j.get("task_log_mode") if j.get("task_log_mode") in LOG_MODES else LOG_MODE_SHORT,
                                                                       
@@ -1069,7 +1109,7 @@ def update_job_meta(container: dict, job_id: str, status: str,
     job["last_run"] = _now()
     job["last_status"] = status
     job["last_reason"] = _norm_reason(reason) if status != JOB_STATUS_OK else None
-    job["run_count"] = int(job.get("run_count") or 0) + 1
+    job["run_count"] = _norm_run_count(job.get("run_count")) + 1
     return True
 
 

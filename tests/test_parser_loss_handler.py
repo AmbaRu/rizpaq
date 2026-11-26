@@ -33,6 +33,7 @@ from __future__ import annotations
 
 import sys
 import unittest
+from contextlib import contextmanager
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -88,6 +89,11 @@ class FakeLoader:
 
     def _stop_busy(self):
         self._busy_calls += 1
+
+    @contextmanager
+    def _modal_dialog(self):
+        pass
+        yield
 
                        
     def _cache(self, path):
