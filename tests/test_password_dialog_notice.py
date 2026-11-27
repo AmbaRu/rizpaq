@@ -352,7 +352,8 @@ class _InfoHost:
 
     _cache = ArchiveLoaderMixin._cache
     _on_worker_result = ArchiveLoaderMixin._on_worker_result
-    _password_attempt = ArchiveLoaderMixin._password_attempt
+    _password_attempt_number = ArchiveLoaderMixin._password_attempt_number
+    _note_password_failure = ArchiveLoaderMixin._note_password_failure
     _reset_password_attempts = ArchiveLoaderMixin._reset_password_attempts
 
     def log_output(self, text):
@@ -409,6 +410,16 @@ class TestInfoPasswordPrompt(unittest.TestCase):
         self.assertEqual(host.info_calls, [])
         self.assertEqual(host.stopped, 1)
         store.assert_not_called()
+
+    def test_cancel_does_not_consume_attempts(self):
+        host = _InfoHost()
+        with patch.object(
+            archive_loader.QInputDialog, "getText", return_value=("", False)
+        ):
+            for _ in range(5):
+                host._on_worker_result(self._result())
+
+        self.assertEqual(host._password_attempts, {})
 
     def test_ordinary_failure_does_not_ask(self):
         host = _InfoHost()

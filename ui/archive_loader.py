@@ -106,7 +106,14 @@ class ArchiveLoaderMixin:
 
                                                                           
 
-    def _password_attempt(self, path, limit: int = 3):
+                                                                     
+                                                                    
+                                                           
+                                                                      
+                     
+    PASSWORD_ATTEMPTS = 3
+
+    def _password_attempt_number(self, path):
         pass
 
 
@@ -120,13 +127,23 @@ class ArchiveLoaderMixin:
             attempts = {}
             self._password_attempts = attempts
         try:
-            n = int(attempts.get(path, 0)) + 1
+            done = int(attempts.get(path, 0))
         except (TypeError, ValueError):
-            n = 1
-        if n > limit:
-            return None
-        attempts[path] = n
-        return n
+            done = 0
+        limit = int(getattr(self, "PASSWORD_ATTEMPTS", 3) or 3)
+        n = done + 1
+        return n if n <= limit else None
+
+    def _note_password_failure(self, path) -> None:
+        pass
+        attempts = getattr(self, "_password_attempts", None)
+        if attempts is None:
+            attempts = {}
+            self._password_attempts = attempts
+        try:
+            attempts[path] = int(attempts.get(path, 0)) + 1
+        except (TypeError, ValueError):
+            attempts[path] = 1
 
     def _reset_password_attempts(self, path) -> None:
         pass
@@ -471,7 +488,7 @@ class ArchiveLoaderMixin:
         password_retry = False
         shown_error = False
         if path and rc != 0 and looks_like_password_error(output):
-            attempt_helper = getattr(self, "_password_attempt", None)
+            attempt_helper = getattr(self, "_password_attempt_number", None)
             attempt = attempt_helper(path) if callable(attempt_helper) else 1
             if attempt is not None:
                 password_retry = True
@@ -484,6 +501,9 @@ class ArchiveLoaderMixin:
                         PASSWORD_ECHO,
                     )
                 if ok and pw:
+                    note_helper = getattr(self, "_note_password_failure", None)
+                    if callable(note_helper):
+                        note_helper(path)
                                                                     
                                                                          
                     self.log_output(
@@ -500,12 +520,17 @@ class ArchiveLoaderMixin:
                     self._load_info(path, quiet=bool(ctx.get("quiet")))
             else:
                                                                          
-                                                      
+                                                                         
+                                                                      
+                                                                      
                 shown_error = True
                 with self._modal_dialog():
                     QMessageBox.critical(
                         self, tr("archive.error.open_title"), output or ""
                     )
+                reset_helper = getattr(self, "_reset_password_attempts", None)
+                if callable(reset_helper):
+                    reset_helper(path)
 
         if rc == 0:
             reset_helper = getattr(self, "_reset_password_attempts", None)
@@ -579,7 +604,7 @@ class ArchiveLoaderMixin:
             soft_warn = rc == 1
             if rc != 0:
                 if looks_like_password_error(tail):
-                    attempt_helper = getattr(self, "_password_attempt", None)
+                    attempt_helper = getattr(self, "_password_attempt_number", None)
                     attempt = (
                         attempt_helper(path) if callable(attempt_helper) else 1
                     )
@@ -597,6 +622,11 @@ class ArchiveLoaderMixin:
                                 PASSWORD_ECHO,
                             )
                         if ok and pw:
+                            note_helper = getattr(
+                                self, "_note_password_failure", None
+                            )
+                            if callable(note_helper):
+                                note_helper(path)
                                                                      
                             self.log_output(
                                 "[rizpaq] пароль: попытка %d, длина %d"
@@ -615,11 +645,18 @@ class ArchiveLoaderMixin:
                         return
 
                                                                          
-                                                                 
+                                                                         
+                                                                       
+                                                             
                     with self._modal_dialog():
                         QMessageBox.critical(
                             self, tr("archive.error.open_title"), tail or ""
                         )
+                    reset_helper = getattr(
+                        self, "_reset_password_attempts", None
+                    )
+                    if callable(reset_helper):
+                        reset_helper(path)
                     return
 
                 if not soft_warn:
