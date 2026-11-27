@@ -45,3 +45,45 @@ fn real_restore_drill_succeeds() {
     assert!(ok, "restore drill must succeed on a healthy archive: {}", log);
     assert!(log.contains("OK"));
 }
+
+#[test]
+fn real_encrypted_restore_drill_succeeds() {
+    let Some(zpaq_path) = engine_path() else {
+        eprintln!("skip: zpaqfranz.exe not found next to runner/");
+        return;
+    };
+    let zpaq = zpaq_path.to_string_lossy().into_owned();
+    let Some(root) = util::make_tmp_dir("rizpaq_restore_pw_") else {
+        panic!("cannot create temp folder");
+    };
+    let data = root.join("data");
+    std::fs::create_dir_all(&data).unwrap();
+    let file = data.join("secret.txt");
+    std::fs::write(&file, b"encrypted payload").unwrap();
+    let archive = root.join("encrypted.zpaq");
+    let arc = archive.to_string_lossy().into_owned();
+    let src = data.to_string_lossy().into_owned();
+    let sources = vec![src.clone()];
+
+    let (rc, out) = run(&zpaq, &["a", &arc, &src, "-key", "secret"]);
+    assert_eq!(rc, 0, "encrypted archive creation failed: {}", out);
+
+    let (ok, log) = restore::run_restore_drill(&zpaq, &arc, Some("secret"), &sources);
+    println!("{}", log);
+    assert!(
+        ok,
+        "restore drill must succeed on an encrypted archive with the right key: {}",
+        log
+    );
+    assert!(log.contains("OK"));
+
+    let (ok_bad, log_bad) =
+        restore::run_restore_drill(&zpaq, &arc, Some("wrong"), &sources);
+    assert!(
+        !ok_bad,
+        "restore drill must fail with a wrong key: {}",
+        log_bad
+    );
+
+    let _ = std::fs::remove_dir_all(&root);
+}
