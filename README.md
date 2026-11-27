@@ -353,6 +353,11 @@ instant, and nothing you were doing is lost.
   asks for confirmation first. The familiar single-folder version
   extraction is still there.
 
+### What's new in 3.1.14
+- The password is asked again after a restart: the GUI no longer takes the saved key from the store, which used to open and run an encrypted archive without a single prompt.
+- Encrypted archives no longer freeze for half a minute waiting for a console password: every engine launch detaches stdin.
+- A wrong key no longer loops the password dialog: three attempts in a row, cancel is free, then the engine's own message is shown.
+
 ### What's new in 3.1.13
 - Extracting from a password-protected archive no longer fails with `Misplaced argument`: the file/folder filter goes before `-key`.
 - A password saved when the archive was created is now picked up on opening; a password entered by hand is saved for later.
@@ -940,6 +945,11 @@ ZPAQ**. Один клик: старый RAR, набитый дублями, пр
   все версии в пронумерованных папках 0001, 0002, … . Данные идут через
   временную папку, а распаковка в непустую папку сначала спрашивает
   подтверждение. Привычное извлечение версии одной папки осталось на месте.
+
+### Что нового в 3.1.14
+- После перезапуска пароль спрашивается снова: GUI больше не берёт сохранённый ключ из хранилища, из-за чего зашифрованный архив открывался и запускал файлы без единого запроса.
+- Зашифрованные архивы больше не зависают на полминуты в ожидании пароля с консоли: каждая точка запуска движка отсоединяет stdin.
+- Неверный ключ больше не зацикливает окно пароля: три попытки подряд, «Отмена» бесплатна, затем показывается сообщение самого движка.
 
 ### Что нового в 3.1.13
 - Распаковка из архива с паролем больше не падает с `Misplaced argument`: фильтр файла или папки идёт до `-key`.
