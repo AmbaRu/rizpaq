@@ -353,6 +353,11 @@ instant, and nothing you were doing is lost.
   asks for confirmation first. The familiar single-folder version
   extraction is still there.
 
+### What's new in 3.1.13
+- Extracting from a password-protected archive no longer fails with `Misplaced argument`: the file/folder filter goes before `-key`.
+- A password saved when the archive was created is now picked up on opening; a password entered by hand is saved for later.
+- If the key is missing or wrong, the program asks for it and retries the extraction instead of failing silently.
+
 ### What's new in 3.1.12
 - Opening a password-protected archive no longer hides the password prompt behind the "operation in progress" notice.
 - Job logs contain the `Command:` line again (with the password masked); damaged task containers no longer crash the backup page.
@@ -935,6 +940,11 @@ ZPAQ**. Один клик: старый RAR, набитый дублями, пр
   все версии в пронумерованных папках 0001, 0002, … . Данные идут через
   временную папку, а распаковка в непустую папку сначала спрашивает
   подтверждение. Привычное извлечение версии одной папки осталось на месте.
+
+### Что нового в 3.1.13
+- Распаковка из архива с паролем больше не падает с `Misplaced argument`: фильтр файла или папки идёт до `-key`.
+- Пароль, сохранённый при создании архива, теперь подхватывается при открытии; введённый вручную запоминается.
+- Если ключ не задан или неверен, программа спрашивает пароль и повторяет распаковку вместо молчаливого отказа.
 
 ### Что нового в 3.1.12
 - При открытии архива с паролем окно запроса пароля больше не перекрывается окошком «идёт операция».
