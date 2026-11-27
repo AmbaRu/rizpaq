@@ -48,7 +48,7 @@ from PySide6.QtWidgets import QInputDialog, QMessageBox
 
 from core import archive_index
 from core.parser import parse_info
-from core.password_store import get_password, set_password
+from core.password_store import set_password
 from core.zpaq_cli import looks_like_password_error
 from ui.i18n import tr
 from ui.presentation import format_size
@@ -70,34 +70,9 @@ class ArchiveLoaderMixin:
 
                                                                          
 
-    def _stored_password(self, path):
-        pass
-
-
-
-
-
-
-
-
-        candidates = [path, multipart_pattern(path)]
-        seen = set()
-
-        for candidate in candidates:
-            if not candidate or candidate in seen:
-                continue
-            seen.add(candidate)
-            try:
-                pw = get_password(str(candidate))
-            except Exception:
-                pw = None
-            if pw:
-                return pw
-
-        return None
-
     def _cache(self, path: str) -> dict:
         pass
+
 
 
 
@@ -127,11 +102,6 @@ class ArchiveLoaderMixin:
             "info_loaded": False,
         }
         self._arc_cache[key] = entry
-
-        stored = self._stored_password(path)
-        if stored:
-            entry["password"] = stored
-
         return entry
 
     def _activate_archive(self, path: str) -> None:
@@ -431,7 +401,7 @@ class ArchiveLoaderMixin:
             except Exception:
                 pass
 
-        worker = ZpaqWorker("info", cmd, {"path": path})
+        worker = ZpaqWorker("info", cmd, {"path": path, "quiet": bool(quiet)})
         worker.result.connect(self._on_worker_result)
         worker.finished.connect(lambda w=worker: self._cleanup_worker(w))
         self._workers.append(worker)
@@ -457,14 +427,48 @@ class ArchiveLoaderMixin:
         self.log_output(output)
 
         path = ctx.get("path")
-        self._handle_info_result(path, rc, output)
+
+                                                                          
+                                                                     
+                                                                
+                                                                 
+         
+                                                                    
+                                                                     
+                                                                      
+                                                       
+        password_retry = False
+        if path and rc != 0 and looks_like_password_error(output):
+            password_retry = True
+            with self._modal_dialog():
+                pw, ok = QInputDialog.getText(
+                    self,
+                    tr("dialog.password.required_title"),
+                    tr("dialog.password.required_text",
+                       name=Path(path).name if path else ""),
+                    PASSWORD_ECHO,
+                )
+            if ok and pw:
+                self._cache(path)["password"] = pw
+                if path == self.archive_path:
+                    self.password = pw
+                try:
+                    set_password(path, pw)
+                except Exception:
+                    pass
+                self._load_info(path, quiet=bool(ctx.get("quiet")))
+
+        if not password_retry:
+            self._handle_info_result(path, rc, output)
+
                                                                    
                                                                      
                                                                       
                                                                
                                                            
         self._stop_busy()
-        self._open_pending_dialogs(path)
+        if not password_retry:
+            self._open_pending_dialogs(path)
 
     def _on_streaming_list_result(self, result: dict):
         pass

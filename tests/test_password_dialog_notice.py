@@ -318,39 +318,108 @@ class _CacheHost:
         self._arc_cache = {}
 
     _cache = ArchiveLoaderMixin._cache
-    _stored_password = ArchiveLoaderMixin._stored_password
 
 
-class TestStoredPasswordHydration(unittest.TestCase):
-    def test_cache_takes_stored_password(self):
+class TestNoStoredPasswordHydration(unittest.TestCase):
+    pass
+
+    def test_cache_starts_without_password(self):
         host = _CacheHost()
-        with patch.object(
-            archive_loader, "get_password", return_value="stored"
-        ):
-            entry = host._cache("C:/Backup/arc_0001.zpaq")
-
-        self.assertEqual(entry["password"], "stored")
-
-    def test_cache_tries_multipart_mask(self):
-        host = _CacheHost()
-
-        def fake_get(path):
-            return "mask-pw" if "?" in path else None
-
-        with patch.object(
-            archive_loader, "get_password", side_effect=fake_get
-        ) as get:
-            entry = host._cache("C:/Backup/arc_0001.zpaq")
-
-        self.assertEqual(entry["password"], "mask-pw")
-        self.assertGreaterEqual(get.call_count, 2)
-
-    def test_cache_without_stored_password(self):
-        host = _CacheHost()
-        with patch.object(archive_loader, "get_password", return_value=None):
-            entry = host._cache("C:/Backup/plain.zpaq")
+        entry = host._cache("C:/Backup/arc_0001.zpaq")
 
         self.assertIsNone(entry["password"])
+
+    def test_reopening_cache_does_not_add_password(self):
+        host = _CacheHost()
+        first = host._cache("C:/Backup/arc_0001.zpaq")
+        first["password"] = "session"
+        second = host._cache("C:/Backup/arc_0001.zpaq")
+
+        self.assertIs(second, first)
+        self.assertEqual(second["password"], "session")
+
+
+class _InfoHost:
+    pass
+
+    def __init__(self):
+        self.archive_path = "C:/Backup/arc.zpaq"
+        self.password = None
+        self._arc_cache = {}
+        self.info_calls = []
+        self.retries = []
+        self.stopped = 0
+
+    _cache = ArchiveLoaderMixin._cache
+    _on_worker_result = ArchiveLoaderMixin._on_worker_result
+
+    def log_output(self, text):
+        pass
+
+    def _modal_dialog(self):
+        return nullcontext()
+
+    def _handle_info_result(self, path, rc, output):
+        self.info_calls.append((path, rc, output))
+
+    def _stop_busy(self):
+        self.stopped += 1
+
+    def _open_pending_dialogs(self, path):
+        pass
+
+    def _load_info(self, path, quiet=False):
+        self.retries.append((path, quiet))
+
+
+class TestInfoPasswordPrompt(unittest.TestCase):
+    def _result(self):
+        return {
+            "kind": "info",
+            "rc": 2,
+            "output": "42267! Password required, use -key",
+            "context": {"path": "C:/Backup/arc.zpaq", "quiet": True},
+        }
+
+    def test_password_error_asks_and_retries(self):
+        host = _InfoHost()
+        with patch.object(
+            archive_loader.QInputDialog, "getText", return_value=("pw", True)
+        ) as ask, patch.object(archive_loader, "set_password") as store:
+            host._on_worker_result(self._result())
+
+        ask.assert_called_once()
+        store.assert_called_once_with("C:/Backup/arc.zpaq", "pw")
+        self.assertEqual(host.password, "pw")
+        self.assertEqual(host._cache(host.archive_path)["password"], "pw")
+        self.assertEqual(host.retries, [("C:/Backup/arc.zpaq", True)])
+        self.assertEqual(host.info_calls, [])
+        self.assertEqual(host.stopped, 1)
+
+    def test_cancelled_prompt_does_not_retry(self):
+        host = _InfoHost()
+        with patch.object(
+            archive_loader.QInputDialog, "getText", return_value=("", False)
+        ), patch.object(archive_loader, "set_password") as store:
+            host._on_worker_result(self._result())
+
+        self.assertEqual(host.retries, [])
+        self.assertEqual(host.info_calls, [])
+        self.assertEqual(host.stopped, 1)
+        store.assert_not_called()
+
+    def test_ordinary_failure_does_not_ask(self):
+        host = _InfoHost()
+        result = self._result()
+        result["output"] = "some unrelated error"
+        with patch.object(
+            archive_loader.QInputDialog, "getText", return_value=("pw", True)
+        ) as ask:
+            host._on_worker_result(result)
+
+        ask.assert_not_called()
+        self.assertEqual(len(host.info_calls), 1)
+        self.assertEqual(host.retries, [])
 
 
 if __name__ == "__main__":
