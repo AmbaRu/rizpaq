@@ -532,6 +532,10 @@ class ExtractFolderWorker(QThread):
             try:
                 p = subprocess.Popen(
                     cmd,
+                                                                    
+                                                                     
+                                                  
+                    stdin=subprocess.DEVNULL,
                     stdout=subprocess.PIPE,
                     stderr=subprocess.STDOUT,
                     **popen_kwargs(),

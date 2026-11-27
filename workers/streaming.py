@@ -399,8 +399,15 @@ class StreamingZpaqThread(QThread):
         try:
             p = subprocess.Popen(
                 cmd,
+                                                                      
+                                                                       
+                                                                        
+                                                                       
+                                                                      
+                                                                         
+                                                 
                 stdin=(subprocess.PIPE if self.stdin_text is not None
-                       else None),
+                       else subprocess.DEVNULL),
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
                 cwd=run_cwd,                               

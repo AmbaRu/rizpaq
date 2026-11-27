@@ -203,6 +203,11 @@ class StreamingListWorker(QThread):
 
         p = subprocess.Popen(
             cmd,
+                                                                       
+                                                                      
+                                                                     
+                                         
+            stdin=subprocess.DEVNULL,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             cwd=run_cwd,
