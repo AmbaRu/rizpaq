@@ -11,17 +11,22 @@ from pathlib import Path
 
                                                                          
                                                                       
-                                                                       
+                                                                     
+                                                                     
+                                                                        
+                                      
+ 
+           
                                         
-                         
+                           
                                           
                          
-                                                                         
+                                                         
  
                                                                      
                                                                     
                                                                
-MULTIPART_RE = re.compile(r"(?<=_)\d{4}\.zpaq$", re.IGNORECASE)
+MULTIPART_RE = re.compile(r"(?<=_)(\d{3,4})(\.zpaq)$", re.IGNORECASE)
 
 
 def multipart_pattern(path) -> str:
@@ -29,12 +34,15 @@ def multipart_pattern(path) -> str:
 
 
 
+
     if not path:
         return str(path) if path is not None else path
     p = str(path)
-    if MULTIPART_RE.search(p):
-        return MULTIPART_RE.sub("????.zpaq", p)
-    return p
+
+    def _mask(match):
+        return "?" * len(match.group(1)) + match.group(2).lower()
+
+    return MULTIPART_RE.sub(_mask, p)
 
 
 _BACKSLASH = chr(92)

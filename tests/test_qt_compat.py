@@ -120,10 +120,12 @@ class TestMultipartPattern(unittest.TestCase):
             r"D:\backup_12345.zpaq",
         )
 
-    def test_three_digits_not_replaced(self):
+    def test_three_digits_replaced_with_three_questions(self):
+                                                                    
+                                                                      
         self.assertEqual(
-            multipart_pattern(r"D:\backup_123.zpaq"),
-            r"D:\backup_123.zpaq",
+            multipart_pattern(r"D:\downloads_001.zpaq"),
+            r"D:\downloads_???.zpaq",
         )
 
     def test_no_underscore_not_replaced(self):

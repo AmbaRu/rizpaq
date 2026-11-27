@@ -107,6 +107,13 @@ class MenuActionsMixin:
             self._on_restore_revision
         )
 
+        self._unpack_range_action = m_unpack.addAction(tr("menu.unpack.range"))
+        self._unpack_range_action.setStatusTip(tr("tip.unpack_range"))
+                                                                  
+        unpack_range = getattr(self, "_on_unpack_range", None)
+        if callable(unpack_range):
+            self._unpack_range_action.triggered.connect(unpack_range)
+
         self._unpack_ver_menu = m_unpack.addMenu(tr("menu.unpack.version"))
         m_unpack.aboutToShow.connect(self._rebuild_unpack_menu)
         self._salvage_action = m_unpack.addAction(tr("menu.unpack.salvage"))

@@ -40,10 +40,24 @@ _LIST_FLAGS = ("-all", "-terse", "-csv", "\t", "-csvhf", "#",
                "-utf", "-noeta")
 
 
-def build_list_cmd(zpaq_bin: str, path: str, password: str = None) -> list:
+def build_list_cmd(
+    zpaq_bin: str, path: str, password: str = None,
+    range_spec: str = None,
+) -> list:
     pass
 
+
+
+
+
+
+
+
+
+
     cmd = [zpaq_bin, "l", str(path), *(_LIST_FLAGS)]
+    if range_spec:
+        cmd += ["-range", str(range_spec)]
     if password:
         cmd += ["-key", password]
     return cmd

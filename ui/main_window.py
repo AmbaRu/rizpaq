@@ -140,6 +140,10 @@ class MainWindow(
         self.archive_path: Optional[str] = None
         self.archive_inner: str = ""
         self.version_slice: Optional[int] = None
+                                                                      
+                                                                     
+                                                                          
+        self.version_range: Optional[str] = None
         self.password: Optional[str] = None
         self.last_extract_dir = self._cfg.last_extract_dir
         self._search_query: str = ""

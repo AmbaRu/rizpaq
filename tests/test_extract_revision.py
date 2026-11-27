@@ -59,6 +59,23 @@ class TestExtractRevisionWorker(unittest.TestCase):
             w = ExtractRevisionWorker("z", "a.zpaq", None, mode, until, "out")
             self.assertNotIn("-only", w.cmd)
 
+    def test_range_mode(self):
+        w = ExtractRevisionWorker(
+            "z", "downloads_????.zpaq", "pw", "range", "2:5", "D:\\out"
+        )
+        self.assertEqual(
+            w.cmd,
+            ["z", "x", "downloads_????.zpaq", "-key", "pw",
+             "-range", "2:5", "-to", "D:\\out"],
+        )
+
+    def test_range_never_combined_with_until_or_filter(self):
+        for spec in ("2:5", "::3", "4"):
+            w = ExtractRevisionWorker("z", "a.zpaq", None, "range", spec, "out")
+            self.assertNotIn("-until", w.cmd)
+            self.assertNotIn("-only", w.cmd)
+            self.assertEqual(w.cmd[w.cmd.index("-range") + 1], spec)
+
 
 @unittest.skipIf(normalize_date is None, f"import failed: {IMPORT_ERROR}")
 class TestNormalizeDate(unittest.TestCase):

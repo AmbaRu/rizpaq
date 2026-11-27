@@ -41,6 +41,7 @@ from core.paths import (
 )
 from core.password_store import set_password
 from core.temp_cleanup import remove_temp_dir
+from core.version_range import normalize_range
 from core.zpaq_cli import looks_like_password_error
 from ui.fs_actions import open_file_external
 from ui.i18n import tr
@@ -355,6 +356,61 @@ class ExtractionMixin:
             )
                                                                  
             remove_temp_dir(Path(dest).parent)
+
+    def _on_unpack_range(self):
+        pass
+
+
+
+
+
+
+
+        if self.mode != "archive" or not self.archive_path:
+            self.statusBar().showMessage(tr("status.test_only_archive"))
+            return
+
+        current = getattr(self, "version_range", None) or ""
+        text, ok = QInputDialog.getText(
+            self,
+            tr("range.dialog.title"),
+            tr("range.dialog.text"),
+            text=current,
+        )
+        if not ok:
+            return
+
+        spec = normalize_range(text)
+        if not spec:
+            QMessageBox.warning(
+                self, tr("range.dialog.title"), tr("status.version_range_bad")
+            )
+            return
+
+        initial = str(self._initial_extract_dir())
+        self.setStatusTip(tr("tip.extract_to"))
+        dest = QFileDialog.getExistingDirectory(
+            self, tr("restore.rev.dest_title"), initial
+        )
+        if not dest:
+            return
+
+        dest_path = Path(dest)
+        if dest_path.exists() and directory_not_empty(dest_path):
+            ans = QMessageBox.question(
+                self,
+                tr("restore.rev.exists_title"),
+                tr("restore.rev.exists_text"),
+                YES_NO_BUTTONS,
+            )
+            if ans != YES_BUTTON:
+                return
+
+        self.last_extract_dir = dest_path
+        self.version_range = spec
+        self._rebuild_versions_menu()
+        self.statusBar().showMessage(tr("status.version_range_set", value=spec))
+        self._start_extract_revision_worker("range", spec, str(dest_path))
 
     def _on_restore_revision_impl(self):
         pass

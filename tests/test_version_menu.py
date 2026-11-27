@@ -177,13 +177,14 @@ class TestVersionsMenuLeak(unittest.TestCase):
         self._drain_events()
 
         actions = self.win._versions_menu.actions()
-                                               
-        self.assertEqual(len(actions), 7)
+                                                                   
+        self.assertEqual(len(actions), 8)
         self.assertTrue(actions[0].isCheckable())
         self.assertIsNone(actions[0].data())
-        self.assertEqual(actions[2].data(), 1)
-        self.assertTrue(actions[2].isChecked() is False)
-        self.assertTrue(actions[4].isChecked(), "v3 должен быть отмечен")
+        self.assertEqual(actions[1].data(), "range")
+        self.assertEqual(actions[3].data(), 1)
+        self.assertTrue(actions[3].isChecked() is False)
+        self.assertTrue(actions[5].isChecked(), "v3 должен быть отмечен")
 
     def test_group_is_exclusive(self):
         self.win._rebuild_versions_menu()

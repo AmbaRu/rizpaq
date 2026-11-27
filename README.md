@@ -505,6 +505,9 @@ instant, and nothing you were doing is lost.
   surfaces, light text, calm accent), *Deep Teal* (dark blue-green, teal
   accent), *Catppuccin Mocha* (soft pastel dark) and *Cloud Dancer* (warm
   off-white). Switched on the fly, no restart.
+- **Version ranges for multipart sets**: filter the listing with
+  `-range` (for example `2:5` or `::3`) to see just one volume's files,
+  and extract exactly those deltas.
 - **Ten interface languages** — English, Русский, Italiano, Deutsch,
   Français, Español, 中文, Português, 日本語, Polski — plus any additional
   one you drop into `locales/`. No rebuild needed.
@@ -1103,6 +1106,9 @@ ZPAQ**. Один клик: старый RAR, набитый дублями, пр
   (тёмный сине-зелёный, бирюзовый акцент), *Мокко (Catppuccin)*
   (мягкая пастельная тёмная) и *Облачный танец* (тёплый белый).
   Переключаются на лету, без перезапуска.
+- **Диапазоны версий для многотомников**: фильтр списка через
+  `-range` (например `2:5` или `::3`) — увидеть файлы только нужного
+  тома и извлечь именно эти дельты.
 - **Десять языков интерфейса** — English, Русский, Italiano, Deutsch,
   Français, Español, 中文, Português, 日本語, Polski — плюс любой
   дополнительный, положенный в `locales/`. Без пересборки.

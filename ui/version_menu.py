@@ -6,6 +6,8 @@
 from __future__ import annotations
 
 from PySide6.QtGui import QAction, QActionGroup
+from PySide6.QtWidgets import QInputDialog, QMessageBox
+from core.version_range import normalize_range
 from ui.diff_dialog import DiffDialog
 from ui.i18n import tr
 
@@ -79,6 +81,23 @@ class VersionMenuMixin:
         grp.addAction(act_all)
         act_all.triggered.connect(self._on_version_menu_triggered)
 
+                                                                      
+                                                                      
+                                                             
+        act_range = menu.addAction(
+            tr("status.version_range_set", value=self.version_range)
+            if getattr(self, "version_range", None)
+            else tr("menu.view.range")
+        )
+        act_range.setCheckable(True)
+        act_range.setToolTip(tr("tip.version_range"))
+        act_range.setData("range")
+        grp.addAction(act_range)
+        set_range = getattr(self, "_on_set_version_range", None)
+        if callable(set_range):
+            act_range.triggered.connect(set_range)
+        self._range_action = act_range
+
         menu.addSeparator()
 
         for v in sorted(self.versions, key=lambda x: x.number):
@@ -96,8 +115,44 @@ class VersionMenuMixin:
             if self.version_slice == v.number:
                 a.setChecked(True)
 
-        if self.version_slice is None:
+        if self.version_slice is None and not getattr(self, "version_range", None):
             act_all.setChecked(True)
+        if getattr(self, "version_range", None):
+            act_range.setChecked(True)
+
+    def _on_set_version_range(self) -> None:
+        pass
+        if self.mode != "archive" or not self.archive_path:
+            self.statusBar().showMessage(tr("status.test_only_archive"))
+            return
+
+        current = getattr(self, "version_range", None) or ""
+        text, ok = QInputDialog.getText(
+            self,
+            tr("range.dialog.title"),
+            tr("range.dialog.text"),
+            text=current,
+        )
+        if not ok:
+            self._rebuild_versions_menu()
+            return
+
+        spec = normalize_range(text)
+        if spec is None and text.strip():
+            QMessageBox.warning(
+                self, tr("range.dialog.title"), tr("status.version_range_bad")
+            )
+            self._rebuild_versions_menu()
+            return
+
+        self.version_range = spec
+        self.version_slice = None
+        self._rebuild_versions_menu()
+        self._on_refresh()
+        self.statusBar().showMessage(
+            tr("status.version_range_set", value=spec)
+            if spec else tr("status.version_range_cleared")
+        )
 
     def _on_version_menu_triggered(self) -> None:
         act = self.sender()
@@ -106,8 +161,16 @@ class VersionMenuMixin:
         self._on_version_slice(act.data())
 
     def _on_version_slice(self, n):
+                                                                         
+                                                         
+        had_range = bool(getattr(self, "version_range", None))
+        if had_range:
+            self.version_range = None
         self.version_slice = n
         self._populate_right_archive()
+        if had_range:
+            self._rebuild_versions_menu()
+            self._on_refresh()
         if n is None:
             self.statusBar().showMessage(tr("status.version_all"))
         else:

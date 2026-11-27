@@ -713,8 +713,8 @@ class ExtractRevisionWorker(StreamingZpaqThread):
         self.zpaq = zpaq
         self.archive = archive
         self.password = password
-        self.mode = mode                    
-        self.until = until
+        self.mode = mode                             
+        self.until = until                                           
         self.dest_folder = dest_folder
         self.cmd = self._build_cmd(self.dest_folder)
         super().__init__(self.cmd, parent)
@@ -725,6 +725,11 @@ class ExtractRevisionWorker(StreamingZpaqThread):
             cmd += ["-key", self.password]
         if self.mode == "all":
             cmd.append("-all")
+        elif self.mode == "range":
+                                                                    
+                                                                           
+                                                         
+            cmd += ["-range", str(self.until)]
         elif self.until:
             cmd += ["-until", str(self.until)]
         cmd += ["-to", str(out_dir)]

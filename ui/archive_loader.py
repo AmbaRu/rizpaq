@@ -46,7 +46,7 @@ from pathlib import Path
 
 from PySide6.QtWidgets import QInputDialog, QMessageBox
 
-from core import archive_index
+from core import archive_index, index_refresh
 from core.parser import parse_info
 from core.password_store import set_password
 from core.zpaq_cli import looks_like_password_error
@@ -356,7 +356,10 @@ class ArchiveLoaderMixin:
                                                                    
                                                                           
                                         
-        if self._try_index_load(path, make_active, inner):
+                                                                      
+                                                                   
+                                      
+        if not getattr(self, "version_range", None) and self._try_index_load(path, make_active, inner):
             return
 
                                                                       
@@ -368,12 +371,10 @@ class ArchiveLoaderMixin:
             "file_stamp": self._file_stamp(path),
         }
         pw = self._cache(path).get("password")
-        cmd = [
-            self.zpaq_bin, "l", path,
-            "-all", "-terse", "-csv", "\t", "-csvhf", "#", "-utf", "-noeta",
-        ]
-        if pw:
-            cmd += ["-key", pw]
+        cmd = index_refresh.build_list_cmd(
+            self.zpaq_bin, path, pw,
+            getattr(self, "version_range", None),
+        )
 
         self.log_command(cmd)
         reading_text = tr("status.reading_archive", name=Path(path).name)
@@ -690,7 +691,8 @@ class ArchiveLoaderMixin:
                                                                         
                                                                        
                                                    
-            self._index_store_if_unchanged(result, entries)
+            if not getattr(self, "version_range", None):
+                self._index_store_if_unchanged(result, entries)
 
                                                                     
             reset_helper = getattr(self, "_reset_password_attempts", None)
