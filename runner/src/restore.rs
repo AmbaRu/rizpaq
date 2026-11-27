@@ -69,13 +69,13 @@ fn extract_cmd(
         "x".to_string(),
         dest.to_string(),
     ];
+    cmd.push(entry.path.clone());
     if let Some(pw) = password {
         if !pw.is_empty() {
             cmd.push("-key".to_string());
             cmd.push(pw.to_string());
         }
     }
-    cmd.push(entry.path.clone());
     if !entry.version.is_empty() {
         cmd.push("-until".to_string());
         cmd.push(entry.version.clone());

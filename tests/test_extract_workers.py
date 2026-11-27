@@ -16,11 +16,16 @@ import unittest
 
 
 try:
-    from workers.extract_workers import ExtractFileWorker, ExtractFolderBatchWorker
+    from workers.extract_workers import (
+        ExtractFileWorker,
+        ExtractFolderBatchWorker,
+        ExtractFolderWorker,
+    )
     IMPORT_ERROR = None
 except Exception as exc:
     ExtractFileWorker = None
     ExtractFolderBatchWorker = None
+    ExtractFolderWorker = None
     IMPORT_ERROR = str(exc)
 
 
@@ -60,9 +65,9 @@ class TestExtractFileWorkerCmd(unittest.TestCase):
                 "z",
                 "x",
                 "a.zpaq",
+                "src/f.txt",
                 "-key",
                 "pw",
-                "src/f.txt",
                 "-until",
                 "3",
                 "-to",
@@ -70,11 +75,47 @@ class TestExtractFileWorkerCmd(unittest.TestCase):
             ],
         )
 
+    def test_filter_goes_before_key(self):
+                                                                     
+                                                                         
+                                                 
+        inner = "My files/отчёт.docx"
+        w = ExtractFileWorker(
+            "z", "a.zpaq", "pw", inner, 3, r"D:\o\отчёт.docx"
+        )
+
+        self.assertLess(
+            w.cmd.index(inner),
+            w.cmd.index("-key"),
+            "позиционный фильтр оказался после -key",
+        )
+
     def test_no_only_flag(self):
                                                               
                                                           
         w = ExtractFileWorker("z", "a.zpaq", None, "f.txt", None, "o.txt")
         self.assertNotIn("-only", w.cmd)
+
+
+@unittest.skipIf(
+    ExtractFolderWorker is None,
+    f"PySide6/workers import failed: {IMPORT_ERROR}",
+)
+class TestExtractFolderWorkerCmd(unittest.TestCase):
+    def test_filter_goes_before_key(self):
+                                                                   
+                                                               
+        inner = "My files/отчёт.docx"
+        w = ExtractFolderWorker(
+            "z", "a.zpaq", "pw", [], "D:/out"
+        )
+        cmd = w._build_cmd(inner, 3, r"D:\out\отчёт.docx")
+
+        self.assertLess(
+            cmd.index(inner),
+            cmd.index("-key"),
+            "позиционный фильтр оказался после -key",
+        )
 
 
 @unittest.skipIf(

@@ -152,6 +152,9 @@ class TestLooksLikePasswordError(unittest.TestCase):
     def test_normal_output(self):
         self.assertFalse(looks_like_password_error("All OK"))
         self.assertFalse(looks_like_password_error(""))
+                                                                   
+        self.assertFalse(looks_like_password_error("monkey.txt extracted"))
+        self.assertFalse(looks_like_password_error("keyboard layout"))
 
 
 if __name__ == "__main__":

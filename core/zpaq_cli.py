@@ -136,11 +136,15 @@ def safe_cmdline(cmd: list, password: Optional[str] = None) -> str:
 
 def looks_like_password_error(text: str) -> bool:
     low = (text or "").lower()
+                                                                  
+                                                                    
+                                                                  
+                                                                 
+                    
     return (
         "password" in low
-        or "wrong password" in low
         or "crypt" in low
-        or "key" in low
+        or re.search(r"\bkey\b", low) is not None
     )
 
 

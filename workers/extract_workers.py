@@ -209,12 +209,16 @@ class ExtractFileWorker(StreamingZpaqThread):
 
         cmd = [zpaq, "x", archive]
 
-        if password:
-            cmd += ["-key", password]
-
                                                                 
                                                                      
+                                                                     
+                                                                    
+                                                                        
+                                                                    
         cmd.append(inner)
+
+        if password:
+            cmd += ["-key", password]
 
         if isinstance(version, int):
             cmd += ["-until", str(version)]
@@ -488,6 +492,17 @@ class ExtractFolderWorker(QThread):
         self._cancel = False
         self._proc = None
 
+    def _build_cmd(self, inner, version, dest):
+        pass
+        cmd = [self.zpaq, "x", self.archive]
+        cmd.append(inner)
+        if self.password:
+            cmd += ["-key", self.password]
+        if isinstance(version, int):
+            cmd += ["-until", str(version)]
+        cmd += ["-to", dest]
+        return cmd
+
     def cancel_request(self):
         self._cancel = True
 
@@ -510,18 +525,7 @@ class ExtractFolderWorker(QThread):
             if self._cancel:
                 break
 
-            cmd = [self.zpaq, "x", self.archive]
-
-            if self.password:
-                cmd += ["-key", self.password]
-
-                                                                 
-            cmd.append(inner)
-
-            if isinstance(version, int):
-                cmd += ["-until", str(version)]
-
-            cmd += ["-to", dest]
+            cmd = self._build_cmd(inner, version, dest)
 
             self.tick.emit(i, total, inner)
 

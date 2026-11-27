@@ -93,9 +93,12 @@ def extract_cmd(zpaq_bin: str, dest: str, entry, target: str,
     if not target.endswith(("\\", "/")):
         target += os.sep
     cmd = [str(zpaq_bin), "x", str(dest)]
+                                                                          
+                                                                      
+                                                       
+    cmd.append(str(entry.path))
     if password:
         cmd += ["-key", password]
-    cmd.append(str(entry.path))
     version = getattr(entry, "version", None)
     if version:
         cmd += ["-until", str(version)]

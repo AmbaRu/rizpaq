@@ -48,6 +48,7 @@ from PySide6.QtWidgets import QInputDialog, QMessageBox
 
 from core import archive_index
 from core.parser import parse_info
+from core.password_store import get_password, set_password
 from core.zpaq_cli import looks_like_password_error
 from ui.i18n import tr
 from ui.presentation import format_size
@@ -69,6 +70,32 @@ class ArchiveLoaderMixin:
 
                                                                          
 
+    def _stored_password(self, path):
+        pass
+
+
+
+
+
+
+
+
+        candidates = [path, multipart_pattern(path)]
+        seen = set()
+
+        for candidate in candidates:
+            if not candidate or candidate in seen:
+                continue
+            seen.add(candidate)
+            try:
+                pw = get_password(str(candidate))
+            except Exception:
+                pw = None
+            if pw:
+                return pw
+
+        return None
+
     def _cache(self, path: str) -> dict:
         pass
 
@@ -79,18 +106,33 @@ class ArchiveLoaderMixin:
 
 
 
+
+
+
+
+
+
+
         key = multipart_pattern(path)
-        return self._arc_cache.setdefault(
-            key,
-            {
-                "entries": [],
-                "versions": [],
-                "summary": None,
-                "password": None,
-                "loaded": False,
-                "info_loaded": False,
-            },
-        )
+        cached = self._arc_cache.get(key)
+        if cached is not None:
+            return cached
+
+        entry = {
+            "entries": [],
+            "versions": [],
+            "summary": None,
+            "password": None,
+            "loaded": False,
+            "info_loaded": False,
+        }
+        self._arc_cache[key] = entry
+
+        stored = self._stored_password(path)
+        if stored:
+            entry["password"] = stored
+
+        return entry
 
     def _activate_archive(self, path: str) -> None:
         pass
@@ -495,6 +537,13 @@ class ArchiveLoaderMixin:
                         self._cache(path)["password"] = pw
                         if make_active and path == self.archive_path:
                             self.password = pw
+                                                                     
+                                                                      
+                                                                    
+                        try:
+                            set_password(path, pw)
+                        except Exception:
+                            pass
                         self._load_archive_list(path, make_active, inner)
                     return
 

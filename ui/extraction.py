@@ -32,16 +32,19 @@ from PySide6.QtWidgets import (
     QMessageBox,
 )
 
+from core.incomplete_archive import archive_encryption
 from core.paths import (
     directory_not_empty,
     is_temp_path,
     is_top_level_drive,
     sanitize_filename,
 )
+from core.password_store import set_password
 from core.temp_cleanup import remove_temp_dir
+from core.zpaq_cli import looks_like_password_error
 from ui.fs_actions import open_file_external
 from ui.i18n import tr
-from ui.qt_compat import YES_BUTTON, YES_NO_BUTTONS
+from ui.qt_compat import PASSWORD_ECHO, YES_BUTTON, YES_NO_BUTTONS
 
 
 class ExtractionMixin:
@@ -65,6 +68,149 @@ class ExtractionMixin:
 
     def _ui_extract_finished(self, ok: bool, total: int, msg: str) -> None:
         pass
+
+                                                                        
+    def _archive_is_encrypted(self) -> bool:
+        pass
+
+
+
+
+
+
+
+
+        path = getattr(self, "archive_path", None)
+        if not path:
+            return False
+
+        archive = str(path)
+        if archive.lower().endswith((".zip", ".7z", ".rar")):
+            return False
+
+        try:
+            if "?" in archive:
+                folder = Path(archive).parent
+                volumes = sorted(folder.glob(Path(archive).name))
+                if not volumes:
+                    return False
+                archive = str(volumes[0])
+
+            return archive_encryption(archive) == "encrypted"
+        except Exception:
+            return False
+
+    def _ask_archive_password(self) -> bool:
+        pass
+        path = getattr(self, "archive_path", None)
+        if not path:
+            return False
+
+                                                                       
+                                                                      
+                                                               
+                                                                      
+                                                                
+        progress = getattr(self, "_extract_progress_dialog", None)
+        if progress is not None:
+            try:
+                progress.hide()
+            except Exception:
+                pass
+
+        try:
+            with self._modal_dialog():
+                pw, ok = QInputDialog.getText(
+                    self,
+                    tr("dialog.password.required_title"),
+                    tr("dialog.password.required_text",
+                       name=Path(path).name),
+                    PASSWORD_ECHO,
+                )
+        except Exception:
+            return False
+
+        if not ok or not pw:
+            return False
+
+        self.password = pw
+        try:
+            self._cache(path)["password"] = pw
+        except Exception:
+            pass
+        try:
+            set_password(path, pw)
+        except Exception:
+            pass
+        return True
+
+    def _ensure_extract_password(self) -> bool:
+        pass
+
+
+
+
+
+
+
+        if getattr(self, "password", None):
+            return True
+        if not self._archive_is_encrypted():
+            return True
+        return self._ask_archive_password()
+
+    @staticmethod
+    def _failed_extraction_text(result) -> str:
+        pass
+        kind = result.get("kind")
+
+        if kind == "extract_file":
+            if result.get("success"):
+                return ""
+            return str(result.get("output") or "")
+
+        if kind in ("extract_folder_batch", "extract_revision"):
+            if result.get("ok"):
+                return ""
+            return str(result.get("log") or "")
+
+        if kind == "extract_folder":
+            try:
+                ok = int(result.get("ok", 0))
+                total = int(result.get("total", 0))
+            except (TypeError, ValueError):
+                return ""
+            if ok == total:
+                return ""
+            parts = [str(x) for x in (result.get("error_logs") or [])]
+            parts += [str(x) for x in (result.get("errors") or [])]
+            return "\n".join(parts)
+
+        if kind == "extract_salvage":
+            if result.get("ok"):
+                return ""
+            return str(result.get("log") or "")
+
+        return ""
+
+    def _maybe_retry_extract_with_password(self, result, retry=None) -> bool:
+        pass
+
+
+
+
+
+
+        text = self._failed_extraction_text(result)
+        if not text or not looks_like_password_error(text):
+            return False
+        if not callable(retry):
+            return False
+        if not self._ask_archive_password():
+            return False
+
+        retry()
+        return True
 
                                                                           
     def _latest_entry_for_path(self, path: str):
@@ -467,7 +613,7 @@ class ExtractionMixin:
 
         return list(chosen.values())
 
-    def _on_extract_done(self, result):
+    def _on_extract_done(self, result, retry=None):
         kind = result.get("kind")
 
                                                                           
@@ -493,6 +639,15 @@ class ExtractionMixin:
 
             self.statusBar().showMessage(cancelled_text)
             self._ui_extract_finished(False, int(total), cancelled_text)
+            return
+
+                                                                              
+                                                                     
+                                                                       
+                                                                          
+                                                                    
+                                                         
+        if self._maybe_retry_extract_with_password(result, retry):
             return
 
                                                                                
@@ -665,7 +820,7 @@ class ExtractionMixin:
 
         self._start_salvage_worker(dest, dlg.ram_gb())
 
-    def _on_salvage_done(self, result):
+    def _on_salvage_done(self, result, retry=None):
         pass
 
 
@@ -681,6 +836,12 @@ class ExtractionMixin:
             cancelled_text = tr("status.extract_cancelled")
             self.statusBar().showMessage(cancelled_text)
             self._ui_extract_finished(False, 0, cancelled_text)
+            return
+
+                                                                     
+                                                                   
+                                                    
+        if self._maybe_retry_extract_with_password(result, retry):
             return
 
         if result.get("ok"):

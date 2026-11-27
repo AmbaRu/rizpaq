@@ -54,8 +54,9 @@ class TestExtractCmd(unittest.TestCase):
                                                                       
         self.assertEqual(
             cmd,
-            ["zpaqfranz", "x", "F:/a.zpaq", "-key", "secret",
-             "dir/file.txt", "-until", "7", "-to", "D:/tmp" + os.sep],
+            ["zpaqfranz", "x", "F:/a.zpaq",
+             "dir/file.txt", "-key", "secret", "-until", "7",
+             "-to", "D:/tmp" + os.sep],
         )
 
     def test_target_with_separator_is_unchanged(self):
