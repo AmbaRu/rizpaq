@@ -64,13 +64,17 @@ DYNAMIC_KEYS = {
                                      
                                                                      
                                                      
-                                                                
-                                                                     
+                                                                         
+                                                                           
+                                                  
                                                                       
     "create.level_method",
     "skin.soft_azure",
     "skin.white_air",
     "skin.deep_black",
+    "skin.deep_teal",
+    "skin.catppuccin_mocha",
+    "skin.cloud_dancer",
 } | {
                                                           
                                                                      

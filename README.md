@@ -500,9 +500,11 @@ instant, and nothing you were doing is lost.
 - No administrator rights needed for the association.
 
 ### Look and feel
-- **Three themes**: *Soft Azure* (the original), *White Air* (near-white
-  surfaces, hairline borders, muted accent) and *Deep Black* (near-black
-  surfaces, light text, calm accent). Switched on the fly, no restart.
+- **Six themes**: *Soft Azure* (the original), *White Air* (near-white
+  surfaces, hairline borders, muted accent), *Deep Black* (near-black
+  surfaces, light text, calm accent), *Deep Teal* (dark blue-green, teal
+  accent), *Catppuccin Mocha* (soft pastel dark) and *Cloud Dancer* (warm
+  off-white). Switched on the fly, no restart.
 - **Ten interface languages** — English, Русский, Italiano, Deutsch,
   Français, Español, 中文, Português, 日本語, Polski — plus any additional
   one you drop into `locales/`. No rebuild needed.
@@ -1095,9 +1097,11 @@ ZPAQ**. Один клик: старый RAR, набитый дублями, пр
 - Права администратора для ассоциации не нужны.
 
 ### Внешний вид
-- **Три темы**: *Мягкий лазурь* (исходная), *Белый воздух* (почти
-  белые поверхности, волосяные границы, приглушённый акцент) и
-  *Глубокий чёрный* (почти чёрный фон, светлый текст, спокойный акцент).
+- **Шесть тем**: *Мягкий лазурь* (исходная), *Белый воздух* (почти
+  белые поверхности, волосяные границы, приглушённый акцент),
+  *Глубокий чёрный* (почти чёрный фон, светлый текст), *Глубокий тил*
+  (тёмный сине-зелёный, бирюзовый акцент), *Мокко (Catppuccin)*
+  (мягкая пастельная тёмная) и *Облачный танец* (тёплый белый).
   Переключаются на лету, без перезапуска.
 - **Десять языков интерфейса** — English, Русский, Italiano, Deutsch,
   Français, Español, 中文, Português, 日本語, Polski — плюс любой

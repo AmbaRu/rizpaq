@@ -191,6 +191,28 @@ class TestSkinSelection(unittest.TestCase):
             "светлый текст на почти чёрном фоне должен читаться легко")
         self.assertEqual(skins.DEFAULT_SKIN, "soft_azure")
 
+    def test_three_more_themes_are_registered(self):
+        pass
+        expected = {
+            "deep_teal": ("#0F1A1C", "#E0EFEB", True),
+            "catppuccin_mocha": ("#1E1E2E", "#CDD6F4", True),
+            "cloud_dancer": ("#F0EEE9", "#2E2C29", False),
+        }
+        for name, (bg, fg, dark) in expected.items():
+            with self.subTest(skin=name):
+                self.assertIn(name, skins.skin_names())
+                palette = skins.SKINS[name]
+                self.assertEqual(palette["WINDOW_BG"], bg)
+                self.assertEqual(palette["TEXT_MAIN"], fg)
+                if dark:
+                    self.assertLess(_luminance(bg), 0.1)
+                else:
+                    self.assertGreater(_luminance(bg), 0.5)
+                self.assertGreater(
+                    contrast(fg, bg), 7.0,
+                    "основной текст должен читаться легко")
+                self.assertEqual(skins.set_current(name), name)
+
     def test_unknown_name_is_ignored(self):
         pass
         before = skins.current_name()
@@ -568,7 +590,8 @@ class TestContrast(unittest.TestCase):
 
 class TestSkinSetting(unittest.TestCase):
     KEYS = ("menu.tools.skin", "status.skin_changed",
-            "skin.soft_azure", "skin.white_air", "skin.deep_black")
+            "skin.soft_azure", "skin.white_air", "skin.deep_black",
+            "skin.deep_teal", "skin.catppuccin_mocha", "skin.cloud_dancer")
 
     def test_config_has_skin_field(self):
         from core.config import Settings
