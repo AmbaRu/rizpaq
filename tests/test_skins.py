@@ -178,6 +178,19 @@ class TestSkinSelection(unittest.TestCase):
             self.assertEqual(skins.set_current(name), name)
             self.assertEqual(skins.current_name(), name)
 
+    def test_deep_black_is_a_dark_skin(self):
+        pass
+        self.assertIn("deep_black", skins.skin_names())
+        self.assertTrue(skins.has_skin("deep_black"))
+        self.assertEqual(skins.set_current("deep_black"), "deep_black")
+        dark = skins.skin()
+        self.assertEqual(dark["WINDOW_BG"], "#101216")
+        self.assertEqual(dark["TEXT_MAIN"], "#e2e8f0")
+        self.assertGreater(
+            contrast(dark["TEXT_MAIN"], dark["WINDOW_BG"]), 7.0,
+            "светлый текст на почти чёрном фоне должен читаться легко")
+        self.assertEqual(skins.DEFAULT_SKIN, "soft_azure")
+
     def test_unknown_name_is_ignored(self):
         pass
         before = skins.current_name()
@@ -555,7 +568,7 @@ class TestContrast(unittest.TestCase):
 
 class TestSkinSetting(unittest.TestCase):
     KEYS = ("menu.tools.skin", "status.skin_changed",
-            "skin.soft_azure", "skin.white_air")
+            "skin.soft_azure", "skin.white_air", "skin.deep_black")
 
     def test_config_has_skin_field(self):
         from core.config import Settings
@@ -576,6 +589,9 @@ class TestSkinSetting(unittest.TestCase):
 
             update(path, skin="soft_azure")
             self.assertEqual(load(path).skin, "soft_azure")
+
+            update(path, skin="deep_black")
+            self.assertEqual(load(path).skin, "deep_black")
 
     def test_unknown_skin_in_config_does_not_crash(self):
         pass

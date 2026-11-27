@@ -480,6 +480,7 @@
     "search.placeholder": "🔍 Поиск по именам и путям (* и ? — маски, Ctrl+F)",
     "skin.soft_azure": "Мягкий лазурь",
     "skin.white_air": "Белый воздух",
+    "skin.deep_black": "Глубокий чёрный",
     "source_select.title": "Выбор источников",
     "source_select.tree_header": "Файловая система",
     "status.archive_info_requested": "Информация об архиве запрашивается…",

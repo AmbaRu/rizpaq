@@ -256,12 +256,112 @@ WHITE_AIR = {
 }
 
                                                                         
+                                                                     
+ 
+                                                    
+                                                   
+                                                                 
+                                                           
+                                                                    
+                                    
+                                                                    
+                                 
+                                                                        
+DEEP_BLACK = {
+    "WINDOW_BG":          "#101216",
+    "BASE_BG":            "#15181d",
+    "ALT_BASE_BG":        "#1b1f25",
+    "BUTTON_BG":          "#20252d",
+    "TOOLTIP_BG":         "#1c2027",
+
+    "TEXT_WINDOW":        "#d6dee9",
+    "TEXT_MAIN":          "#e2e8f0",
+    "TEXT_HEADER":        "#dbe3ee",
+    "TEXT_BUTTON":        "#dbe3ee",
+    "TEXT_TOOLTIP":       "#dde4ed",
+    "TEXT_MUTED":         "#9aa6b5",
+    "TEXT_MUTED_LIGHT":   "#8895a5",
+    "TEXT_DISABLED":      "#6b7685",
+    "PLACEHOLDER":        "#8895a5",
+    "TEXT_SELECTED":      "#f2f6fb",
+    "TEXT_ON_ACCENT":     "#ffffff",
+    "HEADER_TEXT":        "#e4ebf5",
+    "STATUS_TEXT":        "#dde6f1",
+    "LOG_TEXT":           "#b9c5d4",
+    "HINT_TEXT":          "#9aa6b5",
+
+    "ACCENT":             "#3d8bd8",
+    "ACCENT_LIGHT":       "#6aa9ec",
+    "LINK":               "#6aa9ec",
+    "LINK_VISITED":       "#9b8ce0",
+    "HIGHLIGHT_TEXT":     "#ffffff",
+
+    "BORDER":             "#333a44",
+    "BORDER_SOFT":        "#292f37",
+    "BORDER_GRID":        "#252a31",
+
+    "STEEL":              "#2c4a6e",
+    "STEEL_HOVER":        "#365b87",
+    "STEEL_DARK":         "#243c5a",
+    "ROW_HOVER":          "#202730",
+    "ROW_ALT_TREE":       "#181b21",
+    "ROW_ALT_TABLE":      "#1b1f25",
+
+    "HEADER_BG":          "#1b2430",
+    "STATUS_BG":          "#1b2430",
+    "TOOLBAR_BG":         "#212a36",
+    "TOOLBAR_BUTTON_BG":  "#273240",
+    "TOOLBAR_BORDER":     "#37465a",
+    "TOOLBAR_TEXT":       "#dbe5f2",
+
+    "BREADCRUMB_BG":      "#14171c",
+    "BREADCRUMB_BORDER":  "#2b323c",
+    "CRUMB_LABEL":        "#dbe3ee",
+    "CRUMB_LINK":         "#6aa9ec",
+    "CRUMB_LINK_HOVER":   "#96c4f5",
+    "CRUMB_TEXT":         "#aab6c5",
+    "CRUMB_SEP":          "#7c8999",
+    "CRUMB_ICON":         "#8fa0b4",
+    "CRUMB_LAST":         "#c3d4e8",
+
+    "OK_GREEN":           "#4fc38a",
+    "WARN_ORANGE":        "#e8a94f",
+    "BUSY_STEEL":         "#7fa6c9",
+    "ARC_BLUE":           "#6aa9ec",
+    "DIFF_ADDED":         "#4fc38a",
+    "DIFF_REMOVED":       "#f0716a",
+    "DIFF_CHANGED":       "#e0b055",
+    "DIFF_UNCHANGED":     "#9aa6b5",
+
+    "DISABLED_BG":        "#1c2026",
+    "DISABLED_BASE":      "#191d22",
+    "DISABLED_BUTTON":    "#22262d",
+    "DISABLED_HIGHLIGHT": "#35404e",
+
+    "LIGHT":              "#2a3038",
+    "MIDLIGHT":           "#242a32",
+    "MID":                "#1e232a",
+    "DARK":               "#15191e",
+    "SHADOW":             "#0b0d10",
+
+    "EXTRACT_BAR_BOTTOM": "#191d23",
+    "EXBAR_PATH":          "#9aa6b5",
+    "PROGRESS_TRACK":     "#2a313a",
+    "PROGRESS_GRAD_END":  "#4f9adf",
+    "BUTTON_HOVER":       "#2b3340",
+    "MENU_SEP":           "#2a313a",
+    "NOTICE_TRACK":       "#2a313a",
+    "NOTICE_HINT":        "#d8a24c",
+}
+
+                                                                        
          
                                                                         
 SKINS: "OrderedDict[str, dict]" = OrderedDict(
     [
         ("soft_azure", SOFT_AZURE),
         ("white_air", WHITE_AIR),
+        ("deep_black", DEEP_BLACK),
     ]
 )
 

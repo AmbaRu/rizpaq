@@ -500,6 +500,7 @@
     "search.placeholder": "🔍 按名称和路径搜索（* 和 ? 为通配符，Ctrl+F）",
     "skin.soft_azure": "柔蓝",
     "skin.white_air": "空白",
+    "skin.deep_black": "深黑",
     "source_select.title": "选择源",
     "source_select.tree_header": "文件系统",
     "status.archive_info_requested": "正在请求档案信息…",

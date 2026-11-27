@@ -500,6 +500,7 @@
     "search.placeholder": "🔍 Cerca per nomi e percorsi (* e ? come jolly, Ctrl+F)",
     "skin.soft_azure": "Azzurro morbido",
     "skin.white_air": "Aria bianca",
+    "skin.deep_black": "Nero profondo",
     "source_select.title": "Seleziona sorgenti",
     "source_select.tree_header": "File system",
     "status.archive_info_requested": "Richiesta informazioni archivio…",

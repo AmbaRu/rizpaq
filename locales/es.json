@@ -500,6 +500,7 @@
     "search.placeholder": "🔍 Buscar por nombres y rutas (* y ? como comodines, Ctrl+F)",
     "skin.soft_azure": "Azul suave",
     "skin.white_air": "Blanco aire",
+    "skin.deep_black": "Negro profundo",
     "source_select.title": "Seleccionar fuentes",
     "source_select.tree_header": "Sistema de archivos",
     "status.archive_info_requested": "Solicitando información del archivo…",

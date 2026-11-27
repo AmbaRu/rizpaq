@@ -500,8 +500,9 @@ instant, and nothing you were doing is lost.
 - No administrator rights needed for the association.
 
 ### Look and feel
-- **Two themes**: *Soft Azure* (the original) and *White Air* (near-white
-  surfaces, hairline borders, muted accent). Switched on the fly, no restart.
+- **Three themes**: *Soft Azure* (the original), *White Air* (near-white
+  surfaces, hairline borders, muted accent) and *Deep Black* (near-black
+  surfaces, light text, calm accent). Switched on the fly, no restart.
 - **Ten interface languages** — English, Русский, Italiano, Deutsch,
   Français, Español, 中文, Português, 日本語, Polski — plus any additional
   one you drop into `locales/`. No rebuild needed.
@@ -1094,8 +1095,9 @@ ZPAQ**. Один клик: старый RAR, набитый дублями, пр
 - Права администратора для ассоциации не нужны.
 
 ### Внешний вид
-- **Две темы**: *Мягкий лазурь* (исходная) и *Белый воздух* (почти
-  белые поверхности, волосяные границы, приглушённый акцент).
+- **Три темы**: *Мягкий лазурь* (исходная), *Белый воздух* (почти
+  белые поверхности, волосяные границы, приглушённый акцент) и
+  *Глубокий чёрный* (почти чёрный фон, светлый текст, спокойный акцент).
   Переключаются на лету, без перезапуска.
 - **Десять языков интерфейса** — English, Русский, Italiano, Deutsch,
   Français, Español, 中文, Português, 日本語, Polski — плюс любой
