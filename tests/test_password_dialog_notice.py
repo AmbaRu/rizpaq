@@ -168,11 +168,18 @@ class _ExtractHost(ExtractionMixin):
         self._arc_cache = {}
         self.stored = []
 
+    _password_attempt_number = ArchiveLoaderMixin._password_attempt_number
+    _note_password_failure = ArchiveLoaderMixin._note_password_failure
+    _reset_password_attempts = ArchiveLoaderMixin._reset_password_attempts
+
     def _cache(self, path):
         return self._arc_cache.setdefault(path, {"password": None})
 
     def _modal_dialog(self):
         return nullcontext()
+
+    def log_output(self, text):
+        pass
 
 
 class TestExtractionPasswordPrompt(unittest.TestCase):
@@ -311,6 +318,49 @@ class TestExtractionPasswordPrompt(unittest.TestCase):
         host = _ExtractHost(folder / "arc_????.zpaq")
 
         self.assertTrue(host._archive_is_encrypted())
+
+    def test_wrong_password_stops_after_three_attempts(self):
+        host = self._host(b"\x01\x02\x03\x04" + b"\0" * 32)
+        called = []
+        result = {
+            "kind": "extract_file",
+            "success": False,
+            "output": "zpaqfranz error: password incorrect",
+        }
+
+        with patch.object(
+            host, "_ask_archive_password", return_value=True
+        ) as ask:
+            outcomes = [
+                host._maybe_retry_extract_with_password(
+                    result, lambda: called.append("retry")
+                )
+                for _ in range(4)
+            ]
+
+                                                              
+        self.assertEqual(outcomes, [True, True, True, False])
+        self.assertEqual(len(called), 3)
+        self.assertEqual(ask.call_count, 3)
+                                                                          
+        self.assertEqual(host._password_attempts, {})
+
+    def test_cancelled_extract_password_does_not_consume_attempt(self):
+        host = self._host(b"\x01\x02\x03\x04" + b"\0" * 32)
+        result = {
+            "kind": "extract_file",
+            "success": False,
+            "output": "zpaqfranz error: password incorrect",
+        }
+
+        with patch.object(host, "_ask_archive_password", return_value=False):
+            outcomes = [
+                host._maybe_retry_extract_with_password(result, lambda: None)
+                for _ in range(5)
+            ]
+
+        self.assertEqual(outcomes, [False] * 5)
+        self.assertEqual(host._password_attempts, {})
 
 
 class _CacheHost:

@@ -201,13 +201,46 @@ class ExtractionMixin:
 
 
 
+
+
+
+
+
+
         text = self._failed_extraction_text(result)
         if not text or not looks_like_password_error(text):
             return False
         if not callable(retry):
             return False
-        if not self._ask_archive_password():
+
+        path = getattr(self, "archive_path", None)
+        number = getattr(self, "_password_attempt_number", None)
+        attempt = number(path) if callable(number) else 1
+        if attempt is None:
+                                                                   
+                                                                 
+                                   
+            reset = getattr(self, "_reset_password_attempts", None)
+            if callable(reset):
+                reset(path)
             return False
+
+        if not self._ask_archive_password():
+                                                             
+                                  
+            return False
+
+        note = getattr(self, "_note_password_failure", None)
+        if callable(note):
+            note(path)
+        try:
+                                                                     
+            self.log_output(
+                "[rizpaq] пароль: попытка %d, длина %d"
+                % (attempt, len(str(getattr(self, "password", "") or "")))
+            )
+        except Exception:
+            pass
 
         retry()
         return True
