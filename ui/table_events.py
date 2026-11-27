@@ -167,6 +167,11 @@ class TableEventsMixin:
             a2.triggered.connect(
                 lambda: self._extract_folder_ask_version(folder_path)
             )
+            a3 = menu.addAction(tr("context.extract_folder_version_range"))
+            a3.setToolTip(tr("tip.unpack_range"))
+            a3.triggered.connect(
+                lambda: self._on_extract_folder_range(folder_path)
+            )
 
         elif kind == K_ARC_FILE:
             entry = payload
@@ -187,6 +192,10 @@ class TableEventsMixin:
                 a2 = menu.addAction(tr("context.extract_latest"))
                 a2.setToolTip(tr("tip.extract_file"))
                 a2.triggered.connect(lambda: self._extract_file_entry(latest))
+
+            a3 = menu.addAction(tr("context.extract_version_range"))
+            a3.setToolTip(tr("tip.unpack_range"))
+            a3.triggered.connect(lambda: self._on_extract_file_range(entry))
 
         else:
             return

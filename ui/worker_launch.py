@@ -70,7 +70,9 @@ class WorkerLaunchMixin:
             pass
 
                                                                           
-    def _start_extract_file_worker(self, entry, dest: str, open_after: bool = False):
+    def _start_extract_file_worker(
+        self, entry, dest: str, open_after: bool = False, on_done=None
+    ):
         if not self.archive_path or not self._can_start_extract():
             return
 
@@ -116,6 +118,8 @@ class WorkerLaunchMixin:
         worker.done.connect(
             lambda r, cb=retry: self._on_extract_done(r, cb)
         )
+        if callable(on_done):
+            worker.done.connect(lambda r, cb=on_done: cb(r))
         worker.finished.connect(lambda w=worker: self._cleanup_worker(w))
 
         self._workers.append(worker)
@@ -152,6 +156,7 @@ class WorkerLaunchMixin:
         inner_prefix: str,
         version,
         dest_folder: str,
+        on_done=None,
     ):
         if not self.archive_path or not self._can_start_extract():
             return
@@ -177,6 +182,8 @@ class WorkerLaunchMixin:
         worker.done.connect(
             lambda r, cb=retry: self._on_extract_done(r, cb)
         )
+        if callable(on_done):
+            worker.done.connect(lambda r, cb=on_done: cb(r))
         worker.finished.connect(lambda w=worker: self._cleanup_worker(w))
 
         self._workers.append(worker)

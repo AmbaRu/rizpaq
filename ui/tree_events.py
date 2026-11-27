@@ -192,6 +192,13 @@ class TreeEventsMixin:
         act_extract_version.triggered.connect(
             lambda: self._extract_folder_ask_version(inner)
         )
+        act_extract_range = menu.addAction(
+            tr("context.extract_folder_version_range")
+        )
+        act_extract_range.setToolTip(tr("tip.unpack_range"))
+        act_extract_range.triggered.connect(
+            lambda: self._on_extract_folder_range(inner)
+        )
         self._exec_menu(menu, pos)
 
     def _tree_open_archive_inner(self, arc_path: str, inner: str):

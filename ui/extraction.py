@@ -32,6 +32,7 @@ from PySide6.QtWidgets import (
     QMessageBox,
 )
 
+from core.archive_ops import slice_at_version
 from core.incomplete_archive import archive_encryption
 from core.paths import (
     directory_not_empty,
@@ -41,8 +42,9 @@ from core.paths import (
 )
 from core.password_store import set_password
 from core.temp_cleanup import remove_temp_dir
-from core.version_range import normalize_range
+from core.version_range import expand_range, normalize_range
 from core.zpaq_cli import looks_like_password_error
+from dataclasses import replace
 from ui.fs_actions import open_file_external
 from ui.i18n import tr
 from ui.qt_compat import PASSWORD_ECHO, YES_BUTTON, YES_NO_BUTTONS
@@ -314,6 +316,137 @@ class ExtractionMixin:
 
         self.statusBar().showMessage(tr("status.extract_file", name=entry.name))
         self._start_extract_file_worker(entry, str(dest_path))
+
+    def _ask_extract_range(self):
+        pass
+        text, ok = QInputDialog.getText(
+            self,
+            tr("range.dialog.title"),
+            tr("range.dialog.text"),
+            text="",
+        )
+        if not ok:
+            return None
+        spec = normalize_range(text)
+        if not spec:
+            QMessageBox.warning(
+                self, tr("range.dialog.title"), tr("status.version_range_bad")
+            )
+            return None
+        versions = expand_range(
+            spec,
+            [v.number for v in getattr(self, "versions", []) or []],
+        )
+        if not versions:
+            QMessageBox.warning(
+                self, tr("range.dialog.title"), tr("status.version_range_bad")
+            )
+            return None
+        return spec, versions
+
+    def _choose_range_dest(self):
+        pass
+        initial = str(self._initial_extract_dir())
+        self.setStatusTip(tr("tip.extract_to"))
+        dest = QFileDialog.getExistingDirectory(
+            self, tr("restore.rev.dest_title"), initial
+        )
+        if not dest:
+            return None
+        dest_path = Path(dest)
+        if dest_path.exists() and directory_not_empty(dest_path):
+            ans = QMessageBox.question(
+                self,
+                tr("restore.rev.exists_title"),
+                tr("restore.rev.exists_text"),
+                YES_NO_BUTTONS,
+            )
+            if ans != YES_BUTTON:
+                return None
+        self.last_extract_dir = dest_path
+        return dest_path
+
+    def _start_range_step(self, kind, payload, queue, base) -> None:
+        pass
+        if not queue:
+            self.statusBar().showMessage(
+                tr("status.extract_range_done", dest=str(base))
+            )
+            return
+
+        version, dest = queue.pop(0)
+        try:
+            Path(dest).mkdir(parents=True, exist_ok=True)
+        except OSError:
+            pass
+
+        def advance(_result, k=kind, p=payload, q=queue, b=base):
+            self._start_range_step(k, p, q, b)
+
+        if kind == "file":
+            entry = replace(payload, version=version)
+            self._start_extract_file_worker(
+                entry, dest, False, on_done=advance
+            )
+        else:
+            self._start_extract_folder_batch_worker(
+                payload, version, dest, on_done=advance
+            )
+
+    def _on_extract_file_range(self, entry):
+        if self.mode != "archive" or not self.archive_path or not entry:
+            return
+        asked = self._ask_extract_range()
+        if not asked:
+            return
+        spec, versions = asked
+        base = self._choose_range_dest()
+        if base is None:
+            return
+
+                                                                     
+                                                
+        present = set()
+        for v in versions:
+            for e in slice_at_version(self.entries, v):
+                if e.path == entry.path and not e.is_dir:
+                    present.add(v)
+        if not present:
+            QMessageBox.warning(
+                self, tr("range.dialog.title"), tr("status.version_range_bad")
+            )
+            return
+
+        name = sanitize_filename(Path(entry.path).name)
+        stem, suffix = os.path.splitext(name)
+        queue = [
+            (v, str(base / f"{stem}_v{v}{suffix}"))
+            for v in sorted(present)
+        ]
+        self.statusBar().showMessage(
+            tr("status.version_range_set", value=spec)
+        )
+        self._start_range_step("file", entry, queue, base)
+
+    def _on_extract_folder_range(self, folder_path):
+        if self.mode != "archive" or not self.archive_path or not folder_path:
+            return
+        asked = self._ask_extract_range()
+        if not asked:
+            return
+        spec, versions = asked
+        base = self._choose_range_dest()
+        if base is None:
+            return
+
+        queue = [
+            (v, str(base / f"{v:08d}"))
+            for v in versions
+        ]
+        self.statusBar().showMessage(
+            tr("status.version_range_set", value=spec)
+        )
+        self._start_range_step("folder", str(folder_path).rstrip("/\\"), queue, base)
 
     def _open_arc_file_entry(self, entry):
         pass

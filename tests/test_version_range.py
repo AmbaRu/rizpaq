@@ -11,7 +11,7 @@ from __future__ import annotations
 import unittest
 
 from core.index_refresh import build_list_cmd
-from core.version_range import is_valid_range, normalize_range
+from core.version_range import expand_range, is_valid_range, normalize_range
 
 
 class TestNormalizeRange(unittest.TestCase):
@@ -62,6 +62,32 @@ class TestListCommandRange(unittest.TestCase):
             build_list_cmd("z", "a.zpaq", None, "::3"),
             ["z", "l", "a.zpaq", *self.FLAGS, "-range", "::3"],
         )
+
+
+class TestExpandRange(unittest.TestCase):
+    VERSIONS = [1, 2, 3, 4, 5]
+
+    def test_single_version(self):
+        self.assertEqual(expand_range("4", self.VERSIONS), [4])
+
+    def test_closed_interval(self):
+        self.assertEqual(expand_range("2:4", self.VERSIONS), [2, 3, 4])
+
+    def test_open_ends(self):
+        self.assertEqual(expand_range("3:", self.VERSIONS), [3, 4, 5])
+        self.assertEqual(expand_range(":2", self.VERSIONS), [1, 2])
+
+    def test_last_n(self):
+        self.assertEqual(expand_range("::3", self.VERSIONS), [3, 4, 5])
+
+    def test_only_existing_versions(self):
+        self.assertEqual(expand_range("2:9", self.VERSIONS), [2, 3, 4, 5])
+        self.assertEqual(expand_range("7:9", self.VERSIONS), [])
+
+    def test_bad_spec_or_empty_archive(self):
+        self.assertEqual(expand_range("abc", self.VERSIONS), [])
+        self.assertEqual(expand_range("", self.VERSIONS), [])
+        self.assertEqual(expand_range("2:5", []), [])
 
 
 if __name__ == "__main__":
