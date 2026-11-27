@@ -550,7 +550,7 @@
     "status.version_all": "Vollständiger Archivverlauf",
     "status.version_slice": "Schnitt: Archivzustand bei Version {version}",
     "status.version_range_set": "Versionsbereich: {value}",
-    "status.extract_range_done": "Versionsbereich extrahiert: {dest}",
+    "status.extract_range_done": "Versionsbereich wird extrahiert: {dest}",
     "status.version_range_cleared": "Versionsbereich zurückgesetzt",
     "status.version_range_bad": "Ungültiger Versionsbereich. Beispiele: 2:5, ::3, 4",
     "status.zpaq_found": "zpaqfranz gefunden: {path}",

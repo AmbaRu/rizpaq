@@ -550,7 +550,7 @@
     "status.version_all": "Historial completo del archivo",
     "status.version_slice": "Corte: estado del archivo en la versión {version}",
     "status.version_range_set": "Rango de versiones: {value}",
-    "status.extract_range_done": "Rango de versiones extraído: {dest}",
+    "status.extract_range_done": "Extrayendo rango de versiones: {dest}",
     "status.version_range_cleared": "Rango de versiones eliminado",
     "status.version_range_bad": "Rango de versiones no válido. Ejemplos: 2:5, ::3, 4",
     "status.zpaq_found": "zpaqfranz encontrado: {path}",

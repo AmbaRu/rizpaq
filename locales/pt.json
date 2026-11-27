@@ -550,7 +550,7 @@
     "status.version_all": "Histórico completo do arquivo",
     "status.version_slice": "Fatia: estado do arquivo na versão {version}",
     "status.version_range_set": "Intervalo de versões: {value}",
-    "status.extract_range_done": "Intervalo de versões extraído: {dest}",
+    "status.extract_range_done": "Extraindo intervalo de versões: {dest}",
     "status.version_range_cleared": "Intervalo de versões removido",
     "status.version_range_bad": "Intervalo de versões inválido. Exemplos: 2:5, ::3, 4",
     "status.zpaq_found": "zpaqfranz encontrado: {path}",

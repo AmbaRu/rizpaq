@@ -32,7 +32,6 @@ from PySide6.QtWidgets import (
     QMessageBox,
 )
 
-from core.archive_ops import slice_at_version
 from core.incomplete_archive import archive_encryption
 from core.paths import (
     directory_not_empty,
@@ -44,7 +43,6 @@ from core.password_store import set_password
 from core.temp_cleanup import remove_temp_dir
 from core.version_range import expand_range, normalize_range
 from core.zpaq_cli import looks_like_password_error
-from dataclasses import replace
 from ui.fs_actions import open_file_external
 from ui.i18n import tr
 from ui.qt_compat import PASSWORD_ECHO, YES_BUTTON, YES_NO_BUTTONS
@@ -366,32 +364,25 @@ class ExtractionMixin:
         self.last_extract_dir = dest_path
         return dest_path
 
-    def _start_range_step(self, kind, payload, queue, base) -> None:
+    def _start_range_worker(self, inner, spec, base, is_file) -> None:
         pass
-        if not queue:
-            self.statusBar().showMessage(
-                tr("status.extract_range_done", dest=str(base))
-            )
-            return
 
-        version, dest = queue.pop(0)
-        try:
-            Path(dest).mkdir(parents=True, exist_ok=True)
-        except OSError:
-            pass
 
-        def advance(_result, k=kind, p=payload, q=queue, b=base):
-            self._start_range_step(k, p, q, b)
 
-        if kind == "file":
-            entry = replace(payload, version=version)
-            self._start_extract_file_worker(
-                entry, dest, False, on_done=advance
-            )
-        else:
-            self._start_extract_folder_batch_worker(
-                payload, version, dest, on_done=advance
-            )
+
+
+
+
+
+        mask = "*" + str(inner).strip("/\\").replace("\\", "/")
+        if not is_file:
+            mask += "/*"
+        self.statusBar().showMessage(
+            tr("status.extract_range_done", dest=str(base))
+        )
+        self._start_extract_folder_batch_worker(
+            inner, None, str(base), range_spec=spec, only_pattern=mask
+        )
 
     def _on_extract_file_range(self, entry):
         if self.mode != "archive" or not self.archive_path or not entry:
@@ -399,34 +390,11 @@ class ExtractionMixin:
         asked = self._ask_extract_range()
         if not asked:
             return
-        spec, versions = asked
+        spec, _versions = asked
         base = self._choose_range_dest()
         if base is None:
             return
-
-                                                                     
-                                                
-        present = set()
-        for v in versions:
-            for e in slice_at_version(self.entries, v):
-                if e.path == entry.path and not e.is_dir:
-                    present.add(v)
-        if not present:
-            QMessageBox.warning(
-                self, tr("range.dialog.title"), tr("status.version_range_bad")
-            )
-            return
-
-        name = sanitize_filename(Path(entry.path).name)
-        stem, suffix = os.path.splitext(name)
-        queue = [
-            (v, str(base / f"{stem}_v{v}{suffix}"))
-            for v in sorted(present)
-        ]
-        self.statusBar().showMessage(
-            tr("status.version_range_set", value=spec)
-        )
-        self._start_range_step("file", entry, queue, base)
+        self._start_range_worker(entry.path, spec, base, True)
 
     def _on_extract_folder_range(self, folder_path):
         if self.mode != "archive" or not self.archive_path or not folder_path:
@@ -434,19 +402,11 @@ class ExtractionMixin:
         asked = self._ask_extract_range()
         if not asked:
             return
-        spec, versions = asked
+        spec, _versions = asked
         base = self._choose_range_dest()
         if base is None:
             return
-
-        queue = [
-            (v, str(base / f"{v:08d}"))
-            for v in versions
-        ]
-        self.statusBar().showMessage(
-            tr("status.version_range_set", value=spec)
-        )
-        self._start_range_step("folder", str(folder_path).rstrip("/\\"), queue, base)
+        self._start_range_worker(folder_path, spec, base, False)
 
     def _open_arc_file_entry(self, entry):
         pass

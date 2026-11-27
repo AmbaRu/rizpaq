@@ -550,7 +550,7 @@
     "status.version_all": "Pełna historia archiwum",
     "status.version_slice": "Wycinek: stan archiwum w wersji {version}",
     "status.version_range_set": "Zakres wersji: {value}",
-    "status.extract_range_done": "Zakres wersji wyciągnięty: {dest}",
+    "status.extract_range_done": "Wyciąganie zakresu wersji: {dest}",
     "status.version_range_cleared": "Zakres wersji wyczyszczony",
     "status.version_range_bad": "Nieprawidłowy zakres wersji. Przykłady: 2:5, ::3, 4",
     "status.zpaq_found": "Znaleziono zpaqfranz: {path}",

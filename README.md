@@ -508,7 +508,7 @@ instant, and nothing you were doing is lost.
 - **Version ranges for multipart sets**: filter the listing with
   `-range` (for example `2:5` or `::3`) to see just one volume's files,
   and extract exactly those deltas. Right-click a file or folder to
-  extract several of its versions into separate files/folders.
+  extract several of its versions into numbered folders.
 - **Ten interface languages** — English, Русский, Italiano, Deutsch,
   Français, Español, 中文, Português, 日本語, Polski — plus any additional
   one you drop into `locales/`. No rebuild needed.
@@ -1110,7 +1110,7 @@ ZPAQ**. Один клик: старый RAR, набитый дублями, пр
 - **Диапазоны версий для многотомников**: фильтр списка через
   `-range` (например `2:5` или `::3`) — увидеть файлы только нужного
   тома и извлечь именно эти дельты. Правый клик по файлу или папке
-  позволяет извлечь несколько её версий в отдельные файлы/папки.
+  позволяет извлечь несколько её версий в пронумерованные папки.
 - **Десять языков интерфейса** — English, Русский, Italiano, Deutsch,
   Français, Español, 中文, Português, 日本語, Polski — плюс любой
   дополнительный, положенный в `locales/`. Без пересборки.

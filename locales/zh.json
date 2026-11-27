@@ -550,7 +550,7 @@
     "status.version_all": "完整档案历史",
     "status.version_slice": "切片：版本 {version} 时的档案状态",
     "status.version_range_set": "版本范围：{value}",
-    "status.extract_range_done": "已提取版本范围：{dest}",
+    "status.extract_range_done": "正在提取版本范围：{dest}",
     "status.version_range_cleared": "已清除版本范围",
     "status.version_range_bad": "版本范围无效。示例：2:5、::3、4",
     "status.zpaq_found": "已找到 zpaqfranz：{path}",

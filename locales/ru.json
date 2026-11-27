@@ -530,7 +530,7 @@
     "status.version_all": "Вся история архива",
     "status.version_slice": "Срез: состояние архива на версию {version}",
     "status.version_range_set": "Диапазон версий: {value}",
-    "status.extract_range_done": "Диапазон версий извлечён: {dest}",
+    "status.extract_range_done": "Извлечение диапазона версий: {dest}",
     "status.version_range_cleared": "Диапазон версий снят",
     "status.version_range_bad": "Неверный диапазон версий. Примеры: 2:5, ::3, 4",
     "status.zpaq_found": "zpaqfranz найден: {path}",

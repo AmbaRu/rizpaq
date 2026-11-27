@@ -550,7 +550,7 @@
     "status.version_all": "Historique complet de l'archive",
     "status.version_slice": "Tranche : état de l'archive à la version {version}",
     "status.version_range_set": "Plage de versions : {value}",
-    "status.extract_range_done": "Plage de versions extraite : {dest}",
+    "status.extract_range_done": "Extraction de la plage de versions : {dest}",
     "status.version_range_cleared": "Plage de versions effacée",
     "status.version_range_bad": "Plage de versions invalide. Exemples : 2:5, ::3, 4",
     "status.zpaq_found": "zpaqfranz trouvé : {path}",

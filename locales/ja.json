@@ -550,7 +550,7 @@
     "status.version_all": "アーカイブの完全な履歴",
     "status.version_slice": "スライス：バージョン {version} でのアーカイブ状態",
     "status.version_range_set": "バージョン範囲: {value}",
-    "status.extract_range_done": "バージョン範囲を抽出しました: {dest}",
+    "status.extract_range_done": "バージョン範囲を抽出中: {dest}",
     "status.version_range_cleared": "バージョン範囲を解除しました",
     "status.version_range_bad": "バージョン範囲が不正です。例: 2:5, ::3, 4",
     "status.zpaq_found": "zpaqfranz が見つかりました：{path}",

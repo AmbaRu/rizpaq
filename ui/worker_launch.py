@@ -70,9 +70,7 @@ class WorkerLaunchMixin:
             pass
 
                                                                           
-    def _start_extract_file_worker(
-        self, entry, dest: str, open_after: bool = False, on_done=None
-    ):
+    def _start_extract_file_worker(self, entry, dest: str, open_after: bool = False):
         if not self.archive_path or not self._can_start_extract():
             return
 
@@ -118,8 +116,6 @@ class WorkerLaunchMixin:
         worker.done.connect(
             lambda r, cb=retry: self._on_extract_done(r, cb)
         )
-        if callable(on_done):
-            worker.done.connect(lambda r, cb=on_done: cb(r))
         worker.finished.connect(lambda w=worker: self._cleanup_worker(w))
 
         self._workers.append(worker)
@@ -156,7 +152,8 @@ class WorkerLaunchMixin:
         inner_prefix: str,
         version,
         dest_folder: str,
-        on_done=None,
+        range_spec=None,
+        only_pattern=None,
     ):
         if not self.archive_path or not self._can_start_extract():
             return
@@ -168,10 +165,12 @@ class WorkerLaunchMixin:
             inner_prefix,
             version,
             dest_folder,
+            range_spec,
+            only_pattern,
         )
 
         retry = lambda: self._start_extract_folder_batch_worker(              
-            inner_prefix, version, dest_folder
+            inner_prefix, version, dest_folder, range_spec, only_pattern
         )
 
         worker.worker_started.connect(self._ui_folder_batch_started)
@@ -182,8 +181,6 @@ class WorkerLaunchMixin:
         worker.done.connect(
             lambda r, cb=retry: self._on_extract_done(r, cb)
         )
-        if callable(on_done):
-            worker.done.connect(lambda r, cb=on_done: cb(r))
         worker.finished.connect(lambda w=worker: self._cleanup_worker(w))
 
         self._workers.append(worker)

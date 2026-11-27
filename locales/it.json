@@ -550,7 +550,7 @@
     "status.version_all": "Cronologia completa dell'archivio",
     "status.version_slice": "Slice: stato dell'archivio alla versione {version}",
     "status.version_range_set": "Intervallo di versioni: {value}",
-    "status.extract_range_done": "Intervallo di versioni estratto: {dest}",
+    "status.extract_range_done": "Estrazione intervallo di versioni: {dest}",
     "status.version_range_cleared": "Intervallo di versioni rimosso",
     "status.version_range_bad": "Intervallo di versioni non valido. Esempi: 2:5, ::3, 4",
     "status.zpaq_found": "zpaqfranz trovato: {path}",

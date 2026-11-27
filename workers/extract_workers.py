@@ -302,6 +302,8 @@ class ExtractFolderBatchWorker(StreamingZpaqThread):
         inner_prefix,
         version,
         dest_folder,
+        range_spec=None,
+        only_pattern=None,
         parent=None,
     ):
         self.zpaq = zpaq
@@ -310,6 +312,8 @@ class ExtractFolderBatchWorker(StreamingZpaqThread):
         self.inner_prefix = inner_prefix or ""
         self.version = version
         self.dest_folder = dest_folder
+        self.range_spec = range_spec
+        self.only_pattern = only_pattern
 
                                        
                                                                       
@@ -323,11 +327,21 @@ class ExtractFolderBatchWorker(StreamingZpaqThread):
         if self.password:
             cmd += ["-key", self.password]
 
-        pat = (self.inner_prefix.rstrip("/") + "/*") if self.inner_prefix else "*"
-        cmd += ["-only", pat]
-
-        if isinstance(self.version, int):
-            cmd += ["-until", str(self.version)]
+                                                                          
+                                                                             
+                                                                           
+                                                               
+        if self.range_spec:
+            pat = self.only_pattern or (
+                "*" + (self.inner_prefix.rstrip("/") + "/*"
+                       if self.inner_prefix else "*")
+            )
+            cmd += ["-only", pat, "-all", "-range", str(self.range_spec)]
+        else:
+            pat = (self.inner_prefix.rstrip("/") + "/*") if self.inner_prefix else "*"
+            cmd += ["-only", pat]
+            if isinstance(self.version, int):
+                cmd += ["-until", str(self.version)]
 
         cmd += ["-to", str(out_dir)]
 
