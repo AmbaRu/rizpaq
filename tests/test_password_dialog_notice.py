@@ -352,6 +352,8 @@ class _InfoHost:
 
     _cache = ArchiveLoaderMixin._cache
     _on_worker_result = ArchiveLoaderMixin._on_worker_result
+    _password_attempt = ArchiveLoaderMixin._password_attempt
+    _reset_password_attempts = ArchiveLoaderMixin._reset_password_attempts
 
     def log_output(self, text):
         pass
@@ -420,6 +422,39 @@ class TestInfoPasswordPrompt(unittest.TestCase):
         ask.assert_not_called()
         self.assertEqual(len(host.info_calls), 1)
         self.assertEqual(host.retries, [])
+
+    def test_after_three_failures_shows_error_instead_of_looping(self):
+        host = _InfoHost()
+        with patch.object(
+            archive_loader.QInputDialog, "getText", return_value=("pw", True)
+        ) as ask, patch.object(archive_loader, "set_password"), patch.object(
+            archive_loader.QMessageBox, "critical"
+        ) as critical:
+            for _ in range(3):
+                host._on_worker_result(self._result())
+
+            ask.reset_mock()
+            host._on_worker_result(self._result())
+
+        ask.assert_not_called()
+        critical.assert_called_once()
+        self.assertEqual(len(host.retries), 3)
+
+    def test_success_resets_attempts(self):
+        host = _InfoHost()
+        with patch.object(
+            archive_loader.QInputDialog, "getText", return_value=("pw", True)
+        ), patch.object(archive_loader, "set_password"):
+            host._on_worker_result(self._result())
+
+        result = self._result()
+        result["rc"] = 0
+        result["output"] = "2 versions, 2 files"
+        host._on_worker_result(result)
+
+        self.assertIsNone(
+            host._password_attempts.get("C:/Backup/arc.zpaq")
+        )
 
 
 if __name__ == "__main__":

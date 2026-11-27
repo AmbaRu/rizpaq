@@ -104,6 +104,37 @@ class ArchiveLoaderMixin:
         self._arc_cache[key] = entry
         return entry
 
+                                                                          
+
+    def _password_attempt(self, path, limit: int = 3):
+        pass
+
+
+
+
+
+
+
+        attempts = getattr(self, "_password_attempts", None)
+        if attempts is None:
+            attempts = {}
+            self._password_attempts = attempts
+        try:
+            n = int(attempts.get(path, 0)) + 1
+        except (TypeError, ValueError):
+            n = 1
+        if n > limit:
+            return None
+        attempts[path] = n
+        return n
+
+    def _reset_password_attempts(self, path) -> None:
+        pass
+        try:
+            getattr(self, "_password_attempts", {}).pop(path, None)
+        except Exception:
+            pass
+
     def _activate_archive(self, path: str) -> None:
         pass
 
@@ -438,27 +469,50 @@ class ArchiveLoaderMixin:
                                                                       
                                                        
         password_retry = False
+        shown_error = False
         if path and rc != 0 and looks_like_password_error(output):
-            password_retry = True
-            with self._modal_dialog():
-                pw, ok = QInputDialog.getText(
-                    self,
-                    tr("dialog.password.required_title"),
-                    tr("dialog.password.required_text",
-                       name=Path(path).name if path else ""),
-                    PASSWORD_ECHO,
-                )
-            if ok and pw:
-                self._cache(path)["password"] = pw
-                if path == self.archive_path:
-                    self.password = pw
-                try:
-                    set_password(path, pw)
-                except Exception:
-                    pass
-                self._load_info(path, quiet=bool(ctx.get("quiet")))
+            attempt_helper = getattr(self, "_password_attempt", None)
+            attempt = attempt_helper(path) if callable(attempt_helper) else 1
+            if attempt is not None:
+                password_retry = True
+                with self._modal_dialog():
+                    pw, ok = QInputDialog.getText(
+                        self,
+                        tr("dialog.password.required_title"),
+                        tr("dialog.password.required_text",
+                           name=Path(path).name if path else ""),
+                        PASSWORD_ECHO,
+                    )
+                if ok and pw:
+                                                                    
+                                                                         
+                    self.log_output(
+                        "[rizpaq] пароль: попытка %d, длина %d"
+                        % (attempt, len(str(pw)))
+                    )
+                    self._cache(path)["password"] = pw
+                    if path == self.archive_path:
+                        self.password = pw
+                    try:
+                        set_password(path, pw)
+                    except Exception:
+                        pass
+                    self._load_info(path, quiet=bool(ctx.get("quiet")))
+            else:
+                                                                         
+                                                      
+                shown_error = True
+                with self._modal_dialog():
+                    QMessageBox.critical(
+                        self, tr("archive.error.open_title"), output or ""
+                    )
 
-        if not password_retry:
+        if rc == 0:
+            reset_helper = getattr(self, "_reset_password_attempts", None)
+            if callable(reset_helper):
+                reset_helper(path)
+
+        if not password_retry and not shown_error:
             self._handle_info_result(path, rc, output)
 
                                                                    
@@ -467,7 +521,7 @@ class ArchiveLoaderMixin:
                                                                
                                                            
         self._stop_busy()
-        if not password_retry:
+        if not password_retry and not shown_error:
             self._open_pending_dialogs(path)
 
     def _on_streaming_list_result(self, result: dict):
@@ -525,30 +579,47 @@ class ArchiveLoaderMixin:
             soft_warn = rc == 1
             if rc != 0:
                 if looks_like_password_error(tail):
-                                                                          
-                                                                             
-                                                                        
-                                                                   
-                    with self._modal_dialog():
-                        pw, ok = QInputDialog.getText(
-                            self,
-                            tr("dialog.password.required_title"),
-                            tr("dialog.password.required_text",
-                               name=Path(path).name),
-                            PASSWORD_ECHO,
-                        )
-                    if ok and pw:
-                        self._cache(path)["password"] = pw
-                        if make_active and path == self.archive_path:
-                            self.password = pw
+                    attempt_helper = getattr(self, "_password_attempt", None)
+                    attempt = (
+                        attempt_helper(path) if callable(attempt_helper) else 1
+                    )
+                    if attempt is not None:
+                                                                              
+                                                                                 
+                                                                            
+                                                                       
+                        with self._modal_dialog():
+                            pw, ok = QInputDialog.getText(
+                                self,
+                                tr("dialog.password.required_title"),
+                                tr("dialog.password.required_text",
+                                   name=Path(path).name),
+                                PASSWORD_ECHO,
+                            )
+                        if ok and pw:
                                                                      
+                            self.log_output(
+                                "[rizpaq] пароль: попытка %d, длина %d"
+                                % (attempt, len(str(pw)))
+                            )
+                            self._cache(path)["password"] = pw
+                            if make_active and path == self.archive_path:
+                                self.password = pw
                                                                       
-                                                                    
-                        try:
-                            set_password(path, pw)
-                        except Exception:
-                            pass
-                        self._load_archive_list(path, make_active, inner)
+                                              
+                            try:
+                                set_password(path, pw)
+                            except Exception:
+                                pass
+                            self._load_archive_list(path, make_active, inner)
+                        return
+
+                                                                         
+                                                                 
+                    with self._modal_dialog():
+                        QMessageBox.critical(
+                            self, tr("archive.error.open_title"), tail or ""
+                        )
                     return
 
                 if not soft_warn:
@@ -584,6 +655,10 @@ class ArchiveLoaderMixin:
                                                    
             self._index_store_if_unchanged(result, entries)
 
+                                                                    
+            reset_helper = getattr(self, "_reset_password_attempts", None)
+            if callable(reset_helper):
+                reset_helper(path)
             self._apply_list_entries(result, entries, report)
 
             if soft_warn:
