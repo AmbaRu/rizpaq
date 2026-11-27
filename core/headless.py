@@ -371,9 +371,12 @@ def _build_create_cmd(zpaq_bin, settings, srcs, dest, password):
 
     cmd = [zpaq_bin, "a", dest] + list(srcs)
                                                                     
-                                                                   
-                                                       
-    cmd.append("-open")
+                                                                  
+                                                                          
+                                                                     
+                                                        
+    if "?" not in str(dest):
+        cmd.append("-open")
                                                                    
                                                                  
                                                                 

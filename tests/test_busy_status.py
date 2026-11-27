@@ -468,6 +468,32 @@ class TestOpenFlagInCreateCmd(unittest.TestCase):
             "листинга zpaqfranz 65.20+",
         )
 
+    def test_headless_create_cmd_with_mask_has_no_open(self):
+        pass
+
+
+
+
+        from core.headless import _build_create_cmd
+
+        settings = {
+            "level": ["-m2"], "hash": "", "comment": "",
+            "only_masks": [], "not_masks": [],
+        }
+        cmd = _build_create_cmd(
+            zpaq_bin="zpaqfranz",
+            settings=settings,
+            srcs=["D:/docs"],
+            dest="D:/001_????.zpaq",
+            password=None,
+        )
+        self.assertNotIn(
+            "-open", cmd,
+            "-open нельзя ставить на многотомную маску: второй запуск "
+            "задания с -chunk закончится ошибкой «file seems open»",
+        )
+        self.assertIn("-nolfast", cmd)
+
     def test_headless_test_cmd_has_no_open(self):
         pass
 
@@ -519,6 +545,14 @@ class TestOpenFlagInUiCreateCmd(unittest.TestCase):
         self.assertEqual(cmd.count("-nolfast"), 1)
         self.assertLess(cmd.index("-open"), cmd.index("-m2"))
         self.assertLess(cmd.index("-nolfast"), cmd.index("-m2"))
+
+    def test_ui_skips_open_for_multipart_mask(self):
+        pass
+        src = (ROOT / "ui" / "archive_actions.py").read_text(encoding="utf-8")
+        anchor = 'if "?" not in dest:'
+        self.assertIn(anchor, src)
+        tail = src[src.index(anchor): src.index(anchor) + 400]
+        self.assertIn('cmd.append("-open")', tail)
 
 
                                                                              

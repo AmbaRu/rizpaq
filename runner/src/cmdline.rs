@@ -93,7 +93,9 @@ pub fn build_create_cmd(
     for s in srcs {
         cmd.push(s.clone());
     }
-    cmd.push("-open".to_string());
+    if !dest.contains('?') {
+        cmd.push("-open".to_string());
+    }
     cmd.push("-nolfast".to_string());
 
     if let Some(arr) = settings.get("level").and_then(Value::as_array) {

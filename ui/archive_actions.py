@@ -3291,10 +3291,14 @@ class ArchiveActionsMixin:
 
         cmd = [self.zpaq_bin, "a", dest] + srcs
                                                                  
-                                                                 
+                                                                
+                                                                   
+                                                                      
                                                                      
-                                        
-        cmd.append("-open")
+                                                                    
+                                                                         
+        if "?" not in dest:
+            cmd.append("-open")
                                                                    
                                                                   
                                                                  
