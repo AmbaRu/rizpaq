@@ -83,6 +83,10 @@ def run_extra_dests(
     runner = runner or run_zpaq
     ok = True
     parts = []
+                                                                         
+                                                                    
+                                              
+    backup_mode = str(settings.get("create_mode") or "a") == "backup"
 
     for dest in dests:
         try:
@@ -118,7 +122,8 @@ def run_extra_dests(
                 step_ok = False
                 parts.append("[extra copy] FAIL: %s" % exc)
 
-        if step_ok and settings.get("par2_enabled") and work and rzp_path:
+        if step_ok and settings.get("par2_enabled") and not backup_mode \
+                and work and rzp_path:
             try:
                 from core.headless import _headless_par2
 

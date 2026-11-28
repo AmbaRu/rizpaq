@@ -152,6 +152,9 @@ __all__ = [
     "ACTION_BACKUP",
     "ACTION_TEST",
     "ACTIONS",
+    "CREATE_MODE_A",
+    "CREATE_MODE_BACKUP",
+    "CREATE_MODES",
     "TEST_MODE_FULL",
     "TEST_MODE_CHECKSUM",
     "TEST_MODE_VERIFY",
@@ -236,6 +239,9 @@ WORK_FIELDS = (
                                                                  
     "par2_size",
     "par2_created",
+                                                                 
+                                                  
+    "create_mode",
 )
 
                                                                       
@@ -319,6 +325,16 @@ ACTION_PASSWORD = "password"
                                                                            
 ACTION_CHECKPASSWORD = "checkpassword"
 ACTIONS = (ACTION_BACKUP, ACTION_TEST, ACTION_CROP, ACTION_CONSOLIDATE, ACTION_SFX, ACTION_INFO, ACTION_PASSWORD, ACTION_CHECKPASSWORD)
+
+                                                   
+                                                                        
+                                                                       
+                                                     
+                                                                     
+                                                      
+CREATE_MODE_A = "a"
+CREATE_MODE_BACKUP = "backup"
+CREATE_MODES = (CREATE_MODE_A, CREATE_MODE_BACKUP)
 
                                                                    
                                                                  
@@ -665,6 +681,18 @@ def _norm_run_count(value) -> int:
     return 0
 
 
+def _norm_create_mode(value) -> str:
+    pass
+
+
+
+
+
+
+    text = str(value or "").strip().lower()
+    return CREATE_MODE_BACKUP if text == CREATE_MODE_BACKUP else CREATE_MODE_A
+
+
 def _normalise_work(w: dict) -> Optional[dict]:
     wid = w.get("id")
     if not isinstance(wid, str) or not wid:
@@ -691,6 +719,7 @@ def _normalise_work(w: dict) -> Optional[dict]:
                                                          
         "par2_size": _norm_par2_size(w.get("par2_size")),
         "par2_created": _normalize_date(str(w.get("par2_created") or "")) or None,
+        "create_mode": _norm_create_mode(w.get("create_mode")),
         "jobs": [],
     }
 
@@ -914,6 +943,7 @@ def add_work(
     not_masks: Optional[List[str]] = None,
     comment: str = "",
     extra_dests: Optional[List[str]] = None,
+    create_mode: str = CREATE_MODE_A,
 ) -> dict:
     pass
 
@@ -934,6 +964,7 @@ def add_work(
         "only_masks": [str(m) for m in (only_masks or [])],
         "not_masks": [str(m) for m in (not_masks or [])],
         "comment": str(comment or ""),
+        "create_mode": _norm_create_mode(create_mode),
         "jobs": [],
     }
     container.setdefault("works", []).append(work)
@@ -1146,6 +1177,7 @@ def job_to_runnable_settings(work: dict, job: dict) -> dict:
         "only_masks": list(work.get("only_masks") or []),
         "not_masks": list(work.get("not_masks") or []),
         "comment": work.get("comment") or "",
+        "create_mode": _norm_create_mode(work.get("create_mode")),
     }
                                                                 
                                                                      

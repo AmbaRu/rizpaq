@@ -141,6 +141,7 @@
         "comment": "Коммент",
         "par2_size": 15,
         "par2_created": "02.01.2026 12:00:00",
+        "create_mode": "a",
         "jobs": [
           {
             "id": "job-backup",
@@ -294,6 +295,7 @@
       "~$*"
     ],
     "comment": "Коммент",
+    "create_mode": "a",
     "title": "Ночной бэкап",
     "work_title": "Документы",
     "action": "backup",

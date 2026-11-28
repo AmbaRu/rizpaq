@@ -3,6 +3,8 @@ use std::fs::{self, File};
 use std::io::Read;
 use std::path::{Path, PathBuf};
 
+use crate::cmdline;
+
 pub const COMPARE_CHUNK: usize = 1024 * 1024;
 
 pub const PART_SUFFIX: &str = ".rizpaq-part";
@@ -67,6 +69,19 @@ pub fn copy_sources(dest: &str) -> Vec<PathBuf> {
         }
         found.sort();
         return found;
+    }
+    if cmdline::is_backup_set(dest) {
+        let mut result = cmdline::backup_parts(dest);
+        for extra in [
+            cmdline::backup_index_path(dest),
+            cmdline::backup_binary_index_path(dest),
+        ] {
+            let p = PathBuf::from(extra);
+            if p.is_file() {
+                result.push(p);
+            }
+        }
+        return result;
     }
     if path.is_file() {
         vec![path.to_path_buf()]

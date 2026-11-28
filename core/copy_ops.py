@@ -31,6 +31,13 @@ import shutil
 from pathlib import Path
 from typing import List, Tuple
 
+from core.paths import (
+    backup_binary_index_path,
+    backup_index_path,
+    backup_parts,
+    is_backup_set,
+)
+
                                                                          
                                                                        
 COMPARE_CHUNK = 1024 * 1024
@@ -48,9 +55,22 @@ def copy_sources(dest: str) -> List[Path]:
 
 
 
+
+
+
+
+
+
     path = Path(str(dest or ""))
     if not path.name:
         return []
+    if is_backup_set(dest):
+        result: List[Path] = list(backup_parts(dest))
+        for extra in (backup_index_path(dest), backup_binary_index_path(dest)):
+            p = Path(extra)
+            if p.is_file():
+                result.append(p)
+        return result
     if "?" in path.name or "*" in path.name:
         try:
             return sorted(p for p in path.parent.glob(path.name) if p.is_file())

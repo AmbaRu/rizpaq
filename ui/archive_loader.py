@@ -58,6 +58,7 @@ from ui.qt_compat import (
     YES_NO_BUTTONS,
     multipart_pattern,
 )
+from core.paths import archive_alias, is_backup_set
 from workers import StreamingListWorker, ZpaqWorker
 
                                                               
@@ -88,7 +89,7 @@ class ArchiveLoaderMixin:
 
 
 
-        key = multipart_pattern(path)
+        key = archive_alias(path)
         cached = self._arc_cache.get(key)
         if cached is not None:
             return cached
@@ -342,6 +343,11 @@ class ArchiveLoaderMixin:
         if str(path).lower().endswith((".zip", ".7z", ".rar")):
             self._load_universal_archive_list(path, make_active, inner)
             return
+
+                                                                       
+                                                         
+        if is_backup_set(path):
+            path = archive_alias(path)
 
                                                   
         if not self._check_zpaq_file_sane(path):

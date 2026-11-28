@@ -116,6 +116,14 @@ fn precheck_blocked_reason(settings: &Value, dest: &str) -> String {
     if has("only_masks") || has("not_masks") {
         return "the work uses include/exclude masks".to_string();
     }
+    let is_backup = settings
+        .get("create_mode")
+        .and_then(Value::as_str)
+        .map(|s| s.trim().eq_ignore_ascii_case("backup"))
+        .unwrap_or(false);
+    if is_backup {
+        return String::new();
+    }
     if has("chunk") {
         return "the job writes a multi-volume archive".to_string();
     }
@@ -263,10 +271,19 @@ fn run(rest: &[String]) -> i32 {
 
     let mut dest = dest0;
     let mut rename_note = String::new();
+    let create_mode = settings
+        .get("create_mode")
+        .and_then(Value::as_str)
+        .unwrap_or("a")
+        .trim()
+        .to_lowercase();
+    let is_backup_run = create_mode == "backup";
     {
         let p = Path::new(&dest);
         let stem = p.file_stem().and_then(|s| s.to_str()).unwrap_or("");
-        if naming::has_non_latin(stem) && !dest.contains('?') {
+        let keep_backup =
+            cmdline::is_backup_set(&dest) || cmdline::backup_set_exists(&dest);
+        if naming::has_non_latin(stem) && !dest.contains('?') && !keep_backup {
             let old_name = p.file_name().and_then(|s| s.to_str()).unwrap_or("");
             let new_dest = naming::make_latin_name(&dest);
             rename_note = format!(
@@ -288,7 +305,7 @@ fn run(rest: &[String]) -> i32 {
         let blocked = precheck_blocked_reason(&settings, &dest);
         if !blocked.is_empty() {
             skip_note = format!("\n[rizpaq] precheck skipped: {}\n", blocked);
-        } else if Path::new(&dest).is_file() {
+        } else if Path::new(&dest).is_file() || cmdline::backup_set_exists(&dest) {
             let (decision, rc0, log0, cmd0) =
                 continuous_precheck(&zpaq, &dest, password, &srcs);
             pre_rc = Some(rc0);
@@ -331,7 +348,12 @@ fn run(rest: &[String]) -> i32 {
         log_out = pre_log;
         ok = rc == 0;
     } else if restore_mode {
-        let (r, l) = restore::run_restore_drill(&zpaq, &dest, password, &srcs);
+        let restore_dest = if cmdline::is_backup_set(&dest) {
+            cmdline::archive_alias(&dest)
+        } else {
+            dest.clone()
+        };
+        let (r, l) = restore::run_restore_drill(&zpaq, &restore_dest, password, &srcs);
         rc = if r { 0 } else { 1 };
         log_out = l;
         ok = r;
@@ -361,6 +383,9 @@ fn run(rest: &[String]) -> i32 {
                 &srcs,
             ));
         } else if action == ACTION_CONSOLIDATE {
+            if cmdline::is_backup_set(&dest) {
+                dest = cmdline::archive_alias(&dest);
+            }
             if !dest.contains('?') {
                 rc = 1;
                 log_out = "concatenate requires a multipart archive\n".to_string();
@@ -368,31 +393,59 @@ fn run(rest: &[String]) -> i32 {
                 cmd = None;
             } else {
                 let p = Path::new(&dest);
-                let stem = p
-                    .file_stem()
-                    .and_then(|s| s.to_str())
-                    .unwrap_or("merged")
-                    .replace("_????", "")
-                    .replace("????", "")
-                    .trim_end_matches('_')
-                    .to_string();
-                let stem = if stem.is_empty() { "merged".to_string() } else { stem };
-                let default_out = p.with_file_name(format!("{}.zpaq", stem));
+                let default_out = if cmdline::is_backup_set(&dest) {
+                    let base = PathBuf::from(cmdline::backup_base(&dest));
+                    let stem = base
+                        .file_stem()
+                        .and_then(|s| s.to_str())
+                        .unwrap_or("merged");
+                    let suffix = match base.extension() {
+                        Some(e) if !e.is_empty() => format!(".{}", e.to_string_lossy()),
+                        _ => ".zpaq".to_string(),
+                    };
+                    base.with_file_name(format!("{}_merged{}", stem, suffix))
+                } else {
+                    let stem = p
+                        .file_stem()
+                        .and_then(|s| s.to_str())
+                        .unwrap_or("merged")
+                        .replace("_????", "")
+                        .replace("????", "")
+                        .trim_end_matches('_')
+                        .to_string();
+                    let stem = if stem.is_empty() { "merged".to_string() } else { stem };
+                    p.with_file_name(format!("{}.zpaq", stem))
+                };
                 let out = py_str_or_empty(settings.get("consolidate_output"));
                 let out = if out.trim().is_empty() {
                     default_out.to_string_lossy().into_owned()
                 } else {
                     out
                 };
-                cmd = Some(vec![
-                    zpaq.clone(),
-                    "m".to_string(),
-                    dest.clone(),
-                    out.clone(),
-                    "-verify".to_string(),
-                ]);
-                if Path::new(&out).exists() {
-                    cmd.as_mut().unwrap().push("-force".to_string());
+                let same_as_base = cmdline::is_backup_set(&dest)
+                    && out.eq_ignore_ascii_case(&cmdline::backup_base(&dest));
+                if same_as_base {
+                    rc = 1;
+                    log_out = format!(
+                        "the output must differ from the backup base name {}\n",
+                        Path::new(&cmdline::backup_base(&dest))
+                            .file_name()
+                            .and_then(|s| s.to_str())
+                            .unwrap_or("")
+                    );
+                    ok = false;
+                    cmd = None;
+                } else {
+                    cmd = Some(vec![
+                        zpaq.clone(),
+                        "m".to_string(),
+                        dest.clone(),
+                        out.clone(),
+                        "-verify".to_string(),
+                    ]);
+                    if Path::new(&out).exists() {
+                        cmd.as_mut().unwrap().push("-force".to_string());
+                    }
                 }
             }
         } else if action == ACTION_CROP {
@@ -410,7 +463,10 @@ fn run(rest: &[String]) -> i32 {
             ok = crop_ok;
             cmd = None;
         } else {
-            if tasks::py_truthy(settings.get("chunk")) && !dest.contains('?') {
+            if tasks::py_truthy(settings.get("chunk"))
+                && !is_backup_run
+                && !dest.contains('?')
+            {
                 let p = Path::new(&dest);
                 let stem = p
                     .file_stem()
@@ -502,7 +558,8 @@ fn run(rest: &[String]) -> i32 {
     }
 
     if ok && !skip_run && need_par2_for_action(&action)
-        && tasks::py_truthy(settings.get("par2_enabled")) {
+        && tasks::py_truthy(settings.get("par2_enabled"))
+        && !is_backup_run {
         let (par2_ok, note) =
             par2::headless_par2_create(&rzp_path, work, &dest, &settings);
         par2_note = note;
@@ -510,6 +567,12 @@ fn run(rest: &[String]) -> i32 {
             ok = false;
             par2_reason = Some("par2_failed");
         }
+    } else if is_backup_run && !skip_run
+        && need_par2_for_action(&action)
+        && tasks::py_truthy(settings.get("par2_enabled"))
+    {
+        par2_note = "\n[par2] backup set: PAR2 protects one file, skipped\n"
+            .to_string();
     }
 
     if ok && !skip_run && action != ACTION_TEST {
@@ -547,7 +610,9 @@ fn run(rest: &[String]) -> i32 {
                         continue;
                     }
                 }
-                if step_ok && tasks::py_truthy(settings.get("par2_enabled")) {
+                if step_ok && tasks::py_truthy(settings.get("par2_enabled"))
+                    && !is_backup_run
+                {
                     let extra_work = par2::extra_par2_work(&extra);
                     let (set_ok, note) = par2::headless_par2_create(
                         &rzp_path, &extra_work, &extra, &settings,
@@ -609,6 +674,7 @@ fn run(rest: &[String]) -> i32 {
     } else {
         "error"
     };
+
     {
         let jid = job_id.clone();
         let reason: Option<&str> = if sync_failed {

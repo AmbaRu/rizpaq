@@ -51,6 +51,7 @@ from ui.par2_verify_dialog import (
 
 from core.container_lock import ContainerLockBusy
 from core.par2_progress import format_speed
+from core.paths import is_backup_set
 from core.tasks import (
     PAR2_REASON_BY_STATE,
     REASON_PAR2_FAILED,
@@ -204,6 +205,14 @@ class Par2ActionsMixin:
 
         has_set = has_par2_for(arc)
 
+                                                                   
+                                                                        
+                                     
+        if is_backup_set(arc):
+            for act in actions:
+                act.setEnabled(False)
+            return
+
         if create is not None:
                                                                   
                                                                  
@@ -310,6 +319,15 @@ class Par2ActionsMixin:
                 par2_main_name,
             )
             from ui.test_modes import has_par2_for
+
+                                                                     
+                                                                        
+                                                                      
+                                                                    
+                         
+            if is_backup_set(archive_path):
+                self._par2_note(tr("par2.backup_unsupported"), archive_path)
+                return False
 
             if not archive_path or not os.path.isfile(archive_path):
                 self._par2_note(tr("par2.verify_missing"), archive_path)
@@ -902,6 +920,10 @@ class Par2ActionsMixin:
         try:
             from core.par2_ops import find_par2, par2_main_name
 
+            if is_backup_set(archive_path):
+                self._par2_note(tr("par2.backup_unsupported"), archive_path)
+                return False
+
             par2_bin = find_par2()
             if not par2_bin:
                 return self._par2_refuse(
@@ -1160,6 +1182,11 @@ class Par2ActionsMixin:
         )
 
         name = Path(archive_path).name if archive_path else ""
+                                                                  
+                                                                     
+        if is_backup_set(archive_path):
+            self._par2_note(tr("par2.backup_unsupported"), archive_path)
+            return False
                                                                         
                                                                          
                                                                       

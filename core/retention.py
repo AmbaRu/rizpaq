@@ -79,6 +79,14 @@ def run_apply(zpaq: str, arc: str, policy: str,
         return False, "[retention] некорректная политика: %r" % policy
     if "?" in str(arc):
         return False, "[retention] многотомные архивы не поддерживаются"
+                                                                       
+                                                                   
+                                                                   
+    from core.paths import is_backup_set
+
+    if is_backup_set(arc):
+        return False, ("[retention] backup-набор не поддерживается: "
+                       "сначала склейте его командой m")
 
     from core.zpaq_cli import run_zpaq
 

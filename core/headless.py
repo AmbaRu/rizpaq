@@ -107,6 +107,7 @@ from core.tasks import (
     ACTION_PASSWORD,
     ACTION_SFX,
     ACTION_TEST,
+    CREATE_MODE_BACKUP,
     ContainerLockBusy,
     PAR2_REASON_BY_STATE,
     REASON_COPY_FAILED,
@@ -120,6 +121,14 @@ from core.tasks import (
     update_work,
     find_job,
     job_to_runnable_settings,
+)
+from core.paths import (
+    archive_alias,
+    backup_base,
+    backup_index_path,
+    backup_mask,
+    is_backup_set,
+    multipart_base,
 )
 from core.zpaq_cli import (
     archive_exists,
@@ -254,8 +263,19 @@ def _headless_test(archive: str) -> int:
         return 0
 
     zpaq = _zpaq_bin()
+                                                                       
+                                                                    
+                                                                        
+                                  
+    backup = is_backup_set(archive)
     password = get_password(archive)
-    cmd = [zpaq, "t", archive]
+    if not password and backup:
+        for key in (backup_base(archive), archive_alias(archive)):
+            password = get_password(key)
+            if password:
+                break
+    cmd = [zpaq, "testbackup", backup_base(archive)] if backup \
+        else [zpaq, "t", archive]
     if password:
         cmd += ["-key", password]
 
@@ -304,7 +324,15 @@ def _headless_extract_here(archive: str) -> int:
         return 0
 
     zpaq = _zpaq_bin()
+                                                                      
+    backup = is_backup_set(archive)
+    read_archive = archive_alias(archive) if backup else archive
     password = get_password(archive)
+    if not password and backup:
+        for key in (backup_base(archive), read_archive):
+            password = get_password(key)
+            if password:
+                break
     dest = os.path.dirname(archive) or "."
 
     win = _make_progress_window(tr("menu.unpack"))
@@ -333,7 +361,9 @@ def _headless_extract_here(archive: str) -> int:
             )
         QApplication.quit()
 
-    worker = ExtractFolderBatchWorker(zpaq, archive, password, "", None, dest)
+    worker = ExtractFolderBatchWorker(
+        zpaq, read_archive, password, "", None, dest
+    )
     worker.done.connect(on_done)
     try:
         worker.percent.connect(win.bar.set_percent)
@@ -369,12 +399,22 @@ def _build_create_cmd(zpaq_bin, settings, srcs, dest, password):
 
 
 
-    cmd = [zpaq_bin, "a", dest] + list(srcs)
+
+
+
+
+
+
+
+    create_mode = str(settings.get("create_mode") or "a").strip().lower()
+    is_backup = create_mode == CREATE_MODE_BACKUP
+    cmd = [zpaq_bin, "backup" if is_backup else "a", dest] + list(srcs)
                                                                     
                                                                   
                                                                           
                                                                      
-                                                        
+                                                                   
+                                                       
     if "?" not in str(dest):
         cmd.append("-open")
                                                                    
@@ -427,7 +467,10 @@ def _build_create_cmd(zpaq_bin, settings, srcs, dest, password):
         cmd += ["-errorlog", settings["errorlog"]]
     if settings.get("shutdown"):
         cmd.append("-shutdown")
-    if settings.get("sfx"):
+                                                                        
+                                                                      
+                                    
+    if settings.get("sfx") and not is_backup:
         cmd += ["-sfx", settings["sfx"]]
     if settings.get("chunk"):
         cmd += ["-chunk", settings["chunk"]]
@@ -478,19 +521,38 @@ def _build_test_cmd(zpaq_bin, dest, password, test_mode, tmp_dir=None, sources=N
 
 
     mode = str(test_mode or "full").strip().lower()
+                                                                       
+                                                                      
+                                                                    
+                                                  
+    backup = is_backup_set(dest)
+    if backup and mode not in ("sync", "verify_fs"):
+        cmd = [zpaq_bin, "testbackup", backup_base(dest)]
+                                                                   
+                                                                       
+                                             
+        if mode in ("checksum", "verify", "paranoid"):
+            cmd.append("-verify")
+        if password:
+            cmd += ["-key", password]
+        return cmd
+
+                                                                        
+                                                 
+    arc = archive_alias(dest) if backup else dest
     if mode == "verify_fs":
                                                                    
                                                                 
                                                         
-        cmd = [zpaq_bin, "v", dest]
+        cmd = [zpaq_bin, "v", arc]
     elif mode == "sync":
                                                              
                                                                     
                                                                      
                                                                
-        cmd = [zpaq_bin, "sync", dest] + [str(s) for s in (sources or [])]
+        cmd = [zpaq_bin, "sync", arc] + [str(s) for s in (sources or [])]
     else:
-        cmd = [zpaq_bin, "t", dest]
+        cmd = [zpaq_bin, "t", arc]
         if mode == "checksum":
             cmd += ["-all", "-checksum"]
         elif mode == "verify":
@@ -530,6 +592,10 @@ def _precheck_blocked_reason(settings: dict, dest: str) -> str:
 
     if settings.get("only_masks") or settings.get("not_masks"):
         return "the work uses include/exclude masks"
+                                                                 
+                                                                        
+    if settings.get("create_mode") == CREATE_MODE_BACKUP:
+        return ""
     if settings.get("chunk"):
         return "the job writes a multi-volume archive"
     if "?" in str(dest):
@@ -640,30 +706,44 @@ def _headless_create(sources: list) -> int:
     password = settings.get("password")
 
     if _has_non_latin(Path(dest).stem) and "?" not in dest:
-        new_dest = _make_latin_name(dest)
-        ans = QMessageBox.question(
-            None,
-            tr("create.nonlatin_title"),
-            tr(
-                "create.nonlatin_create_text",
-                old=Path(dest).name,
-                new=Path(new_dest).name,
-            ),
-            YES_NO_BUTTONS,
-        )
-        if ans != YES_BUTTON:
-            return 0
-        dest = new_dest
+        from core.paths import backup_set_exists
 
-    if settings.get("chunk") and "?" not in dest:
+                                                                     
+                                                               
+        if not (settings.get("create_mode") == CREATE_MODE_BACKUP
+                and backup_set_exists(dest)):
+            new_dest = _make_latin_name(dest)
+            ans = QMessageBox.question(
+                None,
+                tr("create.nonlatin_title"),
+                tr(
+                    "create.nonlatin_create_text",
+                    old=Path(dest).name,
+                    new=Path(new_dest).name,
+                ),
+                YES_NO_BUTTONS,
+            )
+            if ans != YES_BUTTON:
+                return 0
+            dest = new_dest
+
+    if (settings.get("chunk")
+            and settings.get("create_mode") != CREATE_MODE_BACKUP
+            and "?" not in dest):
         p = Path(dest)
         dest = str(p.parent / (p.stem + "_????" + (p.suffix or ".zpaq")))
 
     cmd = _build_create_cmd(zpaq, settings, srcs, dest, password)
 
                                                                         
-                                                              
-    existed_before = Path(dest).is_file()
+                                                                
+                                                                 
+    if settings.get("create_mode") == CREATE_MODE_BACKUP:
+        from core.paths import backup_set_exists
+
+        existed_before = backup_set_exists(dest)
+    else:
+        existed_before = Path(dest).is_file()
 
     win = _make_progress_window(tr("create.dialog_title"))
     win.show()
@@ -1165,15 +1245,22 @@ def _headless_task(rest: list) -> int:
     from core.archive_naming import make_latin_name as _make_latin_name
 
     if _has_non_latin(Path(dest).stem) and "?" not in dest:
-        old_name = Path(dest).name
-        dest = _make_latin_name(dest)
-                                                                        
-                                                                             
-                                
-        rename_note = (
-            f"\n[rizpaq] destination renamed for engine compatibility: "
-            f"'{old_name}' -> '{Path(dest).name}'\n"
-        )
+        from core.paths import backup_set_exists
+
+                                                                      
+                                                                    
+                                                                      
+        keep_backup = is_backup_set(dest) or backup_set_exists(dest)
+        if not keep_backup:
+            old_name = Path(dest).name
+            dest = _make_latin_name(dest)
+                                                                            
+                                                                                 
+                                    
+            rename_note = (
+                f"\n[rizpaq] destination renamed for engine compatibility: "
+                f"'{old_name}' -> '{Path(dest).name}'\n"
+            )
 
                                                           
      
@@ -1197,7 +1284,7 @@ def _headless_task(rest: list) -> int:
         blocked = _precheck_blocked_reason(settings, dest)
         if blocked:
             skip_note = f"\n[rizpaq] precheck skipped: {blocked}\n"
-        elif Path(dest).is_file():
+        elif archive_exists(dest):
             decision, pre_rc, pre_log, pre_cmd = _continuous_precheck(
                 zpaq, dest, password, srcs
             )
@@ -1251,9 +1338,12 @@ def _headless_task(rest: list) -> int:
                                                                         
             from core import restore_drill
 
+                                                                   
+                                           
+            restore_dest = archive_alias(dest) if is_backup_set(dest) else dest
             cmd = None
             ok, log = restore_drill.run_restore_drill(
-                zpaq, dest, password, srcs
+                zpaq, restore_dest, password, srcs
             )
             rc = 0 if ok else 1
         elif par2_mode:
@@ -1309,18 +1399,38 @@ def _headless_task(rest: list) -> int:
                                                                       
                                                                        
                           
+            if is_backup_set(dest):
+                dest = archive_alias(dest)
             if "?" not in dest:
                 rc, log, ok = 1, "concatenate requires a multipart archive\n", False
                 cmd = None
             else:
                 p = Path(dest)
-                stem = p.stem.replace("_????", "").replace("????", "").rstrip("_") \
-                    or "merged"
-                out = str(settings.get("consolidate_output") or
-                          p.with_name(stem + ".zpaq"))
-                cmd = [zpaq, "m", dest, out, "-verify"]
-                if Path(out).exists():
-                    cmd.append("-force")
+                                                                   
+                                                                   
+                if is_backup_set(dest):
+                                                                    
+                                                                   
+                                    
+                    base = Path(backup_base(dest))
+                    default_out = base.with_name(
+                        base.stem + "_merged" + (base.suffix or ".zpaq"))
+                else:
+                    stem = Path(multipart_base(dest)).stem or "merged"
+                    default_out = p.with_name(stem + ".zpaq")
+                out = str(settings.get("consolidate_output") or default_out)
+                if (is_backup_set(dest)
+                        and os.path.normcase(os.path.abspath(out))
+                        == os.path.normcase(os.path.abspath(backup_base(dest)))):
+                    rc = 1
+                    log = ("the output must differ from the backup base name "
+                           f"{Path(backup_base(dest)).name}\n")
+                    ok = False
+                    cmd = None
+                else:
+                    cmd = [zpaq, "m", dest, out, "-verify"]
+                    if Path(out).exists():
+                        cmd.append("-force")
         elif action == ACTION_SFX:
                                                                     
                                                        
@@ -1370,7 +1480,11 @@ def _headless_task(rest: list) -> int:
             cmd = [zpaq, "checkpassword", dest, "-key", password or ""]
         else:
                                                                 
-            if settings.get("chunk") and "?" not in dest:
+                                                                     
+                                                     
+            if (settings.get("chunk")
+                    and settings.get("create_mode") != CREATE_MODE_BACKUP
+                    and "?" not in dest):
                 p = Path(dest)
                 dest = str(p.parent / (p.stem + "_????" + (p.suffix or ".zpaq")))
             cmd = _build_create_cmd(zpaq, settings, srcs, dest, password)
@@ -1534,9 +1648,17 @@ def _headless_task(rest: list) -> int:
      
                                                                         
                                                                            
+     
+                                                                      
+                                                                      
+                                                                        
+                                                            
+    backup_mode = settings.get("create_mode") == CREATE_MODE_BACKUP
+    par2_skipped = False
     if (ok and not skip_run
             and action in (ACTION_BACKUP, ACTION_CROP, ACTION_PASSWORD)
-            and settings.get("par2_enabled")):
+            and settings.get("par2_enabled")
+            and not backup_mode):
                                                                    
                                                                         
                                                                     
@@ -1552,6 +1674,11 @@ def _headless_task(rest: list) -> int:
             par2_reason = REASON_PAR2_FAILED
     else:
         par2_ok = True
+        if (backup_mode and settings.get("par2_enabled")
+                and action in (ACTION_BACKUP, ACTION_CROP, ACTION_PASSWORD)):
+            par2_skipped = True
+            par2_note = ("\n[par2] backup set: PAR2 protects one file, "
+                         "skipped\n")
 
                                                            
      

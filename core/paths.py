@@ -14,19 +14,34 @@ from pathlib import Path
                                                                      
                                                                      
                                                                         
-                                      
+                                                                     
+                                                                    
+                                                                  
  
            
                                         
-                           
+                                                            
                                           
                          
-                                                         
+                                                               
+                                                                  
  
                                                                      
                                                                     
                                                                
-MULTIPART_RE = re.compile(r"(?<=_)(\d{3,4})(\.zpaq)$", re.IGNORECASE)
+MULTIPART_RE = re.compile(r"(?<=_)(\d{3,4}|\d{8})(\.zpaq)$", re.IGNORECASE)
+
+                                                                    
+                                                      
+                                                                      
+                                                                  
+                                    
+BACKUP_INDEX_SUFFIX = "_00000000_backup.txt"
+BACKUP_INDEX_BINARY_SUFFIX = "_00000000_backup.index"
+BACKUP_INDEX_SIGNATURE = "$zpaqfranz backupfile|"
+BACKUP_PART_DIGITS = 8
+
+_BACKUP_PART_RE = re.compile(r"^(?P<stem>.*)_(?P<num>\d{8})$")
 
 
 def multipart_pattern(path) -> str:
@@ -35,14 +50,164 @@ def multipart_pattern(path) -> str:
 
 
 
+
+
+
     if not path:
         return str(path) if path is not None else path
     p = str(path)
+
+                                                                        
+                                                                   
+                                                                       
+    if p.lower().endswith(".zpaq") and is_backup_set(p):
+        return backup_mask(p)
 
     def _mask(match):
         return "?" * len(match.group(1)) + match.group(2).lower()
 
     return MULTIPART_RE.sub(_mask, p)
+
+
+def multipart_base(path) -> str:
+    pass
+
+
+
+
+
+
+    if not path:
+        return str(path) if path is not None else path
+    p = Path(str(path))
+    suffix = p.suffix or ".zpaq"
+    stem = p.stem
+    stem = re.sub(r"_\?+$", "", stem)
+                                                                       
+                                                                       
+                                                                 
+    stem = re.sub(r"_(?:\d{3,4}|\d{8})$", "", stem)
+    if not stem:
+        return str(path)
+    return str(p.with_name(stem + suffix))
+
+
+def backup_base(path) -> str:
+    pass
+
+
+
+
+
+
+
+    if not path:
+        return str(path) if path is not None else path
+    p = Path(str(path))
+    direct = str(p.with_name(p.stem + BACKUP_INDEX_SUFFIX))
+    if _is_backup_index_file(direct):
+        return str(p)
+    return multipart_base(path)
+
+
+def backup_index_path(path) -> str:
+    pass
+
+
+
+
+
+    base = Path(backup_base(path))
+    return str(base.with_name(base.stem + BACKUP_INDEX_SUFFIX))
+
+
+def backup_binary_index_path(path) -> str:
+    pass
+    base = Path(backup_base(path))
+    return str(base.with_name(base.stem + BACKUP_INDEX_BINARY_SUFFIX))
+
+
+def backup_mask(path) -> str:
+    pass
+    base = Path(backup_base(path))
+    suffix = base.suffix or ".zpaq"
+    return str(base.with_name(
+        base.stem + "_" + "?" * BACKUP_PART_DIGITS + suffix
+    ))
+
+
+def backup_parts(path) -> list:
+    pass
+
+
+
+
+
+    mask = Path(backup_mask(path))
+    try:
+        return sorted(p for p in mask.parent.glob(mask.name) if p.is_file())
+    except OSError:
+        return []
+
+
+def _is_backup_index_file(index_path: str) -> bool:
+    pass
+    try:
+        with open(index_path, "r", encoding="utf-8", errors="replace") as fh:
+            return fh.readline().startswith(BACKUP_INDEX_SIGNATURE)
+    except OSError:
+        return False
+
+
+def is_backup_set(path) -> bool:
+    pass
+
+
+
+
+
+
+
+    if not path:
+        return False
+    try:
+        return _is_backup_index_file(backup_index_path(path))
+    except Exception:
+        return False
+
+
+def backup_set_exists(path) -> bool:
+    pass
+
+
+
+
+
+
+    if not path:
+        return False
+    if is_backup_set(path):
+        return True
+    return bool(backup_parts(path))
+
+
+def archive_alias(path) -> str:
+    pass
+
+
+
+
+
+
+
+
+
+
+    if not path:
+        return str(path) if path is not None else path
+    if is_backup_set(path):
+        return backup_mask(path)
+    return multipart_pattern(path)
 
 
 _BACKSLASH = chr(92)

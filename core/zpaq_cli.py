@@ -260,13 +260,24 @@ def checksize_for_append(requested: str = "") -> str:
 
 def archive_exists(dest) -> bool:
     pass
+
+
+
+
+
+
+
     text = str(dest or "")
     if not text or "?" in text:
         return False
     try:
-        return Path(text).is_file()
+        if Path(text).is_file():
+            return True
     except Exception:
-        return False
+        pass
+    from core.paths import backup_set_exists
+
+    return backup_set_exists(text)
 
 
 def resolve_checksize(requested: str, dest, is_update: bool = False) -> str:

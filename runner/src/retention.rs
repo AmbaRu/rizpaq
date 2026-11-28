@@ -93,6 +93,13 @@ pub fn run_apply(zpaq: &str, arc: &str, policy: &str,
     if arc.contains('?') {
         return (false, "[retention] multipart archives are not supported".into());
     }
+    if crate::cmdline::is_backup_set(arc) {
+        return (
+            false,
+            "[retention] backup sets are not supported: merge the set with `m` first"
+                .into(),
+        );
+    }
     let Some(temp) = reserve_temp(arc) else {
         return (false, "[retention] cannot reserve temporary file".into());
     };

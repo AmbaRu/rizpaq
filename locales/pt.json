@@ -1012,6 +1012,17 @@
     "retention.ok": "Retenção concluída: {name}",
     "retention.fail": "Falha na retenção: {name}",
     "consolidate.out_prompt": "Arquivo de saída:",
-    "consolidate.not_multipart": "Selecione um arquivo em várias partes (nome com ?)."
+    "consolidate.not_multipart": "Selecione um arquivo em várias partes (nome com ?).",
+    "create.mode": "Método de criação",
+    "create.mode_a": "Arquivo normal (a)",
+    "create.mode_backup": "Conjunto backup (backup)",
+    "tip.create_mode": "`a` grava um arquivo (ou volumes com -chunk). `backup` grava um conjunto gerenciado: partes numeradas e índice; só pode ser verificado e atualizado com seus próprios comandos.",
+    "tip.create_mode_no_sfx": "SFX não está disponível para um conjunto backup: o motor falha após gravar uma parte.",
+    "tip.create_mode_no_par2": "PAR2 não está disponível para um conjunto backup: um conjunto protege um único arquivo, não partes e índice.",
+    "test.par2_title": "Verificação PAR2",
+    "test.par2_backup_unsupported": "PAR2 não protege um conjunto backup: o conjunto é formado por partes e dois índices, enquanto o PAR2 protege um único arquivo. Use o comando próprio do motor testbackup para verificar.",
+    "par2.backup_unsupported": "PAR2 não protege um conjunto backup: o conjunto é formado por partes e dois índices. Use testbackup para verificar.",
+    "retention.backup": "A retenção de versões não é suportada para um conjunto backup: o repack grava um único arquivo e não pode substituir as partes e o índice do conjunto. Primeiro mescle o conjunto com m.",
+    "consolidate.backup_name": "O nome de saída deve ser diferente do nome base do conjunto backup: o motor o usa para encontrar as partes e o índice do conjunto."
   }
 }

@@ -226,6 +226,15 @@ from core.headless import _build_log_header, _write_task_log, sync_log_is_fatal
                                            
 from core.zpaq_cli import looks_like_busy_error, resolve_checksize
 
+                                                                    
+                                                     
+from core.paths import (
+    archive_alias,
+    backup_base,
+    backup_set_exists,
+    is_backup_set,
+)
+
                                                                  
                                                             
 from core import mail_report, retention
@@ -302,6 +311,12 @@ def offer_latin_rename(path: str, parent):
     if "?" in str(path):
                                                                  
                                                
+        return path
+                                                            
+                                                           
+    from core.paths import is_backup_set
+
+    if is_backup_set(path):
         return path
     if not _has_non_latin(Path(path).stem):
         return path
@@ -699,6 +714,12 @@ class ArchiveActionsMixin:
             self.statusBar().showMessage(tr("status.test_only_archive"))
             return
         arc = str(arc)
+                                                               
+                                                                       
+                                                                           
+        backup = is_backup_set(arc)
+        read_arc = archive_alias(arc) if backup else arc
+        base_arc = backup_base(arc) if backup else arc
 
                                                                        
                                                                       
@@ -707,10 +728,19 @@ class ArchiveActionsMixin:
                                                                          
                       
         if str(mode) == "par2":
+            if backup:
+                QMessageBox.information(
+                    self, tr("test.par2_title"),
+                    tr("test.par2_backup_unsupported"),
+                )
+                return
             self._start_par2_verify(arc, job_context=job_context)
             return
 
-        arc = self._offer_nonlatin_rename(str(arc))
+                                                                   
+                                                                  
+                            
+        arc = self._offer_nonlatin_rename(str(read_arc))
         if not arc:
             return
         if not self.zpaq_available:
@@ -758,6 +788,15 @@ class ArchiveActionsMixin:
         elif mode == "verify_fs":
                                                                        
             cmd = [self.zpaq_bin, "v", arc]
+        elif backup:
+                                                                         
+                                                                     
+                                                                  
+                                                                    
+                                         
+            cmd = [self.zpaq_bin, "testbackup", base_arc]
+            if mode in ("checksum", "verify", "paranoid"):
+                cmd.append("-verify")
         elif mode == "checksum":
             cmd += ["-all", "-checksum"]
         elif mode == "verify":
@@ -783,8 +822,9 @@ class ArchiveActionsMixin:
 
         self.log_command(cmd)
 
+        display_name = Path(base_arc).name if backup else Path(arc).name
         dlg = TestProgressDialog(
-            Path(arc).name, test_mode_label(mode), parent=self
+            display_name, test_mode_label(mode), parent=self
         )
         self._test_progress_dialog = dlg
         try:
@@ -967,6 +1007,14 @@ class ArchiveActionsMixin:
                 self, tr("retention.title"), tr("retention.multipart")
             )
             return
+                                                                        
+                                                                    
+                                                                      
+        if is_backup_set(arc) or backup_set_exists(arc):
+            QMessageBox.warning(
+                self, tr("retention.title"), tr("retention.backup")
+            )
+            return
         if not self.zpaq_available:
             QMessageBox.warning(
                 self, tr("zpaq.not_found_title"), tr("zpaq.not_found_text")
@@ -1086,6 +1134,9 @@ class ArchiveActionsMixin:
             self.statusBar().showMessage(tr("status.test_only_archive"))
             return
         arc = str(arc)
+                                                                          
+        if is_backup_set(arc):
+            arc = archive_alias(arc)
         if "?" not in arc:
             QMessageBox.warning(
                 self, tr("consolidate.title"), tr("consolidate.not_multipart")
@@ -1099,15 +1150,34 @@ class ArchiveActionsMixin:
             return
 
         p = Path(arc)
-        stem = p.stem.replace("_????", "").replace("????", "").rstrip("_") \
-            or "merged"
-        default_out = str(p.with_name(stem + ".zpaq"))
+        if is_backup_set(arc):
+                                                                        
+                                                                      
+                                                                        
+            base = Path(backup_base(arc))
+            default_out = str(
+                base.with_name(base.stem + "_merged" + (base.suffix or ".zpaq"))
+            )
+        else:
+            stem = p.stem.replace("_????", "").replace("????", "").rstrip("_") \
+                or "merged"
+            default_out = str(p.with_name(stem + ".zpaq"))
         out, accepted = QInputDialog.getText(
             self, tr("consolidate.title"), tr("consolidate.out_prompt"),
             text=default_out,
         )
         out = str(out or "").strip()
         if not accepted or not out:
+            return
+
+                                                                       
+                                                   
+        if is_backup_set(arc) and (
+                os.path.normcase(os.path.abspath(out))
+                == os.path.normcase(os.path.abspath(backup_base(arc)))):
+            QMessageBox.warning(
+                self, tr("consolidate.title"), tr("consolidate.backup_name")
+            )
             return
 
         exists = Path(out).exists()
@@ -2556,6 +2626,12 @@ class ArchiveActionsMixin:
             "not_masks": list(settings.get("not_masks") or []),
             "comment": settings.get("comment") or "",
         }
+                                                                     
+                                                                   
+                                                                  
+                                                      
+        if "create_mode" in settings:
+            work_fields["create_mode"] = settings.get("create_mode") or "a"
         if password:
             work_fields["password"] = password
 
@@ -3076,7 +3152,15 @@ class ArchiveActionsMixin:
             if not mail.ready():
                 return [], ""
             customer = self._job_mail_customer(job_context, archive)
-            if settings.get("par2_enabled"):
+                                                                         
+                                                                        
+                                                                    
+                                                                 
+            par2_planned = (
+                bool(settings.get("par2_enabled"))
+                and str(settings.get("create_mode") or "a") != "backup"
+            )
+            if par2_planned:
                 return [], customer
             return mail_report.report_args(mail, customer), ""
         except Exception:
@@ -3259,28 +3343,41 @@ class ArchiveActionsMixin:
             return
         dest = settings["dest"]
         password = settings.get("password")
+        create_mode = str(settings.get("create_mode") or "a").strip().lower()
+        is_backup = create_mode == "backup"
 
         if _has_non_latin(Path(dest).stem) and "?" not in dest:
-            new_dest = _make_latin_name(dest)
-            ans = QMessageBox.question(
-                self,
-                tr("create.nonlatin_title"),
-                tr(
-                    "create.nonlatin_create_text",
-                    old=Path(dest).name,
-                    new=Path(new_dest).name,
-                ),
-                YES_NO_BUTTONS,
-            )
-            if ans != YES_BUTTON:
-                return
-            dest = new_dest
+                                                                     
+                                                                         
+            if not (is_backup and backup_set_exists(dest)):
+                new_dest = _make_latin_name(dest)
+                ans = QMessageBox.question(
+                    self,
+                    tr("create.nonlatin_title"),
+                    tr(
+                        "create.nonlatin_create_text",
+                        old=Path(dest).name,
+                        new=Path(new_dest).name,
+                    ),
+                    YES_NO_BUTTONS,
+                )
+                if ans != YES_BUTTON:
+                    return
+                dest = new_dest
 
-        if settings.get("chunk") and "?" not in dest:
+                                                                   
+                                                                       
+                                                              
+        if settings.get("chunk") and not is_backup and "?" not in dest:
             p = Path(dest)
             dest = str(p.parent / (p.stem + "_????" + (p.suffix or ".zpaq")))
 
-        is_update = "?" not in dest and Path(dest).exists()
+                                                                 
+                                          
+        if is_backup:
+            is_update = backup_set_exists(dest)
+        else:
+            is_update = "?" not in dest and Path(dest).exists()
         verify_mode = settings.get("verify") or ""
 
         cwd = None
@@ -3289,7 +3386,7 @@ class ArchiveActionsMixin:
             cwd = strip_base
             srcs = ["*"]
 
-        cmd = [self.zpaq_bin, "a", dest] + srcs
+        cmd = [self.zpaq_bin, "backup" if is_backup else "a", dest] + srcs
                                                                  
                                                                 
                                                                    
@@ -3349,7 +3446,10 @@ class ArchiveActionsMixin:
             cmd += ["-errorlog", settings["errorlog"]]
         if settings.get("shutdown"):
             cmd.append("-shutdown")
-        if settings.get("sfx"):
+                                                                    
+                                                         
+                                              
+        if settings.get("sfx") and not is_backup:
             cmd += ["-sfx", settings["sfx"]]
         if settings.get("chunk"):
             cmd += ["-chunk", settings["chunk"]]
@@ -3389,8 +3489,10 @@ class ArchiveActionsMixin:
                 "mail_deferred": bool(deferred_customer),
                 "mail_customer": deferred_customer,
                                                                          
-                                                              
-                "par2_job": bool(settings.get("par2_enabled")),
+                                                                  
+                                                                         
+                                                             
+                "par2_job": bool(settings.get("par2_enabled")) and not is_backup,
                                                                             
                 "extra_dests": list(settings.get("extra_dests") or []),
                 "create_settings": dict(settings),
@@ -3400,7 +3502,7 @@ class ArchiveActionsMixin:
                                                                    
                                                                        
                 "par2": {
-                    "enabled": bool(settings.get("par2_enabled")),
+                    "enabled": bool(settings.get("par2_enabled")) and not is_backup,
                     "options": dict(settings.get("par2_options") or {}),
                 },
             },
@@ -3631,7 +3733,10 @@ class ArchiveActionsMixin:
                                                                     
                                                        
         if job_status == "ok" and dest and "?" not in dest:
-            self._refresh_index_after_create(dest, password)
+                                                                        
+                                                                        
+            if not is_backup_set(dest):
+                self._refresh_index_after_create(dest, password)
 
         if output:
             if len(output) > _CREATE_LOG_LIMIT:
@@ -3745,7 +3850,8 @@ class ArchiveActionsMixin:
             if progress_dlg is not None and not started_par2:
                 progress_dlg.finish(True, name)
             try:
-                self.tree.reveal_archive(dest)
+                                                                           
+                self.tree.reveal_archive(archive_alias(dest))
             except Exception:
                 pass
             try:
@@ -3755,7 +3861,9 @@ class ArchiveActionsMixin:
 
             stats = parse_create_stats(output)
             self._create_report = {
-                "dest": dest,
+                                                                        
+                                                                            
+                "dest": archive_alias(dest),
                 "is_update": bool(ctx.get("is_update")),
                 "ok": True,
                                                                       
@@ -3769,7 +3877,8 @@ class ArchiveActionsMixin:
             }
             try:
                 if password:
-                    self._cache(dest)["password"] = password
+                    cache_key = archive_alias(dest)
+                    self._cache(cache_key)["password"] = password
                     set_password(dest, password)
             except Exception:
                 pass

@@ -1012,6 +1012,17 @@
     "retention.ok": "Aufbewahrung abgeschlossen: {name}",
     "retention.fail": "Aufbewahrung fehlgeschlagen: {name}",
     "consolidate.out_prompt": "Zielarchiv:",
-    "consolidate.not_multipart": "Bitte ein mehrteiliges Archiv (Name mit ?) wählen."
+    "consolidate.not_multipart": "Bitte ein mehrteiliges Archiv (Name mit ?) wählen.",
+    "create.mode": "Erstellungsart",
+    "create.mode_a": "Normales Archiv (a)",
+    "create.mode_backup": "Backup-Satz (backup)",
+    "tip.create_mode": "`a` schreibt ein Archiv (oder mit -chunk Bände). `backup` schreibt einen verwalteten Satz: nummerierte Teile plus Index; prüfen und aktualisieren lässt er sich nur mit seinen eigenen Befehlen.",
+    "tip.create_mode_no_sfx": "SFX ist für einen Backup-Satz nicht verfügbar: die Engine bricht nach dem Schreiben eines Teils ab.",
+    "tip.create_mode_no_par2": "PAR2 ist für einen Backup-Satz nicht verfügbar: ein Satz schützt eine Datei, nicht Teile plus Index.",
+    "test.par2_title": "PAR2-Prüfung",
+    "test.par2_backup_unsupported": "PAR2 schützt keinen Backup-Satz: der Satz besteht aus Teilen und zwei Indizes, PAR2 schützt eine einzelne Datei. Verwenden Sie zur Prüfung den engine-eigenen Befehl testbackup.",
+    "par2.backup_unsupported": "PAR2 schützt keinen Backup-Satz: der Satz besteht aus Teilen und zwei Indizes. Verwenden Sie testbackup zur Prüfung.",
+    "retention.backup": "Die Versionsaufbewahrung wird für einen Backup-Satz nicht unterstützt: repack schreibt eine einzelne Datei und kann die Teile und den Index des Satzes nicht ersetzen. Fügen Sie den Satz zuerst mit m zusammen.",
+    "consolidate.backup_name": "Der Ausgabename muss sich vom Basisnamen des Backup-Satzes unterscheiden: über ihn findet die Engine die Teile und den Index des Satzes."
   }
 }

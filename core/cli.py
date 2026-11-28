@@ -114,6 +114,12 @@ def _extract_direct(window, arc: str, dest: str) -> bool:
         if not zpaq_bin:
             zpaq_bin = os.environ.get("ZPAQ_BIN", "zpaqfranz")
 
+                                                                         
+                                           
+        from core.paths import archive_alias
+
+        arc = archive_alias(arc)
+
         password = None
         try:
             password = window._cache(arc).get("password")

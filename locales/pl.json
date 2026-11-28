@@ -1012,6 +1012,17 @@
     "retention.ok": "Zakończono przechowywanie: {name}",
     "retention.fail": "Nie udało się przechować: {name}",
     "consolidate.out_prompt": "Archiwum wyjściowe:",
-    "consolidate.not_multipart": "Wybierz archiwum wieloczęściowe (nazwa z ?)."
+    "consolidate.not_multipart": "Wybierz archiwum wieloczęściowe (nazwa z ?).",
+    "create.mode": "Sposób tworzenia",
+    "create.mode_a": "Zwykłe archiwum (a)",
+    "create.mode_backup": "Zestaw backup (backup)",
+    "tip.create_mode": "`a` zapisuje jedno archiwum (lub woluminy z -chunk). `backup` zapisuje zarządzany zestaw: numerowane części i indeks; sprawdzać i aktualizować go można tylko jego własnymi poleceniami.",
+    "tip.create_mode_no_sfx": "SFX nie jest dostępny dla zestawu backup: silnik kończy się błędem po zapisaniu części.",
+    "tip.create_mode_no_par2": "PAR2 nie jest dostępny dla zestawu backup: zestaw chroni jeden plik, a nie części i indeks.",
+    "test.par2_title": "Sprawdzanie PAR2",
+    "test.par2_backup_unsupported": "PAR2 nie chroni zestawu backup: zestaw składa się z części i dwóch indeksów, a PAR2 chroni jeden plik. Do sprawdzenia użyj własnego polecenia silnika testbackup.",
+    "par2.backup_unsupported": "PAR2 nie chroni zestawu backup: zestaw składa się z części i dwóch indeksów. Do sprawdzenia użyj testbackup.",
+    "retention.backup": "Retencja wersji nie jest obsługiwana dla zestawu backup: repack zapisuje jeden plik i nie może zastąpić części i indeksu zestawu. Najpierw scal zestaw poleceniem m.",
+    "consolidate.backup_name": "Nazwa wyjściowa musi różnić się od nazwy bazowej zestawu backup: silnik używa jej do znalezienia części i indeksu zestawu."
   }
 }

@@ -42,10 +42,6 @@ pub const JOB_FIELDS: &[&str] = &[
 ];
 
 pub const JOB_STATUSES: &[&str] = &["ok", "error", "busy"];
-/// Порт JOB_REASONS из core/tasks.py: список обязан совпадать, иначе
-/// update_job_meta молча выбрасывает причину. `copy_failed` ставится
-/// основным потоком при отказе второй копии (половина правила 3-2-1):
-/// без токена дерево показывает безликую «Ошибку».
 pub const JOB_REASONS: &[&str] = &[
     "par2_missing",
     "par2_broken",
@@ -56,9 +52,6 @@ pub const JOB_REASONS: &[&str] = &[
     "copy_failed",
 ];
 pub const LOG_MODES: &[&str] = &["short", "full", "none"];
-/// Порт TEST_MODES из core/tasks.py. `restore` — автотест восстановления:
-/// если токена нет, norm_test_mode превращает его в `full`, и ветка
-/// restore drill в main.rs никогда не выполняется.
 pub const TEST_MODES: &[&str] = &[
     "full",
     "checksum",
@@ -305,12 +298,25 @@ fn normalize_work(w: &Value) -> Option<Value> {
         "comment": str_or(obj.get("comment"), ""),
         "par2_size": norm_par2_size(obj.get("par2_size")),
         "par2_created": par2_created,
+        "create_mode": json!(norm_create_mode(obj.get("create_mode"))),
         "jobs": obj
             .get("jobs")
             .and_then(Value::as_array)
             .map(|arr| arr.iter().filter_map(normalize_job).collect::<Vec<Value>>())
             .unwrap_or_default(),
     }))
+}
+
+pub fn norm_create_mode(v: Option<&Value>) -> String {
+    let text = match v {
+        Some(v) => py_str(v).trim().to_lowercase(),
+        None => String::new(),
+    };
+    if text == "backup" {
+        "backup".to_string()
+    } else {
+        "a".to_string()
+    }
 }
 
 fn normalize_job(j: &Value) -> Option<Value> {
@@ -456,6 +462,10 @@ pub fn job_to_runnable_settings(work: &Value, job: &Value) -> Value {
             .unwrap_or_default()),
     );
     s.insert("comment".into(), json!(str_or(work.get("comment"), "")));
+    s.insert(
+        "create_mode".into(),
+        json!(norm_create_mode(work.get("create_mode"))),
+    );
     s.insert("title".into(), json!(str_or(job.get("title"), "")));
     s.insert("work_title".into(), json!(str_or(work.get("title"), "")));
     for key in JOB_FIELDS {

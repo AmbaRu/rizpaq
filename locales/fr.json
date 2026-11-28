@@ -1012,6 +1012,17 @@
     "retention.ok": "Rétention terminée : {name}",
     "retention.fail": "Échec de la rétention : {name}",
     "consolidate.out_prompt": "Archive de sortie :",
-    "consolidate.not_multipart": "Sélectionnez une archive multipartie (nom avec ?)."
+    "consolidate.not_multipart": "Sélectionnez une archive multipartie (nom avec ?).",
+    "create.mode": "Mode de création",
+    "create.mode_a": "Archive normale (a)",
+    "create.mode_backup": "Ensemble backup (backup)",
+    "tip.create_mode": "`a` écrit une archive (ou des volumes avec -chunk). `backup` écrit un ensemble géré : parties numérotées plus index ; il ne peut être vérifié et mis à jour qu'avec ses propres commandes.",
+    "tip.create_mode_no_sfx": "SFX n'est pas disponible pour un ensemble backup : le moteur échoue après l'écriture d'une partie.",
+    "tip.create_mode_no_par2": "PAR2 n'est pas disponible pour un ensemble backup : un ensemble protège un seul fichier, pas des parties et un index.",
+    "test.par2_title": "Vérification PAR2",
+    "test.par2_backup_unsupported": "PAR2 ne protège pas un ensemble backup : l'ensemble se compose de parties et de deux index, alors que PAR2 protège un seul fichier. Utilisez la commande propre au moteur testbackup pour le vérifier.",
+    "par2.backup_unsupported": "PAR2 ne protège pas un ensemble backup : l'ensemble se compose de parties et de deux index. Utilisez testbackup pour le vérifier.",
+    "retention.backup": "La rétention de versions n'est pas prise en charge pour un ensemble backup : repack écrit un seul fichier et ne peut pas remplacer les parties et l'index de l'ensemble. Fusionnez d'abord l'ensemble avec m.",
+    "consolidate.backup_name": "Le nom de sortie doit différer du nom de base de l'ensemble backup : le moteur s'en sert pour trouver les parties et l'index."
   }
 }

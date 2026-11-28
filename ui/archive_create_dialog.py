@@ -283,6 +283,20 @@ class ArchiveCreateDialog(QDialog):
         dest_row.addWidget(br_btn)
         form.addRow(tr("create.destination"), dest_row)
 
+                                        
+         
+                                                                     
+                                                                   
+                                
+                                                         
+                                                                           
+                                                                     
+        self._create_mode_combo = QComboBox()
+        self._create_mode_combo.addItem(tr("create.mode_a"), "a")
+        self._create_mode_combo.addItem(tr("create.mode_backup"), "backup")
+        self._create_mode_combo.setToolTip(tr("tip.create_mode"))
+        form.addRow(tr("create.mode"), self._create_mode_combo)
+
         self._extra_dests = QPlainTextEdit()
         self._extra_dests.setPlaceholderText("F:/second.zpaq")
         self._extra_dests.setToolTip(tr("tip.extra_dests"))
@@ -583,10 +597,43 @@ class ArchiveCreateDialog(QDialog):
         self._start_size_worker()
         self._update_longpath_state()
         self._update_method_preview()
+                                                                    
+                                                                        
+        self._create_mode_combo.currentIndexChanged.connect(
+            self._on_create_mode_changed)
         if initial_settings:
             self._apply_settings(initial_settings)
+        self._on_create_mode_changed()
 
                          
+
+    def _on_create_mode_changed(self, _i=0):
+        pass
+
+
+
+
+
+
+
+
+        is_backup = (self._create_mode_combo.currentData() or "a") == "backup"
+        self._opt_sfx.setEnabled(not is_backup)
+        if is_backup:
+            self._opt_sfx.setChecked(False)
+        self._opt_sfx.setToolTip(
+            tr("tip.create_mode_no_sfx") if is_backup else "")
+        widget = getattr(self, "_par2_widget", None)
+        if widget is not None:
+            widget.setEnabled(not is_backup)
+        if is_backup:
+                                                                        
+                                                                     
+                                                                    
+                                                                
+            self._opt_par2.setChecked(False)
+        self._opt_par2.setToolTip(
+            tr("tip.create_mode_no_par2") if is_backup else "")
 
     def _on_level_changed(self, _i):
         self._method_group.setVisible(self._level_combo.currentData() == "method")
@@ -986,7 +1033,14 @@ class ArchiveCreateDialog(QDialog):
                                                                      
                                                                        
                           
-        par2_enabled = self._opt_par2.isChecked()
+         
+                                                                   
+                                                                       
+                                                                       
+                                              
+        create_mode = self._create_mode_combo.currentData() or "a"
+        is_backup = create_mode == "backup"
+        par2_enabled = self._opt_par2.isChecked() and not is_backup
         cs = self._checkspace_edit.text().strip() if self._opt_checkspace.isChecked() else ""
         chunk = ""
         if self._opt_chunk.isChecked():
@@ -994,6 +1048,10 @@ class ArchiveCreateDialog(QDialog):
             if chunk == "__custom__":
                 chunk = self._chunk_custom or ""
         sfx = self._sfx_edit.text().strip() if self._opt_sfx.isChecked() else ""
+        if is_backup:
+                                                                     
+                                                    
+            sfx = ""
         mp = None
         if lk == "method":
             mp = self._get_method_params()
@@ -1037,6 +1095,7 @@ class ArchiveCreateDialog(QDialog):
             "errorlog": self._errorlog_edit.text().strip(),
             "shutdown": bool(self._opt_shutdown.isChecked()),
             "sfx": sfx, "chunk": chunk,
+            "create_mode": create_mode,
             "par2_enabled": par2_enabled,
         }
         if par2_enabled:
@@ -1113,6 +1172,11 @@ class ArchiveCreateDialog(QDialog):
         if csp:
             self._auto_checkspace = csp
         self._errorlog_edit.setText(s.get("errorlog", ""))
+        mode = str(s.get("create_mode") or "a")
+        for i in range(self._create_mode_combo.count()):
+            if self._create_mode_combo.itemData(i) == mode:
+                self._create_mode_combo.setCurrentIndex(i)
+                break
         sfx = s.get("sfx", "")
         self._sfx_edit.setText(sfx)
         self._opt_sfx.setChecked(bool(sfx))
