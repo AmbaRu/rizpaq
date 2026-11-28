@@ -353,6 +353,9 @@ instant, and nothing you were doing is lost.
   asks for confirmation first. The familiar single-folder version
   extraction is still there.
 
+### What's new in 3.2.1
+- PAR2 now covers multi-volume archives: one set per volume and per backup service index. Unchanged volumes are skipped; changed indexes are protected again. Works in the GUI, in scheduled jobs and in the Rust runner.
+
 ### What's new in 3.2.0
 - The engine's `backup` command is now a full create mode: a managed set of numbered parts and indexes instead of one file. It can be verified with `testbackup`, extracted and browsed by mask, appended to, and merged into a normal archive with `m <mask> <output> -verify`.
 - Passwords work in every set operation, including merging encrypted volumes; `-open` is no longer sent for sets or multipart masks, which had made repeated backups fail with "file seems open".
@@ -959,6 +962,9 @@ ZPAQ**. Один клик: старый RAR, набитый дублями, пр
   все версии в пронумерованных папках 0001, 0002, … . Данные идут через
   временную папку, а распаковка в непустую папку сначала спрашивает
   подтверждение. Привычное извлечение версии одной папки осталось на месте.
+
+### Что нового в 3.2.1
+- PAR2 теперь защищает многотомные архивы: отдельный набор на каждый том и на служебные индексы backup-набора. Не изменившиеся тома пропускаются, изменившиеся индексы защищаются заново. Работает в GUI, в заданиях и в Rust-раннере.
 
 ### Что нового в 3.2.0
 - Полная поддержка команды `backup`: управляемый набор из пронумерованных частей и индекса вместо одного файла. Проверка идёт через `testbackup`, распаковка и версии — по маске, слияние в обычный архив — через `m <маска> <выход> -verify`.

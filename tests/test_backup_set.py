@@ -293,11 +293,7 @@ class TestLocales(unittest.TestCase):
         "create.mode_backup",
         "tip.create_mode",
         "tip.create_mode_no_sfx",
-        "tip.create_mode_no_par2",
         "tip.create_mode_par2_volumes",
-        "test.par2_title",
-        "test.par2_backup_unsupported",
-        "par2.backup_unsupported",
         "retention.backup",
         "consolidate.backup_name",
     )

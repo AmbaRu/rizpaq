@@ -1,6 +1,6 @@
 [package]
 name = "rizpaq_task"
-version = "3.2.0"
+version = "3.2.1"
 edition = "2021"
 description = "Rizpaq headless task runner (scheduled jobs, no GUI, no console)"
 

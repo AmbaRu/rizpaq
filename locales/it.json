@@ -1018,10 +1018,6 @@
     "create.mode_backup": "Set backup (backup)",
     "tip.create_mode": "`a` scrive un archivio (o volumi con -chunk). `backup` scrive un set gestito: parti numerate più indice; può essere verificato e aggiornato solo con i suoi comandi.",
     "tip.create_mode_no_sfx": "SFX non è disponibile per un set backup: il motore si interrompe dopo aver scritto una parte.",
-    "tip.create_mode_no_par2": "PAR2 non è disponibile per un set backup: un set protegge un singolo file, non parti e indice.",
-    "test.par2_title": "Verifica PAR2",
-    "test.par2_backup_unsupported": "PAR2 non protegge un set backup: il set è composto da parti e due indici, mentre PAR2 protegge un singolo file. Usa il comando proprio del motore testbackup per verificarlo.",
-    "par2.backup_unsupported": "PAR2 non protegge un set backup: il set è composto da parti e due indici. Usa testbackup per verificarlo.",
     "retention.backup": "La conservazione delle versioni non è supportata per un set backup: repack scrive un singolo file e non può sostituire le parti e l'indice del set. Unisci prima il set con m.",
     "consolidate.backup_name": "Il nome di output deve differire dal nome base del set backup: il motore lo usa per trovare le parti e l'indice.",
     "tip.create_mode_par2_volumes": "PAR2 protegge ogni volume del set separatamente, inclusi gli indici. Gli indici modificati vengono protetti di nuovo."

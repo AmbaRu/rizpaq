@@ -1018,10 +1018,6 @@
     "create.mode_backup": "备份集 (backup)",
     "tip.create_mode": "`a` 写入单个归档（使用 -chunk 时为分卷）。`backup` 写入受管理的集合：编号分片和索引；只能用它自己的命令来校验和更新。",
     "tip.create_mode_no_sfx": "备份集不支持 SFX：引擎在写入分片后会失败。",
-    "tip.create_mode_no_par2": "备份集不支持 PAR2：集合保护的是一组分片和索引，而不是单个文件。",
-    "test.par2_title": "PAR2 校验",
-    "test.par2_backup_unsupported": "PAR2 无法保护备份集：该集合由分片和两个索引组成，而 PAR2 只能保护单个文件。请使用引擎自带的 testbackup 命令进行校验。",
-    "par2.backup_unsupported": "PAR2 无法保护备份集：该集合由分片和两个索引组成。请使用 testbackup 进行校验。",
     "retention.backup": "备份集不支持版本保留：repack 只写入单个文件，无法替换集合的分片和索引。请先用 m 合并该集合。",
     "consolidate.backup_name": "输出名称必须不同于备份集的基础名称：引擎用它来查找集合的分片和索引。",
     "tip.create_mode_par2_volumes": "PAR2 会分别保护集中的每个分卷，包括索引文件；发生变化的索引会重新保护。"
