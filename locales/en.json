@@ -1023,6 +1023,7 @@
     "test.par2_backup_unsupported": "PAR2 does not protect a backup set: the set consists of parts and two indexes, while PAR2 protects a single file. Use the engine's own testbackup command to verify it.",
     "par2.backup_unsupported": "PAR2 does not protect a backup set: the set consists of parts and two indexes. Use testbackup to verify it.",
     "retention.backup": "Version retention is not supported for a backup set: repack writes a single file and cannot replace the set's parts and index. Merge the set with m first.",
-    "consolidate.backup_name": "The output must differ from the backup set's base name: the engine uses it to find the set's parts and index."
+    "consolidate.backup_name": "The output must differ from the backup set's base name: the engine uses it to find the set's parts and index.",
+    "tip.create_mode_par2_volumes": "PAR2 protects every volume of the set separately, including the service indexes. Changed indexes are protected again."
   }
 }

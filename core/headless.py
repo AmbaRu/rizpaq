@@ -886,11 +886,21 @@ def _headless_par2_verify(dest: str) -> tuple:
 
 
 
+
+
+
+
     from core import par2_ops
 
     par2_bin = par2_ops.find_par2()
     if not par2_bin:
         return 1, "[par2] par2.exe не найден, проверка невозможна\n", par2_ops.STATE_FAILED
+
+    if "?" in str(dest) or is_backup_set(dest):
+        from core import multipart_par2
+
+        res = multipart_par2.verify(par2_bin, dest)
+        return (0 if res["ok"] else 1), res["log"], res["state"]
 
     par2_path = par2_ops.par2_main_name(dest)
     if not os.path.isfile(par2_path):
@@ -966,6 +976,23 @@ def _headless_par2(rzp_path: str, work: dict, job: dict,
     known_size = work.get("par2_size")
     if not isinstance(known_size, int):
         known_size = None
+
+                                                                        
+                                                                    
+    if "?" in str(dest) or is_backup_set(dest):
+        from core import multipart_par2
+
+        try:
+            res = multipart_par2.protect(par2_bin, dest, options)
+        except Exception as exc:
+            return False, header + f"ошибка набора: {type(exc).__name__}: {exc}\n"
+        note = (
+            "\n[par2] защита по томам: создано %d, обновлено %d, "
+            "пропущено %d\n" % (
+                res["created"], res["refreshed"], res["skipped"]
+            )
+        ) + res["log"]
+        return res["ok"], header + note
 
     try:
         res = par2_ops.refresh_par2_set(
@@ -1655,24 +1682,16 @@ def _headless_task(rest: list) -> int:
                                                                         
                                                                            
      
-                                                                      
-                                                                      
                                                                         
-                                                            
-    backup_mode = settings.get("create_mode") == CREATE_MODE_BACKUP
+                                                                      
+                                                         
     par2_skipped = False
     if (ok and not skip_run
             and action in (ACTION_BACKUP, ACTION_CROP, ACTION_PASSWORD)
-            and settings.get("par2_enabled")
-            and not backup_mode):
+            and settings.get("par2_enabled")):
                                                                    
                                                                         
-                                                                    
-         
-                                                                      
-                                                                  
-                                                                    
-                    
+                                            
         par2_ok, par2_note = _headless_par2(
             rzp_path, work, job, dest, settings
         )
@@ -1680,11 +1699,6 @@ def _headless_task(rest: list) -> int:
             par2_reason = REASON_PAR2_FAILED
     else:
         par2_ok = True
-        if (backup_mode and settings.get("par2_enabled")
-                and action in (ACTION_BACKUP, ACTION_CROP, ACTION_PASSWORD)):
-            par2_skipped = True
-            par2_note = ("\n[par2] backup set: PAR2 protects one file, "
-                         "skipped\n")
 
                                                            
      

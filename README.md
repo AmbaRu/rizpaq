@@ -482,9 +482,11 @@ instant, and nothing you were doing is lost.
   so it is never scheduled.
 - Recreating a set replaces the old one with no gap in protection; if
   the archive has not changed since, recreation is skipped.
+- A multi-volume archive is protected one volume at a time: each volume and
+  each service index gets its own set. Volumes that did not change are
+  skipped on the next run; changed indexes are protected again.
 - Honest limits: the set protects the data from corruption, but NOT from
   the death of the medium — for that there is the second copy.
-  Multi-volume archives are not covered by the set yet.
 
 ### Universal formats and transcoding
 - Open ZIP, 7z, and RAR through the embedded 7-Zip bridge.
@@ -1086,9 +1088,11 @@ ZPAQ**. Один клик: старый RAR, набитый дублями, пр
   поэтому в расписание его поставить нельзя.
 - Пересоздание набора меняет старый на новый без разрыва в защите;
   если архив не менялся, пересоздание пропускается.
+- Многотомный архив защищается по томам: каждый том и каждый служебный
+  индекс получают свой набор. Не изменившиеся тома при следующем запуске
+  пропускаются, изменившиеся индексы защищаются заново.
 - Честные границы: набор защищает данные от порчи, но НЕ от смерти
-  носителя — для этого есть вторая копия. Многотомные архивы набором
-  пока не покрываются.
+  носителя — для этого есть вторая копия.
 
 ### Универсальные архивы и транскодирование
 - Открытие ZIP, 7z и RAR через встроенный мост к 7-Zip.

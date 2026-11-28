@@ -1,11 +1,13 @@
 
+use crate::cmdline;
 use crate::engine::{self, EnginePipe};
 use crate::tasks::{self, py_truthy};
 use serde_json::Value;
+use std::fs;
 use std::os::windows::process::CommandExt;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
-use std::time::{Duration, Instant};
+use std::time::{Duration, Instant, SystemTime};
 
 pub(crate) const CREATE_NO_WINDOW: u32 = 0x0800_0000;
 
@@ -711,6 +713,212 @@ pub fn refresh_par2_set(
 }
 
 
+fn mask_match(pattern: &str, name: &str) -> bool {
+    let pat: Vec<char> = pattern.chars().collect();
+    let text: Vec<char> = name.chars().collect();
+    pat.len() == text.len()
+        && pat.iter().zip(text.iter()).all(|(p, t)| {
+            *p == '?'
+                || if cfg!(windows) {
+                    p.to_lowercase().eq(t.to_lowercase())
+                } else {
+                    p == t
+                }
+        })
+}
+
+pub fn archive_files(path: &str) -> Vec<String> {
+    if path.is_empty() {
+        return Vec::new();
+    }
+    if cmdline::is_backup_set(path) {
+        let mut out: Vec<String> = cmdline::backup_parts(path)
+            .iter()
+            .map(|p| p.to_string_lossy().into_owned())
+            .collect();
+        for extra in [
+            cmdline::backup_index_path(path),
+            cmdline::backup_binary_index_path(path),
+        ] {
+            if Path::new(&extra).is_file() {
+                out.push(extra);
+            }
+        }
+        out.sort();
+        return out;
+    }
+    if path.contains('?') || path.contains('*') {
+        let p = Path::new(path);
+        let name = match p.file_name().and_then(|s| s.to_str()) {
+            Some(n) => n,
+            None => return Vec::new(),
+        };
+        let parent = match p.parent() {
+            Some(d) if !d.as_os_str().is_empty() => d,
+            _ => Path::new("."),
+        };
+        let mut out = Vec::new();
+        if let Ok(entries) = fs::read_dir(parent) {
+            for entry in entries.flatten() {
+                if !entry.path().is_file() {
+                    continue;
+                }
+                if let Some(n) = entry.file_name().to_str() {
+                    if mask_match(name, n) {
+                        out.push(entry.path().to_string_lossy().into_owned());
+                    }
+                }
+            }
+        }
+        out.sort();
+        return out;
+    }
+    if Path::new(path).is_file() {
+        vec![path.to_string()]
+    } else {
+        Vec::new()
+    }
+}
+
+fn set_ready(file: &str) -> bool {
+    let main = par2_main_name(file);
+    if !Path::new(&main).is_file() {
+        return false;
+    }
+    par2_set_files(file)
+        .iter()
+        .any(|p| p != &main && Path::new(p).is_file())
+}
+
+fn mtime(path: &str) -> Option<SystemTime> {
+    fs::metadata(path).ok().and_then(|m| m.modified().ok())
+}
+
+fn needs_protection(file: &str) -> bool {
+    if !set_ready(file) {
+        return true;
+    }
+    match (mtime(file), mtime(&par2_main_name(file))) {
+        (Some(src), Some(set)) => src > set + Duration::from_millis(1),
+        _ => true,
+    }
+}
+
+pub fn protect_multipart(
+    bin_path: &str,
+    dest: &str,
+    redundancy: i64,
+    memory_mb: Option<i64>,
+    threads: Option<i64>,
+    block_size: Option<i64>,
+    recursion: bool,
+) -> (bool, String) {
+    let mut lines = Vec::new();
+    let mut ok = true;
+    let mut created = 0;
+    let mut refreshed = 0;
+    let mut skipped = 0;
+    for file in archive_files(dest) {
+        let name = Path::new(&file)
+            .file_name()
+            .and_then(|s| s.to_str())
+            .unwrap_or("");
+        if !needs_protection(&file) {
+            skipped += 1;
+            lines.push(format!("[par2] {}: набор актуален, пропущен", name));
+            continue;
+        }
+        let action_refresh = set_ready(&file);
+        let res = refresh_par2_set(
+            bin_path,
+            &file,
+            redundancy,
+            memory_mb,
+            threads,
+            block_size,
+            recursion,
+            false,
+            None,
+        );
+        if res.ok {
+            if action_refresh {
+                refreshed += 1;
+            } else {
+                created += 1;
+            }
+            lines.push(format!(
+                "[par2] {}: {}",
+                name,
+                if action_refresh { "обновлён набор" } else { "создан набор" }
+            ));
+        } else {
+            ok = false;
+            let tail = res.log.trim().lines().last().unwrap_or("причина неизвестна");
+            lines.push(format!("[par2] {}: ОШИБКА — {}", name, tail));
+        }
+    }
+    let mut note = format!(
+        "\n[par2] защита по томам: создано {}, обновлено {}, пропущено {}\n",
+        created, refreshed, skipped
+    );
+    note.push_str(&lines.join("\n"));
+    note.push('\n');
+    (ok, note)
+}
+
+pub fn verify_multipart(bin_path: &str, dest: &str) -> (i32, String, &'static str) {
+    let files = archive_files(dest);
+    if files.is_empty() {
+        return (
+            1,
+            "[par2] файлы архива не найдены\n".to_string(),
+            STATE_MISSING,
+        );
+    }
+    let mut worst = 0usize;
+    let mut lines = Vec::new();
+    let states = [
+        (STATE_OK, 0usize),
+        (STATE_MISSING, 1),
+        (STATE_BROKEN, 2),
+        (STATE_DAMAGED, 3),
+        (STATE_UNREPAIRABLE, 4),
+        (STATE_FAILED, 5),
+    ];
+    for file in &files {
+        let name = Path::new(file)
+            .file_name()
+            .and_then(|s| s.to_str())
+            .unwrap_or("");
+        let set_index = par2_main_name(file);
+        let (state, detail) = if !Path::new(&set_index).is_file() {
+            (STATE_MISSING, "набор не создан".to_string())
+        } else {
+            let res = verify_parset(bin_path, &set_index, 3600);
+            let clean: Vec<&str> = res.log.lines().filter(|l| !l.trim().is_empty()).collect();
+            let tail = clean.last().copied().unwrap_or("").chars().take(300).collect();
+            (res.state, tail)
+        };
+        worst = worst.max(
+            states
+                .iter()
+                .find(|(s, _)| *s == state)
+                .map(|(_, r)| *r)
+                .unwrap_or(5),
+        );
+        lines.push(format!("[par2] {}: {} — {}", name, state, detail));
+    }
+    let state = states
+        .iter()
+        .find(|(_, r)| *r == worst)
+        .map(|(s, _)| *s)
+        .unwrap_or(STATE_FAILED);
+    let rc = if worst == 0 { 0 } else { 1 };
+    lines.push(String::new());
+    (rc, lines.join("\n"), state)
+}
+
+
 pub fn headless_par2_verify(dest: &str) -> (i32, String, &'static str) {
     let Some(par2_bin) = find_par2() else {
         return (
@@ -719,6 +927,10 @@ pub fn headless_par2_verify(dest: &str) -> (i32, String, &'static str) {
             STATE_FAILED,
         );
     };
+
+    if dest.contains('?') || cmdline::is_backup_set(dest) {
+        return verify_multipart(&par2_bin.to_string_lossy(), dest);
+    }
 
     let par2_path = par2_main_name(dest);
     if !Path::new(&par2_path).is_file() {
@@ -845,6 +1057,19 @@ int() with base 10: {}\n",
     let threads = opts.iter().find(|(k, _)| k == "threads").and_then(|(_, v)| *v);
     let block_size = opts.iter().find(|(k, _)| k == "block_size").and_then(|(_, v)| *v);
     let recursion = py_truthy(options.get("recursion"));
+
+    if dest.contains('?') || cmdline::is_backup_set(dest) {
+        let (ok, note) = protect_multipart(
+            &par2_bin.to_string_lossy(),
+            dest,
+            redundancy,
+            memory_mb,
+            threads,
+            block_size,
+            recursion,
+        );
+        return (ok, header + &note);
+    }
 
     let res = refresh_par2_set(
         &par2_bin.to_string_lossy(),

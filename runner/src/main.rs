@@ -566,7 +566,7 @@ fn run(rest: &[String]) -> i32 {
 
     if ok && !skip_run && need_par2_for_action(&action)
         && tasks::py_truthy(settings.get("par2_enabled"))
-        && !is_backup_run {
+    {
         let (par2_ok, note) =
             par2::headless_par2_create(&rzp_path, work, &dest, &settings);
         par2_note = note;
@@ -574,12 +574,6 @@ fn run(rest: &[String]) -> i32 {
             ok = false;
             par2_reason = Some("par2_failed");
         }
-    } else if is_backup_run && !skip_run
-        && need_par2_for_action(&action)
-        && tasks::py_truthy(settings.get("par2_enabled"))
-    {
-        par2_note = "\n[par2] backup set: PAR2 protects one file, skipped\n"
-            .to_string();
     }
 
     if ok && !skip_run && action != ACTION_TEST {
@@ -617,9 +611,7 @@ fn run(rest: &[String]) -> i32 {
                         continue;
                     }
                 }
-                if step_ok && tasks::py_truthy(settings.get("par2_enabled"))
-                    && !is_backup_run
-                {
+                if step_ok && tasks::py_truthy(settings.get("par2_enabled"))                {
                     let extra_work = par2::extra_par2_work(&extra);
                     let (set_ok, note) = par2::headless_par2_create(
                         &rzp_path, &extra_work, &extra, &settings,

@@ -51,7 +51,6 @@ from ui.par2_verify_dialog import (
 
 from core.container_lock import ContainerLockBusy
 from core.par2_progress import format_speed
-from core.paths import is_backup_set
 from core.tasks import (
     PAR2_REASON_BY_STATE,
     REASON_PAR2_FAILED,
@@ -205,13 +204,9 @@ class Par2ActionsMixin:
 
         has_set = has_par2_for(arc)
 
-                                                                   
+                                                                       
                                                                         
-                                     
-        if is_backup_set(arc):
-            for act in actions:
-                act.setEnabled(False)
-            return
+                                                                       
 
         if create is not None:
                                                                   
@@ -320,14 +315,9 @@ class Par2ActionsMixin:
             )
             from ui.test_modes import has_par2_for
 
-                                                                     
-                                                                        
-                                                                      
-                                                                    
-                         
-            if is_backup_set(archive_path):
-                self._par2_note(tr("par2.backup_unsupported"), archive_path)
-                return False
+                                                                          
+                                                                       
+                                      
 
             if not archive_path or not os.path.isfile(archive_path):
                 self._par2_note(tr("par2.verify_missing"), archive_path)
@@ -524,7 +514,10 @@ class Par2ActionsMixin:
         try:
             if not archive_path:
                 return False
-            if not os.path.isfile(archive_path):
+            from core.paths import is_backup_set
+
+            multipart = "?" in archive_path or is_backup_set(archive_path)
+            if not os.path.isfile(archive_path) and not multipart:
                 return False
 
             from core.par2_ops import find_par2
@@ -543,12 +536,19 @@ class Par2ActionsMixin:
             if not enabled:
                 return False
 
-            worker = Par2CreateWorker(
-                par2_bin,
-                archive_path,
-                options=options,
-                unchanged_size=known_size,
-            )
+            if multipart:
+                from workers.par2_worker import Par2VolumesWorker
+
+                worker = Par2VolumesWorker(
+                    par2_bin, archive_path, options=options
+                )
+            else:
+                worker = Par2CreateWorker(
+                    par2_bin,
+                    archive_path,
+                    options=options,
+                    unchanged_size=known_size,
+                )
             worker.done.connect(
                 lambda r, c=job_context, d=dialog:
                     self._on_par2_done(c, r, d)
@@ -919,10 +919,7 @@ class Par2ActionsMixin:
 
         try:
             from core.par2_ops import find_par2, par2_main_name
-
-            if is_backup_set(archive_path):
-                self._par2_note(tr("par2.backup_unsupported"), archive_path)
-                return False
+            from core.paths import is_backup_set
 
             par2_bin = find_par2()
             if not par2_bin:
@@ -930,11 +927,15 @@ class Par2ActionsMixin:
                     archive_path, "backup.reason_full.par2_failed", warn=True
                 )
 
-            par2_path = par2_main_name(archive_path)
-            if not os.path.isfile(par2_path):
-                return self._par2_refuse(
-                    archive_path, "backup.reason_full.par2_missing"
-                )
+            multipart = "?" in archive_path or is_backup_set(archive_path)
+            if not multipart:
+                par2_path = par2_main_name(archive_path)
+                if not os.path.isfile(par2_path):
+                    return self._par2_refuse(
+                        archive_path, "backup.reason_full.par2_missing"
+                    )
+            else:
+                par2_path = ""
 
                                                                   
                                                                      
@@ -958,7 +959,12 @@ class Par2ActionsMixin:
                 lambda *_args, _d=dlg: self._release_verify_dialog(_d)
             )
 
-            worker = Par2VerifyWorker(par2_bin, archive_path)
+            if multipart:
+                from workers.par2_worker import Par2VerifyVolumesWorker
+
+                worker = Par2VerifyVolumesWorker(par2_bin, archive_path)
+            else:
+                worker = Par2VerifyWorker(par2_bin, archive_path)
                                                                     
                                                              
             dlg.cancelRequested.connect(worker.cancel_request)
@@ -1183,10 +1189,7 @@ class Par2ActionsMixin:
 
         name = Path(archive_path).name if archive_path else ""
                                                                   
-                                                                     
-        if is_backup_set(archive_path):
-            self._par2_note(tr("par2.backup_unsupported"), archive_path)
-            return False
+                                                                          
                                                                         
                                                                          
                                                                       

@@ -1023,6 +1023,7 @@
     "test.par2_backup_unsupported": "PAR2 non protegge un set backup: il set è composto da parti e due indici, mentre PAR2 protegge un singolo file. Usa il comando proprio del motore testbackup per verificarlo.",
     "par2.backup_unsupported": "PAR2 non protegge un set backup: il set è composto da parti e due indici. Usa testbackup per verificarlo.",
     "retention.backup": "La conservazione delle versioni non è supportata per un set backup: repack scrive un singolo file e non può sostituire le parti e l'indice del set. Unisci prima il set con m.",
-    "consolidate.backup_name": "Il nome di output deve differire dal nome base del set backup: il motore lo usa per trovare le parti e l'indice."
+    "consolidate.backup_name": "Il nome di output deve differire dal nome base del set backup: il motore lo usa per trovare le parti e l'indice.",
+    "tip.create_mode_par2_volumes": "PAR2 protegge ogni volume del set separatamente, inclusi gli indici. Gli indici modificati vengono protetti di nuovo."
   }
 }

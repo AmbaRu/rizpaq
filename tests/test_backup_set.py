@@ -262,11 +262,15 @@ class TestCopyAndPar2(_BackupSetCase):
         ])
         self.assertNotIn("data.pid", names)
 
-    def test_extra_dests_skips_par2_for_backup(self):
-        with mock.patch(
-            "core.headless._headless_par2",
-            side_effect=AssertionError("PAR2 must be skipped"),
-        ):
+    def test_extra_dests_protects_backup_with_par2(self):
+        calls = []
+
+        def fake_par2(rzp_path, work, job, dest, settings):
+            calls.append(dest)
+            return True, "[par2] по томам: создано 1\n"
+
+        with mock.patch("core.headless._headless_par2",
+                        side_effect=fake_par2):
             ok, log = extra_dests.run_extra_dests(
                 "zpaq",
                 {"create_mode": "backup", "par2_enabled": True},
@@ -278,7 +282,8 @@ class TestCopyAndPar2(_BackupSetCase):
                 rzp_path="C:/tasks.rzp",
             )
         self.assertTrue(ok)
-        self.assertNotIn("par2", log.lower())
+        self.assertEqual(calls, ["F:/one.zpaq"])
+        self.assertIn("по томам", log)
 
 
 class TestLocales(unittest.TestCase):
@@ -289,6 +294,7 @@ class TestLocales(unittest.TestCase):
         "tip.create_mode",
         "tip.create_mode_no_sfx",
         "tip.create_mode_no_par2",
+        "tip.create_mode_par2_volumes",
         "test.par2_title",
         "test.par2_backup_unsupported",
         "par2.backup_unsupported",

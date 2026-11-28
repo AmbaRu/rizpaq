@@ -421,3 +421,104 @@ class Par2RepairWorker(QThread):
 
     def _register_proc(self, proc):
         self._proc = proc
+
+
+class Par2VolumesWorker(QThread):
+    pass
+
+
+
+
+
+
+
+
+    done = Signal(dict)
+    line_received = Signal(str)
+
+    def __init__(self, bin_path: str, archive_path: str,
+                 options: dict = None, parent=None):
+        super().__init__(parent)
+        self._bin_path = str(bin_path)
+        self._archive_path = str(archive_path)
+        self._options = dict(options or {})
+        self._cancel = False
+        self._proc = None
+
+    def cancel_request(self):
+        self._cancel = True
+        proc = self._proc
+        if proc is not None:
+            try:
+                proc.kill()
+            except Exception:
+                pass
+
+    def _register_proc(self, proc):
+        self._proc = proc
+        if self._cancel:
+            try:
+                proc.kill()
+            except Exception:
+                pass
+
+    def run(self):
+        result = {
+            "ok": False,
+            "cancelled": False,
+            "state": par2_ops.STATE_FAILED,
+            "log": "",
+            "archive_path": self._archive_path,
+            "created": 0,
+            "refreshed": 0,
+            "skipped": 0,
+            "failed": 0,
+            "sets": [],
+        }
+        try:
+            from core import multipart_par2
+
+            res = multipart_par2.protect(
+                self._bin_path,
+                self._archive_path,
+                self._options,
+                on_line=self.line_received.emit,
+                register=self._register_proc,
+            )
+            result.update(res)
+            result["state"] = (
+                par2_ops.STATE_OK if res["ok"] else par2_ops.STATE_FAILED
+            )
+            result["cancelled"] = self._cancel
+        except Exception as exc:
+            result["log"] = f"{type(exc).__name__}: {exc}"
+        self.done.emit(result)
+
+
+class Par2VerifyVolumesWorker(QThread):
+    pass
+
+    done = Signal(dict)
+
+    def __init__(self, bin_path: str, archive_path: str, parent=None):
+        super().__init__(parent)
+        self._bin_path = str(bin_path)
+        self._archive_path = str(archive_path)
+
+    def run(self):
+        result = {
+            "ok": False,
+            "cancelled": False,
+            "state": par2_ops.STATE_FAILED,
+            "log": "",
+            "archive_path": self._archive_path,
+            "par2_path": "",
+        }
+        try:
+            from core import multipart_par2
+
+            res = multipart_par2.verify(self._bin_path, self._archive_path)
+            result.update(res)
+        except Exception as exc:
+            result["log"] = f"{type(exc).__name__}: {exc}"
+        self.done.emit(result)

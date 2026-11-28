@@ -728,13 +728,9 @@ class ArchiveActionsMixin:
                                                                          
                       
         if str(mode) == "par2":
-            if backup:
-                QMessageBox.information(
-                    self, tr("test.par2_title"),
-                    tr("test.par2_backup_unsupported"),
-                )
-                return
-            self._start_par2_verify(arc, job_context=job_context)
+                                                                       
+                                                                     
+            self._start_par2_verify(str(read_arc), job_context=job_context)
             return
 
                                                                    
@@ -3158,14 +3154,9 @@ class ArchiveActionsMixin:
             if not mail.ready():
                 return [], ""
             customer = self._job_mail_customer(job_context, archive)
-                                                                         
-                                                                        
-                                                                    
-                                                                 
-            par2_planned = (
-                bool(settings.get("par2_enabled"))
-                and str(settings.get("create_mode") or "a") != "backup"
-            )
+                                                                           
+                                                                           
+            par2_planned = bool(settings.get("par2_enabled"))
             if par2_planned:
                 return [], customer
             return mail_report.report_args(mail, customer), ""
@@ -3498,10 +3489,10 @@ class ArchiveActionsMixin:
                 "mail_deferred": bool(deferred_customer),
                 "mail_customer": deferred_customer,
                                                                          
-                                                                  
+                                                                   
                                                                          
-                                                             
-                "par2_job": bool(settings.get("par2_enabled")) and not is_backup,
+                                                    
+                "par2_job": bool(settings.get("par2_enabled")),
                                                                             
                 "extra_dests": list(settings.get("extra_dests") or []),
                 "create_settings": dict(settings),
@@ -3511,7 +3502,7 @@ class ArchiveActionsMixin:
                                                                    
                                                                        
                 "par2": {
-                    "enabled": bool(settings.get("par2_enabled")) and not is_backup,
+                    "enabled": bool(settings.get("par2_enabled")),
                     "options": dict(settings.get("par2_options") or {}),
                 },
             },

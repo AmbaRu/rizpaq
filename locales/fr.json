@@ -1023,6 +1023,7 @@
     "test.par2_backup_unsupported": "PAR2 ne protège pas un ensemble backup : l'ensemble se compose de parties et de deux index, alors que PAR2 protège un seul fichier. Utilisez la commande propre au moteur testbackup pour le vérifier.",
     "par2.backup_unsupported": "PAR2 ne protège pas un ensemble backup : l'ensemble se compose de parties et de deux index. Utilisez testbackup pour le vérifier.",
     "retention.backup": "La rétention de versions n'est pas prise en charge pour un ensemble backup : repack écrit un seul fichier et ne peut pas remplacer les parties et l'index de l'ensemble. Fusionnez d'abord l'ensemble avec m.",
-    "consolidate.backup_name": "Le nom de sortie doit différer du nom de base de l'ensemble backup : le moteur s'en sert pour trouver les parties et l'index."
+    "consolidate.backup_name": "Le nom de sortie doit différer du nom de base de l'ensemble backup : le moteur s'en sert pour trouver les parties et l'index.",
+    "tip.create_mode_par2_volumes": "PAR2 protège chaque volume de l'ensemble séparément, y compris les fichiers d'index. Les index modifiés sont protégés à nouveau."
   }
 }

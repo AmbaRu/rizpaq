@@ -1023,6 +1023,7 @@
     "test.par2_backup_unsupported": "PAR2 não protege um conjunto backup: o conjunto é formado por partes e dois índices, enquanto o PAR2 protege um único arquivo. Use o comando próprio do motor testbackup para verificar.",
     "par2.backup_unsupported": "PAR2 não protege um conjunto backup: o conjunto é formado por partes e dois índices. Use testbackup para verificar.",
     "retention.backup": "A retenção de versões não é suportada para um conjunto backup: o repack grava um único arquivo e não pode substituir as partes e o índice do conjunto. Primeiro mescle o conjunto com m.",
-    "consolidate.backup_name": "O nome de saída deve ser diferente do nome base do conjunto backup: o motor o usa para encontrar as partes e o índice do conjunto."
+    "consolidate.backup_name": "O nome de saída deve ser diferente do nome base do conjunto backup: o motor o usa para encontrar as partes e o índice do conjunto.",
+    "tip.create_mode_par2_volumes": "PAR2 protege cada volume do conjunto separadamente, incluindo os índices. Índices alterados são protegidos novamente."
   }
 }

@@ -1023,6 +1023,7 @@
     "test.par2_backup_unsupported": "PAR2 nie chroni zestawu backup: zestaw składa się z części i dwóch indeksów, a PAR2 chroni jeden plik. Do sprawdzenia użyj własnego polecenia silnika testbackup.",
     "par2.backup_unsupported": "PAR2 nie chroni zestawu backup: zestaw składa się z części i dwóch indeksów. Do sprawdzenia użyj testbackup.",
     "retention.backup": "Retencja wersji nie jest obsługiwana dla zestawu backup: repack zapisuje jeden plik i nie może zastąpić części i indeksu zestawu. Najpierw scal zestaw poleceniem m.",
-    "consolidate.backup_name": "Nazwa wyjściowa musi różnić się od nazwy bazowej zestawu backup: silnik używa jej do znalezienia części i indeksu zestawu."
+    "consolidate.backup_name": "Nazwa wyjściowa musi różnić się od nazwy bazowej zestawu backup: silnik używa jej do znalezienia części i indeksu zestawu.",
+    "tip.create_mode_par2_volumes": "PAR2 chroni każdy tom zestawu osobno, także pliki indeksowe. Zmienione indeksy są chronione ponownie."
   }
 }

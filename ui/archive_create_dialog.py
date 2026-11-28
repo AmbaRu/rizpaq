@@ -623,17 +623,8 @@ class ArchiveCreateDialog(QDialog):
             self._opt_sfx.setChecked(False)
         self._opt_sfx.setToolTip(
             tr("tip.create_mode_no_sfx") if is_backup else "")
-        widget = getattr(self, "_par2_widget", None)
-        if widget is not None:
-            widget.setEnabled(not is_backup)
-        if is_backup:
-                                                                        
-                                                                     
-                                                                    
-                                                                
-            self._opt_par2.setChecked(False)
         self._opt_par2.setToolTip(
-            tr("tip.create_mode_no_par2") if is_backup else "")
+            tr("tip.create_mode_par2_volumes") if is_backup else "")
 
     def _on_level_changed(self, _i):
         self._method_group.setVisible(self._level_combo.currentData() == "method")
@@ -1034,13 +1025,11 @@ class ArchiveCreateDialog(QDialog):
                                                                        
                           
          
-                                                                   
-                                                                       
-                                                                       
-                                              
+                                                                           
+                                                                        
         create_mode = self._create_mode_combo.currentData() or "a"
         is_backup = create_mode == "backup"
-        par2_enabled = self._opt_par2.isChecked() and not is_backup
+        par2_enabled = self._opt_par2.isChecked()
         cs = self._checkspace_edit.text().strip() if self._opt_checkspace.isChecked() else ""
         chunk = ""
         if self._opt_chunk.isChecked():

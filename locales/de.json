@@ -1023,6 +1023,7 @@
     "test.par2_backup_unsupported": "PAR2 schützt keinen Backup-Satz: der Satz besteht aus Teilen und zwei Indizes, PAR2 schützt eine einzelne Datei. Verwenden Sie zur Prüfung den engine-eigenen Befehl testbackup.",
     "par2.backup_unsupported": "PAR2 schützt keinen Backup-Satz: der Satz besteht aus Teilen und zwei Indizes. Verwenden Sie testbackup zur Prüfung.",
     "retention.backup": "Die Versionsaufbewahrung wird für einen Backup-Satz nicht unterstützt: repack schreibt eine einzelne Datei und kann die Teile und den Index des Satzes nicht ersetzen. Fügen Sie den Satz zuerst mit m zusammen.",
-    "consolidate.backup_name": "Der Ausgabename muss sich vom Basisnamen des Backup-Satzes unterscheiden: über ihn findet die Engine die Teile und den Index des Satzes."
+    "consolidate.backup_name": "Der Ausgabename muss sich vom Basisnamen des Backup-Satzes unterscheiden: über ihn findet die Engine die Teile und den Index des Satzes.",
+    "tip.create_mode_par2_volumes": "PAR2 schützt jeden Band des Satzes einzeln, einschließlich der Indexdateien. Geänderte Indexdateien werden erneut geschützt."
   }
 }
