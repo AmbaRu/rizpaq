@@ -549,7 +549,7 @@ class TestOpenFlagInUiCreateCmd(unittest.TestCase):
     def test_ui_skips_open_for_multipart_mask(self):
         pass
         src = (ROOT / "ui" / "archive_actions.py").read_text(encoding="utf-8")
-        anchor = 'if "?" not in dest:'
+        anchor = 'if "?" not in dest and not is_backup:'
         self.assertIn(anchor, src)
         tail = src[src.index(anchor): src.index(anchor) + 400]
         self.assertIn('cmd.append("-open")', tail)

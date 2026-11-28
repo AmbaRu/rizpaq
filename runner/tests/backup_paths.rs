@@ -89,7 +89,10 @@ fn backup_create_uses_backup_and_drops_sfx() {
     assert_eq!(got[1], "backup", "режим backup должен сменить команду");
     assert_eq!(got[2], "D:/arc.zpaq", "база передаётся без маски");
     assert_eq!(got[3], "D:/data");
-    assert!(got.contains(&"-open".to_string()));
+    assert!(
+        !got.contains(&"-open".to_string()),
+        "повторный backup с -open падает и оставляет .pid"
+    );
     assert!(
         !got.iter().any(|a| a == "-sfx"),
         "-sfx несовместим с backup"
@@ -108,6 +111,7 @@ fn normal_create_keeps_a_and_sfx() {
         None,
     );
     assert_eq!(got[1], "a");
+    assert!(got.contains(&"-open".to_string()));
     assert!(got
         .windows(2)
         .any(|w| w[0] == "-sfx" && w[1] == "C:/out/self.exe"));

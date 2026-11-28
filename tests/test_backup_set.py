@@ -205,12 +205,16 @@ class TestHeadlessCommands(_BackupSetCase):
         self.assertEqual(cmd[2], "D:/data.zpaq")
         self.assertNotIn("-sfx", cmd)
         self.assertNotIn("_????????", cmd[2])
+                                                                        
+                                                                
+        self.assertNotIn("-open", cmd)
 
     def test_create_plain_archive_still_uses_a(self):
         cmd = _build_create_cmd(
             "zpaq", {"create_mode": "a"}, ["D:/src"], "D:/data.zpaq", None
         )
         self.assertEqual(cmd[1], "a")
+        self.assertIn("-open", cmd)
 
     def test_test_backup_uses_testbackup_and_base(self):
         self.make_set()

@@ -275,7 +275,7 @@ pub fn build_create_cmd(
     for s in srcs {
         cmd.push(s.clone());
     }
-    if !dest.contains('?') {
+    if !dest.contains('?') && !is_backup {
         cmd.push("-open".to_string());
     }
     cmd.push("-nolfast".to_string());

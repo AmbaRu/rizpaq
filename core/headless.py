@@ -412,10 +412,12 @@ def _build_create_cmd(zpaq_bin, settings, srcs, dest, password):
                                                                     
                                                                   
                                                                           
-                                                                     
-                                                                   
-                                                       
-    if "?" not in str(dest):
+                                                                        
+                                                                
+                                                                       
+                                                                      
+                                                               
+    if "?" not in str(dest) and not is_backup:
         cmd.append("-open")
                                                                    
                                                                  

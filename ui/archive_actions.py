@@ -3398,9 +3398,12 @@ class ArchiveActionsMixin:
                                                                    
                                                                       
                                                                      
+                                                                      
+                                                                      
                                                                     
-                                                                         
-        if "?" not in dest:
+                                                                
+                                                              
+        if "?" not in dest and not is_backup:
             cmd.append("-open")
                                                                    
                                                                   
