@@ -353,6 +353,11 @@ instant, and nothing you were doing is lost.
   asks for confirmation first. The familiar single-folder version
   extraction is still there.
 
+### What's new in 3.2.0
+- The engine's `backup` command is now a full create mode: a managed set of numbered parts and indexes instead of one file. It can be verified with `testbackup`, extracted and browsed by mask, appended to, and merged into a normal archive with `m <mask> <output> -verify`.
+- Passwords work in every set operation, including merging encrypted volumes; `-open` is no longer sent for sets or multipart masks, which had made repeated backups fail with "file seems open".
+- Version ranges for multipart archives and for a file/folder extracted into numbered folders; four more themes (six total).
+
 ### What's new in 3.1.14
 - The password is asked again after a restart: the GUI no longer takes the saved key from the store, which used to open and run an encrypted archive without a single prompt.
 - Encrypted archives no longer freeze for half a minute waiting for a console password: every engine launch detaches stdin.
@@ -952,6 +957,11 @@ ZPAQ**. Один клик: старый RAR, набитый дублями, пр
   все версии в пронумерованных папках 0001, 0002, … . Данные идут через
   временную папку, а распаковка в непустую папку сначала спрашивает
   подтверждение. Привычное извлечение версии одной папки осталось на месте.
+
+### Что нового в 3.2.0
+- Полная поддержка команды `backup`: управляемый набор из пронумерованных частей и индекса вместо одного файла. Проверка идёт через `testbackup`, распаковка и версии — по маске, слияние в обычный архив — через `m <маска> <выход> -verify`.
+- Пароль работает во всех операциях с набором, включая слияние зашифрованных томов; `-open` больше не передаётся для наборов и многотомных масок — раньше повторное создание падало с «file seems open».
+- Диапазоны версий для многотомников и для файла/папки с извлечением в пронумерованные папки; ещё четыре темы (всего шесть).
 
 ### Что нового в 3.1.14
 - После перезапуска пароль спрашивается снова: GUI больше не берёт сохранённый ключ из хранилища, из-за чего зашифрованный архив открывался и запускал файлы без единого запроса.
