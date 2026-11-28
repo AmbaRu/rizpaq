@@ -446,6 +446,13 @@ fn run(rest: &[String]) -> i32 {
                     if Path::new(&out).exists() {
                         cmd.as_mut().unwrap().push("-force".to_string());
                     }
+                    if let Some(pw) = password {
+                        if !pw.is_empty() {
+                            let c = cmd.as_mut().unwrap();
+                            c.push("-key".to_string());
+                            c.push(pw.to_string());
+                        }
+                    }
                 }
             }
         } else if action == ACTION_CROP {

@@ -71,9 +71,10 @@ class TestHeadlessActions(unittest.TestCase):
         return job["id"]
 
     def _run(self, action: str, extra: dict = None, fake_run=None,
-             work_extra: dict = None):
+             work_extra: dict = None, password: str = None):
         pass
-        job_id = self._make_container(action, extra, work_extra=work_extra)
+        job_id = self._make_container(action, extra, password=password,
+                                      work_extra=work_extra)
         calls = []
 
         def fake_run_zpaq(cmd, is_cancelled=None, set_proc=None):
@@ -260,6 +261,16 @@ class TestHeadlessActions(unittest.TestCase):
         rc, calls, _ = self._run("consolidate")
         self.assertEqual(rc, 1)
         self.assertEqual(calls, [])
+
+    def test_consolidate_passes_password_to_merge(self):
+                                                                     
+                                                                  
+        self.dest = self.dir / "multi_????.zpaq"
+        rc, calls, _ = self._run("consolidate", password="secret")
+        self.assertEqual(rc, 0)
+        cmd = calls[0]
+        self.assertIn("-key", cmd)
+        self.assertEqual(cmd[cmd.index("-key") + 1], "secret")
 
     def test_consolidate_does_not_attempt_par2(self):
         pass

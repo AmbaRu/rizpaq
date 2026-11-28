@@ -1431,6 +1431,10 @@ def _headless_task(rest: list) -> int:
                     cmd = [zpaq, "m", dest, out, "-verify"]
                     if Path(out).exists():
                         cmd.append("-force")
+                                                                      
+                                                                           
+                    if password:
+                        cmd += ["-key", password]
         elif action == ACTION_SFX:
                                                                     
                                                        

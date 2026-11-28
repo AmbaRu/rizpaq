@@ -1193,6 +1193,12 @@ class ArchiveActionsMixin:
         cmd = [self.zpaq_bin, "m", arc, out, "-verify"]
         if exists:
             cmd.append("-force")
+                                                                   
+                                                            
+                                                               
+        pw = self._cache(arc).get("password")
+        if pw:
+            cmd += ["-key", pw]
 
         self.log_command(cmd)
 
